@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assest/css/style.css">
+  <link rel="stylesheet" href="./assest/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    .code-section {
+    background-color: #031730; /* Navy blue background */
+    color: #f0f8ff; /* Alice Blue text color for a soft contrast */
+    margin: 3rem auto; /* Centering with automatic side margins */
+    padding: 2rem; /* Adds padding inside the section for spacing */
+    border-radius: 10px; /* Rounded corners for a smoother look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    font-family: 'Courier New', monospace; /* Monospaced font for code feel */
+    line-height: 1.6; /* Improved line spacing for better legibility */
+    max-width: 80%; /* Limit the width to make it more responsive */
+    overflow-x: auto; /* Adds horizontal scrolling for long lines of code */
+}
+
+.code-section pre {
+    background-color: #0a2a47; /* A darker navy blue for the code block */
+    padding: 1rem; /* Padding around the code for spacing */
+    border-radius: 8px; /* Rounded corners for the code block */
+    font-size: 1.1rem; /* Slightly larger font size for code */
+    white-space: pre-wrap; /* Makes sure long code lines wrap properly */
+}   
+.code-container {
+  display: none;
+}
+
+.code-container.active {
+  display: block;
+}
+    .merge_sort_container {
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    .ms_bars_container {
+      width: 100%;
+      height: 450px;
+      display: flex;
+      text-align: center;
+      align-items: baseline;
+      padding-bottom: 10px;
+    }
+
+    .ms_bar {
+      padding-top: 2px;
+      border-radius: 0px 0px 10px 10px;
+      width: 10px;
+      height: 0;
+      background-color: aqua;
+      display: inline-block;
+      margin: 0 2px;
+    }
+
+    .ms_bars_container {
+      border: 2px solid #1E0342;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body style="background-color: #E1F7F5;">
+  <!-- ***** Header Start ***** -->
+    <header id="header_section" class="mb-0" style="background-color: #1E0342;">
+      <div class="conatiner-fluid  border-bottom border-warning" >
+        <div class="container">
+          <nav class="navbar" style="background-color: #1E0342;">
+            <div class="container-fluid">
+              <a href="index.html"> <img class="img-fluid" style="width: 100px;" src="./assest/image/CODEANIME.gif" alt=""> </a>
+              <button class="navbar-toggler" style="background-color: white;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+                <span style="color: white;" class="navbar-toggler-icon"></span>
+              </button>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+  <!-- ***** Header End ***** -->
+
+
+  <div class="container-fluid">
+    <div class="container_new">
+      <div class="row mt-2">
+        <div class="col-lg-3 d-none d-lg-block" id="sidebar_section">
+          <div class="overflow-auto pt-3 mt-3 pb-3" id="inside_sidebar_section">
+            <div class="d-flex flex-column flex-md-row ">
+              <div id="radio-buttons-container" class="list-group list-group-radio d-grid gap-2 border-0">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-9" id="playground_section">
+          <div class="card mt-3" id="playground_card">
+            <!-- Title of DSA and Algorith & small Desp -->
+            <div class="card-header" style="background-color: #0E46A3;color:white;">
+              <div class="row">
+                <div class="col">
+                  <h5 class="mt-2" id="algo_title">Visualizer</h5>
+                </div>
+                <div class="col text-end d-none d-lg-block">
+                  <button class="btn text-end" is_full="0" id="maximize_area"><span class="material-symbols-outlined">
+                    fullscreen
+                    </span></button>
+                </div>
+              </div>
+            </div>
+            <!-- Title of DSA and Algorith & small Desp -->
+            <div class="card-body" id="visualizer_play_ground">
+
+              <div class="merge_sort_container">
+                <div class="row mt-3">
+                  <div class="col-md-12">
+                    <div class="ms_bars_container"></div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+            <div class="card-footer">
+              <div class="row">
+                <div class="col-md-6 offset-md-3">
+                  <div class="row">
+                    <div class="col-12 mb-2">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="">Speed</label>
+                          <input type="range" class="form-range" value="15" min="1" max="30" id="algo_sppeed">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="input-group mb-3">
+                        <input type="text" id="input_numbers" class="form-control" placeholder="Enter comma-separated numbers to sort">
+                        <button id="random_array_generate" class="btn btn-warning" style="background-color:#99c8cd;border-color:#0d47a3">Random Arr</button>
+                        <button id="sort_button" class="btn btn-primary" style="background-color:#0d47a3;">Sort</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- About DSA & Algorithm -->
+          <div class="card mt-3" id="info_section">
+            <div class="card-body" id="output"></div>
+          </div>
+          <div class="code-section">
+            <div
+              id="menu-code"
+              data-aos="fade-right"
+              class="aos-init aos-animate"
+            >
+              <div
+                style="
+                  font-family: 'Jura', Courier, monospace;
+                  font-size: 35px ;
+                "
+              >
+                IMPLEMENTATIONS
+              </div>
+              <div class="menu-btns">
+                <button id="cppCode" onclick="changeCode('cpp')">
+                    <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" title="C++" alt="C++" />
+                </button>
+                <button id="pythonCode" onclick="changeCode('python')">
+                    <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" title="Python" alt="Python" />
+                </button>
+            </div>
+        
+            <div class="cpp code-container active" id="cpp-content">
+              <pre>                    <code id="code" class="c++ hljs cpp">
+                <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *array, <span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> m, <span class="hljs-keyword">int</span> r)</span> </span>{
+                   <span class="hljs-keyword">int</span> i, j, k, nl, nr;
+                   nl = m-l+<span class="hljs-number">1</span>; nr = r-m;
+                   <span class="hljs-keyword">int</span> larr[nl], rarr[nr];
+                
+                   <span class="hljs-keyword">for</span>(i = <span class="hljs-number">0</span>; i&lt;nl; i++)
+                      larr[i] = array[l+i];
+                
+                   <span class="hljs-keyword">for</span>(j = <span class="hljs-number">0</span>; j&lt;nr; j++)
+                      rarr[j] = array[m+<span class="hljs-number">1</span>+j];
+                
+                   i = <span class="hljs-number">0</span>; j = <span class="hljs-number">0</span>; k = l;
+                
+                   <span class="hljs-keyword">while</span>(i &lt; nl &amp;&amp; j&lt;nr) {
+                      <span class="hljs-keyword">if</span>(larr[i] &lt;= rarr[j]) {
+                         array[k] = larr[i];
+                         i++;
+                      } <span class="hljs-keyword">else</span> {
+                         array[k] = rarr[j];
+                         j++;
+                      }
+                      k++;
+                   }
+                   <span class="hljs-keyword">while</span>(i&lt;nl) {
+                      array[k] = larr[i];
+                      i++; k++;
+                   }
+                   <span class="hljs-keyword">while</span>(j&lt;nr) {
+                      array[k] = rarr[j];
+                      j++; k++;
+                   }
+                }
+                
+                <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">mergeSort</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *array, <span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r)</span> </span>{
+                   <span class="hljs-keyword">int</span> m;
+                   <span class="hljs-keyword">if</span>(l &lt; r) {
+                      <span class="hljs-keyword">int</span> m = l+(r-l)/<span class="hljs-number">2</span>;
+                
+                      <span class="hljs-built_in">mergeSort</span>(array, l, m);
+                      <span class="hljs-built_in">mergeSort</span>(array, m+<span class="hljs-number">1</span>, r);
+                      <span class="hljs-built_in">merge</span>(array, l, m, r);
+                   }
+                }</code>
+                                </pre>
+                                </div>
+        
+            <div class="python code-container" id="python-content">
+              <pre>                    <code id="code" class="python hljs">
+                <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">mergeSort</span>(<span class="hljs-params">arr</span>):</span>
+                    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(arr) &gt; <span class="hljs-number">1</span>:
+                        mid = <span class="hljs-built_in">len</span>(arr)//<span class="hljs-number">2</span>
+                        L = arr[:mid]
+                        R = arr[mid:]
+                
+                        mergeSort(L)
+                        mergeSort(R)
+                
+                        i = j = k = <span class="hljs-number">0</span>
+                
+                        <span class="hljs-keyword">while</span> i &lt; <span class="hljs-built_in">len</span>(L) <span class="hljs-keyword">and</span> j &lt; <span class="hljs-built_in">len</span>(R):
+                            <span class="hljs-keyword">if</span> L[i] &lt; R[j]:
+                                arr[k] = L[i]
+                                i += <span class="hljs-number">1</span>
+                            <span class="hljs-keyword">else</span>:
+                                arr[k] = R[j]
+                                j += <span class="hljs-number">1</span>
+                            k += <span class="hljs-number">1</span>
+                
+                        <span class="hljs-keyword">while</span> i &lt; <span class="hljs-built_in">len</span>(L):
+                            arr[k] = L[i]
+                            i += <span class="hljs-number">1</span>
+                            k += <span class="hljs-number">1</span>
+                
+                        <span class="hljs-keyword">while</span> j &lt; <span class="hljs-built_in">len</span>(R):
+                            arr[k] = R[j]
+                            j += <span class="hljs-number">1</span>
+                            k += <span class="hljs-number">1</span></code>
+                                </pre>
+            </div>
+      
+        
+            </div>
+          </div>
+        </div>
+          <!-- About DSA & Algorithm -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- **** sidebar on mobile Start **** -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
+    style="background-color: wheat;">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">Explore More Algorithms!</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="d-flex flex-column flex-md-row  align-items-center justify-content-center">
+        <div id="radio-buttons-container2" class="list-group list-group-radio d-grid gap-2 border-0">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- **** sidebar on mobile End **** -->
+
+</body>
+
+<script src="./algorithm/merge_sort.js"></script>
+
+<!--Common JS Scripts -->
+<script src="./assest/js/common.js"></script>
+<script src="./assest/js/algo_list.js"></script>
+<script src="./assest/js/sidebar.js"></script>
+<script src="./assest/js/Algo_content.js"></script>
+
+
+<script>
+  document.getElementById("cppCode").addEventListener("click", function() {
+      changeCode("cpp");
+  });
+
+  document.getElementById("pythonCode").addEventListener("click", function() {
+      changeCode("python");
+  });
+
+  function changeCode(language) {
+      // Hide both code blocks first
+      document.getElementById("cpp-content").classList.remove("active");
+      document.getElementById("python-content").classList.remove("active");
+      
+      // Remove 'active' class from buttons as well
+      document.getElementById("cppCode").classList.remove("active");
+      document.getElementById("pythonCode").classList.remove("active");
+      
+      // Show the selected code and mark its button as active
+      if (language === "cpp") {
+          document.getElementById("cpp-content").classList.add("active");
+          document.getElementById("cppCode").classList.add("active");
+      } else if (language === "python") {
+          document.getElementById("python-content").classList.add("active");
+          document.getElementById("pythonCode").classList.add("active");
+      }
+  }
+</script>
+
+
+</html>
