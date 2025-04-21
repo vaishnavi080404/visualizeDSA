@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quick Sort - Real-World Applications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <style>
+        /* Improved Modern Theme */
+        :root {
+            --text-primary: #fff;
+            --text-secondary: #ddd;
+            --bg-primary: #a3e298;
+            /* Dark Indigo */
+            --bg-secondary: #3c2854;
+            /* Slightly lighter dark indigo */
+            --accent-color: #ffca28;
+            /* Gold/Amber */
+            --card-bg: rgba(255, 255, 255, 0.08);
+            /* Translucent card */
+            --level-active-bg: rgba(255, 202, 40, 0.5);
+            --level-hover-bg: rgba(255, 202, 40, 0.2);
+            --secondary-accent-darker: #e0ac0a;
+            /* Darker shade for button hover */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(90deg, #00bf8f,#1f453b);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-top: 20px;
+            text-align: center;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            margin-top: 30px;
+            font-size: 2em;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            backdrop-filter: blur(8px);
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: var(--bg-primary);
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--secondary-accent-darker);
+            color: #fff;
+        }
+
+        iframe {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border-radius: 15px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 16px;
+            backdrop-filter: blur(5px);
+        }
+
+        .quiz-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+        }
+
+        .quiz .question {
+            margin-bottom: 20px;
+        }
+
+        .quiz input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .quiz button {
+            background-color: var(--accent-color);
+            margin-top: 15px;
+        }
+
+        .quiz button:hover {
+            background-color: var(--secondary-accent-darker);
+        }
+
+        .quiz #quizResult {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .quiz #quizResult p {
+            font-size: 18px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: var(--text-primary);
+        }
+
+        .links ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .links li {
+            margin-bottom: 10px;
+        }
+
+        .links h6 {
+            font-size: 1.2em;
+        }
+
+        .links a {
+            color: var(--text-primary);
+            font-size: 1.1em;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            color: var(--accent-color);
+        }
+
+        .links {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: sans-serif;
+        }
+
+        .links h5 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .links .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+           .links .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around; /* Added to prevent overflow */
+        }
+
+        .links .card {
+            margin-bottom: 2rem;
+            min-width: 300px;        /* Minimum width for cards */
+            flex-grow: 1;            /* Allow cards to grow to fill space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+            min-height: auto;
+        }
+
+        .links ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
+        .level-option {
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .level-option:hover {
+            background-color: var(--level-hover-bg);
+        }
+
+        .level-option.active {
+            background-color: var(--level-active-bg);
+            font-weight: bold;
+        }
+
+        #header_section {
+            background-color: var(--bg-primary);
+        }
+
+        #header_section .navbar-brand img {
+            width: 120px;
+        }
+
+        #header_section .offcanvas-title {
+            color: var(--accent-color);
+        }
+
+        #header_section .offcanvas-body {
+            background-color: var(--bg-secondary);
+        }
+
+        #header_section .card {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        #header_section .card-title {
+            color: var(--accent-color);
+        }
+
+        #header_section .card-text {
+            color: var(--text-secondary);
+        }
+
+        #header_section hr.border-light {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+          /* Responsive Design Adjustments */
+          @media (max-width: 768px) {
+            .links .card {
+               flex: 1 1 100%;
+                }
+             .container {
+                width: 95%; /* Make it full-width */
+               padding-left: 10px;
+                padding-right: 10px;
+                 }
+             .sidebar{
+                    position: static !important;
+             }
+            .card {
+                 min-height: auto;
+                 }
+        }
+
+          /* Styles for text input */
+        input[type="text"] {
+          width: 100%;
+          padding: 10px;
+          margin: 10px 0;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          background-color: rgba(255, 255, 255, 0.1);
+          color: var(--text-primary);
+        }
+     /* Styles for the Student Box */
+        .student-box {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(8px);
+            text-align: left;
+            /* Left align text inside the box */
+        }
+
+        .student-box h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            /* Use highlight color for heading */
+        }
+        /* Quiz styles */
+        .quiz-section {
+            margin-top: 20px;
+            padding: 30px;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .quiz-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .quiz h4 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .quiz .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz .question:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz label {
+            display: block;
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz label:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .quiz input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz button {
+            background-color: var(--accent-color);
+            color: var(--bg-primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz button:hover {
+            background-color: var(--secondary-accent-darker);
+        }
+
+        #quizResult {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: none; /* Hide initially */
+        }
+
+        .links {
+            margin-top: 40px;
+        }
+
+        .links h5 {
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .links .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .links .card {
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .links .card:hover {
+            transform: scale(1.05);
+        }
+
+        .links h6 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .links li {
+            padding: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: var(--accent-color);
+        }
+ .navbar-custom {
+ 
+  background: linear-gradient(90deg, #780206, #061161); /* horizontal gradient */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+.navbar-brand {
+     
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 0 !important; /* Override any Bootstrap margin */
+    padding-left: 0 !important;
+      
+    }
+
+    .navbar-brand img {
+      
+      padding-top: 12px;
+      padding-left: 0px;
+      transition: transform 0.3s ease;
+      height: 10rem; /*Control height with rem */
+      object-fit: contain; /* Maintain aspect ratio within the container*/
+} 
+  
+
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+/* Optional: Logo Hover Effect */
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+
+        .navbar-toggler {
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+     .navbar-toggler-icon {
+         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(81, 45, 168, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+     }
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 117, 205, 0.5); /* Focus indicator using lighter purple */
+    }
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="conatiner-fluid sticky-top navbar-custom">
+        <div class="container">
+          <nav class="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img class="img-fluid" src="./assest/image/dsa.gif" alt="Logo">
+                  </a>
+                  
+                <button class="navbar-toggler" style="background-color: white;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+                  <span style="color: white;" class="navbar-toggler-icon"></span>
+                </button>
+              </div>
+            </nav>
+            </div>
+        </div>
+  
+             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                    aria-labelledby="offcanvasRightLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasRightLabel">Explore</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <!-- 🔽 Your Custom Content Goes Here -->
+                        <div class="card bg-dark text-white rounded shadow p-3 mt-4">
+
+                            <!-- Level One -->
+                            <div class="level-option" onclick="selectLevel(this, 'quick_sortL1.html')">
+                                <h5 class="card-title">Level One</h5>
+                                <p class="card-text">Introduction </p>
+                                <input type="radio" name="level" class="form-check-input float-end mb-3" readonly>
+                            </div>
+
+                            <hr class="border-light">
+
+                            <!-- Level Two -->
+                            <div class="level-option" onclick="selectLevel(this, 'quick_sort.html')">
+                                <h5 class="card-title">Level Two</h5>
+                                <p class="card-text"> Dry Run + Code</p>
+                                <input type="radio" name="level" class="form-check-input float-end" readonly>
+                            </div>
+
+                            <hr class="border-light">
+
+                            <!-- Level Three -->
+                            <div class="level-option active" onclick="selectLevel(this, 'quick_sort.html')">
+                                <h5 class="card-title">Level Three</h5>
+                                <p class="card-text"> Real World Applications</p>
+                                <input type="radio" name="level" class="form-check-input float-end" readonly>
+                            </div>
+
+                        </div>
+                        <hr>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="animate__animated animate__fadeInDown"><i class="fas fa-puzzle-piece"></i> Quick Sort - Real-World Applications</h1>
+
+        <div class="row">
+             <!-- Content Column -->
+            <div class="col-md-12">
+                <!-- Applications Section -->
+                <div class="content-section mt-4">
+                    <h2 class="animate__animated animate__fadeInUp"><i class="fas fa-globe"></i> Real-World
+                        Applications:</h2>
+
+                    <!-- Real World Applications List -->
+                    <div class="card-container">
+                        <div class="card animate__animated animate__fadeInUp animate__delay-1s">
+                            <h6><i class="fas fa-database"></i> Database Management Systems</h6>
+                            <p>Sorts large datasets for quicker querying and indexing.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-2s">
+                            <h6><i class="fas fa-search"></i> Search Engines</h6>
+                            <p>Ranks search results based on relevance and factors like that.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-3s">
+                            <h6><i class="fas fa-chart-bar"></i> Data Analytics & Big Data</h6>
+                            <p>Processes large data volumes quickly for analytics.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-4s">
+                            <h6><i class="fas fa-folder-open"></i> File Systems</h6>
+                            <p>Organizes files/directories based on attributes.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-5s">
+                            <h6><i class="fas fa-chart-line"></i> Financial Applications</h6>
+                            <p>Sorts financial data and logs in real-time.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-6s">
+                            <h6><i class="fas fa-cogs"></i> Machine Learning</h6>
+                            <p>Helps sort Datasets for Machine Learning algorithms by labels.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-7s">
+                            <h6><i class="fas fa-network-wired"></i> Networking</h6>
+                            <p>Sorts network packets or routing tables for efficient data transmission.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-8s">
+                            <h6><i class="fas fa-gamepad"></i> Game Development</h6>
+                            <p>Sorts game entities or objects based on distance/score/priority.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-9s">
+                            <h6><i class="fas fa-shopping-cart"></i> E-commerce</h6>
+                            <p>sort product listings by attributes in online stores.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-10s">
+                            <h6><i class="fas fa-desktop"></i> Operating Systems</h6>
+                            <p>Aids in sorting job queues and managing memory.</p>
+                        </div>
+                        <div class="card animate__animated animate__fadeInUp animate__delay-11s">
+                            <h6><i class="fas fa-key"></i> Cryptography</h6>
+                            <p>Sorts steps or manages data for encryption/decryption.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Demo Section -->
+                <div class="content-section mt-4">
+                    <h2 class="animate__animated animate__fadeInUp"><i class="fas fa-user-graduate"></i> Student Grades Sorter</h2>
+                    <p><i class="fas fa-sort-numeric-asc"></i> Sort students by grades:</p>
+                    <div class="student-box">
+                        <h4>Student Grades</h4>
+                        <ul id="studentList"></ul>
+                    </div>
+                    <button onclick="sortStudents()" class="btn"><i class="fas fa-sort"></i> Sort Grades</button>
+
+                    <script>
+                        let students = [{
+                            name: "Alice",
+                            grade: 85
+                        },
+                        {
+                            name: "Bob",
+                            grade: 92
+                        },
+                        {
+                            name: "Charlie",
+                            grade: 75
+                        },
+                        {
+                            name: "David",
+                            grade: 60
+                        },
+                        {
+                            name: "Eva",
+                            grade: 95
+                        }
+                        ];
+
+                        function displayStudents() {
+                            const list = document.getElementById("studentList");
+                            list.innerHTML = "";
+                            students.forEach(student => {
+                                const li = document.createElement("li");
+                                li.textContent = `${student.name} - Grade: ${student.grade}`;
+                                list.appendChild(li);
+                            });
+                        }
+
+                        // Quick Sort Algorithm
+                        function quickSort(arr) {
+                            if (arr.length <= 1) return arr;
+
+                            const pivot = arr[arr.length - 1].grade;
+                            const left = [],
+                                right = [];
+
+                            for (let i = 0; i < arr.length - 1; i++) {
+                                if (arr[i].grade > pivot) {
+                                    left.push(arr[i]);
+                                } else {
+                                    right.push(arr[i]);
+                                }
+                            }
+
+                            return [...quickSort(left), arr[arr.length - 1], ...quickSort(right)];
+                        }
+
+                        function sortStudents() {
+                            students = quickSort(students);
+                            displayStudents();
+                        }
+
+                        displayStudents();
+                    </script>
+                </div>
+                <!-- Quiz Section -->
+                    <div class="content-section mt-4">
+                        <h2 class="animate__animated animate__fadeInUp"><i class="fas fa-graduation-cap"></i> Time to test your knowledge!</h2>
+                        <div class="quiz-section">
+                            <h4>Quiz: Test your knowledge on Quicksort</h4>
+        
+                       <!-- Quiz results section, initially hidden -->
+                        <div id="quizResult" class="mt-4" style="display: none;">
+                            <h4>Quiz Results:</h4>
+                            <p id="resultMessage"></p>
+                        </div>
+            <form id="quizForm">
+                <!--Quiz Question 1-->
+                    <div class="question">
+                    <p><strong>What is the average case time complexity of QuickSort?</strong></p>
+                        <label> <input type="radio" name="q1" value="a">O(n)</label><br>
+                        <label> <input type="radio" name="q1" value="b">O(log n)</label><br>
+                        <label> <input type="radio" name="q1" value="c">O(n log n)</label><br>
+                       <label><input type="radio" name="q1" value="d">O(n^2)</label>
+                    </div>
+
+                <!--Quiz Question 2-->
+                <div class="question">
+                    <p><strong>What approach does QuickSort uses:</strong></p>
+                    <label><input type="radio" name="q2" value="a">Backtracking</label><br>
+                  <label><input type="radio" name="q2" value="b"> Branch and Bound</label><br>
+                 <label>  <input type="radio" name="q2" value="c">Dynamic Programming</label><br>
+                 <label><input type="radio" name="q2" value="d">Divide and Conquer</label>
+               </div>
+
+             <!--Quiz Question 3-->
+            <div class="question">
+            <p><strong>What is Quick Sort worst-case complexity?</strong></p>
+            <label> <input type="radio" name="q3" value="a">O(n log n)</label><br>
+            <label> <input type="radio" name="q3" value="b">O(n^2)</label><br>
+            <label> <input type="radio" name="q3" value="c">O(log n)</label><br>
+            <label> <input type="radio" name="q3" value="d">O(1)</label>
+            </div>
+            <button type="submit" class="btn">Submit Quiz</button>
+       </form>
+
+       </div>
+            </div>
+     
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("quizForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      let score = 0;
+      const totalQuestions = 3;
+
+      const q1 = document.querySelector('input[name="q1"]:checked');
+      const q2 = document.querySelector('input[name="q2"]:checked');
+      const q3 = document.querySelector('input[name="q3"]:checked');
+
+      if (q1 && q1.value === "c") score++;
+      if (q2 && q2.value === "d") score++;
+      if (q3 && q3.value === "b") score++;
+
+      const resultDiv = document.getElementById("quizResult");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = `<h4>Your Score: ${score} out of ${totalQuestions}</h4>`;
+
+      if (score === totalQuestions) {
+        resultDiv.innerHTML += "<p>🎉 Perfect Score! Well done.</p>";
+      } else if (score >= 1) {
+        resultDiv.innerHTML += "<p>✅ Nice effort! Keep practicing.</p>";
+      } else {
+        resultDiv.innerHTML += "<p>⚠️ Don’t worry, try again after revising!</p>";
+      }
+    });
+  });
+</script>
+   <!-- Links to Practice Problems -->
+   
+      <div class="content-section mt-4">
+       <h2 class="animate__animated animate__fadeInUp"><i class="fas fa-laptop-code"></i> Get Started!</h2>
+        <div class="links">
+       <!-- LeetCode Section (Left) -->
+       <div class="links">
+        <!-- LeetCode Section (Left) -->
+        <div class="card-container">
+          <div class="card">
+            <h6>LeetCode / GFG:</h6>
+            <ul>
+              <li><a href="https://leetcode.com/problems/sort-an-array/" target="_blank">Sort an Array (uses Quick Sort)</a></li>
+              <li><a href="https://practice.geeksforgeeks.org/problems/quick-sort/1" target="_blank">Quick Sort - GFG</a></li>
+              <li><a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">Kth Largest Element in an Array (Quick Select)</a></li>
+              <li><a href="https://leetcode.com/problems/find-k-closest-elements/" target="_blank">Find K Closest Elements</a></li>
+            </ul>
+          </div>
+      
+          <!-- HackerRank Section (Right) -->
+          <div class="card">
+            <h6>HackerRank:</h6>
+            <ul>
+              <li><a href="https://www.hackerrank.com/challenges/quicksort1/problem" target="_blank">Quicksort 1 - Partition</a></li>
+              <li><a href="https://www.hackerrank.com/challenges/quicksort2/problem" target="_blank">Quicksort 2 - Sorting</a></li>
+              <li><a href="https://www.hackerrank.com/challenges/quicksort-in-place/problem" target="_blank">Quicksort In-place</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+   
+    <script>
+ function selectLevel(element, url) {
+            // Remove "active" class from all level options
+            document.querySelectorAll('.level-option').forEach(function (option) {
+                option.classList.remove('active');
+            });
+
+            // Add "active" class to the clicked one
+            element.classList.add('active');
+
+            // Optionally redirect to the page (if you want immediate redirect)
+            window.location.href = url;
+        }
+    </script>
+
+</body>
+
+</html>

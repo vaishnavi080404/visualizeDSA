@@ -1,6 +1,39 @@
 const algorithms_Data = [
    
     {
+        "id": "2183",
+        "label": "Queue",
+        "text": "Operates on a First In, First Out (FIFO) principle",
+        "redirect_page": "queue.html",
+        "image":"banner_1.png",
+        "content_id" : 2183
+    },
+    {
+        "id": "4184",
+        "label": "Stack",
+        "text": "Operates on a Last In, First Out (LIFO) principle",
+        "redirect_page": "stack.html",
+        "image":"banner_2.png",
+        "content_id" : 4184
+    },
+    {
+        "id": "5083",
+        "label": "Linear Search",
+        "text": "Searches for an element by checking each item in sequence.",
+        "redirect_page": "linear_search.html",
+        "image":"linearSearch.png",
+        "content_id" : 3184
+    },
+    {
+        "id": "3183",
+        "label": "Binary Search",
+        "text": "Repeatedly dividing the search interval in half.",
+        "redirect_page": "binary_search.html",
+        "image":"banner_4.png",
+        "content_id" : 3183
+
+    },
+    {
         "id": "2078",
         "label": "Bubble Sort",
         "text": "Bubble Sort Visualiser",
@@ -29,7 +62,16 @@ const algorithms_Data = [
         "label": "Quick Sort",
         "text": "Quick Sort Visualiser",
         "redirect_page": "quick_sort.html",
-        "image":"banner_4.png",
+        "image":"quickSort.png",
         "content_id" : 1078
     },
+    {
+        "id": "5078",
+        "label": "Linked List",
+        "text": "Linked List Visualiser",
+        "redirect_page": "linked_list.html",
+        "image":"banner_8.png",
+        "content_id" : 5078
+    }
+   
 ];

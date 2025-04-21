@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeAnime DSA Visualizer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Animate CSS & Google Fonts & Material Symbols -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Caveat:wght@400..700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+
+    <!-- Custom Styles - Completely Dark UI - Purple/Pink Theme -->
+    <style>
+      :root {
+  /* Dark Theme Elements */
+  --primary-dark: #1b4332; /* Deep Forest Green */
+  --primary-accent: #f50057; /* Bright Pink (for pop/contrast) */
+  --primary-gradient-1: #2d6a4f; /* Medium Jungle Green */
+  --primary-gradient-2: #40916c; /* Slightly lighter forest green */
+
+  --secondary-accent: #ffb300; /* Gold/Amber for CTA */
+  --secondary-accent-darker: #ffa000; /* Darker Gold/Amber */
+  --text-on-dark-cta: #fff; /* White for CTA buttons */
+
+  --shape-color-1: rgba(245, 0, 87, 0.25); /* Pink shape with transparency */
+  --shape-color-2: rgba(255, 179, 0, 0.25); /* Gold shape with transparency */
+
+  /* Dark Theme Background Gradient */
+  --dark-bg: #081c15;              /* Very deep green */
+  --dark-bg-gradient-end: #2d6a4f; /* Brighter green for noticeable transition */
+
+  --text-dark: #ffffff;  /* White text on dark bg */
+  --text-light: #ffffff; /* Consistent white text */
+  --text-muted: #b7d3b7; /* Muted soft green/gray */
+
+  --offcanvas-bg: #1c2c24;        /* Very dark mossy green */
+  --offcanvas-header-bg: #2d4739; /* Slate green for header */
+
+  /* Level Colors */
+  --level1-color: #74c69d; /* Mint Green */
+  --level2-color: #b5e48c; /* Light Green */
+  --level3-color: #ffb4a2; /* Soft Coral */
+
+  /* Gold Rotating Text */
+  --rotating-text-color: #ffd700;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(90deg, #45b649, #dce35b);
+  font-family: "Poppins", sans-serif;
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+}
+
+ /* Navbar */
+ .navbar-custom {
+ 
+  background: linear-gradient(90deg, #780206, #061161); /* horizontal gradient */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+  height: 100px;
+  display: flex;
+  align-items: center;
+}
+.navbar-brand {
+     
+      height: 100%;
+      display: flex;
+      align-items: center;
+      margin-left: 0 !important; /* Override any Bootstrap margin */
+    padding-left: 0 !important;
+      
+    }
+
+    .navbar-brand img {
+      
+      padding-top: 12px;
+      padding-left: 0px;
+      transition: transform 0.3s ease;
+      height: 10rem; /*Control height with rem */
+      object-fit: contain; /* Maintain aspect ratio within the container*/
+} 
+  
+
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+/* Optional: Logo Hover Effect */
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+
+        .navbar-toggler {
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+     .navbar-toggler-icon {
+         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(81, 45, 168, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+     }
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(149, 117, 205, 0.5); /* Focus indicator using lighter purple */
+    }
+
+
+        /* Main Section */
+        .main-section {
+            padding: 5rem 0;
+            background: linear-gradient(90deg, #45b649, #dce35b);
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 2.5rem;
+            font-family:cursive;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: #09031e;
+            /* Light Indigo for card background */
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--text-light);
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.5);
+            /* More prominent shadow */
+            display: block;
+            border: 2px solid transparent;
+            /* Transparent border for hover effect */
+        }
+
+        .card .img-wrapper {
+            overflow: hidden;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            height: 200px;
+            /* Fixed height for image container */
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            filter: brightness(0.9); /* Slightly dim the images */
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-family: cursive;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            /* White Title */
+        }
+
+        .card-text {
+            font-family: "Caveat", cursive;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            min-height: 40px;
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.7);
+            /* Darker shadow on hover */
+            border-color: var(--primary-accent);
+            /* Highlight border with primary accent color */
+        }
+
+        .card:hover img {
+            transform: scale(1.1);
+            filter: brightness(1); /* Restore image brightness on hover */
+        }
+
+        /* Responsive Adjustments */
+        @media only screen and (max-width: 768px) {
+            .main-section {
+                padding: 6rem 0;
+            }
+
+            .card .img-wrapper {
+                height: 180px;
+            }
+
+            .card-title {
+                font-size: 1.2rem;
+            }
+
+            .card-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media only screen and (max-width: 576px) {
+            .main-section {
+                padding: 4rem 0;
+            }
+
+            .section-title {
+                font-size: 1.7rem;
+                margin-bottom: 2.5rem;
+            }
+
+            .card .img-wrapper {
+                height: 150px;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-text {
+                font-size: 0.9rem;
+            }
+        }
+       
+     
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="conatiner-fluid sticky-top navbar-custom">
+        <div class="container">
+          <nav class="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img class="img-fluid" src="./assest/image/dsa.gif" alt="Logo">
+                  </a>
+                  
+                <button class="navbar-toggler" style="background-color: white;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                  aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+                  <span style="color: white;" class="navbar-toggler-icon"></span>
+                </button>
+              </div>
+            </nav>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasRightLabel">Explore</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <!-- 🔽 Your Custom Content Goes Here -->
+              <div class="card bg-dark text-white rounded shadow p-3 mt-4">
+        
+                <!-- Level One -->
+                <div class="level-option active " onclick="selectLevel(this, 'level1.html')">
+                  <h5 class="card-title">Level One</h5>
+                  <p class="card-text">Introduction </p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end mb-3" 
+                    checked 
+                    readonly>
+                </div>
+            
+                <hr class="border-light">
+            
+                <!-- Level Two -->
+                <div class="level-option " onclick="selectLevel(this, 'level2.html')">
+                  <h5 class="card-title">Level Two</h5>
+                  <p class="card-text"> Dry Run + Code</p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end" 
+                    readonly>
+                </div>
+      
+                <hr class="border-light">
+            
+                <!-- Level Three -->
+                <div class="level-option" onclick="selectLevel(this, 'level3.html')">
+                  <h5 class="card-title">Level Three</h5>
+                  <p class="card-text">Real World Applications</p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end" 
+                    readonly>
+                </div>
+            
+              </div>
+              <hr>
+              
+            </div>
+          </div>
+          
+        </div>
+      </div>
+        </div>
+      </div>
+    </header>
+      
+
+    <!-- DSA Visuals Grid -->
+    <div class="container main-section">
+        <h2 class="section-title animate__animated animate__fadeInUp">LEVEL- 1 : Getting Started</h2>
+        <div class="row justify-content-center g-4">
+
+            <!-- Stack -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-1s">
+                <a href="stackL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_1.png" class="card-img-top" alt="Stack" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Stack</h5>
+                        <p class="card-text">LIFO Data Structure</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Queue -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-2s">
+                <a href="queueL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_2.png" class="card-img-top" alt="Queue" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Queue</h5>
+                        <p class="card-text">FIFO Data Structure</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Linear Search -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-3s">
+                <a href="linear_searchL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_1.png" class="card-img-top" alt="Linear Search" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Linear Search</h5>
+                        <p class="card-text">Sequential Search</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Binary Search -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-4s">
+                <a href="binary_searchL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_1.png" class="card-img-top" alt="Binary Search" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Binary Search</h5>
+                        <p class="card-text">Efficient Search</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Bubble Sort -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-1s">
+                <a href="bubble_sortL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_7.png" class="card-img-top" alt="Bubble Sort" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Bubble Sort</h5>
+                        <p class="card-text">Simple Sorting</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Selection Sort -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-2s">
+                <a href="selection_sortL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_3.png" class="card-img-top" alt="Selection Sort" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Selection Sort</h5>
+                        <p class="card-text">In-place Sorting</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Merge Sort -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-3s">
+                <a href="merge_sortL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/banner_6.png" class="card-img-top" alt="Merge Sort" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Merge Sort</h5>
+                        <p class="card-text">Divide and Conquer</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Quick Sort -->
+            <div class="col-lg-3 col-md-4 col-sm-6 animate__animated animate__fadeInUp animate__delay-4s">
+                <a href="quick_sortL1.html" class="card text-decoration-none">
+                    <div class="img-wrapper">
+                        <img src="./assest/image/quickSort.png" class="card-img-top" alt="Quick Sort" />
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Sort</h5>
+                        <p class="card-text">Fast Sorting Algorithm</p>
+                    </div>
+                </a>
+            </div>
+
+            
+
+
+
+        </div>
+    </div>
+
+    <script>
+        function selectLevel(element, url) {
+            // Remove 'active' class from all levels
+            const options = document.querySelectorAll('.level-option');
+            options.forEach(opt => opt.classList.remove('active'));
+
+            // Add 'active' class to the clicked one
+            element.classList.add('active');
+
+            // Navigate to the target page
+            window.location.href = url;
+        }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

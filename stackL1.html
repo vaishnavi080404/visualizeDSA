@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stack - Level 1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background:  linear-gradient(90deg, #2f7336, #aa3a38);
+            /* Dark Blue/Purple Gradient */
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            /* Full height body */
+            display: flex;
+            flex-direction: column;
+        }
+
+       
+
+        #stack-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px;
+        }
+
+        .content-section {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            /* Slightly transparent */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            /* Subtle blur */
+        }
+
+        .highlight {
+            color: #ffca28;
+        }
+
+        ul {
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        code {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: #f0f0f0;
+        }
+
+        /* Level option card */
+        .card {
+            background-color: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        .level-option {
+            cursor: pointer;
+            padding: 20px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .level-option:hover {
+            background-color: rgba(255, 202, 40, 0.2);
+        }
+
+        .level-option.active {
+            background-color: rgba(255, 202, 40, 0.5);
+            font-weight: 500;
+        }
+
+        .level-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            margin-bottom: 0.5em;
+        }
+
+        .card-text {
+            font-size: 1em;
+            color: #ddd;
+        }
+
+        hr.border-light {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design Adjustments */
+        @media (max-width: 768px) {
+            .col-md-4 {
+                margin-bottom: 20px;
+            }
+            .faded-text {
+    display: none;
+  }
+        }
+
+ 
+        .navbar-custom {
+ 
+ background: linear-gradient(90deg, #780206, #061161); /* horizontal gradient */
+ box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+ height: 100px;
+ display: flex;
+ align-items: center;
+}
+.navbar-brand {
+    
+     height: 100%;
+     display: flex;
+     align-items: center;
+     margin-left: 0 !important; /* Override any Bootstrap margin */
+   padding-left: 0 !important;
+     
+   }
+
+   .navbar-brand img {
+     
+     padding-top: 12px;
+     padding-left: 0px;
+     transition: transform 0.3s ease;
+     height: 10rem; /*Control height with rem */
+     object-fit: contain; /* Maintain aspect ratio within the container*/
+} 
+ 
+
+
+       .navbar-brand img:hover {
+           transform: scale(1.05);
+       }
+
+/* Optional: Logo Hover Effect */
+.navbar-brand img:hover {
+ transform: scale(1.05);
+}
+
+
+       .navbar-toggler {
+     background-color: rgba(255, 255, 255, 0.85);
+     border: 1px solid rgba(0, 0, 0, 0.1);
+   }
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(81, 45, 168, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+   .navbar-toggler:focus {
+       box-shadow: 0 0 0 0.2rem rgba(149, 117, 205, 0.5); /* Focus indicator using lighter purple */
+   }
+   .faded-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    user-select: none;
+    font-size: 12em;
+    font-family:  'Pacifico', cursive;
+    color:#2b4b2d;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding-left: 25px;
+    transition: all 0.5s ease;
+    opacity: 0.6;
+}
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="conatiner-fluid sticky-top navbar-custom">
+        <div class="container">
+          <nav class="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img class="img-fluid" src="./assest/image/dsa.gif" alt="Logo">
+                  </a>
+                  
+               
+              </div>
+            </nav>
+            </div>
+        </div>
+
+
+        <div class="container mt-5">
+            <div class="row">
+              <!-- Left Column: Sidebar + Faded Text -->
+              <div class="col-md-3 d-flex flex-column align-items-start">
+                <div class="card rounded shadow w-100 mb-3">
+                  <div class="card-body">
+                    <!-- Sidebar Options -->
+                    <div class="level-option active" onclick="selectLevel(this, 'stackL1.html')">
+                      <h5 class="card-title"><i class="fas fa-star"></i> Level One</h5>
+                      <p class="card-text">Introduction to Stack</p>
+                      <input type="radio" name="level" class="form-check-input float-end mb-3" checked readonly>
+                    </div>
+                    <hr class="border-light">
+                    <div class="level-option" onclick="selectLevel(this, 'stack.html')">
+                      <h5 class="card-title"><i class="fas fa-graduation-cap"></i> Level Two</h5>
+                      <p class="card-text">Stack Implementation</p>
+                      <input type="radio" name="level" class="form-check-input float-end" readonly>
+                    </div>
+                    <hr class="border-light">
+                    <div class="level-option" onclick="selectLevel(this, 'stackL3.html')">
+                      <h5 class="card-title"><i class="fas fa-rocket"></i> Level Three</h5>
+                      <p class="card-text">Stack Real World Applications</p>
+                      <input type="radio" name="level" class="form-check-input float-end" readonly>
+                    </div>
+                  </div>
+                </div>
+          
+                <!-- Faded Text -->
+                <div class="faded-text">STACK- Level-1</div>
+              </div>
+
+             <!-- Main Content -->
+             <div class="col-md-9">
+                <div class="content-section">
+                    <h4 class="highlight"><i class="fas fa-question-circle"></i> What is a Stack?</h4>
+                    <p>A stack is a data structure that stores elements in a <strong>LIFO</strong> (Last In First Out)
+                        manner. Think of it like a stack of pancakes – you add and remove from the top.</p>
+                    <ul>
+                        <li><i class="fas fa-arrow-up"></i> <strong>Push:</strong> Adds a new element on top of the
+                            stack.</li>
+                        <li><i class="fas fa-arrow-down"></i> <strong>Pop:</strong> Removes and returns the top
+                            element.</li>
+                        <li><i class="fas fa-eye"></i> <strong>Peek:</strong> Returns the top element without removing
+                            it.</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>isEmpty:</strong> Checks if the stack is empty.
+                        </li>
+                        <li><i class="fas fa-ruler"></i> <strong>Size:</strong> Returns the number of elements in the
+                            stack.</li>
+                    </ul>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-chart-bar"></i> Visual Example:</h4>
+                    <p>Imagine pushing values like <code>2</code>, <code>1</code>, <code>4</code>, and <code>4</code> on
+                        a stack. The stack would look like this (top at bottom):</p>
+
+                    <div id="stack-container">
+                        <pre>
+                            <code>
+4
+4
+1
+2
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-memory"></i> Stack Implementation using Arrays</h4>
+                    <ul>
+                        <li><i class="fas fa-bolt"></i> Memory Efficient: No need to store addresses.</li>
+                        <li><i class="fas fa-code"></i> Simple and easy to implement.</li>
+                        <li><i class="fas fa-exclamation-triangle"></i> However, arrays are of fixed size.</li>
+                    </ul>
+                    <p>Example Stack: <code>[1, 3, 4, 1]</code></p>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-link"></i> Stack Implementation using Linked Lists</h4>
+                    <ul>
+                        <li><i class="fas fa-expand-arrows-alt"></i> Dynamic size: Can grow and shrink as needed.</li>
+                        <li><i class="fas fa-hand-pointer"></i> Each element stores a pointer to the next.</li>
+                        <li><i class="fas fa-minus-circle"></i> Requires extra memory for pointers.</li>
+                    </ul>
+                </div>
+
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-cubes"></i> Applications of Stack:</h4>
+                    <ul>
+                        <li><i class="fas fa-undo"></i> Undo functionality in editors</li>
+                        <li><i class="fas fa-history"></i> Backtracking in algorithms</li>
+                        <li><i class="fas fa-calculator"></i> Expression evaluation</li>
+                        <li><i class="fas fa-tree"></i> Depth-First Search (DFS)</li>
+                    </ul>
+                </div>
+
+                 <!-- YouTube Video Embed Section -->
+        <div class="content-section mt-4">
+            <h2 class="animate__animated animate__fadeInUp"><i class="fab fa-youtube"></i> Learn More with
+                Videos</h2>
+            <div class="ratio ratio-16x9">
+                <iframe width="520" height="392" src="https://www.youtube.com/embed/l_5bPOV7qB8?list=PLyqSpQzTE6M_Fu6l8irVwXkUyC9Gwqr6_" title="sets, stacks, queues" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectLevel(element, url) {
+            const options = document.querySelectorAll('.level-option');
+            options.forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            window.location.href = url;
+        }
+    </script>
+
+</body>
+
+</html>

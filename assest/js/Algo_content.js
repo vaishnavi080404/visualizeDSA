@@ -38,8 +38,24 @@ const data = [
   "Disadvantages of Using Binary Search": "Requires Sorted Data: The array must be sorted prior to performing the binary search.\nStatic Data: Inefficient for datasets that change frequently due to the need for re-sorting.\nIndex-Based: Only applicable to data structures that allow random access, such as arrays.",
   "Real-World Examples of Binary Search": "Looking Up Words: Efficiently searching for words in a dictionary.\nLibrary Catalogs: Finding books in a sorted library catalog.\nOnline Shopping: Searching for products in a sorted list of items.\nVersion Control: Finding changes in a sorted list of versions in version control systems.\nStock Prices: Analyzing historical stock prices for a particular date.",
   "Why is the Time Complexity of Binary Search O(log n)?": "Explanation: Binary Search works by repeatedly dividing the search interval in half. In each step, the size of the interval is halved, leading to a logarithmic reduction in the number of elements to be checked. Therefore, the time complexity is O(log n), where n is the number of elements in the array. The base of the logarithm is 2, but in Big-O notation, the base is not specified because it only affects the constant factor, not the overall complexity."
-}
-, {
+},
+
+{
+  "content_id": 3184,
+  "title": "Linear Search",
+  "overview": "Linear Search is a simple and intuitive algorithm used for finding a specific element in a list or array. It works by checking each element one by one from the beginning until the desired element is found or the end of the list is reached. Although less efficient than binary search for large datasets, linear search is useful for unsorted data and has wide applications due to its simplicity.",
+  "What is Linear Search?": "Linear Search, also known as sequential search, is an algorithm that finds a target element by checking each element in the array sequentially from the beginning. If the target element is found, its index is returned; otherwise, the search continues until all elements have been checked.",
+  "Steps of Linear Search Algorithm": "Step 1: Start from the first element of the array.\nStep 2: Compare the current element with the target value.\nStep 3: If the current element matches the target, return its index.\nStep 4: If the current element does not match, move to the next element.\nStep 5: Repeat steps 2–4 until the target is found or the end of the array is reached.",
+  "Properties of Linear Search": "No Sorting Required: Works with both sorted and unsorted arrays.\nSimplicity: Easy to implement and understand.\nSequential Access: Checks elements one after another from start to end.",
+  "Applications of Linear Search": "Small Data Sets: Ideal for small lists where search speed isn't critical.\nUnsorted Data: Useful when data is not sorted and sorting is not feasible.\nFinding First Occurrence: Finds the first occurrence of a specific element in a dataset.\nString Matching: Used to search for substrings or characters in a string.\nDebugging: Helps verify the presence of specific values during code testing.",
+  "Advantages of Using Linear Search": "Works on Unsorted Data: No need to sort the array before searching.\nSimple Implementation: Easy to write and understand.\nVersatile: Can be used on any data structure that allows iteration (arrays, linked lists, etc.).",
+  "Disadvantages of Using Linear Search": "Slow for Large Data: Inefficient for large datasets due to O(n) time complexity.\nUnpredictable Performance: Performance varies depending on the position of the target element.\nRepeated Traversal: Might require scanning the entire list even if the element doesn't exist.",
+  "Real-World Examples of Linear Search": "Finding a Contact: Searching for a name in an unsorted contact list.\nChecking Attendance: Looking for a student’s name in a roll call.\nSearching in Notes: Finding keywords in handwritten or digital notes.\nLooking for a File: Browsing through unsorted files in a folder.\nManual Record Checking: Locating information in unsorted physical documents.",
+  "Why is the Time Complexity of Linear Search O(n)?": "Explanation: In Linear Search, each element of the array is checked one by one. In the worst-case scenario, the algorithm may have to check all n elements before finding the target (or concluding it is not present). Hence, the time complexity is O(n), where n is the total number of elements in the array."
+},
+
+
+ {
     "content_id": 2078,
     "title": "Bubble Sort Visualiser",
     "overview": "Bubble Sort repeatedly swaps adjacent elements if they are in the wrong order, gradually moving the largest element to its correct position.",
@@ -107,7 +123,8 @@ const data = [
     "time complexity": "<b>AverageCase: </b> O(n log n), <br><b>WorstCase: </b>  O(n^2) - can be improved with optimal pivot selection",
     "Space complexity":  "O(log n) due to its recursive nature"
 
-  },{
+  },
+  {
     "content_id": 6078,
     "title": "Sieve of Eratosthenes Visualizer",
     "overview": "The Sieve of Eratosthenes algorithm iteratively marks the multiples of each prime number starting from 2, effectively identifying all prime numbers up to a specified limit.",

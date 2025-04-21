@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assest/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <style>
+    
+    .code-section {
+    background-color: #031730; /* Navy blue background */
+    color: #f0f8ff; /* Alice Blue text color for a soft contrast */
+    margin: 3rem auto; /* Centering with automatic side margins */
+    padding: 2rem; /* Adds padding inside the section for spacing */
+    border-radius: 10px; /* Rounded corners for a smoother look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    font-family: 'Courier New', monospace; /* Monospaced font for code feel */
+    line-height: 1.6; /* Improved line spacing for better legibility */
+    max-width: 80%; /* Limit the width to make it more responsive */
+    overflow-x: auto; /* Adds horizontal scrolling for long lines of code */
+}
+
+.code-section pre {
+    background-color: #0a2a47; /* A darker navy blue for the code block */
+    padding: 1rem; /* Padding around the code for spacing */
+    border-radius: 8px; /* Rounded corners for the code block */
+    font-size: 1.1rem; /* Slightly larger font size for code */
+    white-space: pre-wrap; /* Makes sure long code lines wrap properly */
+}   
+.code-container {
+  display: none;
+}
+
+.code-container.active {
+  display: block;
+}
+
+    .array-container {
+        display: flex;
+        align-items:center;
+        text-align: center;
+        overflow: auto;
+        margin: auto;
+    }
+    .array-element {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #FF8364;
+        color: black;
+        border-radius: 5px;
+        font-weight: bold;
+        opacity: 1;
+        
+    }
+    .element_found {
+        background-color: #5F6CAF;
+        font-size: 40px;
+        color: white;
+        transform: scale(1.2);
+    }
+    .highlight {
+        background-color: greenyellow;
+        transform: scale(1.2);
+    }
+    .low {
+        background-color: orchid;
+    }
+    .high {
+        background-color: orchid;
+    }
+    .hidden {
+        opacity: 0.4;
+    }
+    .info-container {
+        margin-top: 20px;
+    }
+    .level-option {
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    .level-option:hover {
+      background-color: rgba(118, 116, 108, 0.725);
+    }
+
+    .level-option.active {
+      background-color: rgba(235, 202, 14, 0.725);
+    }
+</style>
+</head>
+<body style="background: linear-gradient(90deg, #14532d, #0d9488);
+">
+<!-- ***** Header Start ***** -->
+  <header id="header_section" class="mb-0" style="background-color: #1E0342;">
+    <div class="conatiner-fluid  border-bottom border-warning" >
+      <div class="container">
+        <nav class="navbar" style="background-color: #1E0342;">
+          <div class="container-fluid">
+            <a href="index.html"> <img class="img-fluid" style="width: 80px;" src="./assest/image/dsa.gif" alt=""> </a>
+            <button class="navbar-toggler" style="background-color: white;" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+              aria-controls="offcanvasRight" aria-expanded="false" aria-label="Toggle navigation">
+              <span style="color: white;" class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </nav>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasRightLabel">Explore</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <!-- 🔽 Your Custom Content Goes Here -->
+              <div class="card bg-dark text-white rounded shadow p-3 mt-4">
+        
+                <!-- Level One -->
+                <div class="level-option " onclick="selectLevel(this, 'linear_searchL1.html')">
+                  <h5 class="card-title">Level One</h5>
+                  <p class="card-text">Introduction to Linear Search</p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end mb-3" 
+                    checked 
+                    readonly>
+                </div>
+            
+                <hr class="border-light">
+            
+                <!-- Level Two -->
+                <div class="level-option active" onclick="selectLevel(this, 'linear_search.html')">
+                  <h5 class="card-title">Level Two</h5>
+                  <p class="card-text">Linear Search Dry Run + Code</p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end" 
+                    readonly>
+                </div>
+      
+                <hr class="border-light">
+            
+                <!-- Level Three -->
+                <div class="level-option" onclick="selectLevel(this, 'linear_searchL3.html')">
+                  <h5 class="card-title">Level Three</h5>
+                  <p class="card-text">Linear Search Real World Applications</p>
+                  <input 
+                    type="radio" 
+                    name="level" 
+                    class="form-check-input float-end" 
+                    readonly>
+                </div>
+            
+              </div>
+              <hr>
+              
+            </div>
+          </div>
+          
+        </div>
+      </div>
+        </div>
+      </div>
+    </header>
+<!-- ***** Header End ***** -->
+
+
+<div class="container-fluid">
+  <div class="container_new">
+    <div class="row mt-2">
+      <div class="col-lg-3 d-none d-lg-block" id="sidebar_section">
+        <div class="overflow-auto pt-3 mt-3 pb-3" id="inside_sidebar_section">
+          <div class="d-flex flex-column flex-md-row ">
+            <div id="radio-buttons-container" class="list-group list-group-radio d-grid gap-2 border-0">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-9" id="playground_section">
+        <div class="card mt-3" id="playground_card">
+          <!-- Title of DSA and Algorith & small Desp -->
+          <div class="card-header" style="background: linear-gradient(90deg, #540404, #096235);color:white;">
+            <div class="row">
+              <div class="col">
+                <h5 class="mt-2" id="algo_title">Visualizer</h5>
+              </div>
+              <div class="col text-end d-none d-lg-block">
+                <button class="btn text-end" is_full="0" id="maximize_area"><span class="material-symbols-outlined">
+                  fullscreen
+                  </span></button>
+              </div>
+            </div>
+          </div>
+          <!-- Title of DSA and Algorith & small Desp -->
+          <div class="card-body" id="visualizer_play_ground" style="overflow-x: auto; background: linear-gradient(135deg,#d4fc79, #aaceaf); border-radius: 0 0 10px 10px; box-shadow: inset 0 0 10px rgba(0,0,0,0.05);">
+          
+              <div class="" style="width: 100%;height: 350px;box-sizing: border-box;">
+                <span class="text-center" style="display: block;" id="span_in_binary_search"></span>
+                <div class="array-container" id="arrayContainer" style="height: 150px;box-sizing: border-box;"></div>
+                <div id="info" class="info-container">
+                </div>
+                <div id="message" class="text-center mt-4 mb-4">
+                </div>
+              </div>
+
+            
+          
+          </div>
+          <div class="card-footer" style="background: linear-gradient(90deg, #ad9b9b, #c9e6d7);color:white;">
+            <form id="inputForm" class="form-inline justify-content-center">
+              <div class="row">
+                <div class="col-12 mb-2">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label for="">Speed</label>
+                      <input type="range" class="form-range" value="15" min="1" max="30" id="algo_sppeed">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <div class="input-group">
+                    <input type="text" id="arrayInput" class="form-control" placeholder="Array (comma separated)" required>
+                    <button class="btn btn-warning" type="button" id="random_array_generate">Random Arr</button>
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <input type="text" id="targetInput" class="form-control mb-2 mr-sm-2" placeholder="Target Value" required>
+                </div>
+                <div class="col-6 col-md-3">                 
+                  <button type="submit" style="width: 100%;"  class="btn btn-primary mb-2" >Start Search</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+       <!-- About DSA & Algorithm -->
+       <div class="card mt-3" id="info_section">
+        <div class="card-body" style="background: linear-gradient(90deg, #d7f09d, #a7e9b0); color: #1e1e1e;" id="output"></div>
+</div>
+      </div>
+      <div class="code-section">
+        <div
+          id="menu-code"
+          data-aos="fade-right"
+          class="aos-init aos-animate"
+        >
+          <div
+            style="
+              font-family: 'Jura', Courier, monospace;
+              font-size: 35px ;
+            "
+          >
+            IMPLEMENTATIONS
+          </div>
+          <div class="menu-btns">
+            <button id="cppCode" onclick="changeCode('cpp')">
+                <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" title="C++" alt="C++" />
+            </button>
+            <button id="pythonCode" onclick="changeCode('python')">
+                <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" title="Python" alt="Python" />
+            </button>
+        </div>
+    
+        <div class="cpp code-container active" id="cpp-content">
+          <pre><code id="code" class="c++ hljs cpp">
+        <span class="hljs-meta">#include &lt;iostream&gt;</span>
+        <span class="hljs-keyword">using namespace</span> std;
+        
+        <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">search</span><span class="hljs-params">(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> n, <span class="hljs-keyword">int</span> x)</span> </span>{
+          <span class="hljs-comment">// Going through array sequentially</span>
+          <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)
+            <span class="hljs-keyword">if</span> (array[i] == x)
+              <span class="hljs-keyword">return</span> i;
+          <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+        }
+        
+        <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+          <span class="hljs-keyword">int</span> array[] = {<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>};
+          <span class="hljs-keyword">int</span> x = <span class="hljs-number">1</span>;
+          <span class="hljs-keyword">int</span> n = <span class="hljs-keyword">sizeof</span>(array) / <span class="hljs-keyword">sizeof</span>(array[<span class="hljs-number">0</span>]);
+        
+          <span class="hljs-keyword">int</span> result = search(array, n, x);
+          (result == -<span class="hljs-number">1</span>) ? cout &lt;&lt; <span class="hljs-string">"Element not found"</span> :
+                          cout &lt;&lt; <span class="hljs-string">"Element found at index: "</span> &lt;&lt; result;
+        }
+        </code></pre>
+        </div>
+        
+    
+        <div class="python code-container" id="python-content">
+          <pre><code id="code" class="python hljs">
+        <span class="hljs-keyword">def</span> <span class="hljs-title function_">linearSearch</span>(<span class="hljs-params">array, n, x</span>):
+            <span class="hljs-comment"># Going through array sequentially</span>
+            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+                <span class="hljs-keyword">if</span> array[i] == x:
+                    <span class="hljs-keyword">return</span> i
+            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>
+        
+        array = [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>]
+        x = <span class="hljs-number">1</span>
+        n = <span class="hljs-built_in">len</span>(array)
+        result = linearSearch(array, n, x)
+        
+        <span class="hljs-keyword">if</span> result == -<span class="hljs-number">1</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"Element not found"</span>)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-built_in">print</span>(<span class="hljs-string">"Element found at index:"</span>, result)
+        </code></pre>
+        </div>
+        
+  
+      <!-- About DSA & Algorithm -->
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- **** sidebar on mobile Start **** -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
+style="background-color: wheat;">
+<div class="offcanvas-header">
+  <h5 class="offcanvas-title" id="offcanvasRightLabel">Explore More Algorithms!</h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+</div>
+<div class="offcanvas-body">
+  <div class="d-flex flex-column flex-md-row  align-items-center justify-content-center">
+    <div id="radio-buttons-container2" class="list-group list-group-radio d-grid gap-2 border-0">
+    </div>
+  </div>
+</div>
+</div>
+<!-- **** sidebar on mobile End **** -->
+
+</body>
+
+<script src="./algorithm/linear_search.js"></script>
+
+<!--Common JS Scripts -->
+<script src="./assest/js/common.js"></script>
+<script src="./assest/js/algo_list.js"></script>
+<script src="./assest/js/sidebar.js"></script>
+<script src="./assest/js/Algo_content.js"></script>
+
+<script>
+document.getElementById("cppCode").addEventListener("click", function() {
+  changeCode("cpp");
+});
+
+document.getElementById("pythonCode").addEventListener("click", function() {
+  changeCode("python");
+});
+
+function changeCode(language) {
+  // Hide both code blocks first
+  document.getElementById("cpp-content").classList.remove("active");
+  document.getElementById("python-content").classList.remove("active");
+  
+  // Remove 'active' class from buttons as well
+  document.getElementById("cppCode").classList.remove("active");
+  document.getElementById("pythonCode").classList.remove("active");
+  
+  // Show the selected code and mark its button as active
+  if (language === "cpp") {
+      document.getElementById("cpp-content").classList.add("active");
+      document.getElementById("cppCode").classList.add("active");
+  } else if (language === "python") {
+      document.getElementById("python-content").classList.add("active");
+      document.getElementById("pythonCode").classList.add("active");
+  }
+}
+
+function selectLevel(element, url) {
+    // Remove "active" class from all level options
+    document.querySelectorAll('.level-option').forEach(function(option) {
+      option.classList.remove('active');
+    });
+
+    // Add "active" class to the clicked one
+    element.classList.add('active');
+
+    // Optionally redirect to the page (if you want immediate redirect)
+    window.location.href = url;
+  }
+</script>
+
+</html>

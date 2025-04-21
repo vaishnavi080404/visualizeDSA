@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bubble Sort - Level 1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+          background:  linear-gradient(90deg, #2f7336, #aa3a38);
+            /* Dark Blue/Purple Gradient */
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            /* Full height body */
+            display: flex;
+            flex-direction: column;
+        }
+
+       
+        #stack-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px;
+            text-align: left;
+        }
+
+        .content-section {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            /* Slightly transparent */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            /* Subtle blur */
+        }
+
+        .highlight {
+            color: #ffca28;
+        }
+
+        ul {
+            margin-top: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        code {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: #f0f0f0;
+            display: block;
+            /* Make code take the full width */
+            white-space: pre-wrap;
+            /* Allow line breaks */
+            word-break: break-word;
+            /* Prevent overflow */
+        }
+
+        /* Level option card */
+        .card {
+            background-color: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        .level-option {
+            cursor: pointer;
+            padding: 20px;
+            border-radius: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .level-option:hover {
+            background-color: rgba(255, 202, 40, 0.2);
+        }
+
+        .level-option.active {
+            background-color: rgba(255, 202, 40, 0.5);
+            font-weight: 500;
+        }
+
+        .level-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            margin-bottom: 0.5em;
+        }
+
+        .card-text {
+            font-size: 1em;
+            color: #ddd;
+        }
+
+        hr.border-light {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Responsive Design Adjustments */
+        @media (max-width: 768px) {
+            .col-md-4 {
+                margin-bottom: 20px;
+            }
+            .faded-text {
+    display: none;
+  }
+        }
+
+        .navbar-custom {
+ 
+ background: linear-gradient(90deg, #780206, #061161); /* horizontal gradient */
+ box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+ height: 100px;
+ display: flex;
+ align-items: center;
+}
+.navbar-brand {
+    
+     height: 100%;
+     display: flex;
+     align-items: center;
+     margin-left: 0 !important; /* Override any Bootstrap margin */
+   padding-left: 0 !important;
+     
+   }
+
+   .navbar-brand img {
+     
+     padding-top: 12px;
+     padding-left: 0px;
+     transition: transform 0.3s ease;
+     height: 10rem; /*Control height with rem */
+     object-fit: contain; /* Maintain aspect ratio within the container*/
+} 
+ 
+
+
+       .navbar-brand img:hover {
+           transform: scale(1.05);
+       }
+
+/* Optional: Logo Hover Effect */
+.navbar-brand img:hover {
+ transform: scale(1.05);
+}
+
+
+       .navbar-toggler {
+     background-color: rgba(255, 255, 255, 0.85);
+     border: 1px solid rgba(0, 0, 0, 0.1);
+   }
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(81, 45, 168, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+   .navbar-toggler:focus {
+       box-shadow: 0 0 0 0.2rem rgba(149, 117, 205, 0.5); /* Focus indicator using lighter purple */
+   }
+
+   .faded-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    user-select: none;
+    font-size: 12em;
+    font-family:  'Pacifico', cursive;
+    color:#2b4b2d;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding-left: 25px;
+    transition: all 0.5s ease;
+    opacity: 0.6;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="conatiner-fluid sticky-top navbar-custom">
+        <div class="container">
+          <nav class="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">
+                    <img class="img-fluid" src="./assest/image/dsa.gif" alt="Logo">
+                  </a>
+                  
+               
+              </div>
+            </nav>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row">
+              <!-- Left Column: Sidebar + Faded Text (vertical) -->
+              <div class="col-md-3 d-flex flex-column align-items-start">
+                <!-- Sidebar Card -->
+                <div class="card rounded shadow w-100 mb-3">
+                  <div class="card-body">
+                    <div class="level-option active" onclick="selectLevel(this, 'bubble_sortL1.html')">
+                      <h5 class="card-title"><i class="fas fa-star"></i> Level One</h5>
+                      <p class="card-text">Introduction </p>
+                      <input type="radio" name="level" class="form-check-input float-end mb-3" checked readonly>
+                    </div>
+                    <hr class="border-light">
+                    <div class="level-option" onclick="selectLevel(this, 'bubble_sort.html')">
+                      <h5 class="card-title"><i class="fas fa-graduation-cap"></i> Level Two</h5>
+                      <p class="card-text"> Dry Run + Code</p>
+                      <input type="radio" name="level" class="form-check-input float-end" readonly>
+                    </div>
+                    <hr class="border-light">
+                    <div class="level-option" onclick="selectLevel(this, 'bubble_sortL3.html')">
+                      <h5 class="card-title"><i class="fas fa-rocket"></i> Level Three</h5>
+                      <p class="card-text"> Real World Applications</p>
+                      <input type="radio" name="level" class="form-check-input float-end" readonly>
+                    </div>
+                  </div>
+                </div>
+          
+                <!-- Faded Vertical Text -->
+                <div class="faded-text">BUBBLE SORT- Level-1</div>
+              </div>
+          
+            <!-- Right Section: Content -->
+            <div class="col-md-9">
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-question-circle"></i> What is a Bubble Sort?</h4>
+                    <p>Bubble Sort is an algorithm that sorts an array from the lowest value to the highest value.</p>
+                </div>
+                <!-- Algorithm -->
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-cogs"></i> Algorithm: Steps</h4>
+                    <p><i class="fas fa-list-ol"></i> Step 1: Repeat from <strong>i = 0 to n-1</strong></p>
+                    <p><i class="fas fa-sync-alt"></i> Step 2: For each pass, repeat from <strong>j = 0 to n-i-1</strong></p>
+                    <p><i class="fas fa-code-branch"></i> Step 3: If <strong>A[j] > A[j+1]</strong>, then swap them</p>
+                    <p><i class="fas fa-check"></i> Step 4: Continue until the array is sorted</p>
+                    <p><i class="fas fa-sign-out-alt"></i> Step 5: Exit</p>
+
+                    <h4 class="highlight"><i class="fas fa-file-code"></i> Algorithm: Bubble Sort (Array A)</h4>
+                    <div id="stack-container">
+                        <pre> <code>
+bubbleSort(array)
+  for i <- 1 to sizeOfArray - 1
+    for j <- 1 to sizeOfArray - 1 - i
+      if leftElement > rightElement
+        swap leftElement and rightElement
+end bubbleSort
+      </code></pre>
+                    </div>
+                </div>
+
+                <!-- Manual Run-Through -->
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-hand-point-right"></i> Manual Run-Through:</h4>
+                    <p>We will sort the array: <code>[7, 12, 9, 11, 3]</code></p>
+                    <p><i class="fas fa-arrow-right"></i> <strong>Step 1:</strong> We start with an unsorted array.<br><code>[7, 12, 9, 11, 3]</code></p>
+                    <p><i class="fas fa-arrow-right"></i> <strong>Step 2:</strong> Compare 7 and 12. 7 < 12, no swap.<br><code>[7, 12, 9, 11, 3]</code></p>
+                    <p><i class="fas fa-arrow-right"></i> <strong>Step 3:</strong> Compare 12 and 9. 12 > 9, swap them.<br><code>[7, 9, 12, 11, 3]</code></p>
+                    <p><i class="fas fa-arrow-right"></i> <strong>Step 4:</strong> Compare 12 and 11. 12 > 11, swap.<br><code>[7, 9, 11, 12, 3]</code></p>
+                    <p><i class="fas fa-arrow-right"></i> <strong>Step 5:</strong> Compare 12 and 3. 12 > 3, swap.<br><code>[7, 9, 11, 3, 12]</code></p>
+                </div>
+                <!-- Theory -->
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-book"></i> How Bubble Sort Works:</h4>
+                    <ul>
+                        <li><i class="fas fa-hand-point-right"></i> Compares adjacent elements and swaps them if they
+                            are in the wrong order.</li>
+                        <li><i class="fas fa-code-branch"></i> Largest element "bubbles" to the end of the list after
+                            each pass.</li>
+                        <li><i class="fas fa-sync"></i> Repeats the process for remaining elements until the list is
+                            sorted.</li>
+                    </ul>
+
+                    <h4 class="highlight mt-4"><i class="fas fa-tools"></i> Bubble Sort Implementation:</h4>
+                    <ul>
+                        <li><i class="fas fa-infinity"></i> Use nested loops: outer loop for passes, inner loop for
+                            comparing.</li>
+                        <li><i class="fas fa-arrow-left"></i> Use a temporary variable to swap values.</li>
+                        <li><i class="fas fa-check-circle"></i> Optimization: If no swaps in a pass, the array is
+                            already sorted.</li>
+                    </ul>
+                </div>
+
+                <!-- Time Complexity -->
+                <div class="content-section mt-4">
+                    <h4 class="highlight"><i class="fas fa-clock"></i> Bubble Sort Time Complexity:</h4>
+                    <p>Bubble Sort has a time complexity of:</p>
+                    <ul>
+                        <li><i class="fas fa-star"></i> <strong>Best case:</strong> O(n) → already sorted, no swaps</li>
+                        <li><i class="fas fa-balance-scale"></i> <strong>Average case:</strong> O(n²)</li>
+                        <li><i class="fas fa-exclamation-triangle"></i> <strong>Worst case:</strong> O(n²) → reverse sorted
+                            array</li>
+                    </ul>
+
+                    <p class="mt-3">Here’s a graphical representation of its time complexity:</p>
+                    <div class="text-center">
+                        <img src="https://www.w3schools.com/dsa/img_runtime_bubbleSort.png"
+                            alt="Time Complexity Graph" class="img-fluid" style="max-width: 300px;">
+                        <p class="text-muted mt-2"><em>Time increases quadratically with input size</em></p>
+                    </div>
+                </div>
+                 <!-- YouTube Video Embed Section -->
+ <div class="content-section mt-4">
+    <h2 class="animate__animated animate__fadeInUp"><i class="fab fa-youtube"></i>Learn More with
+        Videos</h2>
+    <div class="ratio ratio-16x9">
+        <iframe width="697" height="392" src="https://www.youtube.com/embed/CATsie6bnfI" title="Bubble Sort (Contd.)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+     </div>
+      </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectLevel(element, url) {
+            // Remove 'active' class from all levels
+            const options = document.querySelectorAll('.level-option');
+            options.forEach(opt => opt.classList.remove('active'));
+
+            // Add 'active' class to the clicked one
+            element.classList.add('active');
+
+            // Navigate to the target page
+            window.location.href = url;
+        }
+    </script>
+
+</body>
+
+</html>
