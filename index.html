@@ -156,6 +156,12 @@
       100% { transform: translateY(-85vh) rotate(340deg); opacity: 0; }
     }
 
+    @keyframes floatText {
+  0% { transform: translateY(0px); opacity: 0.5; }
+  50% { transform: translateY(-10px); opacity: 0.7; }
+  100% { transform: translateY(0px); opacity: 0.5; }
+}
+
 
     /* Header Content (Overlaid) */
     .header-content {
@@ -340,7 +346,27 @@
       .level-card h3 { font-size: 1.3rem; }
       .shape-2, .shape-4, .shape-6 { display: none; }
        .hero-shape { transform: scale(0.7); animation-duration: 18s;}
+       .faded-text {
+    display: none;
+  }
     }
+    .faded-text {
+  position: absolute;
+  bottom: 0px;
+  right: 30px;
+  user-select: none;
+  font-size: 2em;
+  font-family: 'Major Mono Display', monospace; /* Unique, techy font */
+  color: rgb(240, 240, 3);
+  font-weight: 400;
+  letter-spacing: 3px;
+  opacity: 0.5;
+  z-index: 1;
+  pointer-events: none;
+  animation: floatText 5s ease-in-out infinite;
+}
+
+
 
   </style>
 </head>
@@ -379,24 +405,28 @@
        </div>
 
        <!-- Header Content (Overlaid) -->
-       <div class="container header-content">
-          <div class="row justify-content-center align-items-center">
-              <div class="col-lg-9 col-md-10">
-                  <div class="animate__animated animate__fadeInDown">
-                      <div class="text-rotating-container mb-4">
-                      Visualize How<br>
-                      <span id="rotating-text" class="text-rotating">Algorithms Work</span><br>
-                      Step by Step...
-                      </div>
-                  </div>
-                  <div class="mt-5 mb-4 animate__animated animate__pulse animate__infinite animate__slow" id="code_in_act">
-                    <a href="#level-selection-section">See Algorithms in Action... <span class="material-symbols-outlined" style="font-size: 1.2em; vertical-align: middle;">arrow_forward</span></a>
-                  </div>
-              </div>
-          </div>
-       </div>
+   <div class="container header-content">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-9 col-md-10">
+            <div class="animate__animated animate__fadeInDown">
+                <div class="text-rotating-container mb-4">
+                Visualize How<br>
+                <span id="rotating-text" class="text-rotating">Algorithms Work</span><br>
+                Step by Step...
+                </div>
+            </div>
+            <div class="mt-5 mb-4 animate__animated animate__pulse animate__infinite animate__slow" id="code_in_act">
+              <a href="#level-selection-section">See Algorithms in Action... <span class="material-symbols-outlined" style="font-size: 1.2em; vertical-align: middle;">arrow_forward</span></a>
+            </div>
+        </div>
     </div>
-  </header>
+ </div>
+
+ <!-- ✅ Faded Text Positioned at Bottom-Left of Header Section -->
+ <div class="faded-text">LEARN & VISUALIZE</div>
+</div> <!-- closes header-section -->
+
+</header>
   <!-- ***** Header End ***** -->
 
   <!-- ***** Level Selection Start ***** -->
