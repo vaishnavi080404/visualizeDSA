@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Sort Visualizer - DSA Mastering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ========================================
+       RESET & ROOT VARIABLES
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Color Palette */
+      --bg-dark: #10121A;
+      --bg-medium: #1A1E29;
+      --card-bg: #212531;
+      --navbar-bg-main: #2B3242;
+      --navbar-bg-right: #3C4456;
+      --accent-blue: #00FFFF;
+      --accent-orange: #FF8C00;
+      --text-light: #E0E0E0;
+      --text-white: #FFFFFF;
+      --text-subtle: #99A1B3;
+      
+      /* Shadows and Glows */
+      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ========================================
+       NAVBAR
+       ======================================== */
+   /* Navbar */
+    .navbar {
+      background: var(--navbar-bg-main);
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .navbar-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .navbar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: -2px;
+    }
+
+    .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background: var(--accent-orange);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--shadow-glow-orange);
+    }
+
+    .hamburger-menu:hover .hamburger-line {
+      background: var(--accent-blue);
+      box-shadow: 0 0 10px var(--shadow-glow-blue);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 350px;
+      height: 100%;
+      background: var(--card-bg);
+      border-left: 2px solid var(--accent-blue);
+      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+      z-index: 2500;
+      transition: right 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      padding: 30px 25px;
+      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .sidebar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+      padding: 20px 0;
+    }
+
+    .menu-category {
+      padding: 15px 25px 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      color: var(--accent-orange);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .menu-item {
+      padding: 15px 25px;
+      color: var(--text-light);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-left-color: var(--accent-blue);
+      color: var(--accent-blue);
+      padding-left: 30px;
+    }
+
+    .menu-item.active {
+      background: rgba(0, 255, 255, 0.15);
+      border-left-color: var(--accent-orange);
+      color: var(--accent-orange);
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      backdrop-filter: blur(3px);
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+
+    /* ========================================
+       MAIN CONTAINER
+       ======================================== */
+    .container { 
+      max-width: 1400px; 
+      margin: 40px auto; 
+      padding: 0 30px; 
+    }
+
+    /* ========================================
+       PSEUDO CODE PANEL
+       ======================================== */
+    .pseudo-code-container {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      max-height: 600px;
+      overflow-y: auto;
+      position: sticky;
+      top: 90px;
+    }
+
+    .pseudo-code-container h5 { 
+      color: var(--accent-orange); 
+      font-weight: 700; 
+      margin-bottom: 20px; 
+      text-align: center; 
+      font-family: 'Orbitron'; 
+    }
+
+    .pseudo-step { 
+      background: rgba(0, 255, 255, 0.05); 
+      padding: 12px 15px; 
+      margin: 10px 0; 
+      border-radius: 8px; 
+      color: var(--text-light); 
+      border-left: 3px solid transparent; 
+      transition: 0.3s; 
+      font-family: 'Courier New'; 
+      font-size: 13px; 
+      line-height: 1.6; 
+    }
+
+    .pseudo-step.active { 
+      background: linear-gradient(90deg, var(--accent-orange), #ff6b00); 
+      color: #000; 
+      border-left-color: var(--accent-blue); 
+      transform: translateX(10px); 
+      box-shadow: 0 4px 15px var(--shadow-glow-orange); 
+      font-weight: 600; 
+    }
+
+    /* ========================================
+       VISUALIZER AREA
+       ======================================== */
+    .visualization-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .card-header { 
+      background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%); 
+      padding: 20px; 
+      border-bottom: 2px solid var(--accent-blue); 
+    }
+
+    .card-header h5 { 
+      font-family: 'Orbitron'; 
+      font-size: 20px; 
+      color: var(--text-white); 
+      margin: 0; 
+    }
+
+    .card-body { 
+      background: linear-gradient(135deg, #1e2a3f, #2a3f5f); 
+      padding: 30px; 
+      min-height: 500px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+    }
+
+    /* ========================================
+       QUICK SORT BAR VISUALIZATION
+       ======================================== */
+    .bars-container {
+      width: 100%;
+      height: 400px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 2px;
+      padding: 20px;
+      border: 2px solid var(--accent-blue);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(to top, #2C5282, #4299E1);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      transition: height 0.3s ease;
+    }
+
+    .bar.comparing {
+      background: linear-gradient(180deg, #fbbf24, #f59e0b);
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+    }
+
+    .bar.pivot {
+      background: linear-gradient(180deg, #ef4444, #dc2626);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    }
+
+    .bar.sorted {
+      background: linear-gradient(180deg, #22c55e, #16a34a);
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 600;
+      font-family: 'Orbitron';
+    }
+
+    /* ========================================
+       MESSAGE DISPLAY
+       ======================================== */
+    #msg-show { 
+      margin-top: 20px; 
+      padding: 15px; 
+      border-radius: 10px; 
+      min-height: 55px; 
+      width: 100%; 
+      text-align: center; 
+      display: none;
+    }
+
+    .alert-success { 
+      background: rgba(74, 222, 128, 0.2); 
+      border: 2px solid #22c55e; 
+      color: #22c55e; 
+    }
+
+    .alert-danger { 
+      background: rgba(239, 68, 68, 0.2); 
+      border: 2px solid #ef4444; 
+      color: #ef4444; 
+    }
+
+    .alert-info { 
+      background: rgba(59, 130, 246, 0.2); 
+      border: 2px solid #3b82f6; 
+      color: #3b82f6; 
+    }
+
+    /* ========================================
+       CONTROLS FOOTER
+       ======================================== */
+    .card-footer { 
+      background: var(--navbar-bg-main); 
+      padding: 20px; 
+      border-top: 2px solid var(--accent-blue); 
+    }
+
+    .form-control { 
+      background: var(--bg-dark); 
+      border: 2px solid var(--accent-blue); 
+      color: var(--text-white); 
+      border-radius: 8px; 
+      padding: 10px; 
+      width: 100%;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-orange);
+    }
+
+    .form-label {
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Button Styles */
+    .btn { 
+      border: none; 
+      font-weight: 700; 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      transition: 0.3s; 
+      cursor: pointer; 
+      font-family: 'Inter'; 
+    }
+
+    .btn-success { 
+      background: linear-gradient(135deg, #22c55e, #16a34a); 
+      color: #000; 
+    }
+
+    .btn-danger { 
+      background: linear-gradient(135deg, #ef4444, #dc2626); 
+      color: #fff; 
+    }
+
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--accent-blue), #00d4d4); 
+      color: #000; 
+    }
+
+    .btn-warning { 
+      background: linear-gradient(135deg, var(--accent-orange), #ff6b00); 
+      color: #000; 
+    }
+
+    .btn:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px var(--shadow-glow-blue); 
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ========================================
+       CODE IMPLEMENTATION SECTION
+       ======================================== */
+    .code-section {
+      background: var(--card-bg);
+      margin: 30px 0;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .code-section h3 { 
+      color: var(--accent-orange); 
+      margin-bottom: 20px; 
+      font-family: 'Orbitron'; 
+      font-size: 28px; 
+    }
+
+    .menu-btns { 
+      display: flex; 
+      gap: 10px; 
+      margin-bottom: 20px; 
+    }
+
+    .menu-btns button { 
+      background: rgba(0, 255, 255, 0.1); 
+      border: 2px solid var(--accent-blue); 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      transition: 0.3s; 
+    }
+
+    .menu-btns button.active { 
+      background: var(--accent-blue); 
+      color: #000; 
+      transform: translateY(-2px); 
+      box-shadow: 0 4px 15px var(--shadow-glow-blue); 
+    }
+
+    .code-container { 
+      display: none;
+    }
+
+    .code-container.active { 
+      display: block;
+    }
+
+    .code-container pre { 
+      background: rgba(0, 0, 0, 0.4); 
+      padding: 20px; 
+      border-radius: 12px; 
+      border-left: 4px solid var(--accent-orange); 
+      overflow-x: auto; 
+      color: #fff; 
+      font-size: 14px; 
+      line-height: 1.7; 
+    }
+
+    .run-code-btn { 
+      background: linear-gradient(90deg, #10b981, #059669); 
+      color: white; 
+      border: none; 
+      padding: 12px 30px; 
+      border-radius: 8px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      margin-top: 15px; 
+      font-family: 'Orbitron'; 
+      transition: 0.3s; 
+    }
+
+    .run-code-btn:hover {
+      background: linear-gradient(90deg, #059669, #047857);
+      transform: translateY(-2px);
+    }
+
+    .output-container { 
+      background: rgba(0, 0, 0, 0.4); 
+      color: #10b981; 
+      padding: 20px; 
+      border-radius: 12px; 
+      margin-top: 15px; 
+      min-height: 100px; 
+      border: 2px solid rgba(0, 255, 255, 0.2); 
+      font-family: 'Courier New'; 
+    }
+
+    .output-container h6 { 
+      color: var(--accent-orange); 
+      margin-bottom: 10px; 
+      font-family: 'Orbitron'; 
+    }
+
+    #code-output {
+      min-height: 100px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      background: #1e1e1e;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    #interactive-input-area {
+      display: none;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    #terminal-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #444;
+      color: white;
+      outline: none;
+      flex-grow: 1;
+      padding: 5px;
+    }
+
+    /* Syntax highlighting */
+    .hljs-comment { 
+      color: #6b7280; 
+      font-style: italic; 
+    }
+
+    .hljs-keyword { 
+      color: #c084fc; 
+    }
+
+    .hljs-function {
+      color: #60a5fa;
+    }
+
+    .hljs-string {
+      color: #34d399;
+    }
+
+          .level-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.level-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+button {
+  background: var(--shadow-glow-blue);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.slider {
+  width: 100px;
+  height: 5px;
+  background: #ccc;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 0;
+  background: #FF8C00;
+  transition: width 1s ease;
+}
+
+.active::before {
+  width: 100%;
+}
+
+/* Modal */
+.level-modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.level-modal-content {
+  background: var(--card-bg);
+    border: 2px solid #00aaff;
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+}
+
+.level-modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.level-modal-buttons button {
+  background: #FF8C00;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+    /* ========================================
+       RESPONSIVE DESIGN
+       ======================================== */
+    @media (max-width: 768px) { 
+      .container { 
+        padding: 0 15px; 
+      } 
+      .navbar-title { 
+        font-size: 18px; 
+      }
+      
+      .main-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .pseudo-code-container {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========================================
+     NAVIGATION BAR
+     ======================================== -->
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-title">DSA VISUALIZER</div>
+    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+  </div>
+  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+  </button>
+</nav>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Menu</div>
+    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-category">🔍 Searching Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
+      <i class="fas fa-search"></i>
+      <span>Linear Search</span>
+    </div>
+    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
+      <i class="fas fa-chart-line"></i>
+      <span>Binary Search</span>
+    </div>
+    <div class="menu-category">📊 Data Structures</div>
+    <div class="menu-item" onclick="selectAlgorithm('stack')">
+      <i class="fas fa-layer-group"></i>
+      <span>Stack</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('queue')">
+      <i class="fas fa-stream"></i>
+      <span>Queue</span>
+    </div>
+    <div class="menu-category">🔄 Sorting Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
+      <i class="fas fa-code-branch"></i>
+      <span>Merge Sort</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
+      <i class="fas fa-circle"></i>
+      <span>Bubble Sort</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     MAIN CONTENT
+     ======================================== -->
+<div class="container">
+  <div class="main-grid" style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start; margin-top: 30px;">
+    
+    <!-- ========================================
+         PSEUDO CODE PANEL
+         ======================================== -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div class="pseudo-step" data-step="partition">
+        <strong>PARTITION:</strong><br>
+        Choose pivot (last element)<br>
+        i = low - 1<br>
+        for j = low to high-1:<br>
+        &nbsp;&nbsp;if arr[j] ≤ pivot:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;i++<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;swap(arr[i], arr[j])<br>
+        swap(arr[i+1], arr[high])<br>
+        return i+1
+      </div>
+      <div class="pseudo-step" data-step="quicksort">
+        <strong>QUICKSORT:</strong><br>
+        if low &lt; high:<br>
+        &nbsp;&nbsp;pi = partition(arr, low, high)<br>
+        &nbsp;&nbsp;quickSort(arr, low, pi-1)<br>
+        &nbsp;&nbsp;quickSort(arr, pi+1, high)
+      </div>
+      <div class="pseudo-step" data-step="complexity">
+        <strong>TIME COMPLEXITY:</strong><br>
+        Best: O(n log n)<br>
+        Average: O(n log n)<br>
+        Worst: O(n²)<br>
+        <strong>SPACE:</strong> O(log n)
+      </div>
+    </div>
+
+    <!-- ========================================
+         VISUALIZER PANEL
+         ======================================== -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5>Quick Sort Visualizer (Divide & Conquer)</h5>
+        </div>
+        
+        <div class="card-body">
+          <div class="bars-container" id="bars-container">
+            <!-- Bars will be dynamically generated here -->
+          </div>
+          <div id="msg-show"></div>
+        </div>
+        
+        <div class="card-footer">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+              <label class="form-label">Speed</label>
+              <input type="range" class="form-control" id="speed-slider" min="1" max="100" value="50">
+            </div>
+            <div>
+              <label class="form-label">Array Size</label>
+              <input type="range" class="form-control" id="size-slider" min="5" max="50" value="15">
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+            <input 
+              type="text" 
+              id="array-input" 
+              class="form-control" 
+              placeholder="Enter comma-separated numbers (e.g., 64,34,25,12,22)"
+              aria-label="Array input">
+            <button class="btn btn-warning" onclick="generateRandomArray()">Random Array</button>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+            <button class="btn btn-primary" onclick="createArray()">Create Array</button>
+            <button class="btn btn-success" onclick="startSort()" id="sort-btn">Start Sort</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       CODE IMPLEMENTATION SECTION
+       ======================================== -->
+  <div class="code-section">
+    <h3>💻 IMPLEMENTATIONS</h3>
+    
+    <div class="menu-btns">
+      <button id="cpp-btn" class="active" onclick="changeCode('cpp')">
+        <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" alt="C++">
+      </button>
+      <button id="python-btn" onclick="changeCode('python')">
+        <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" alt="Python">
+      </button>
+    </div>
+
+    <!-- C++ Implementation -->
+    <div class="code-container active" id="cpp-content">
+      <pre><code class="cpp"><span class="hljs-comment">// Quick Sort Implementation in C++</span>
+<span class="hljs-comment">// Divide and conquer algorithm with in-place sorting</span>
+
+<span class="hljs-keyword">#include</span> &lt;iostream&gt;
+<span class="hljs-keyword">using namespace</span> std;
+
+<span class="hljs-comment">/**
+ * Swaps two elements in the array
+ * @param a - pointer to first element
+ * @param b - pointer to second element
+ */</span>
+<span class="hljs-keyword">void</span> <span class="hljs-function">swap</span>(<span class="hljs-keyword">int</span>* a, <span class="hljs-keyword">int</span>* b) {
+    <span class="hljs-keyword">int</span> temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+<span class="hljs-comment">/**
+ * Partition function: places pivot in correct position
+ * Elements smaller than pivot go to left, larger go to right
+ * @param array - array to partition
+ * @param low - starting index
+ * @param high - ending index (pivot position)
+ * @return final position of pivot
+ */</span>
+<span class="hljs-keyword">int</span> <span class="hljs-function">partition</span>(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high) {
+    <span class="hljs-keyword">int</span> pivot = array[high];  <span class="hljs-comment">// Choose last element as pivot</span>
+    <span class="hljs-keyword">int</span> i = (low - <span class="hljs-number">1</span>);        <span class="hljs-comment">// Index of smaller element</span>
+
+    <span class="hljs-comment">// Traverse through array and move smaller elements to left</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = low; j &lt; high; j++) {
+        <span class="hljs-keyword">if</span> (array[j] &lt;= pivot) {
+            i++;
+            swap(&amp;array[i], &amp;array[j]);
+        }
+    }
+    
+    <span class="hljs-comment">// Place pivot in correct position</span>
+    swap(&amp;array[i + <span class="hljs-number">1</span>], &amp;array[high]);
+    <span class="hljs-keyword">return</span> (i + <span class="hljs-number">1</span>);
+}
+
+<span class="hljs-comment">/**
+ * Quick Sort: Recursively sorts array using divide and conquer
+ * @param array - array to sort
+ * @param low - starting index
+ * @param high - ending index
+ */</span>
+<span class="hljs-keyword">void</span> <span class="hljs-function">quickSort</span>(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high) {
+    <span class="hljs-keyword">if</span> (low &lt; high) {
+        <span class="hljs-comment">// Partition array and get pivot index</span>
+        <span class="hljs-keyword">int</span> pi = partition(array, low, high);
+        
+        <span class="hljs-comment">// Recursively sort left and right subarrays</span>
+        quickSort(array, low, pi - <span class="hljs-number">1</span>);   <span class="hljs-comment">// Before pivot</span>
+        quickSort(array, pi + <span class="hljs-number">1</span>, high);  <span class="hljs-comment">// After pivot</span>
+    }
+}
+
+<span class="hljs-comment">// Example usage</span>
+<span class="hljs-keyword">int</span> <span class="hljs-function">main</span>() {
+    <span class="hljs-keyword">int</span> arr[] = {<span class="hljs-number">64</span>, <span class="hljs-number">34</span>, <span class="hljs-number">25</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">11</span>, <span class="hljs-number">90</span>};
+    <span class="hljs-keyword">int</span> n = <span class="hljs-keyword">sizeof</span>(arr) / <span class="hljs-keyword">sizeof</span>(arr[<span class="hljs-number">0</span>]);
+    
+    quickSort(arr, <span class="hljs-number">0</span>, n - <span class="hljs-number">1</span>);
+    
+    cout &lt;&lt; <span class="hljs-string">"Sorted array: "</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)
+        cout &lt;&lt; arr[i] &lt;&lt; <span class="hljs-string">" "</span>;
+    
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+      <button class="run-code-btn" onclick="runCode('cpp')">▶ Run Interactive Code</button>
+    </div>
+
+    <!-- Python Implementation -->
+    <div class="code-container" id="python-content">
+      <pre><code class="python"><span class="hljs-comment"># Quick Sort Implementation in Python</span>
+<span class="hljs-comment"># Divide and conquer algorithm with in-place sorting</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">partition</span>(array, start, end):
+    <span class="hljs-string">"""
+    Partition function using Hoare's scheme
+    Places elements smaller than pivot on left, larger on right
+    
+    Args:
+        array: List to partition
+        start: Starting index
+        end: Ending index
+    
+    Returns:
+        Final position of pivot element
+    """</span>
+    pivot = array[start]  <span class="hljs-comment"># Choose first element as pivot</span>
+    low = start + <span class="hljs-number">1</span>
+    high = end
+
+    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+        <span class="hljs-comment"># Move high pointer left until element &lt;= pivot found</span>
+        <span class="hljs-keyword">while</span> low &lt;= high <span class="hljs-keyword">and</span> array[high] &gt;= pivot:
+            high = high - <span class="hljs-number">1</span>
+
+        <span class="hljs-comment"># Move low pointer right until element &gt;= pivot found</span>
+        <span class="hljs-keyword">while</span> low &lt;= high <span class="hljs-keyword">and</span> array[low] &lt;= pivot:
+            low = low + <span class="hljs-number">1</span>
+
+        <span class="hljs-comment"># If pointers crossed, partition is complete</span>
+        <span class="hljs-keyword">if</span> low &lt;= high:
+            array[low], array[high] = array[high], array[low]
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">break</span>
+
+    <span class="hljs-comment"># Place pivot in final position</span>
+    array[start], array[high] = array[high], array[start]
+    <span class="hljs-keyword">return</span> high
+
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">quick_sort</span>(array, start, end):
+    <span class="hljs-string">"""
+    Quick Sort: Recursively sorts array using divide and conquer
+    
+    Args:
+        array: List to sort
+        start: Starting index
+        end: Ending index
+    """</span>
+    <span class="hljs-keyword">if</span> start &gt;= end:
+        <span class="hljs-keyword">return</span>  <span class="hljs-comment"># Base case: single element or empty</span>
+
+    <span class="hljs-comment"># Partition array and get pivot position</span>
+    p = partition(array, start, end)
+    
+    <span class="hljs-comment"># Recursively sort left and right subarrays</span>
+    quick_sort(array, start, p - <span class="hljs-number">1</span>)  <span class="hljs-comment"># Before pivot</span>
+    quick_sort(array, p + <span class="hljs-number">1</span>, end)    <span class="hljs-comment"># After pivot</span>
+
+
+<span class="hljs-comment"># Example usage</span>
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    arr = [<span class="hljs-number">64</span>, <span class="hljs-number">34</span>, <span class="hljs-number">25</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">11</span>, <span class="hljs-number">90</span>]
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Original array: {arr}"</span>)
+    
+    quick_sort(arr, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(arr) - <span class="hljs-number">1</span>)
+    
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Sorted array: {arr}"</span>)</code></pre>
+      <button class="run-code-btn" onclick="runCode('python')">▶ Run Interactive Code</button>
+    </div>
+
+    <!-- Interactive Terminal -->
+    <div class="output-container">
+      <h6>📤 Interactive Terminal:</h6>
+      <div id="code-output">
+        Click "Run Interactive Code" to initialize Quick Sort and start the interactive session.
+      </div>
+      
+      <div id="interactive-input-area">
+        <span style="color: #10b981;">&gt;</span>
+        <input 
+          type="text" 
+          id="terminal-input" 
+          placeholder="Enter command or array..."
+          aria-label="Terminal input">
+        <button onclick="processTerminalCommand()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #10b981; color: white;">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+       <div class="level-container">
+        <div class="level-wrapper">
+            <button id="l1">Level 1</button>
+            <div class="slider" id="slider1"></div>
+            <button id="l2">Level 2</button>
+            <div class="slider" id="slider2"></div>
+            <button id="l3">Level 3</button>
+        </div>
+    </div>
+
+    <!-- Modal for Level 2 Quiz -->
+    <div id="quizModal" class="level-modal">
+        <div class="level-modal-content">
+            <h3>Level 3 Quiz</h3>
+            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
+            
+            <div class="level-modal-buttons">
+                <button id="startQuiz">Start Quiz</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// ========================================
+// CONFIGURATION CONSTANTS
+// ========================================
+const CONFIG = {
+  DEFAULT_SPEED: 50,
+  DEFAULT_SIZE: 15,
+  MIN_VALUE: 5,
+  MAX_VALUE: 100,
+  ANIMATION_BASE_DELAY: 1000
+};
+
+// ========================================
+// GLOBAL STATE
+// ========================================
+let array = [];
+let speed = CONFIG.DEFAULT_SPEED;
+let isSorting = false;
+let currentLang = 'cpp';
+let virtualArray = [];
+let inputState = 'initial';
+
+// ========================================
+// UTILITY FUNCTIONS
+// ========================================
+
+/**
+ * Creates a delay for animations
+ * @param {number} ms - Milliseconds to wait
+ */
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Calculates delay based on speed slider
+ */
+function getDelay() {
+  return CONFIG.ANIMATION_BASE_DELAY / speed;
+}
+
+/**
+ * Highlights pseudo-code step
+ * @param {string} step - Step identifier
+ */
+function highlightStep(step) {
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  const element = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+  if (element) element.classList.add('active');
+}
+
+/**
+ * Shows message to user
+ * @param {string} text - Message text
+ * @param {string} type - Message type
+ */
+function showMsg(text, type) {
+  const element = document.getElementById('msg-show');
+  element.style.display = 'block';
+  element.className = `alert alert-${type}`;
+  element.innerHTML = text;
+}
+
+// ========================================
+// SIDEBAR NAVIGATION
+// ========================================
+
+ function selectAlgorithm(algorithm) {
+    // Mapping IDs to filenames
+    const routes = {
+        'linear-search': 'linearSearch_L1.html',
+        'binary-search': 'binarySearch_L1.html',
+        'quick-sort': 'quickSort_L1.html',
+        'merge-sort': 'mergeSort_L1.html',
+        'bubble-sort': 'bubbleSort_L1.html',
+        'stack': 'stack_L1.html',
+        'queue': 'queue.html'
+    };
+
+    const targetPage = routes[algorithm];
+
+    if (targetPage) {
+        // Redirect to the new page
+        window.location.href = targetPage;
+    } else {
+        console.error("Route not found for:", algorithm);
+        toggleSidebar();
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    // Get the current filename (e.g., "quick_sort.html")
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Map of filenames back to IDs
+    const pageToId = {
+        'quickSort_L1.html': 'quick-sort',
+        'binarySearch_L1.html': 'binary-search',
+        'linearSearch_L1.html': 'linear-search',
+        'mergeSort_L1.html': 'merge-sort',
+        'bubbleSort_L1.html': 'bubble-sort',
+        'stack_L1.html': 'stack',
+        'queue_L1.html': 'queue'
+
+    };
+
+});
+function selectAlgorithm(algo) {
+  if (algo === 'quick-sort') {
+    toggleSidebar();
+  } else {
+    alert('Navigating to ' + algo.toUpperCase() + ' (not implemented in this demo)');
+  }
+}
+
+// ========================================
+// ARRAY VISUALIZATION
+// ========================================
+
+/**
+ * Renders the array as bars
+ */
+function renderBars() {
+  const container = document.getElementById('bars-container');
+  container.innerHTML = '';
+  
+  const maxValue = Math.max(...array);
+  
+  array.forEach((value, index) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = `${(value / maxValue) * 350}px`;
+    bar.id = `bar-${index}`;
+    
+    const valueLabel = document.createElement('div');
+    valueLabel.className = 'bar-value';
+    valueLabel.textContent = value;
+    bar.appendChild(valueLabel);
+    
+    container.appendChild(bar);
+  });
+}
+
+/**
+ * Highlights bars during sorting
+ * @param {number[]} indices - Array indices to highlight
+ * @param {string} className - CSS class to apply
+ */
+async function highlightBars(indices, className) {
+  indices.forEach(i => {
+    const bar = document.getElementById(`bar-${i}`);
+    if (bar) bar.classList.add(className);
+  });
+  await sleep(getDelay());
+}
+
+/**
+ * Removes highlight from bars
+ * @param {number[]} indices - Array indices to unhighlight
+ * @param {string} className - CSS class to remove
+ */
+function unhighlightBars(indices, className) {
+  indices.forEach(i => {
+    const bar = document.getElementById(`bar-${i}`);
+    if (bar) bar.classList.remove(className);
+  });
+}
+
+/**
+ * Swaps two bars visually
+ * @param {number} i - First index
+ * @param {number} j - Second index
+ */
+async function swapBars(i, j) {
+  [array[i], array[j]] = [array[j], array[i]];
+  renderBars();
+  await sleep(getDelay());
+}
+
+// ========================================
+// QUICK SORT ALGORITHM
+// ========================================
+
+/**
+ * Partition function for Quick Sort
+ * @param {number} low - Starting index
+ * @param {number} high - Ending index
+ * @returns {number} Pivot index
+ */
+async function partition(low, high) {
+  highlightStep('partition');
+  
+  const pivot = array[high];
+  // CAPTION: Choosing the pivot
+  showMsg(`<i class="fas fa-thumbtack"></i> Picking <strong>${pivot}</strong> (at index ${high}) as the pivot for this partition.`, 'info');
+  
+  await highlightBars([high], 'pivot');
+  let i = low - 1;
+  
+  for (let j = low; j < high; j++) {
+    highlightStep('partition'); // Keep partition step active
+    
+    // CAPTION: Comparing current element with pivot
+    showMsg(`<i class="fas fa-search"></i> Comparing <strong>${array[j]}</strong> with pivot <strong>${pivot}</strong>.`, 'info');
+    
+    await highlightBars([j], 'comparing');
+    
+    if (array[j] <= pivot) {
+      i++;
+      // CAPTION: Element is smaller, swap it to the "left" zone
+      showMsg(`<i class="fas fa-arrow-left"></i> ${array[j]} <= ${pivot}. Moving to the left of future pivot position.`, 'warning');
+      
+      if (i !== j) {
+        await swapBars(i, j);
+      }
+    } else {
+      // CAPTION: Element is larger
+      showMsg(`<i class="fas fa-arrow-right"></i> ${array[j]} > ${pivot}. Keeping it in the right zone.`, 'info');
+    }
+    
+    unhighlightBars([j], 'comparing');
+  }
+  
+  // CAPTION: Finalizing the pivot position
+  showMsg(`<i class="fas fa-flag-checkered"></i> Partitioning done. Placing pivot <strong>${pivot}</strong> at index ${i + 1}.`, 'success');
+  
+  if (i + 1 !== high) {
+    await swapBars(i + 1, high);
+  }
+  
+  unhighlightBars([high], 'pivot');
+  await highlightBars([i + 1], 'sorted');
+  
+  return i + 1;
+}
+
+/**
+ * Quick Sort algorithm implementation
+ * @param {number} low - Starting index
+ * @param {number} high - Ending index
+ */
+async function quickSort(low, high) {
+  if (low < high) {
+    highlightStep('quicksort');
+    
+    const pi = await partition(low, high);
+    
+    // CAPTION: Recursive Calls
+    showMsg(`<i class="fas fa-share-alt"></i> Now recursively sorting left sub-array [${low}...${pi-1}] and right sub-array [${pi+1}...${high}].`, 'info');
+    
+    await quickSort(low, pi - 1);
+    await quickSort(pi + 1, high);
+  } else if (low === high) {
+    // Single element is already sorted
+    await highlightBars([low], 'sorted');
+  }
+}
+
+/**
+ * Starts the sorting visualization
+ */
+async function startSort() {
+  if (isSorting) return;
+  if (array.length === 0) {
+    showMsg('⚠️ Please create an array first!', 'danger');
+    return;
+  }
+  
+  isSorting = true;
+  document.getElementById('sort-btn').disabled = true;
+  
+  // CAPTION: Initialization
+  showMsg('<i class="fas fa-rocket"></i> Starting Quick Sort (Divide & Conquer Strategy)...', 'info');
+  
+  await quickSort(0, array.length - 1);
+  
+  // CAPTION: Completion
+  showMsg('<i class="fas fa-check-double"></i> <strong>Sorted!</strong> Quick Sort completed in average O(n log n) time.', 'success');
+  highlightStep('complexity');
+  
+  isSorting = false;
+  document.getElementById('sort-btn').disabled = false;
+}
+
+// ========================================
+// ARRAY CONTROLS
+// ========================================
+
+/**
+ * Creates array from input or generates random
+ */
+function createArray() {
+  const input = document.getElementById('array-input').value.trim();
+  
+  if (input) {
+    // Parse comma-separated input
+    const values = input.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+    
+    if (values.length === 0) {
+      showMsg('⚠️ Invalid input. Please enter valid numbers.', 'danger');
+      return;
+    }
+    
+    array = values;
+  } else {
+    // Generate random array based on size slider
+    const size = parseInt(document.getElementById('size-slider').value);
+    array = Array.from({ length: size }, () => 
+      Math.floor(Math.random() * (CONFIG.MAX_VALUE - CONFIG.MIN_VALUE + 1)) + CONFIG.MIN_VALUE
+    );
+  }
+  
+  renderBars();
+  showMsg(`<i class="fas fa-check"></i> Array created with ${array.length} elements`, 'success');
+}
+
+/**
+ * Generates a random array
+ */
+function generateRandomArray() {
+  const size = parseInt(document.getElementById('size-slider').value);
+  array = Array.from({ length: size }, () => 
+    Math.floor(Math.random() * (CONFIG.MAX_VALUE - CONFIG.MIN_VALUE + 1)) + CONFIG.MIN_VALUE
+  );
+  
+  document.getElementById('array-input').value = array.join(', ');
+  renderBars();
+  showMsg(`<i class="fas fa-dice"></i> Random array generated!`, 'success');
+}
+
+// ========================================
+// CODE IMPLEMENTATION CONTROLS
+// ========================================
+
+function changeCode(lang) {
+  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById(`${lang}-content`).classList.add('active');
+  document.getElementById(`${lang}-btn`).classList.add('active');
+}
+
+// ========================================
+// INTERACTIVE TERMINAL
+// ========================================
+
+function runCode(lang) {
+  currentLang = lang;
+  virtualArray = [];
+  inputState = 'array';
+  
+  const output = document.getElementById('code-output');
+  const inputArea = document.getElementById('interactive-input-area');
+  
+  output.innerHTML = `
+    <div style="color: #fbbf24;">[${lang.toUpperCase()} Environment Initialized]</div>
+    <div style="color: #10b981;">✓ Quick Sort functions compiled successfully</div>
+    <div style="margin-top: 10px;">Enter an array of numbers (comma-separated, e.g., 64,34,25,12,22):</div>
+  `;
+  
+  inputArea.style.display = 'flex';
+  document.getElementById('terminal-input').value = '';
+  document.getElementById('terminal-input').focus();
+}
+
+function processTerminalCommand() {
+  const inputEl = document.getElementById('terminal-input');
+  const output = document.getElementById('code-output');
+  const rawInput = inputEl.value.trim();
+  
+  if (!rawInput) return;
+  
+  output.innerHTML += `<div style="color: #666;">&gt; ${rawInput}</div>`;
+  
+  switch(inputState) {
+    case 'array':
+      handleArrayInput(rawInput, output);
+      break;
+      
+    case 'command':
+      handleSortCommand(rawInput, output);
+      break;
+  }
+  
+  inputEl.value = '';
+  output.scrollTop = output.scrollHeight;
+}
+
+function handleArrayInput(input, output) {
+  const values = input.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+  
+  if (values.length === 0) {
+    output.innerHTML += `<div style="color: #ef4444;">❌ Invalid input. Please enter valid numbers separated by commas.</div>`;
+    return;
+  }
+  
+  virtualArray = [...values];
+  inputState = 'command';
+  
+  output.innerHTML += `
+    <div style="color: #10b981;">✓ Array initialized: [${virtualArray.join(', ')}]</div>
+    <div style="margin-top: 10px; color: #3b82f6;">Available commands:</div>
+    <div style="color: #9ca3af; margin-left: 15px;">
+      • <span style="color: #fff;">sort</span> - Sort the array using Quick Sort<br>
+      • <span style="color: #fff;">show</span> - Display current array<br>
+      • <span style="color: #fff;">reset</span> - Enter a new array
+    </div>
+    <div style="margin-top: 10px;">Enter a command:</div>
+  `;
+}
+
+function handleSortCommand(input, output) {
+  const command = input.toLowerCase();
+  
+  switch(command) {
+    case 'sort':
+      const original = [...virtualArray];
+      quickSortTerminal(virtualArray, 0, virtualArray.length - 1);
+      output.innerHTML += `
+        <div style="color: #10b981;">✓ Quick Sort completed!</div>
+        <div>Original: [${original.join(', ')}]</div>
+        <div>Sorted: [${virtualArray.join(', ')}]</div>
+      `;
+      break;
+      
+    case 'show':
+    case 'display':
+      output.innerHTML += `<div style="color: #3b82f6;">Current array: [${virtualArray.join(', ')}]</div>`;
+      break;
+      
+    case 'reset':
+      inputState = 'array';
+      virtualArray = [];
+      output.innerHTML += `<div style="color: #fbbf24;">Enter a new array (comma-separated numbers):</div>`;
+      break;
+      
+    default:
+      output.innerHTML += `<div style="color: #ef4444;">❌ Unknown command: '${command}'</div>`;
+  }
+}
+
+function partitionTerminal(arr, low, high) {
+  const pivot = arr[high];
+  let i = low - 1;
+  
+  for (let j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return i + 1;
+}
+
+function quickSortTerminal(arr, low, high) {
+  if (low < high) {
+    const pi = partitionTerminal(arr, low, high);
+    quickSortTerminal(arr, low, pi - 1);
+    quickSortTerminal(arr, pi + 1, high);
+  }
+}
+
+// ========================================
+// EVENT LISTENERS
+// ========================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Speed slider
+  const speedSlider = document.getElementById('speed-slider');
+  if (speedSlider) {
+    speedSlider.addEventListener('input', (e) => {
+      speed = parseInt(e.target.value);
+    });
+  }
+  
+  // Terminal input
+  const terminalInput = document.getElementById('terminal-input');
+  if (terminalInput) {
+    terminalInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') processTerminalCommand();
+    });
+  }
+  
+  // Array input
+  const arrayInput = document.getElementById('array-input');
+  if (arrayInput) {
+    arrayInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') createArray();
+    });
+  }
+  
+  // Generate initial random array
+  generateRandomArray();
+});
+
+const l1 = document.getElementById("l1");
+const l2 = document.getElementById("l2");
+const l3 = document.getElementById("l3");
+
+const slider1 = document.getElementById("slider1");
+const slider2 = document.getElementById("slider2");
+
+const modal = document.getElementById("quizModal");
+const startQuiz = document.getElementById("startQuiz");
+const cancelBtn = document.getElementById("cancelBtn");
+
+// Level 2 is now unlocked by default
+let level2Unlocked = true; 
+let level3Unlocked = false;
+
+// Level 1: Always works
+l1.addEventListener("click", () => {
+  slider1.classList.add("active");
+});
+
+// Level 2: Now unlocked, so it just activates the slider without a modal
+l2.addEventListener("click", () => {
+  slider1.classList.add("active");
+  // Optional: you can add logic here to show Level 2 content
+});
+
+// Level 3: This is the only one that triggers the modal now
+l3.addEventListener("click", () => {
+  if (!level3Unlocked) {
+    // Show modal because Level 3 is still locked
+    modal.style.display = "flex";
+  } else {
+    // If Level 3 were already unlocked, just activate the slider
+    slider1.classList.add("active");
+    slider2.classList.add("active");
+  }
+});
+
+// ✅ Start Quiz → goes to the quiz page to unlock Level 3
+startQuiz.addEventListener("click", () => {
+  window.location.href = "quickSort_L2Quiz.html";
+});
+
+// Cancel modal
+cancelBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+
+// Close sidebar on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('active')) {
+    toggleSidebar();
+  }
+});
+</script>
+
+</body>
+</html>

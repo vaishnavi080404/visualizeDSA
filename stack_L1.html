@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack - DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #10121A;
+            --bg-medium: #1A1E29;
+            --card-bg: #212531;
+            --navbar-bg-main: #2B3242;
+            --navbar-bg-right: #3C4456;
+            --accent-blue: #00FFFF;
+            --accent-orange: #FF8C00;
+            --text-light: #E0E0E0;
+            --text-white: #FFFFFF;
+            --text-subtle: #99A1B3;
+            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar {
+            background: var(--navbar-bg-main);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .navbar-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-white);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .navbar-subtitle {
+            font-size: 11px;
+            color: var(--text-subtle);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: -2px;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-line {
+            width: 100%;
+            height: 3px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .hamburger-menu:hover .hamburger-line {
+            background: var(--accent-blue);
+            box-shadow: 0 0 10px var(--shadow-glow-blue);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background: var(--card-bg);
+            border-left: 2px solid var(--accent-blue);
+            box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+            z-index: 2500;
+            transition: right 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .sidebar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: var(--text-subtle);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-category {
+            padding: 15px 25px 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: var(--text-light);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: var(--accent-blue);
+            color: var(--accent-blue);
+            padding-left: 30px;
+        }
+
+        .menu-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-left-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .menu-item i {
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .main-title {
+            background: linear-gradient(135deg, var(--card-bg), var(--navbar-bg-main));
+            padding: 20px 50px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-white);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .prerequisites-box {
+            background: var(--card-bg);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow-dark), 0 0 15px var(--shadow-glow-orange);
+            min-width: 200px;
+            border: 2px solid var(--accent-orange);
+        }
+
+        .prerequisites-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prerequisites-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .prerequisites-box li {
+            font-size: 13px;
+            color: var(--text-light);
+            margin: 6px 0;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .prerequisites-box li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-orange);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .top-cards {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            align-items: stretch;
+            
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px var(--shadow-dark), 0 0 25px var(--shadow-glow-blue);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .glossary-term-chip {
+            background-color: transparent;
+            border-bottom: 1px dashed var(--accent-blue);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--accent-blue);
+            position: relative;
+            padding: 2px 0;
+            display: inline-block;
+            line-height: 1.2;
+        }
+
+        .glossary-term-chip:hover {
+            border-bottom-style: solid;
+        }
+
+        .glossary-definition-popup {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 250px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--accent-orange);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+            color: var(--text-subtle);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+            pointer-events: none;
+        }
+
+        .glossary-term-chip:hover .glossary-definition-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .glossary-definition-popup strong {
+            color: var(--accent-orange);
+        }
+
+        .inner-definition-box {
+            background-color: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-subtle);
+            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
+        }
+
+        .inner-definition-box strong {
+            color: var(--accent-blue);
+        }
+
+        .algorithm-card {
+            background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%);
+            border: 3px solid var(--accent-orange);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .algorithm-card .card-title {
+            color: var(--text-white);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .operations-carousel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            position: relative;
+            min-height: 280px;
+            overflow: hidden;
+            
+        }
+
+        .operations-track {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+        }
+
+        .operation-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .operation-slide h4 {
+            color: var(--accent-orange);
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+        }
+
+        .operation-slide pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+            color: var(--text-light);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 12px 0;
+            white-space: pre;
+        }
+
+        .operation-slide p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            color: var(--accent-orange);
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .carousel-btn:hover {
+            background: var(--accent-orange);
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .carousel-dot:hover {
+            background: rgba(255, 140, 0, 0.6);
+            transform: scale(1.2);
+        }
+
+        .carousel-dot.active {
+            background: var(--accent-orange);
+            width: 28px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .manual-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .manual-card .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+        }
+
+        .stack-visualization {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stack-container {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 5px;
+            min-height: 300px;
+            justify-content: flex-start;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 2px dashed var(--accent-blue);
+        }
+
+        .stack-item {
+            width: 200px;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent-blue), #00d4d4);
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            color: #000;
+            font-size: 16px;
+            box-shadow: 0 4px 15px var(--shadow-glow-blue);
+            animation: stackPush 0.5s ease;
+        }
+
+        .stack-item.top {
+            border-color: var(--accent-orange);
+            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+            box-shadow: 0 4px 15px var(--shadow-glow-orange);
+        }
+
+        @keyframes stackPush {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .stack-label {
+            font-size: 13px;
+            color: var(--accent-orange);
+            font-weight: 600;
+            margin-top: -10px;
+        }
+
+        .result-badge {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .bottom-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .how-works-card {
+            background: var(--card-bg);
+        }
+
+        .icon-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .icon-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .icon-list .icon {
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .icon.lifo { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .icon.push { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .icon.pop { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .icon.peek { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .icon.apps { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .complexity-card {
+            background: linear-gradient(135deg, #6b8dd8 0%, #5a73d4 100%);
+            border: 2px solid var(--accent-orange);
+            position: relative;
+        }
+
+        .complexity-card .card-title {
+            color: var(--text-white);
+            margin-bottom: 15px;
+        }
+
+        .complexity-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        .complexity-table th,
+        .complexity-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .complexity-table th {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--accent-orange);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .complexity-table td {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+        }
+
+        .complexity-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .complexity-badge.green {
+            background: #22c55e;
+            color: #000;
+        }
+
+        .videos-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .videos-button {
+            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+            color: var(--text-white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px var(--shadow-glow-orange);
+            transition: all 0.3s ease;
+        }
+
+        .videos-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px var(--shadow-glow-orange);
+        }
+
+        .level-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        .level-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .level-wrapper button {
+            background: var(--shadow-glow-blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 100px;
+            height: 5px;
+            background: #ccc;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 0;
+            background: #FF8C00;
+            transition: width 1s ease;
+        }
+
+        .slider.active::before {
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 2px solid #00aaff;
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            background: #FF8C00;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .top-cards,
+            .bottom-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .header-section {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .navbar-title {
+                font-size: 20px;
+            }
+
+            .main-title {
+                font-size: 24px;
+                padding: 15px 30px;
+            }
+
+            .stack-item {
+                width: 150px;
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-title">DSA VISUALIZER</div>
+            <div class="navbar-subtitle">Data Structures & Algorithms</div>
+        </div>
+        <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </button>
+    </nav>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Menu</div>
+            <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-category">🔍 Searching Algorithms</div>
+            <div class="menu-item" onclick="selectAlgorithm('linear-search')">
+                <i class="fas fa-search"></i>
+                <span>Linear Search</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('binary-search')">
+                <i class="fas fa-chart-line"></i>
+                <span>Binary Search</span>
+            </div>
+            <div class="menu-category">📊 Data Structures</div>
+            <div class="menu-item active" onclick="selectAlgorithm('stack')">
+                <i class="fas fa-layer-group"></i>
+                <span>Stack</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('queue')">
+                <i class="fas fa-stream"></i>
+                <span>Queue</span>
+            </div>
+            <div class="menu-category">🔄 Sorting Algorithms</div>
+            <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
+                <i class="fas fa-code-branch"></i>
+                <span>Merge Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
+                <i class="fas fa-circle"></i>
+                <span>Bubble Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('selection-sort')">
+                <i class="fas fa-hand-pointer"></i>
+                <span>Selection Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('quick-sort')">
+                <i class="fas fa-bolt"></i>
+                <span>Quick Sort</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-section">
+            <div class="main-title">MASTERING STACK</div>
+            <div class="prerequisites-box">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Arrays</li>
+                    <li>Linked Lists</li>
+                    <li>Basic Programming</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="top-cards">
+            <div class="card">
+                <h3 class="card-title">What is a Stack?</h3>
+                <div class="main-topic-text">
+                    <p>
+                        <span class="glossary-term-chip">Stack
+                            <span class="glossary-definition-popup">
+                                <strong>Stack:</strong> A linear data structure that follows the Last-In-First-Out (LIFO) principle where elements are added and removed from the same end called the "top".
+                            </span>
+                        </span>
+                        is a fundamental linear data structure that operates on the <strong>LIFO (Last-In-First-Out)</strong> principle. Think of it like a stack of plates — you can only add or remove plates from the top.
+                    </p>
+
+                    <div class="inner-definition-box">
+                        💡 <strong>Real-World Analogy:</strong> Imagine a stack of books 📚 — you can only add a new book on top, and you can only remove the topmost book. The last book you place is the first one you'll remove.
+                    </div>
+
+                    <h3 style="margin-top:25px;">LIFO Principle</h3>
+                    <ul>
+                        <li><strong>Last In, First Out</strong> — The most recently added element is removed first.</li>
+                        <li>All operations happen at the <strong>top</strong> of the stack.</li>
+                        <li>Elements below the top cannot be directly accessed.</li>
+                        <li>Used extensively in recursion, expression evaluation, and backtracking.</li>
+                    </ul>
+
+                    <div class="inner-definition-box">
+                        🧩 <strong>Key Characteristics:</strong>
+                        <ul style="margin: 8px 0 0 18px;">
+                            <li>Dynamic size (can grow or shrink).</li>
+                            <li>Restricted access — only top element is accessible.</li>
+                            <li>Efficient O(1) operations for push and pop.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card algorithm-card">
+                <div class="info-icon">i</div>
+                <h3 class="card-title">Stack Operations</h3>
+                
+                <div class="operations-carousel">
+                    <div class="operations-track" id="operationsTrack" style="display: flex;">
+                        <!-- Push Operation -->
+                        <div class="operation-slide">
+                            <h4>🔼 PUSH Operation</h4>
+                            <p style="margin-bottom: 12px;">Adds an element to the top of the stack.</p>
+                            <pre>push(element):
+    if stack is full:
+        return "Stack Overflow"
+    else:
+        top = top + 1
+        stack[top] = element</pre>
+                            <p style="margin-top: 12px;"><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1)</p>
+                        </div>
+
+                        <!-- Pop Operation -->
+                        <div class="operation-slide">
+                            <h4>🔽 POP Operation</h4>
+                            <p style="margin-bottom: 12px;">Removes and returns the top element.</p>
+                            <pre>pop():
+    if stack is empty:
+        return "Stack Underflow"
+    else:
+        element = stack[top]
+        top = top - 1
+        return element</pre>
+                            <p style="margin-top: 12px;"><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1)</p>
+                        </div>
+
+                        <!-- Peek Operation -->
+                        <div class="operation-slide">
+                            <h4>👁️ PEEK Operation</h4>
+                            <p style="margin-bottom: 12px;">Returns the top element without removing it.</p>
+                            <pre>peek():
+    if stack is empty:
+        return "Stack is Empty"
+    else:
+        return stack[top]</pre>
+                            <p style="margin-top: 12px;"><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1)</p>
+                        </div>
+
+                        <!-- isEmpty Operation -->
+                        <div class="operation-slide">
+                            <h4>❓ isEmpty Operation</h4>
+                            <p style="margin-bottom: 12px;">Checks if the stack is empty.</p>
+                            <pre>isEmpty():
+    if top == -1:
+        return true
+    else:
+        return false</pre>
+                            <p style="margin-top: 12px;"><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1)</p>
+                        </div>
+
+                        <!-- Size Operation -->
+                        <div class="operation-slide">
+                            <h4>📏 SIZE Operation</h4>
+                            <p style="margin-bottom: 12px;">Returns the number of elements in the stack.</p>
+                            <pre>size():
+    return top + 1</pre>
+                            <p style="margin-top: 12px;"><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1)</p>
+                        </div>
+
+                       
+                    </div>
+                </div>
+
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="changeOperation(-1)" title="Previous">◄</button>
+                    <div class="carousel-dots" id="operationDots">
+                        <div class="carousel-dot active" onclick="goToOperation(0)" title="Push"></div>
+                        <div class="carousel-dot" onclick="goToOperation(1)" title="Pop"></div>
+                        <div class="carousel-dot" onclick="goToOperation(2)" title="Peek"></div>
+                        <div class="carousel-dot" onclick="goToOperation(3)" title="isEmpty"></div>
+                        <div class="carousel-dot" onclick="goToOperation(4)" title="Size"></div>
+                    </div>
+                    <button class="carousel-btn" onclick="changeOperation(1)" title="Next">►</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="manual-card">
+            <h3 class="card-title">Stack Visualization: Push & Pop Demo</h3>
+            <p class="card-text" style="margin-bottom: 15px;">Let's visualize how elements are added (PUSH) and removed (POP) from a stack:</p>
+            
+            <div class="stack-visualization">
+                <div class="stack-container">
+                     
+                    <div class="stack-item">10</div>
+                    <div class="stack-item">20</div>
+                    <div class="stack-item top">30 ← TOP</div>
+                   
+                </div>
+                <div class="stack-label">↑ LIFO: Last In, First Out ↑</div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="margin-bottom: 10px;"><strong style="color: var(--accent-orange);">Operations Performed:</strong></p>
+                <p style="font-size: 13px; line-height: 1.8;">
+                    1. PUSH(10) → Stack: [10]<br>
+                    2. PUSH(20) → Stack: [10, 20]<br>
+                    3. PUSH(30) → Stack: [10, 20, 30]<br>
+                    4. POP() → Returns 30, Stack: [10, 20]<br>
+                    5. PEEK() → Returns 20 (without removing)
+                </p>
+            </div>
+
+            <div style="text-align: center;">
+                <span class="result-badge"><i class="fas fa-layer-group"></i> Top Element: 30 (Last In, First Out)</span>
+            </div>
+        </div>
+
+        <div class="bottom-cards">
+            <div class="card how-works-card">
+                <h3 class="card-title">How Stack Works</h3>
+                <ul class="icon-list">
+                    <li>
+                        <span class="icon lifo"><i class="fas fa-sort-amount-down"></i></span>
+                        <span>Follows LIFO (Last-In-First-Out) principle strictly</span>
+                    </li>
+                    <li>
+                        <span class="icon push"><i class="fas fa-arrow-up"></i></span>
+                        <span>PUSH adds elements to the top of the stack</span>
+                    </li>
+                    <li>
+                        <span class="icon pop"><i class="fas fa-arrow-down"></i></span>
+                        <span>POP removes and returns the top element</span>
+                    </li>
+                    <li>
+                        <span class="icon peek"><i class="fas fa-eye"></i></span>
+                        <span>PEEK views the top element without removing it</span>
+                    </li>
+                    <li>
+                        <span class="icon apps"><i class="fas fa-cogs"></i></span>
+                        <span>Used in function calls, undo operations, expression evaluation</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card complexity-card">
+                <h3 class="card-title">Stack Time Complexity</h3>
+                <p style="color: rgba(255, 255, 255, 0.9); font-size: 13px; margin-bottom: 15px;">
+                    All stack operations have <strong style="color: var(--accent-orange);">O(1)</strong> constant time complexity, making it highly efficient.
+                </p>
+                
+                <table class="complexity-table">
+                    <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Time Complexity</th>
+                            <th>Space Complexity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PUSH</td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>POP</td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>PEEK</td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>isEmpty</td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                        </tr>
+                        <tr>
+                            <td>SIZE</td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                            <td><span class="complexity-badge green">O(1)</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="videos-section">
+            <button class="videos-button"><i class="fas fa-play-circle"></i> LEARN MORE WITH VIDEOS</button>
+        </div>
+
+        <div class="level-container">
+            <div class="level-wrapper">
+                <button id="l1">Level 1</button>
+                <div class="slider" id="slider1"></div>
+                <button id="l2">Level 2</button>
+                <div class="slider" id="slider2"></div>
+                <button id="l3">Level 3</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <h3>Level 2 Quiz</h3>
+            <p>Attempt the quiz to unlock Level 2 and move forward.</p>
+            <div class="modal-buttons">
+                <button id="startQuiz">Start Quiz</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Operations Carousel
+        let currentOperation = 0;
+        const totalOperations = 5;
+
+        function changeOperation(direction) {
+            currentOperation += direction;
+            if (currentOperation < 0) currentOperation = totalOperations - 1;
+            if (currentOperation >= totalOperations) currentOperation = 0;
+            updateOperations();
+        }
+
+        function goToOperation(index) {
+            currentOperation = index;
+            updateOperations();
+        }
+
+        function updateOperations() {
+            const track = document.getElementById('operationsTrack');
+            const dots = document.querySelectorAll('#operationDots .carousel-dot');
+            
+            track.style.transform = `translateX(-${currentOperation * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentOperation) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        // Sidebar Functions
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburger');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+       function selectAlgorithm(algorithm) {
+    // Mapping IDs to filenames
+    const routes = {
+        'linear-search': 'linearSearch_L1.html',
+        'binary-search': 'binarySearch_L1.html',
+        'quick-sort': 'quickSort_L1.html',
+        'merge-sort': 'mergeSort_L1.html',
+        'bubble-sort': 'bubbleSort_L1.html',
+        'stack': 'stack_L1.html',
+        'queue': 'queue.html'
+    };
+
+    const targetPage = routes[algorithm];
+
+    if (targetPage) {
+        // Redirect to the new page
+        window.location.href = targetPage;
+    } else {
+        console.error("Route not found for:", algorithm);
+        toggleSidebar();
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    // Get the current filename (e.g., "quick_sort.html")
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Map of filenames back to IDs
+    const pageToId = {
+        'quickSort_L1.html': 'quick-sort',
+        'binarySearch_L1.html': 'binary-search',
+        'linearSearch_L1.html': 'linear-search',
+        'mergeSort_L1.html': 'merge-sort',
+        'bubbleSort_L1.html': 'bubble-sort',
+        'stack_L1.html': 'stack',
+        'queue_L1.html': 'queue'
+
+    };
+
+});
+        // Level System
+        const l1 = document.getElementById("l1");
+        const l2 = document.getElementById("l2");
+        const l3 = document.getElementById("l3");
+        const slider1 = document.getElementById("slider1");
+        const slider2 = document.getElementById("slider2");
+        const modal = document.getElementById("quizModal");
+        const startQuiz = document.getElementById("startQuiz");
+        const cancelBtn = document.getElementById("cancelBtn");
+
+        let level2Unlocked = false;
+
+        l1.addEventListener("click", () => {
+            slider1.classList.add("active");
+        });
+
+        l2.addEventListener("click", () => {
+            if (!level2Unlocked) {
+                modal.style.display = "flex";
+            }
+        });
+
+        l3.addEventListener("click", () => {
+            if (!level2Unlocked) {
+                modal.style.display = "flex";
+            }
+        });
+
+        startQuiz.addEventListener("click", () => {
+            window.location.href = "stack_L1_Quiz.html";
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                modal.style.display = "none";
+                if (document.getElementById('sidebar').classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

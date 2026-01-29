@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 Quiz - Stack Fundamentals</title>
+    <!-- Cyber Theme Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Root Variables (Cyber Industrial Theme) --- */
+        :root {
+            --bg-dark: #10121A;
+            --bg-medium: #1A1E29;
+            --card-bg: #212531;
+            --navbar-bg-main: #2B3242;
+            --navbar-bg-right: #3C4456;
+            --accent-blue: #00FFFF;
+            --accent-orange: #FF8C00;
+            --accent-green: #00FF7F; /* Neon Green for Correct */
+            --accent-red: #FF4136;   /* Neon Red for Incorrect */
+            --text-light: #E0E0E0;
+            --text-white: #FFFFFF;
+            --text-subtle: #99A1B3;
+            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Custom styles integrated with Tailwind for a modern look */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-medium);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Re-using the background pattern from the main page */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0A141E;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='100' y1='33' x2='100' y2='-3'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='100' y1='135' x2='100' y2='97'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='%2307121c' fill-opacity='0.6'%3E%3Crect x='100' width='100' height='100'/%3E%3Crect y='100' width='100' height='100'/%3E%3C/g%3E%3Cg fill-opacity='0.5'%3E%3Cpolygon fill='url(%23a)' points='100 30 0 0 200 0'/%3E%3Cpolygon fill='url(%23b)' points='100 100 0 130 0 100 200 100 200 130'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 0 15px var(--shadow-glow-blue), 0 6px 20px var(--shadow-dark);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-white);
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--shadow-glow-blue);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-dark);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid var(--navbar-bg-right);
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .question-card {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        #question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        #options button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid var(--navbar-bg-right);
+            border-radius: 6px;
+            background: var(--navbar-bg-main);
+            color: var(--text-subtle);
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        #options button:hover:not(:disabled) {
+            background: var(--navbar-bg-right);
+            border-color: var(--accent-blue);
+            color: var(--text-light);
+        }
+        
+        /* Correct/Incorrect feedback classes */
+        .correct {
+            background-color: rgba(0, 255, 127, 0.1) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--text-white);
+        }
+        .incorrect {
+            background-color: rgba(255, 65, 54, 0.1) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--text-white);
+        }
+        .correct, .incorrect {
+            pointer-events: none !important;
+        }
+
+
+        .navigation-controls button {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        #next-btn {
+            background: var(--accent-blue);
+        }
+        #next-btn:hover:not(:disabled) {
+            background: var(--text-white);
+            box-shadow: 0 0 15px var(--shadow-glow-blue);
+        }
+        
+        #previous-btn {
+            background: var(--accent-orange);
+        }
+        #previous-btn:hover:not(:disabled) {
+            background: #ffae42; /* Lighter orange */
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .navigation-controls button:disabled {
+            background: var(--navbar-bg-main);
+            color: var(--text-subtle);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            height: 100%; width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 0 20px var(--shadow-glow-orange), 0 8px 30px var(--shadow-dark);
+            border: 1px solid var(--accent-orange);
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            z-index: 1001;
+        }
+
+        .modal-content h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-orange);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        /* Base class for modal buttons */
+        .modal-btn {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            display: block;
+            width: 100%;
+        }
+        
+        #level-2-btn {
+            background: var(--accent-blue);
+            box-shadow: 0 0 15px var(--shadow-glow-blue);
+        }
+        #level-2-btn:hover {
+            background: var(--text-white);
+        }
+
+        #retry-btn {
+            background: var(--accent-orange);
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+        #retry-btn:hover {
+            background: #ffae42; 
+        }
+
+        #rationale-container {
+            margin-top: 1rem;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--navbar-bg-main);
+            border-radius: 6px;
+        }
+        #rationale-text {
+            color: var(--text-subtle);
+            font-size: 0.85rem;
+        }
+        #rationale-text strong {
+            color: var(--accent-orange);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>Level 1:Merge Sort Fundamentals Quiz</h2>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <p id="question"></p>
+            <div id="options"></div>
+            <div id="rationale-container" class="hidden">
+                <p id="rationale-text"><strong>Rationale:</strong> <span id="rationale-content"></span></p>
+            </div>
+            
+            <!-- New Navigation Controls Container -->
+            <div class="navigation-controls mt-4 flex gap-4">
+                <button id="previous-btn" disabled>Previous Question</button>
+                <button id="next-btn" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="result-title"></h3>
+                <p id="result-text"></p>
+                <div id="modal-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       const quizData = [
+            // --- Easy ---
+            {
+                question: "Which algorithmic paradigm is Merge Sort a classic example of?",
+                answerOptions: [
+                    { text: "Greedy Approach", rationale: "Greedy algorithms make locally optimal choices in the hope of finding a global optimum, which is not the basis of Merge Sort.", isCorrect: false },
+                    { text: "Dynamic Programming", rationale: "Dynamic programming involves solving overlapping subproblems, which differs from Merge Sort's distinct subproblems.", isCorrect: false },
+                    { text: "Divide and Conquer", rationale: "Merge Sort is the quintessential Divide and Conquer algorithm: it divides the problem, solves subproblems recursively, and combines the results.", isCorrect: true },
+                    { text: "Brute Force", rationale: "Brute force methods involve checking every possible solution, which is much less efficient than Merge Sort.", isCorrect: false }
+                ],
+                hint: "The algorithm's name is actually based on the last step of this paradigm."
+            },
+            // --- Easy ---
+            {
+                question: "What is the Big O time complexity for Merge Sort in the best, average, and worst cases?",
+                answerOptions: [
+                    { text: "$O(N^2)$ for all cases", rationale: "$O(N^2)$ is the complexity for algorithms like Bubble Sort and Selection Sort.", isCorrect: false },
+                    { text: "$O(N)$ for best case, $O(N \\log N)$ for average/worst", rationale: "The best case for Merge Sort is $O(N \\log N)$, as it still needs to perform the division and merging steps regardless of the input order.", isCorrect: false },
+                    { text: "$O(N \\log N)$ for all cases", rationale: "Due to the consistent 'divide and merge' steps, Merge Sort's performance is always $O(N \\log N)$, regardless of the array's initial order.", isCorrect: true },
+                    { text: "$O(\\log N)$ for all cases", rationale: "$O(\\log N)$ is the complexity for Binary Search.", isCorrect: false }
+                ],
+                hint: "Merge Sort's performance is not dependent on the input data being sorted or unsorted."
+            },
+            // --- Easy (True/False) ---
+            {
+                question: "True or False: Merge Sort is an unstable sorting algorithm.",
+                answerOptions: [
+                    { text: "True", rationale: "Merge Sort is generally considered a stable sort because the merge step can be implemented to preserve the original relative order of equal elements.", isCorrect: false },
+                    { text: "False", rationale: "Merge Sort is stable because the merge operation can be executed such that equal elements maintain their original relative order.", isCorrect: true }
+                ],
+                hint: "Stability means preserving the relative order of duplicate elements."
+            },
+            // --- Medium ---
+            {
+                question: "What is the base case that stops the recursion in Merge Sort's 'Divide' step?",
+                answerOptions: [
+                    { text: "When the array size is less than 3.", rationale: "This is often used as an optimization, but not the formal base case.", isCorrect: false },
+                    { text: "When the array size is 0 or 1.", rationale: "A sub-array with 0 or 1 element is inherently sorted and ready to be merged, which is the stopping condition for the recursion.", isCorrect: true },
+                    { text: "When the array is partitioned into four equal parts.", rationale: "The partitioning is done into two halves, not four, and this is not the stopping condition.", isCorrect: false },
+                    { text: "When the partition reaches the 'pivot' element.", rationale: "The concept of a 'pivot' is central to Quick Sort, not Merge Sort.", isCorrect: false }
+                ],
+                hint: "Think about the smallest possible unit of data that is naturally sorted."
+            },
+            // --- Medium ---
+            {
+                question: "What is the auxiliary space complexity (extra memory needed) for standard Merge Sort?",
+                answerOptions: [
+                    { text: "$O(1)$", rationale: "Merge Sort requires additional memory for the merging step, so it is not in-place ($O(1)$).", isCorrect: false },
+                    { text: "$O(\\log N)$", rationale: "$O(\\log N)$ is the space complexity for the recursion call stack, but not the overall auxiliary space.", isCorrect: false },
+                    { text: "$O(N)$", rationale: "Merge Sort requires an auxiliary array of size $N$ to hold the merged elements, giving it a linear space complexity.", isCorrect: true },
+                    { text: "$O(N^2)$", rationale: "Quadratic space complexity is too high and incorrect for standard Merge Sort.", isCorrect: false }
+                ],
+                hint: "Consider the memory needed to temporarily store the elements during the critical 'merge' step."
+            },
+            // --- Medium (Scenario Analysis) ---
+            {
+                question: "Given an array $[8, 3, 1, 6]$. What are the two sub-arrays immediately before the **final** merge step?",
+                answerOptions: [
+                    { text: "$[8]$ and $[3, 1, 6]$", rationale: "The array is split roughly in half: $[8, 3]$ and $[1, 6]$. These are then recursively sorted to $[3, 8]$ and $[1, 6]$ before the final merge.", isCorrect: false },
+                    { text: "$[3, 8]$ and $[1, 6]$", rationale: "The initial array is split into $[8, 3]$ and $[1, 6]$. After the recursive calls return, the left side is sorted to $[3, 8]$ and the right side is sorted to $[1, 6]$. These two sorted halves are the inputs to the final merge.", isCorrect: true },
+                    { text: "$[1, 3]$ and $[6, 8]$", rationale: "This is a state that occurs during the final merge, not the input to it.", isCorrect: false },
+                    { text: "$[1, 3, 6, 8]$", rationale: "This is the final sorted array, not the input to the final merge.", isCorrect: false }
+                ],
+                hint: "Trace the recursive division: The original array is split at the midpoint (index 2)."
+            },
+            // --- Medium ---
+            {
+                question: "Which of these data structures benefits most from being sorted using Merge Sort due to its constant-time insertion/deletion at the ends?",
+                answerOptions: [
+                    { text: "Hash Table", rationale: "Hash Tables are not typically sorted; they use hashing for fast lookups.", isCorrect: false },
+                    { text: "Array (Fixed Size)", rationale: "Merge Sort works well on arrays, but Linked Lists see a greater relative advantage.", isCorrect: false },
+                    { text: "Singly Linked List", rationale: "Merge Sort is one of the most efficient sorting algorithms for Linked Lists because it does not require random access (like Quick Sort) and minimizes pointer manipulation during the merge.", isCorrect: true },
+                    { text: "Binary Search Tree", rationale: "BSTs are inherently sorted by insertion, not a sorting algorithm.", isCorrect: false }
+                ],
+                hint: "The alternative to arrays, where elements are accessed sequentially via pointers."
+            },
+            // --- Hard ---
+            {
+                question: "When merging two sorted arrays, $A$ and $B$, of sizes $N$ and $M$ respectively, what is the time complexity of the merge step itself?",
+                answerOptions: [
+                    { text: "$O(1)$", rationale: "The merge step requires comparing and transferring elements, taking longer than constant time.", isCorrect: false },
+                    { text: "$O(\\log(N+M))$", rationale: "The merge step is linear, not logarithmic.", isCorrect: false },
+                    { text: "$O(N \\log N)$", rationale: "This is the complexity of the overall Merge Sort algorithm, not just the single merge step.", isCorrect: false },
+                    { text: "$O(N+M)$", rationale: "The merge step is linear with respect to the total number of elements being merged, as each element is inspected/transferred only once.", isCorrect: true }
+                ],
+                hint: "Every element from both input arrays must be processed exactly one time."
+            },
+            // --- Hard ---
+            {
+                question: "What is the primary trade-off when choosing Merge Sort over an in-place $O(N \\log N)$ algorithm like Heap Sort?",
+                answerOptions: [
+                    { text: "Merge Sort sacrifices stability for better worst-case performance.", rationale: "Merge Sort is stable, and its worst-case performance is guaranteed.", isCorrect: false },
+                    { text: "Merge Sort requires $O(N)$ auxiliary space to gain stability and a guaranteed $O(N \\log N)$ worst-case time.", rationale: "This is the key trade-off: guaranteed time and stability for the cost of extra space for the temporary merge array.", isCorrect: true },
+                    { text: "Merge Sort is faster on small arrays but slower on large ones.", rationale: "Merge Sort's advantage is most pronounced on large datasets due to its complexity.", isCorrect: false },
+                    { text: "Merge Sort performs fewer comparisons in its worst case.", rationale: "While comparison count is a factor, the space complexity is the major distinction.", isCorrect: false }
+                ],
+                hint: "The decision often comes down to memory usage versus performance guarantees and stability."
+            },
+            // --- Hard (Structure Analysis) ---
+            {
+                question: "Which part of the Merge Sort process contributes to the $\\log N$ factor in its time complexity?",
+                answerOptions: [
+                    { text: "The Merging step, as it takes $O(N)$ time in total.", rationale: "The merge step is linear, $O(N)$, but it happens at each level of the recursion.", isCorrect: false },
+                    { text: "The initial setup of the temporary auxiliary array.", rationale: "The setup is $O(N)$, which does not contain the $\\log N$ factor.", isCorrect: false },
+                    { text: "The Divide step, which involves recursively halving the array until the base case is reached.", rationale: "The number of times an array of size $N$ can be halved before reaching size 1 is $\\log_2 N$. This represents the number of recursion levels.", isCorrect: true },
+                    { text: "The swapping of elements during the final merge.", rationale: "Merging involves comparisons and transfers, not swaps.", isCorrect: false }
+                ],
+                hint: "Think about the depth of the recursive tree structure."
+            },
+        ];
+        const PASS_THRESHOLD = 70; // 70% required to move to Level 2
+        let current = 0;
+        let score = 0;
+        // Array to store the index of the selected option for each question (null if unanswered)
+        let userAnswers = new Array(quizData.length).fill(null); 
+
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const previousBtn = document.getElementById("previous-btn"); // New button element
+        const progress = document.querySelector(".progress");
+        const modal = document.getElementById("result-modal");
+        const resultTitle = document.getElementById("result-title");
+        const resultText = document.getElementById("result-text");
+        const modalActions = document.getElementById("modal-actions");
+        const rationaleContainer = document.getElementById("rationale-container");
+        const rationaleContent = document.getElementById("rationale-content");
+
+        function loadQuestion() {
+            const q = quizData[current];
+            questionEl.textContent = `${current + 1}. ${q.question}`;
+            optionsEl.innerHTML = "";
+            rationaleContainer.classList.add("hidden");
+            
+            // Determine if answered
+            const previouslySelected = userAnswers[current];
+
+            // 1. Build Options
+            q.answerOptions.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.textContent = opt.text;
+                btn.setAttribute('data-index', index);
+                btn.addEventListener("click", () => handleOptionClick(btn, index));
+                optionsEl.appendChild(btn);
+            });
+
+            // 2. Restore State and Buttons
+            const allButtons = optionsEl.querySelectorAll('button');
+            if (previouslySelected !== null) {
+                // Restore Rationale
+                const selectedOption = q.answerOptions[previouslySelected];
+                rationaleContent.textContent = selectedOption.rationale;
+                rationaleContainer.classList.remove("hidden");
+                
+                // Restore Highlighting and disable buttons
+                allButtons.forEach((btn, i) => {
+                    const option = q.answerOptions[i];
+                    
+                    if (option.isCorrect) {
+                        btn.classList.add('correct');
+                    } else if (i === previouslySelected) {
+                        btn.classList.add('incorrect');
+                    }
+                    btn.style.pointerEvents = 'none'; // Keep disabled if already answered
+                });
+                nextBtn.disabled = false; // Always allow navigation if answered
+            } else {
+                // Unanswered state
+                nextBtn.disabled = true;
+                // Ensure all buttons are clickable
+                allButtons.forEach(btn => btn.style.pointerEvents = 'auto');
+            }
+
+            // 3. Update navigation button states
+            previousBtn.disabled = current === 0;
+            if (current === quizData.length - 1) {
+                nextBtn.textContent = "Show Results";
+            } else {
+                nextBtn.textContent = "Next Question";
+            }
+
+            // 4. Update progress bar
+            progress.style.width = `${((current + (previouslySelected !== null ? 1 : 0)) / quizData.length) * 100}%`;
+        }
+
+        function handleOptionClick(clickedBtn, index) {
+            // Only allow selection if the question hasn't been answered yet
+            if (userAnswers[current] !== null) return;
+
+            // 1. Save the answer
+            userAnswers[current] = index;
+
+            const q = quizData[current];
+            const allButtons = optionsEl.querySelectorAll('button');
+            const selectedOption = q.answerOptions[index];
+
+            // 2. Show Rationale
+            rationaleContent.textContent = selectedOption.rationale;
+            rationaleContainer.classList.remove("hidden");
+
+            // 3. Mark feedback (correct/incorrect) and disable further clicks
+            allButtons.forEach((btn, i) => {
+                const option = q.answerOptions[i];
+                
+                if (option.isCorrect) {
+                    btn.classList.add('correct');
+                } else if (i === index) {
+                    btn.classList.add('incorrect');
+                }
+                btn.style.pointerEvents = 'none'; // Disable further clicks globally
+            });
+
+            // 4. Enable next button
+            nextBtn.disabled = false;
+
+            // 5. Update progress bar visually to show this question is complete
+            progress.style.width = `${((current + 1) / quizData.length) * 100}%`;
+        }
+        
+        // --- Navigation Handlers ---
+        function nextQuestion() {
+            if (current < quizData.length - 1) {
+                current++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (current > 0) {
+                current--;
+                loadQuestion();
+            }
+        }
+        // --- End Navigation Handlers ---
+        
+        nextBtn.addEventListener("click", nextQuestion);
+        previousBtn.addEventListener("click", previousQuestion);
+
+        function calculateScore() {
+            let finalScore = 0;
+            userAnswers.forEach((selectedIndex, qIndex) => {
+                if (selectedIndex !== null) {
+                    const q = quizData[qIndex];
+                    if (q.answerOptions[selectedIndex].isCorrect) {
+                        finalScore++;
+                    }
+                }
+            });
+            return finalScore;
+        }
+
+        function showResult() {
+            score = calculateScore(); // Calculate score based on saved answers
+            modal.classList.remove("hidden");
+            modalActions.innerHTML = ""; // Clear existing buttons
+            
+            const percentage = (score / quizData.length) * 100;
+            const message = `You answered ${score} out of ${quizData.length} questions correctly.`;
+
+            if (percentage >= PASS_THRESHOLD) {
+                resultTitle.textContent = "🎉 Level 1 Complete!";
+                resultText.textContent = `${message} Your score is ${percentage.toFixed(0)}%. You've successfully demonstrated your understanding!`;
+                
+                // Add Move to Level 2 Button
+                const level2Btn = document.createElement('button');
+                level2Btn.id = 'level-2-btn';
+                level2Btn.className = 'modal-btn';
+                level2Btn.textContent = 'Move to Level 2';
+                level2Btn.addEventListener('click', () => {
+                    window.location.href = 'mergeSortL2.html';
+                     console.log("Navigating to Level 2 (Placeholder action).");
+                     modal.classList.add("hidden"); 
+                });
+                modalActions.appendChild(level2Btn);
+
+            } else {
+                resultTitle.textContent = "✍️ Keep Practicing!";
+                resultText.textContent = `${message} Your score is ${percentage.toFixed(0)}%. You need ${PASS_THRESHOLD}% to proceed. Review the material and try again.`;
+            }
+
+            // Always add Retry button
+            const retryBtn = document.createElement('button');
+            retryBtn.id = 'retry-btn';
+            retryBtn.className = 'modal-btn';
+            retryBtn.textContent = 'Retry Quiz';
+            retryBtn.addEventListener("click", () => {
+                modal.classList.add("hidden");
+                current = 0;
+                score = 0;
+                userAnswers.fill(null); // Reset all answers
+                loadQuestion();
+            });
+            
+            // Apply specific retry button style
+            retryBtn.style.background = "var(--accent-orange)";
+            retryBtn.style.boxShadow = "0 0 15px var(--shadow-glow-orange)";
+            modalActions.appendChild(retryBtn);
+        }
+
+        // Initial load
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>

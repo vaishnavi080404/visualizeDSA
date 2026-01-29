@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stack Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #10121A;
+      --bg-medium: #1A1E29;
+      --card-bg: #212531;
+      --navbar-bg-main: #2B3242;
+      --navbar-bg-right: #3C4456;
+      --accent-blue: #00FFFF;
+      --accent-orange: #FF8C00;
+      --text-light: #E0E0E0;
+      --text-white: #FFFFFF;
+      --text-subtle: #99A1B3;
+      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: var(--navbar-bg-main);
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .navbar-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .navbar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: -2px;
+    }
+
+    .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background: var(--accent-orange);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--shadow-glow-orange);
+    }
+
+    .hamburger-menu:hover .hamburger-line {
+      background: var(--accent-blue);
+      box-shadow: 0 0 10px var(--shadow-glow-blue);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 350px;
+      height: 100%;
+      background: var(--card-bg);
+      border-left: 2px solid var(--accent-blue);
+      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+      z-index: 2500;
+      transition: right 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      padding: 30px 25px;
+      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .sidebar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+      padding: 20px 0;
+    }
+
+    .menu-category {
+      padding: 15px 25px 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      color: var(--accent-orange);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .menu-item {
+      padding: 15px 25px;
+      color: var(--text-light);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      display: flex;
+      align-items: center; gap: 12px;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-left-color: var(--accent-blue);
+      color: var(--accent-blue);
+      padding-left: 30px;
+    }
+
+    .menu-item.active {
+      background: rgba(0, 255, 255, 0.15);
+      border-left-color: var(--accent-orange);
+      color: var(--accent-orange);
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      backdrop-filter: blur(3px);
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    .pseudo-code-container {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      max-height: 600px;
+      overflow-y: auto;
+      position: sticky;
+      top: 90px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .pseudo-code-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pseudo-code-container h5 {
+      color: var(--accent-orange);
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .pseudo-step {
+      background: rgba(0, 255, 255, 0.05);
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      color: var(--text-light);
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .pseudo-step.active {
+      background: linear-gradient(90deg, var(--accent-orange), #ff6b00);
+      color: #000;
+      border-left-color: var(--accent-blue);
+      transform: translateX(10px);
+      box-shadow: 0 4px 15px var(--shadow-glow-orange);
+      font-weight: 600;
+    }
+
+    .pseudo-step strong { color: var(--accent-blue); }
+    .pseudo-step.active strong { color: #000; }
+
+    .visualization-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%);
+      padding: 20px;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .card-header h5 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin: 0;
+    }
+
+    .card-body {
+      background: linear-gradient(135deg, #1e2a3f, #2a3f5f);
+      padding: 30px;
+      min-height: 400px;
+    }
+
+    .stack-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      min-height: 200px;
+      width: 150px;
+      border: 3px solid var(--accent-blue);
+      border-top: none;
+      border-radius: 0 0 15px 15px;
+      padding: 10px;
+      position: relative;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .stack::before {
+      content: 'TOP →';
+      position: absolute;
+      top: -30px;
+      right: -60px;
+      color: var(--accent-orange);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .stack-element {
+      padding: 12px 20px;
+      margin: 5px 0;
+      background: linear-gradient(135deg, var(--accent-blue), #00d4d4);
+      color: #000;
+      border-radius: 8px;
+      font-weight: 700;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 10px var(--shadow-glow-blue);
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .stack-element.removing {
+      animation: slideOut 0.5s ease forwards;
+    }
+
+    @keyframes slideOut {
+      to { transform: translateY(-30px); opacity: 0; }
+    }
+
+    #msg_show {
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 50px;
+      display: none;
+    }
+
+    .alert-success { background: rgba(74, 222, 128, 0.2); border: 2px solid #22c55e; color: #22c55e; }
+    .alert-danger { background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; color: #ef4444; }
+    .alert-info { background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; color: #3b82f6; }
+
+    .card-footer {
+      background: var(--navbar-bg-main);
+      padding: 20px;
+      border-top: 2px solid var(--accent-blue);
+    }
+
+    .form-control {
+      background: var(--bg-dark);
+      border: 2px solid var(--accent-blue);
+      color: var(--text-white);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .form-control:focus {
+      background: var(--bg-dark);
+      border-color: var(--accent-orange);
+      color: var(--text-white);
+      box-shadow: 0 0 10px var(--shadow-glow-orange);
+      outline: none;
+    }
+
+    .btn {
+      border: none;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: #000; }
+    .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #00d4d4); color: #000; }
+    .btn-info { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+    .btn-warning { background: linear-gradient(135deg, var(--accent-orange), #ff6b00); color: #000; }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-glow-blue);
+    }
+
+    .code-section {
+      background: var(--card-bg);
+      margin: 30px 0;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .code-section h3 {
+      color: var(--accent-orange);
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .menu-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+    .menu-btns button {
+      background: rgba(0, 255, 255, 0.1);
+      border: 2px solid var(--accent-blue);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu-btns button:hover, .menu-btns button.active {
+      background: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--shadow-glow-blue);
+    }
+
+    
+    .code-container { display: none; }
+    .code-container.active { display: block; }
+    .code-container pre {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-orange);
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .run-code-btn {
+      background: linear-gradient(90deg, #10b981, #059669);
+      color: white; border: none; padding: 12px 30px; border-radius: 8px;
+      font-weight: 600; cursor: pointer; margin-top: 15px;
+      transition: all 0.3s ease; font-family: 'Orbitron', sans-serif;
+    }
+
+    .output-container {
+      background: rgba(0, 0, 0, 0.4);
+      color: #10b981;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      min-height: 100px;
+      font-family: 'Courier New', monospace;
+      border: 2px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .output-container h6 { color: var(--accent-orange); margin-bottom: 10px; font-family: 'Orbitron', sans-serif; }
+    
+    .hljs-comment { color: #6b7280; font-style: italic; }
+    .hljs-keyword { color: #c084fc; }
+    .hljs-string { color: #34d399; }
+    .hljs-number { color: #fbbf24; }
+
+         .level-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.level-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+button {
+  background: var(--shadow-glow-blue);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.slider {
+  width: 100px;
+  height: 5px;
+  background: #ccc;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 0;
+  background: #FF8C00;
+  transition: width 1s ease;
+}
+
+.active::before {
+  width: 100%;
+}
+
+/* Modal */
+.level-modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.level-modal-content {
+  background: var(--card-bg);
+    border: 2px solid #00aaff;
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+}
+
+.level-modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.level-modal-buttons button {
+  background: #FF8C00;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+    @media (max-width: 768px) {
+      .navbar { padding: 0 20px; }
+      .navbar-title { font-size: 18px; }
+      .container { padding: 0 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-title">DSA VISUALIZER</div>
+    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+  </div>
+  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+  </button>
+</nav>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Menu</div>
+    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-category">🔍 Searching Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
+      <i class="fas fa-search"></i>
+      <span>Linear Search</span>
+    </div>
+    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
+      <i class="fas fa-chart-line"></i>
+      <span>Binary Search</span>
+    </div>
+    <div class="menu-category">📊 Data Structures</div>
+    <div class="menu-item" onclick="selectAlgorithm('stack')">
+      <i class="fas fa-layer-group"></i>
+      <span>Stack</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('queue')">
+      <i class="fas fa-stream"></i>
+      <span>Queue</span>
+    </div>
+    <div class="menu-category">🔄 Sorting Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
+      <i class="fas fa-code-branch"></i>
+      <span>Merge Sort</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
+      <i class="fas fa-circle"></i>
+      <span>Bubble Sort</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('selection-sort')">
+      <i class="fas fa-check-square"></i>
+      <span>Selection Sort</span>
+    </div>
+    
+    <div class="menu-item" onclick="selectAlgorithm('quick-sort')">
+      <i class="fas fa-hand-pointer"></i>
+      <span>Quick Sort</span>
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start;">
+    
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div class="pseudo-step" data-step="push">
+        <strong>PUSH:</strong> Add element to top<br>
+        stack[++top] = element
+      </div>
+      <div class="pseudo-step" data-step="pop">
+        <strong>POP:</strong> Remove top element<br>
+        return stack[top--]
+      </div>
+      <div class="pseudo-step" data-step="peek">
+        <strong>PEEK:</strong> View top element<br>
+        return stack[top]
+      </div>
+      <div class="pseudo-step" data-step="isEmpty">
+        <strong>isEmpty:</strong> Check if empty<br>
+        return top == -1
+      </div>
+      <div class="pseudo-step" data-step="size">
+        <strong>SIZE:</strong> Get element count<br>
+        return top + 1
+      </div>
+    </div>
+
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5>Stack Visualizer</h5>
+        </div>
+        <div class="card-body">
+          <div class="stack-container">
+            <div class="stack" id="stack"></div>
+            <div id="msg_show"></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="stackInput" class="form-control" placeholder="Enter element">
+              <button class="btn btn-success" onclick="push()">Push</button>
+            </div>
+            <button class="btn btn-danger" onclick="pop()">Pop</button>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <button class="btn btn-primary" onclick="isEmpty_check()">isEmpty</button>
+            <button class="btn btn-info" onclick="size()">Size</button>
+            <button class="btn btn-warning" onclick="peek()">Peek</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-section">
+    <h3>💻 IMPLEMENTATIONS</h3>
+    <div class="menu-btns">
+      <button id="cppBtn" class="active" onclick="changeCode('cpp')">
+        <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" alt="C++">
+      </button>
+      <button id="pythonBtn" onclick="changeCode('python')">
+        <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" alt="Python">
+      </button>
+    </div>
+
+    <div class="code-container active" id="cpp-content">
+      <pre><code class="cpp"><span class="hljs-comment">// Stack Implementation in C++</span>
+<span class="hljs-keyword">#include</span> &lt;iostream&gt;
+<span class="hljs-keyword">using namespace</span> std;
+
+<span class="hljs-keyword">#define</span> MAX <span class="hljs-number">1000</span>
+
+<span class="hljs-keyword">class</span> Stack {
+    <span class="hljs-keyword">int</span> top;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-keyword">int</span> arr[MAX];  <span class="hljs-comment">// Stack array</span>
+    
+    Stack() { top = -<span class="hljs-number">1</span>; }  <span class="hljs-comment">// Constructor</span>
+    
+    <span class="hljs-comment">// Push element onto stack</span>
+    <span class="hljs-keyword">bool</span> <span class="hljs-function">push</span>(<span class="hljs-keyword">int</span> x) {
+        <span class="hljs-keyword">if</span> (top &gt;= (MAX - <span class="hljs-number">1</span>)) {
+            cout &lt;&lt; <span class="hljs-string">"Stack Overflow"</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+        }
+        arr[++top] = x;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+    }
+    
+    <span class="hljs-comment">// Pop element from stack</span>
+    <span class="hljs-keyword">int</span> <span class="hljs-function">pop</span>() {
+        <span class="hljs-keyword">if</span> (top &lt; <span class="hljs-number">0</span>) {
+            cout &lt;&lt; <span class="hljs-string">"Stack Underflow"</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
+        <span class="hljs-keyword">return</span> arr[top--];
+    }
+    
+    <span class="hljs-comment">// Peek top element</span>
+    <span class="hljs-keyword">int</span> <span class="hljs-function">peek</span>() {
+        <span class="hljs-keyword">if</span> (top &lt; <span class="hljs-number">0</span>) {
+            cout &lt;&lt; <span class="hljs-string">"Stack is Empty"</span>;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        }
+        return arr[top];
+    }
+    
+    <span class="hljs-comment">// Check if stack is empty</span>
+    <span class="hljs-keyword">bool</span> <span class="hljs-function">isEmpty</span>() {
+        <span class="hljs-keyword">return</span> (top &lt; <span class="hljs-number">0</span>);
+    }
+};</code></pre>
+      <button class="run-code-btn" onclick="runCode('cpp')">▶ Run Code</button>
+    </div>
+
+    <div class="code-container" id="python-content">
+      <pre><code class="python"><span class="hljs-comment"># Stack Implementation in Python</span>
+
+<span class="hljs-keyword">class</span> Stack:
+    <span class="hljs-keyword">def</span> <span class="hljs-function">__init__</span>(self):
+        <span class="hljs-comment"># Initialize empty stack</span>
+        self.stack = []
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-function">push</span>(self, item):
+        <span class="hljs-comment"># Add element to top</span>
+        self.stack.append(item)
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-function">pop</span>(self):
+        <span class="hljs-comment"># Remove and return top element</span>
+        <span class="hljs-keyword">if</span> self.isEmpty():
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"Stack Underflow"</span>
+        <span class="hljs-keyword">return</span> self.stack.pop()
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-function">peek</span>(self):
+        <span class="hljs-comment"># Return top element without removing</span>
+        <span class="hljs-keyword">if</span> self.isEmpty():
+            <span class="hljs-keyword">return</span> <span class="hljs-string">"Stack is Empty"</span>
+        <span class="hljs-keyword">return</span> self.stack[-<span class="hljs-number">1</span>]
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-function">isEmpty</span>(self):
+        <span class="hljs-comment"># Check if stack is empty</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(self.stack) == <span class="hljs-number">0</span>
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-function">size</span>(self):
+        <span class="hljs-comment"># Return number of elements</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(self.stack)</code></pre>
+      <button class="run-code-btn" onclick="runCode('python')">▶ Run Code</button>
+    </div>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to see the output...</div>
+    </div>
+  </div>
+
+        <div class="level-container">
+        <div class="level-wrapper">
+            <button id="l1">Level 1</button>
+            <div class="slider" id="slider1"></div>
+            <button id="l2">Level 2</button>
+            <div class="slider" id="slider2"></div>
+            <button id="l3">Level 3</button>
+        </div>
+    </div>
+
+    <!-- Modal for Level 2 Quiz -->
+    <div id="quizModal" class="level-modal">
+        <div class="level-modal-content">
+            <h3>Level 3 Quiz</h3>
+            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
+            
+            <div class="level-modal-buttons">
+                <button id="startQuiz">Start Quiz</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+<script>
+let stackData = [];
+
+// Sidebar Logic
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('active');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+  document.getElementById('hamburger').classList.toggle('active');
+}
+
+function selectAlgorithm(algo) {
+  if (algo === 'stack') toggleSidebar();
+  else alert('Redirecting to ' + algo.toUpperCase());
+}
+ function selectAlgorithm(algorithm) {
+    // Mapping IDs to filenames
+    const routes = {
+        'linear-search': 'linearSearch_L1.html',
+        'binary-search': 'binarySearch_L1.html',
+        'quick-sort': 'quickSort_L1.html',
+        'merge-sort': 'mergeSort_L1.html',
+        'bubble-sort': 'bubbleSort_L1.html',
+        'stack': 'stack_L1.html',
+        'queue': 'queue.html'
+    };
+
+    const targetPage = routes[algorithm];
+
+    if (targetPage) {
+        // Redirect to the new page
+        window.location.href = targetPage;
+    } else {
+        console.error("Route not found for:", algorithm);
+        toggleSidebar();
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    // Get the current filename (e.g., "quick_sort.html")
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Map of filenames back to IDs
+    const pageToId = {
+        'quickSort_L1.html': 'quick-sort',
+        'binarySearch_L1.html': 'binary-search',
+        'linearSearch_L1.html': 'linear-search',
+        'mergeSort_L1.html': 'merge-sort',
+        'bubbleSort_L1.html': 'bubble-sort',
+        'stack_L1.html': 'stack',
+        'queue_L1.html': 'queue'
+
+    };
+
+});
+
+// Visual Logic
+function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+function highlightStep(step) {
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  const el = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+  if (el) el.classList.add('active');
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg_show');
+  el.style.display = 'block';
+  el.className = `alert alert-${type}`;
+  el.innerHTML = text;
+}
+
+function renderStack() {
+  const container = document.getElementById('stack');
+  container.innerHTML = '';
+  stackData.forEach(val => {
+    const div = document.createElement('div');
+    div.className = 'stack-element';
+    div.textContent = val;
+    container.appendChild(div);
+  });
+}
+
+// Stack Operations
+async function push() {
+  const input = document.getElementById('stackInput');
+  const val = input.value.trim();
+  if (!val) return;
+  highlightStep('push');
+  await sleep(400);
+  stackData.push(val);
+  renderStack();
+  showMsg(`<i class="fas fa-check"></i> Pushed: ${val}`, 'success');
+  input.value = '';
+}
+
+async function pop() {
+  highlightStep('pop');
+  if (stackData.length === 0) {
+    showMsg('<i class="fas fa-times"></i> Stack Underflow!', 'danger');
+    return;
+  }
+  const el = document.getElementById('stack').lastElementChild;
+  el.classList.add('removing');
+  await sleep(500);
+  const popped = stackData.pop();
+  renderStack();
+  showMsg(`<i class="fas fa-trash"></i> Popped: ${popped}`, 'danger');
+}
+
+function peek() {
+  highlightStep('peek');
+  if (stackData.length === 0) showMsg('Stack is Empty', 'info');
+  else showMsg(`Top element is: ${stackData[stackData.length-1]}`, 'info');
+}
+
+function isEmpty_check() {
+  highlightStep('isEmpty');
+  const empty = stackData.length === 0;
+  showMsg(empty ? 'Stack is Empty' : 'Stack is NOT Empty', 'info');
+}
+
+function size() {
+  highlightStep('size');
+  showMsg(`Stack size: ${stackData.length}`, 'info');
+}
+
+// Code Section Logic
+function changeCode(lang) {
+  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
+  document.getElementById(`${lang}-content`).classList.add('active');
+  document.getElementById(`${lang}Btn`).classList.add('active');
+}
+
+function runCode(lang) {
+  const output = document.getElementById('codeOutput');
+  output.innerHTML = '<div style="color: #fbbf24;">Executing code...</div>';
+  setTimeout(() => {
+    if(lang === 'cpp') output.innerHTML = '<span style="color: #10b981;">Stack Initialized.<br>push(10)<br>push(20)<br>pop() -> 20</span>';
+    else output.innerHTML = '<span style="color: #10b981;">stack = Stack()<br>stack.push("A")<br>print(stack.peek()) -> "A"</span>';
+  }, 800);
+}
+
+ const l1 = document.getElementById("l1");
+const l2 = document.getElementById("l2");
+const l3 = document.getElementById("l3");
+
+const slider1 = document.getElementById("slider1");
+const slider2 = document.getElementById("slider2");
+
+const modal = document.getElementById("quizModal");
+const startQuiz = document.getElementById("startQuiz");
+const cancelBtn = document.getElementById("cancelBtn");
+
+// Level 2 is now unlocked by default
+let level2Unlocked = true; 
+let level3Unlocked = false;
+
+// Level 1: Always works
+l1.addEventListener("click", () => {
+  slider1.classList.add("active");
+});
+
+// Level 2: Now unlocked, so it just activates the slider without a modal
+l2.addEventListener("click", () => {
+  slider1.classList.add("active");
+  // Optional: you can add logic here to show Level 2 content
+});
+
+// Level 3: This is the only one that triggers the modal now
+l3.addEventListener("click", () => {
+  if (!level3Unlocked) {
+    // Show modal because Level 3 is still locked
+    modal.style.display = "flex";
+  } else {
+    // If Level 3 were already unlocked, just activate the slider
+    slider1.classList.add("active");
+    slider2.classList.add("active");
+  }
+});
+
+// ✅ Start Quiz → goes to the quiz page to unlock Level 3
+startQuiz.addEventListener("click", () => {
+  window.location.href = "stack_L2Quiz.html";
+});
+
+// Cancel modal
+cancelBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+});
+</script>
+</body>
+</html>

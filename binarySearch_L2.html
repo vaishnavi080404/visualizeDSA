@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Search Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-dark: #10121A;
+      --bg-medium: #1A1E29;
+      --card-bg: #212531;
+      --navbar-bg-main: #2B3242;
+      --navbar-bg-right: #3C4456;
+      --accent-blue: #00FFFF;
+      --accent-orange: #FF8C00;
+      --text-light: #E0E0E0;
+      --text-white: #FFFFFF;
+      --text-subtle: #99A1B3;
+      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.6);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+      color: var(--text-light);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--navbar-bg-main);
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .navbar-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-white);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .navbar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: -2px;
+    }
+
+    .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 25px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background: var(--accent-orange);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--shadow-glow-orange);
+    }
+
+    .hamburger-menu:hover .hamburger-line {
+      background: var(--accent-blue);
+      box-shadow: 0 0 10px var(--shadow-glow-blue);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-menu.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 350px;
+      height: 100%;
+      background: var(--card-bg);
+      border-left: 2px solid var(--accent-blue);
+      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+      z-index: 2500;
+      transition: right 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-header {
+      padding: 30px 25px;
+      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .sidebar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 11px;
+      color: var(--text-subtle);
+      letter-spacing: 1px;
+    }
+
+    .sidebar-menu {
+      padding: 20px 0;
+    }
+
+    .menu-category {
+      padding: 15px 25px 10px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      color: var(--accent-orange);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .menu-item {
+      padding: 15px 25px;
+      color: var(--text-light);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-item:hover {
+      background: rgba(0, 255, 255, 0.1);
+      border-left-color: var(--accent-blue);
+      color: var(--accent-blue);
+      padding-left: 30px;
+    }
+
+    .menu-item.active {
+      background: rgba(0, 255, 255, 0.15);
+      border-left-color: var(--accent-orange);
+      color: var(--accent-orange);
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      backdrop-filter: blur(3px);
+    }
+
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    /* Pseudo Code Container */
+    .pseudo-code-container {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      max-height: 600px;
+      overflow-y: auto;
+      position: sticky;
+      top: 90px;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .pseudo-code-container h5 {
+      color: var(--accent-orange);
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .pseudo-step {
+      background: rgba(0, 255, 255, 0.05);
+      padding: 12px 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      color: var(--text-light);
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .pseudo-step.active {
+      background: linear-gradient(90deg, var(--accent-orange), #ff6b00);
+      color: #000;
+      border-left-color: var(--accent-blue);
+      transform: translateX(10px);
+      box-shadow: 0 4px 15px var(--shadow-glow-orange);
+      font-weight: 600;
+    }
+
+    .pseudo-step strong {
+      color: var(--accent-blue);
+    }
+
+    .pseudo-step.active strong {
+      color: #000;
+    }
+
+    /* Visualization Area */
+    .visualization-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%);
+      padding: 20px;
+      border-bottom: 2px solid var(--accent-blue);
+    }
+
+    .card-header h5 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin: 0;
+    }
+
+    .card-body {
+      background: linear-gradient(135deg, #1e2a3f, #2a3f5f);
+      padding: 30px;
+      min-height: 400px;
+    }
+
+    .array-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 150px;
+      margin: 20px 0;
+    }
+
+    .array-element {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--navbar-bg-main);
+      color: var(--text-white);
+      border: 2px solid var(--accent-blue);
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      transition: all 0.3s ease;
+    }
+
+    .array-element.highlight {
+      background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+      transform: scale(1.2);
+      box-shadow: 0 0 20px var(--shadow-glow-orange);
+      color: #000;
+    }
+
+    .array-element.element_found {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      color: #000;
+      transform: scale(1.3);
+      box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.3); }
+      50% { transform: scale(1.35); }
+    }
+
+    .array-element.hidden {
+      opacity: 0.2;
+    }
+
+    #info, #message {
+      color: var(--text-light);
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+
+    .alert-success {
+      background: rgba(74, 222, 128, 0.2);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid #ef4444;
+      color: #ef4444;
+    }
+
+    .card-footer {
+      background: var(--navbar-bg-main);
+      padding: 20px;
+      border-top: 2px solid var(--accent-blue);
+    }
+
+    .form-control {
+      background: var(--bg-dark);
+      border: 2px solid var(--accent-blue);
+      color: var(--text-white);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .form-control:focus {
+      background: var(--bg-dark);
+      border-color: var(--accent-orange);
+      color: var(--text-white);
+      box-shadow: 0 0 10px var(--shadow-glow-orange);
+
+     
+    }
+
+    .form-control::placeholder {
+      color: var(--text-subtle);
+
+    
+    }
+
+    .input {
+      padding-left: 80px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), #00d4d4);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--shadow-glow-blue);
+    }
+
+    .btn-warning {
+      background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+      border: none;
+      color: #000;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    .form-range {
+      accent-color: var(--accent-orange);
+    }
+
+    /* Code Section */
+    .code-section {
+      background: var(--card-bg);
+      margin: 30px 0;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .code-section h3 {
+      color: var(--accent-orange);
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .menu-btns {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .menu-btns button {
+      background: rgba(0, 255, 255, 0.1);
+      border: 2px solid var(--accent-blue);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu-btns button:hover,
+    .menu-btns button.active {
+      background: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--shadow-glow-blue);
+    }
+
+    .code-container {
+      display: none;
+    }
+
+    .code-container.active {
+      display: block;
+    }
+
+    .code-container pre {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-orange);
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .run-code-btn {
+      background: linear-gradient(90deg, #10b981, #059669);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .run-code-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .output-container {
+      background: rgba(0, 0, 0, 0.4);
+      color: #10b981;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+      min-height: 100px;
+      font-family: 'Courier New', monospace;
+      border: 2px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .output-container h6 {
+      color: var(--accent-orange);
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .hljs-comment {
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    .hljs-keyword {
+      color: #c084fc;
+    }
+
+    .hljs-string {
+      color: #34d399;
+    }
+
+    .hljs-number {
+      color: #fbbf24;
+    }
+
+    .hljs-function {
+      color: #60a5fa;
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0 20px;
+      }
+
+      .navbar-title {
+        font-size: 18px;
+      }
+
+      .container {
+        padding: 0 15px;
+      }
+
+      .array-element {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+      }
+    }
+
+          .level-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.level-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+}
+
+button {
+  background: var(--shadow-glow-blue);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.slider {
+  width: 100px;
+  height: 5px;
+  background: #ccc;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 100%;
+  width: 0;
+  background: #FF8C00;
+  transition: width 1s ease;
+}
+
+.active::before {
+  width: 100%;
+}
+
+/* Modal */
+.level-modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.level-modal-content {
+  background: var(--card-bg);
+    border: 2px solid #00aaff;
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 300px;
+}
+
+.level-modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.level-modal-buttons button {
+  background: #FF8C00;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-left">
+    <div class="navbar-title">DSA VISUALIZER</div>
+    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+  </div>
+  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+    <div class="hamburger-line"></div>
+  </button>
+</nav>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Menu</div>
+    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
+  </div>
+  <div class="sidebar-menu">
+    <div class="menu-category">🔍 Searching Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
+      <i class="fas fa-search"></i>
+      <span>Linear Search</span>
+    </div>
+    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
+      <i class="fas fa-chart-line"></i>
+      <span>Binary Search</span>
+    </div>
+    <div class="menu-category">📊 Data Structures</div>
+    <div class="menu-item" onclick="selectAlgorithm('stack')">
+      <i class="fas fa-layer-group"></i>
+      <span>Stack</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('queue')">
+      <i class="fas fa-stream"></i>
+      <span>Queue</span>
+    </div>
+    <div class="menu-category">🔄 Sorting Algorithms</div>
+    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
+      <i class="fas fa-code-branch"></i>
+      <span>Merge Sort</span>
+    </div>
+    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
+      <i class="fas fa-circle"></i>
+      <span>Bubble Sort</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start;">
+    
+    <!-- Pseudo Code Section -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div class="pseudo-step" data-step="1">
+        <strong>Step 1:</strong> Set low = 0, high = n-1
+      </div>
+      <div class="pseudo-step" data-step="2">
+        <strong>Step 2:</strong> While low ≤ high
+      </div>
+      <div class="pseudo-step" data-step="3">
+        <strong>Step 3:</strong> mid = (low + high) / 2
+      </div>
+      <div class="pseudo-step" data-step="4">
+        <strong>Step 4:</strong> If arr[mid] == target
+      </div>
+      <div class="pseudo-step" data-step="5">
+        <strong>Step 5:</strong> Return mid (Found!)
+      </div>
+      <div class="pseudo-step" data-step="6">
+        <strong>Step 6:</strong> If arr[mid] < target
+      </div>
+      <div class="pseudo-step" data-step="7">
+        <strong>Step 7:</strong> Set low = mid + 1
+      </div>
+      <div class="pseudo-step" data-step="8">
+        <strong>Step 8:</strong> Else set high = mid - 1
+      </div>
+      <div class="pseudo-step" data-step="9">
+        <strong>Step 9:</strong> Return -1 (Not found)
+      </div>
+    </div>
+
+    <!-- Visualization Area -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5>Binary Search Visualizer</h5>
+        </div>
+        <div class="card-body">
+          <div class="array-container" id="arrayContainer"></div>
+          <div id="info"></div>
+          <div id="message"></div>
+        </div>
+        <div class="card-footer">
+          <form id="inputForm">
+            <div style="display: grid; grid-template-columns: 100px 1fr auto auto auto; gap: 10px; align-items: end;">
+              <div>
+                <label style="color: var(--text-light); font-size: 12px; margin-bottom: 5px; display: block;">Speed</label>
+                <input type="range" class="form-range" value="15" min="1" max="30" id="algo_speed">
+              </div>
+              <div class="input">
+                <input type="text" id="arrayInput" class="form-control" placeholder="Array (comma separated)" value="1,3,5,7,9,11,13,15">
+              </div>
+              <button class="btn-warning" type="button" id="random_array_generate">Random</button>
+              <input type="number" id="targetInput" class="form-control" placeholder="Target" style="width: 100px;">
+              <button type="submit" class="btn-primary">Start Search</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Implementation Section -->
+  <div class="code-section">
+    <h3>💻 IMPLEMENTATIONS</h3>
+    <div class="menu-btns">
+      <button id="cppBtn" class="active" onclick="changeCode('cpp')">
+        <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" alt="C++">
+      </button>
+      <button id="pythonBtn" onclick="changeCode('python')">
+        <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" alt="Python">
+      </button>
+    </div>
+
+    <!-- C++ Code -->
+    <div class="code-container active" id="cpp-content">
+      <pre><code class="cpp"><span class="hljs-comment">// Binary Search Implementation in C++</span>
+<span class="hljs-keyword">#include</span> &lt;iostream&gt;
+<span class="hljs-keyword">using namespace</span> std;
+
+<span class="hljs-comment">// Function to perform binary search</span>
+<span class="hljs-keyword">int</span> <span class="hljs-function">binarySearch</span>(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high) {
+    <span class="hljs-comment">// Repeat until pointers meet</span>
+    <span class="hljs-keyword">while</span> (low &lt;= high) {
+        <span class="hljs-comment">// Find middle index</span>
+        <span class="hljs-keyword">int</span> mid = low + (high - low) / <span class="hljs-number">2</span>;
+
+        <span class="hljs-comment">// Check if target is at mid</span>
+        <span class="hljs-keyword">if</span> (array[mid] == x)
+            <span class="hljs-keyword">return</span> mid;
+
+        <span class="hljs-comment">// If target is greater, ignore left half</span>
+        <span class="hljs-keyword">else if</span> (array[mid] &lt; x)
+            low = mid + <span class="hljs-number">1</span>;
+
+        <span class="hljs-comment">// If target is smaller, ignore right half</span>
+        <span class="hljs-keyword">else</span>
+            high = mid - <span class="hljs-number">1</span>;
+    }
+
+    <span class="hljs-comment">// Element not found</span>
+    <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;
+}
+
+<span class="hljs-keyword">int</span> <span class="hljs-function">main</span>() {
+    <span class="hljs-keyword">int</span> array[] = {<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>};
+    <span class="hljs-keyword">int</span> x = <span class="hljs-number">4</span>;
+    <span class="hljs-keyword">int</span> n = <span class="hljs-keyword">sizeof</span>(array) / <span class="hljs-keyword">sizeof</span>(array[<span class="hljs-number">0</span>]);
+
+    <span class="hljs-keyword">int</span> result = binarySearch(array, x, <span class="hljs-number">0</span>, n - <span class="hljs-number">1</span>);
+    
+    (result == -<span class="hljs-number">1</span>) ? cout &lt;&lt; <span class="hljs-string">"Element not found"</span> 
+                    : cout &lt;&lt; <span class="hljs-string">"Element found at index: "</span> &lt;&lt; result;
+    
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre>
+      <button class="run-code-btn" onclick="runCode('cpp')">▶ Run Code</button>
+    </div>
+
+    <!-- Python Code -->
+    <div class="code-container" id="python-content">
+      <pre><code class="python"><span class="hljs-comment"># Binary Search Implementation in Python</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">binarySearch</span>(array, x, low, high):
+    <span class="hljs-comment"># Repeat until the pointers low and high meet</span>
+    <span class="hljs-keyword">while</span> low &lt;= high:
+        <span class="hljs-comment"># Find middle index</span>
+        mid = low + (high - low) // <span class="hljs-number">2</span>
+
+        <span class="hljs-comment"># Check if target is at mid</span>
+        <span class="hljs-keyword">if</span> array[mid] == x:
+            <span class="hljs-keyword">return</span> mid
+        
+        <span class="hljs-comment"># If target is greater, ignore left half</span>
+        <span class="hljs-keyword">elif</span> array[mid] &lt; x:
+            low = mid + <span class="hljs-number">1</span>
+        
+        <span class="hljs-comment"># If target is smaller, ignore right half</span>
+        <span class="hljs-keyword">else</span>:
+            high = mid - <span class="hljs-number">1</span>
+    
+    <span class="hljs-comment"># Element not found</span>
+    <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>
+
+<span class="hljs-comment"># Test the function</span>
+array = [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>]
+x = <span class="hljs-number">4</span>
+result = binarySearch(array, x, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(array) - <span class="hljs-number">1</span>)
+
+<span class="hljs-keyword">if</span> result != -<span class="hljs-number">1</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Element found at index {result}"</span>)
+<span class="hljs-keyword">else</span>:
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"Element not found"</span>)</code></pre>
+      <button class="run-code-btn" onclick="runCode('python')">▶ Run Code</button>
+    </div>
+
+    <!-- Output Container -->
+    <div class="output-container" id="outputContainer">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to see the output...</div>
+    </div>
+  </div>
+</div>
+
+       <div class="level-container">
+        <div class="level-wrapper">
+            <button id="l1">Level 1</button>
+            <div class="slider" id="slider1"></div>
+            <button id="l2">Level 2</button>
+            <div class="slider" id="slider2"></div>
+            <button id="l3">Level 3</button>
+        </div>
+    </div>
+
+    <!-- Modal for Level 3 Quiz -->
+    <div id="quizModal" class="level-modal">
+        <div class="level-modal-content">
+            <h3>Level 3 Quiz</h3>
+            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
+            
+            <div class="level-modal-buttons">
+                <button id="startQuiz">Start Quiz</button>
+                <button id="cancelBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Sidebar Toggle
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const hamburger = document.getElementById('hamburger');
+  
+  sidebar.classList.toggle('active');
+  overlay.classList.toggle('active');
+  hamburger.classList.toggle('active');
+}
+
+function selectAlgorithm(algorithm) {
+  const menuItems = document.querySelectorAll('.menu-item');
+  menuItems.forEach(item => item.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  if (algorithm === 'binary-search') {
+    toggleSidebar();
+  } else {
+    alert('Coming soon: ' + algorithm.replace('-', ' ').toUpperCase());
+    toggleSidebar();
+  }
+}
+
+// Change code language
+function changeCode(lang) {
+  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
+  
+  if (lang === 'cpp') {
+    document.getElementById('cpp-content').classList.add('active');
+    document.getElementById('cppBtn').classList.add('active');
+  } else {
+    document.getElementById('python-content').classList.add('active');
+    document.getElementById('pythonBtn').classList.add('active');
+  }
+}
+
+// Run code simulation
+function runCode(lang) {
+  const output = document.getElementById('codeOutput');
+  output.innerHTML = '<div style="color: #fbbf24;">Running code...</div>';
+  
+  setTimeout(() => {
+    if (lang === 'cpp') {
+      output.innerHTML = `<span style="color: #10b981;">Element found at index: 1</span>`;
+    } else {
+      output.innerHTML = `<span style="color: #10b981;">Element found at index 1</span>`;
+    }
+  }, 800);
+}
+
+// Highlight pseudo code step
+function highlightStep(step) {
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  const stepElement = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+  if (stepElement) {
+    stepElement.classList.add('active');
+    stepElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// Binary Search Visualization
+async function binarySearchVisualization(arr, target, speed) {
+  let low = 0;
+  let high = arr.length - 1;
+  
+  highlightStep(1);
+  await sleep(speed);
+  
+  while (low <= high) {
+    highlightStep(2);
+    await sleep(speed);
+    
+    highlightStep(3);
+    const mid = Math.floor((low + high) / 2);
+    document.getElementById('info').innerHTML = `<span style="color: var(--accent-orange);">Low: ${low}, Mid: ${mid}, High: ${high}</span>`;
+    
+    highlightElement(mid, 'highlight');
+    await sleep(speed);
+    
+    highlightStep(4);
+    await sleep(speed);
+    
+    if (arr[mid] === target) {
+      highlightStep(5);
+      highlightElement(mid, 'element_found');
+      document.getElementById('message').innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i> Found at index ${mid}!</div>`;
+      return mid;
+    }
+    
+    highlightStep(6);
+    await sleep(speed);
+    
+    if (arr[mid] < target) {
+      highlightStep(7);
+      await sleep(speed);
+      low = mid + 1;
+      for (let i = 0; i <= mid; i++) {
+        hideElement(i);
+      }
+    } else {
+      highlightStep(8);
+      await sleep(speed);
+      high = mid - 1;
+      for (let i = mid; i < arr.length; i++) {
+        hideElement(i);
+      }
+    }
+    
+    await sleep(speed);
+    clearHighlight(mid);
+  }
+  
+  highlightStep(9);
+  document.getElementById('message').innerHTML = `<div class="alert alert-danger"><i class="fas fa-times-circle"></i> Element not found!</div>`;
+  return -1;
+}
+
+function highlightElement(index, className) {
+  const element = document.querySelectorAll('.array-element')[index];
+  if (element) {
+    element.classList.remove('highlight', 'element_found');
+    element.classList.add(className);
+  }
+}
+
+function clearHighlight(index) {
+  const element = document.querySelectorAll('.array-element')[index];
+  if (element) element.classList.remove('highlight');
+}
+
+function hideElement(index) {
+  const element = document.querySelectorAll('.array-element')[index];
+  if (element) element.classList.add('hidden');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, (31 - ms) * 50));
+}
+
+function createArrayElements(arr) {
+  const container = document.getElementById('arrayContainer');
+  container.innerHTML = '';
+  arr.forEach((val) => {
+    const div = document.createElement('div');
+    div.className = 'array-element';
+    div.textContent = val;
+    container.appendChild(div);
+  });
+}
+
+// Form submission
+document.getElementById('inputForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const arrayInput = document.getElementById('arrayInput').value.split(',').map(Number);
+  const target = parseInt(document.getElementById('targetInput').value);
+  const speed = parseInt(document.getElementById('algo_speed').value);
+  
+  // Reset
+  createArrayElements(arrayInput);
+  document.getElementById('message').innerHTML = '';
+  document.getElementById('info').innerHTML = '';
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  
+  // Start visualization
+  await binarySearchVisualization(arrayInput, target, speed);
+});
+
+// Random array generator
+document.getElementById('random_array_generate').addEventListener('click', function() {
+  const size = 8;
+  const randomArray = Array.from({length: size}, () => Math.floor(Math.random() * 50)).sort((a, b) => a - b);
+  document.getElementById('arrayInput').value = randomArray.join(',');
+});
+
+ const l1 = document.getElementById("l1");
+const l2 = document.getElementById("l2");
+const l3 = document.getElementById("l3");
+
+const slider1 = document.getElementById("slider1");
+const slider2 = document.getElementById("slider2");
+
+const modal = document.getElementById("quizModal");
+const startQuiz = document.getElementById("startQuiz");
+const cancelBtn = document.getElementById("cancelBtn");
+
+// Level 2 is now unlocked by default
+let level2Unlocked = true; 
+let level3Unlocked = false;
+
+// Level 1: Always works
+l1.addEventListener("click", () => {
+  slider1.classList.add("active");
+});
+
+// Level 2: Now unlocked, so it just activates the slider without a modal
+l2.addEventListener("click", () => {
+  slider1.classList.add("active");
+  // Optional: you can add logic here to show Level 2 content
+});
+
+// Level 3: This is the only one that triggers the modal now
+l3.addEventListener("click", () => {
+  if (!level3Unlocked) {
+    // Show modal because Level 3 is still locked
+    modal.style.display = "flex";
+  } else {
+    // If Level 3 were already unlocked, just activate the slider
+    slider1.classList.add("active");
+    slider2.classList.add("active");
+  }
+});
+
+// ✅ Start Quiz → goes to the quiz page to unlock Level 3
+startQuiz.addEventListener("click", () => {
+  window.location.href = "binarySearch_L2Quiz.html";
+});
+
+// Cancel modal
+cancelBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+
+// Close sidebar with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('active')) {
+      toggleSidebar();
+    }
+  }
+});
+</script>
+</body>
+</html>

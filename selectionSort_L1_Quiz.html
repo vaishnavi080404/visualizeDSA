@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 1 Quiz - Stack Fundamentals</title>
+    <!-- Cyber Theme Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Root Variables (Cyber Industrial Theme) --- */
+        :root {
+            --bg-dark: #10121A;
+            --bg-medium: #1A1E29;
+            --card-bg: #212531;
+            --navbar-bg-main: #2B3242;
+            --navbar-bg-right: #3C4456;
+            --accent-blue: #00FFFF;
+            --accent-orange: #FF8C00;
+            --accent-green: #00FF7F; /* Neon Green for Correct */
+            --accent-red: #FF4136;   /* Neon Red for Incorrect */
+            --text-light: #E0E0E0;
+            --text-white: #FFFFFF;
+            --text-subtle: #99A1B3;
+            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Custom styles integrated with Tailwind for a modern look */
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-medium);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Re-using the background pattern from the main page */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0A141E;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='100' y1='33' x2='100' y2='-3'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='100' y1='135' x2='100' y2='97'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='%2307121c' fill-opacity='0.6'%3E%3Crect x='100' width='100' height='100'/%3E%3Crect y='100' width='100' height='100'/%3E%3C/g%3E%3Cg fill-opacity='0.5'%3E%3Cpolygon fill='url(%23a)' points='100 30 0 0 200 0'/%3E%3Cpolygon fill='url(%23b)' points='100 100 0 130 0 100 200 100 200 130'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 0 15px var(--shadow-glow-blue), 0 6px 20px var(--shadow-dark);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-white);
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--shadow-glow-blue);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-dark);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid var(--navbar-bg-right);
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .question-card {
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        #question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        #options button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid var(--navbar-bg-right);
+            border-radius: 6px;
+            background: var(--navbar-bg-main);
+            color: var(--text-subtle);
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        #options button:hover:not(:disabled) {
+            background: var(--navbar-bg-right);
+            border-color: var(--accent-blue);
+            color: var(--text-light);
+        }
+        
+        /* Correct/Incorrect feedback classes */
+        .correct {
+            background-color: rgba(0, 255, 127, 0.1) !important;
+            border-color: var(--accent-green) !important;
+            color: var(--text-white);
+        }
+        .incorrect {
+            background-color: rgba(255, 65, 54, 0.1) !important;
+            border-color: var(--accent-red) !important;
+            color: var(--text-white);
+        }
+        .correct, .incorrect {
+            pointer-events: none !important;
+        }
+
+
+        .navigation-controls button {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        #next-btn {
+            background: var(--accent-blue);
+        }
+        #next-btn:hover:not(:disabled) {
+            background: var(--text-white);
+            box-shadow: 0 0 15px var(--shadow-glow-blue);
+        }
+        
+        #previous-btn {
+            background: var(--accent-orange);
+        }
+        #previous-btn:hover:not(:disabled) {
+            background: #ffae42; /* Lighter orange */
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .navigation-controls button:disabled {
+            background: var(--navbar-bg-main);
+            color: var(--text-subtle);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            height: 100%; width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 0 20px var(--shadow-glow-orange), 0 8px 30px var(--shadow-dark);
+            border: 1px solid var(--accent-orange);
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            z-index: 1001;
+        }
+
+        .modal-content h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent-orange);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        /* Base class for modal buttons */
+        .modal-btn {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            display: block;
+            width: 100%;
+        }
+        
+        #level-2-btn {
+            background: var(--accent-blue);
+            box-shadow: 0 0 15px var(--shadow-glow-blue);
+        }
+        #level-2-btn:hover {
+            background: var(--text-white);
+        }
+
+        #retry-btn {
+            background: var(--accent-orange);
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+        #retry-btn:hover {
+            background: #ffae42; 
+        }
+
+        #rationale-container {
+            margin-top: 1rem;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--navbar-bg-main);
+            border-radius: 6px;
+        }
+        #rationale-text {
+            color: var(--text-subtle);
+            font-size: 0.85rem;
+        }
+        #rationale-text strong {
+            color: var(--accent-orange);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>Level 1: Selection Sort Fundamentals Quiz</h2>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <p id="question"></p>
+            <div id="options"></div>
+            <div id="rationale-container" class="hidden">
+                <p id="rationale-text"><strong>Rationale:</strong> <span id="rationale-content"></span></p>
+            </div>
+            
+            <!-- New Navigation Controls Container -->
+            <div class="navigation-controls mt-4 flex gap-4">
+                <button id="previous-btn" disabled>Previous Question</button>
+                <button id="next-btn" disabled>Next Question</button>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="result-title"></h3>
+                <p id="result-text"></p>
+                <div id="modal-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         const quizData = [
+        // --- Easy ---
+        { 
+            question: "What is the primary action Selection Sort performs in each pass (iteration)?", 
+            answerOptions: [
+                { text: "It compares adjacent elements and swaps them if they are in the wrong order.", rationale: "This describes the action of Bubble Sort.", isCorrect: false },
+                { text: "It splits the list into two halves and recursively sorts them.", rationale: "This describes the action of Merge Sort.", isCorrect: false },
+                { text: "It finds the minimum (or maximum) element from the unsorted sub-array and places it at the beginning.", rationale: "This is the core characteristic and primary action of Selection Sort.", isCorrect: true },
+                { text: "It inserts an element from the unsorted part into its correct position in the sorted part.",
+                 rationale: "This describes the action of Insertion Sort.", isCorrect: false }
+            ], 
+            hint: "The name of the algorithm gives a clue about its action.",
+        },
+        // --- Easy ---
+        { 
+            question: "After the first pass of Selection Sort on an array of N elements, how many elements are guaranteed to be in their final, sorted position?", 
+            answerOptions: [
+                { text: "0", rationale: "The minimum element is found and placed into the first position (index 0).", isCorrect: false },
+                { text: "1", rationale: "After the first pass, the smallest element is guaranteed to be in the first position, making one element sorted.", isCorrect: true },
+                { text: "N/2", rationale: "This is not guaranteed by the first pass.", isCorrect: false },
+                { text: "N", rationale: "Only one pass has occurred, so the entire array is not yet sorted.", isCorrect: false }
+            ], 
+            hint: "The minimum element of the entire array is placed at index 0.",
+        },
+        // --- Easy (True/False) ---
+        { 
+            question: "True or False: Selection Sort is an unstable sorting algorithm.", 
+            answerOptions: [
+                { text: "True", rationale: "Selection Sort is unstable because the swap operation can change the relative order of equal elements (e.g., swapping a distant minimum with a non-minimum element before it).", isCorrect: true },
+                { text: "False", rationale: "It is unstable due to the way it swaps elements.", isCorrect: false }
+            ], 
+            hint: "Stability relates to whether the relative order of duplicate elements is preserved.",
+        },
+        // --- Medium ---
+        { 
+            question: "What is the Big O time complexity for the **worst-case** scenario of Selection Sort?", 
+            answerOptions: [
+                { text: "O(N)", rationale: "O(N) is too fast for a comparison sort that checks all elements.", isCorrect: false },
+                { text: "O(N log N)", rationale: "This is the complexity of efficient sorts like Merge Sort and Quick Sort.", isCorrect: false },
+                { text: "O($N^2$)", rationale: "Selection Sort requires nested loops: the outer loop runs N times, and the inner loop runs N, N-1, N-2... times, totaling $\frac{N(N-1)}{2}$ comparisons, which is O($N^2$).", isCorrect: true },
+                { text: "O($2^N$)", rationale: "This is far too slow and represents exponential complexity.", isCorrect: false }
+            ], 
+            hint: "The algorithm uses two nested loops, where the inner loop's running time is proportional to the size of the unsorted sub-array.",
+        },
+        // --- Medium ---
+        { 
+            question: "What is the Big O time complexity for the **best-case** scenario of Selection Sort (when the array is already sorted)?", 
+            answerOptions: [
+                { text: "O(N)", rationale: "O(N) is the best case for Bubble Sort (with optimization), but Selection Sort must still check every element.", isCorrect: false },
+                { text: "O($N^2$)", rationale: "Even if the array is sorted, Selection Sort still performs the same number of comparisons to *find* the minimum element in each pass, leading to O($N^2$).", isCorrect: true },
+                { text: "O(1)", rationale: "Selection Sort must check every element at least once.", isCorrect: false },
+                { text: "O(N log N)", rationale: "This complexity doesn't apply to Selection Sort.", isCorrect: false }
+            ], 
+            hint: "Selection Sort's performance is not sensitive to the initial order of the data. The number of swaps might change, but not the number of comparisons.",
+        },
+        // --- Medium (Code Analysis) ---
+        { 
+            question: "Given the array `[5, 4, 1, 3, 2]`. What does the array look like after the **first** full pass of Selection Sort (ascending order)?", 
+            answerOptions: [
+                { text: "[1, 4, 5, 3, 2]", rationale: "The minimum element (1) is found and swapped with the element at index 0 (5).", isCorrect: true },
+                { text: "[1, 2, 3, 4, 5]", rationale: "This is the final sorted array, not the result of the first pass.", isCorrect: false },
+                { text: "[4, 5, 1, 3, 2]", rationale: "This would imply swapping the first two elements, which is not the goal of the first pass.", isCorrect: false },
+                { text: "[5, 4, 1, 3, 2]", rationale: "This is the original array, indicating no action was taken.", isCorrect: false }
+            ], 
+            hint: "Find the smallest element in the entire list and swap it with the element at index 0.",
+        },
+        // --- Medium ---
+        { 
+            question: "In Selection Sort, if the array has 10 elements, how many **swaps** will occur in the worst case to fully sort the array?", 
+            answerOptions: [
+                { text: "10", rationale: "Selection Sort performs exactly $N-1$ swaps (or less, if an element is already in place), regardless of the input array order. With N=10, the maximum is 9 swaps.", isCorrect: false },
+                { text: "9", rationale: "Selection Sort requires an outer loop of $N-1$ iterations, and at most one swap occurs per iteration, leading to $N-1$ total swaps.", isCorrect: true },
+                { text: "45", rationale: "45 is the number of comparisons ($\frac{10 \times 9}{2}$), not swaps.", isCorrect: false },
+                { text: "100", rationale: "This is $N^2$, which is too high.", isCorrect: false }
+            ], 
+            hint: "The algorithm is famous for minimizing the number of data swaps.",
+        },
+        // --- Hard ---
+        { 
+            question: "Why is Selection Sort often preferred over Bubble Sort, despite both having O($N^2$) time complexity?", 
+            answerOptions: [
+                { text: "Selection Sort requires fewer overall comparisons.", rationale: "Both require $\approx N^2/2$ comparisons.", isCorrect: false },
+                { text: "Selection Sort is a stable algorithm.", rationale: "Selection Sort is generally unstable.", isCorrect: false },
+                { text: "Selection Sort is easier to implement recursively.", rationale: "Ease of implementation is not a performance advantage.", isCorrect: false },
+                { text: "Selection Sort guarantees a minimum number of **swaps** (at most N-1).", rationale: "Minimizing costly writes/swaps is a significant advantage over Bubble Sort, which can perform up to $N^2/2$ swaps in the worst case.", isCorrect: true }
+            ], 
+            hint: "Focus on the physical action of moving data in memory.",
+        },
+        // --- Hard (Code Analysis) ---
+        { 
+            question: "Given the array `[2, 2, 1, 1]` (two 2s and two 1s). How many total **comparisons** are performed by Selection Sort to fully sort this array?", 
+            answerOptions: [
+                { text: "6", rationale: "Total comparisons: Pass 1 (N-1=3), Pass 2 (N-2=2), Pass 3 (N-3=1). $3 + 2 + 1 = 6$ comparisons.", isCorrect: true },
+                { text: "3", rationale: "3 is the number of comparisons in the first pass only.", isCorrect: false },
+                { text: "16", rationale: "16 is $N^2$.", isCorrect: false },
+                { text: "4", rationale: "4 is the array size.", isCorrect: false }
+            ], 
+            hint: "The total number of comparisons is always $\frac{N(N-1)}{2}$, regardless of the input, for $N=4$.",
+        },
+        // --- Hard (Application) ---
+        { 
+            question: "In what type of memory environment would the advantage of Selection Sort's minimal swap count be most beneficial?", 
+            answerOptions: [
+                { text: "When data is stored entirely in the CPU cache.", rationale: "CPU cache operations are extremely fast; swap count matters less here.", isCorrect: false },
+                { text: "When data is stored on a disk (External Sorting).", rationale: "Disk I/O operations are very slow. Minimizing the number of expensive 'writes' (swaps) makes Selection Sort a good choice for external sorting problems.", isCorrect: true },
+                { text: "When data is small enough to fit entirely in the L1 cache.", rationale: "Similar to the first option, the benefit is minimal.", isCorrect: false },
+                { text: "In systems prioritizing time complexity over space complexity.", rationale: "This is a general statement; the benefit is specific to I/O-bound environments.", isCorrect: false }
+            ], 
+            hint: "Swaps are 'writes' to memory. Think about where 'writes' are the most expensive operation.",
+        },
+    ];
+
+        const PASS_THRESHOLD = 70; // 70% required to move to Level 2
+        let current = 0;
+        let score = 0;
+        // Array to store the index of the selected option for each question (null if unanswered)
+        let userAnswers = new Array(quizData.length).fill(null); 
+
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const previousBtn = document.getElementById("previous-btn"); // New button element
+        const progress = document.querySelector(".progress");
+        const modal = document.getElementById("result-modal");
+        const resultTitle = document.getElementById("result-title");
+        const resultText = document.getElementById("result-text");
+        const modalActions = document.getElementById("modal-actions");
+        const rationaleContainer = document.getElementById("rationale-container");
+        const rationaleContent = document.getElementById("rationale-content");
+
+        function loadQuestion() {
+            const q = quizData[current];
+            questionEl.textContent = `${current + 1}. ${q.question}`;
+            optionsEl.innerHTML = "";
+            rationaleContainer.classList.add("hidden");
+            
+            // Determine if answered
+            const previouslySelected = userAnswers[current];
+
+            // 1. Build Options
+            q.answerOptions.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.textContent = opt.text;
+                btn.setAttribute('data-index', index);
+                btn.addEventListener("click", () => handleOptionClick(btn, index));
+                optionsEl.appendChild(btn);
+            });
+
+            // 2. Restore State and Buttons
+            const allButtons = optionsEl.querySelectorAll('button');
+            if (previouslySelected !== null) {
+                // Restore Rationale
+                const selectedOption = q.answerOptions[previouslySelected];
+                rationaleContent.textContent = selectedOption.rationale;
+                rationaleContainer.classList.remove("hidden");
+                
+                // Restore Highlighting and disable buttons
+                allButtons.forEach((btn, i) => {
+                    const option = q.answerOptions[i];
+                    
+                    if (option.isCorrect) {
+                        btn.classList.add('correct');
+                    } else if (i === previouslySelected) {
+                        btn.classList.add('incorrect');
+                    }
+                    btn.style.pointerEvents = 'none'; // Keep disabled if already answered
+                });
+                nextBtn.disabled = false; // Always allow navigation if answered
+            } else {
+                // Unanswered state
+                nextBtn.disabled = true;
+                // Ensure all buttons are clickable
+                allButtons.forEach(btn => btn.style.pointerEvents = 'auto');
+            }
+
+            // 3. Update navigation button states
+            previousBtn.disabled = current === 0;
+            if (current === quizData.length - 1) {
+                nextBtn.textContent = "Show Results";
+            } else {
+                nextBtn.textContent = "Next Question";
+            }
+
+            // 4. Update progress bar
+            progress.style.width = `${((current + (previouslySelected !== null ? 1 : 0)) / quizData.length) * 100}%`;
+        }
+
+        function handleOptionClick(clickedBtn, index) {
+            // Only allow selection if the question hasn't been answered yet
+            if (userAnswers[current] !== null) return;
+
+            // 1. Save the answer
+            userAnswers[current] = index;
+
+            const q = quizData[current];
+            const allButtons = optionsEl.querySelectorAll('button');
+            const selectedOption = q.answerOptions[index];
+
+            // 2. Show Rationale
+            rationaleContent.textContent = selectedOption.rationale;
+            rationaleContainer.classList.remove("hidden");
+
+            // 3. Mark feedback (correct/incorrect) and disable further clicks
+            allButtons.forEach((btn, i) => {
+                const option = q.answerOptions[i];
+                
+                if (option.isCorrect) {
+                    btn.classList.add('correct');
+                } else if (i === index) {
+                    btn.classList.add('incorrect');
+                }
+                btn.style.pointerEvents = 'none'; // Disable further clicks globally
+            });
+
+            // 4. Enable next button
+            nextBtn.disabled = false;
+
+            // 5. Update progress bar visually to show this question is complete
+            progress.style.width = `${((current + 1) / quizData.length) * 100}%`;
+        }
+        
+        // --- Navigation Handlers ---
+        function nextQuestion() {
+            if (current < quizData.length - 1) {
+                current++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function previousQuestion() {
+            if (current > 0) {
+                current--;
+                loadQuestion();
+            }
+        }
+        // --- End Navigation Handlers ---
+        
+        nextBtn.addEventListener("click", nextQuestion);
+        previousBtn.addEventListener("click", previousQuestion);
+
+        function calculateScore() {
+            let finalScore = 0;
+            userAnswers.forEach((selectedIndex, qIndex) => {
+                if (selectedIndex !== null) {
+                    const q = quizData[qIndex];
+                    if (q.answerOptions[selectedIndex].isCorrect) {
+                        finalScore++;
+                    }
+                }
+            });
+            return finalScore;
+        }
+
+        function showResult() {
+            score = calculateScore(); // Calculate score based on saved answers
+            modal.classList.remove("hidden");
+            modalActions.innerHTML = ""; // Clear existing buttons
+            
+            const percentage = (score / quizData.length) * 100;
+            const message = `You answered ${score} out of ${quizData.length} questions correctly.`;
+
+            if (percentage >= PASS_THRESHOLD) {
+                resultTitle.textContent = "🎉 Level 1 Complete!";
+                resultText.textContent = `${message} Your score is ${percentage.toFixed(0)}%. You've successfully demonstrated your understanding!`;
+                
+                // Add Move to Level 2 Button
+                const level2Btn = document.createElement('button');
+                level2Btn.id = 'level-2-btn';
+                level2Btn.className = 'modal-btn';
+                level2Btn.textContent = 'Move to Level 2';
+                level2Btn.addEventListener('click', () => {
+                    window.location.href = 'selectionSort_L2.html';
+                     console.log("Navigating to Level 2 (Placeholder action).");
+                     modal.classList.add("hidden"); 
+                });
+                modalActions.appendChild(level2Btn);
+
+            } else {
+                resultTitle.textContent = "✍️ Keep Practicing!";
+                resultText.textContent = `${message} Your score is ${percentage.toFixed(0)}%. You need ${PASS_THRESHOLD}% to proceed. Review the material and try again.`;
+            }
+
+            // Always add Retry button
+            const retryBtn = document.createElement('button');
+            retryBtn.id = 'retry-btn';
+            retryBtn.className = 'modal-btn';
+            retryBtn.textContent = 'Retry Quiz';
+            retryBtn.addEventListener("click", () => {
+                modal.classList.add("hidden");
+                current = 0;
+                score = 0;
+                userAnswers.fill(null); // Reset all answers
+                loadQuestion();
+            });
+            
+            // Apply specific retry button style
+            retryBtn.style.background = "var(--accent-orange)";
+            retryBtn.style.boxShadow = "0 0 15px var(--shadow-glow-orange)";
+            modalActions.appendChild(retryBtn);
+        }
+
+        // Initial load
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>

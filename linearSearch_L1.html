@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Search - DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Copy all CSS from binary search document here - keeping it exactly the same */
+        /* I'll include just the essential override for content differences */
+    </style>
+    <link rel="stylesheet" href="binary-search-styles.css">
+     <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #10121A;
+            --bg-medium: #1A1E29;
+            --card-bg: #212531;
+            --navbar-bg-main: #2B3242;
+            --navbar-bg-right: #3C4456;
+            --accent-blue: #00FFFF;
+            --accent-orange: #FF8C00;
+            --text-light: #E0E0E0;
+            --text-white: #FFFFFF;
+            --text-subtle: #99A1B3;
+            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--navbar-bg-main);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .navbar-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-white);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .navbar-subtitle {
+            font-size: 11px;
+            color: var(--text-subtle);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-top: -2px;
+        }
+
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .hamburger-line {
+            width: 100%;
+            height: 3px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .hamburger-menu:hover .hamburger-line {
+            background: var(--accent-blue);
+            box-shadow: 0 0 10px var(--shadow-glow-blue);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background: var(--card-bg);
+            border-left: 2px solid var(--accent-blue);
+            box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+            z-index: 2500;
+            transition: right 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .sidebar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 11px;
+            color: var(--text-subtle);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-category {
+            padding: 15px 25px 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: var(--text-light);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: var(--accent-blue);
+            color: var(--accent-blue);
+            padding-left: 30px;
+        }
+
+        .menu-item.active {
+            background: rgba(0, 255, 255, 0.15);
+            border-left-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .menu-item i {
+            font-size: 16px;
+            width: 20px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            backdrop-filter: blur(3px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        /* Header with Prerequisites */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .main-title {
+            background: linear-gradient(135deg, var(--card-bg), var(--navbar-bg-main));
+            padding: 20px 50px;
+            border-radius: 50px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-white);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .prerequisites-box {
+            background: var(--card-bg);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow-dark), 0 0 15px var(--shadow-glow-orange);
+            min-width: 200px;
+            border: 2px solid var(--accent-orange);
+        }
+
+        .prerequisites-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prerequisites-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .prerequisites-box li {
+            font-size: 13px;
+            color: var(--text-light);
+            margin: 6px 0;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .prerequisites-box li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-orange);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* Top Cards Row */
+        .top-cards {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px var(--shadow-dark), 0 0 25px var(--shadow-glow-blue);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .glossary-term-chip {
+            background-color: transparent;
+            border-bottom: 1px dashed var(--accent-blue);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--accent-blue);
+            position: relative;
+            padding: 2px 0;
+            display: inline-block;
+            line-height: 1.2;
+        }
+
+        .glossary-term-chip:hover {
+            border-bottom-style: solid;
+        }
+
+        .glossary-definition-popup {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: 250px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--accent-orange);
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+            color: var(--text-subtle);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+            pointer-events: none;
+        }
+
+        .glossary-term-chip:hover .glossary-definition-popup {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .glossary-definition-popup strong {
+            color: var(--accent-orange);
+        }
+
+        .inner-definition-box {
+            background-color: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--text-subtle);
+            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
+        }
+
+        .inner-definition-box strong {
+            color: var(--accent-blue);
+        }
+
+        /* Algorithm Card */
+        .algorithm-card {
+            background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%);
+            border: 3px solid var(--accent-orange);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .algorithm-card .card-title {
+            color: var(--text-white);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .info-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .algorithm-steps {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-steps p {
+            color: var(--text-white);
+            font-size: 13px;
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        .algorithm-steps strong {
+            color: var(--accent-orange);
+        }
+
+        .method-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: absolute;
+            right: 20px;
+            top: 70px;
+        }
+
+        .method-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid var(--accent-blue);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        .method-btn:hover {
+            background: var(--accent-blue);
+            color: #000;
+            transform: translateX(-5px);
+            box-shadow: 0 0 15px var(--shadow-glow-blue);
+        }
+
+        /* Modal Popup */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-blue);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px var(--shadow-dark), 0 0 30px var(--shadow-glow-blue);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background: var(--accent-orange);
+            border: none;
+            border-radius: 50%;
+            color: #000;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            box-shadow: 0 0 15px var(--shadow-glow-orange);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+        }
+
+        .modal-code {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .modal-code pre {
+            color: var(--text-light);
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        .modal-code .keyword {
+            color: #ff79c6;
+        }
+
+        .modal-code .function {
+            color: #50fa7b;
+        }
+
+        .modal-code .comment {
+            color: #6272a4;
+            font-style: italic;
+        }
+
+        /* Manual Run-Through */
+        .manual-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .manual-card .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+        }
+
+        .array-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-arrow {
+            width: 35px;
+            height: 35px;
+            background: var(--navbar-bg-main);
+            border: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--accent-orange);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover {
+            background: var(--accent-orange);
+            color: #000;
+        }
+
+        .array-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .array-item {
+            width: 45px;
+            height: 45px;
+            background: var(--navbar-bg-main);
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-white);
+        }
+
+        .array-item.highlight {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border-color: #22c55e;
+            color: #000;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        }
+
+        .array-item.checking {
+            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+            border-color: var(--accent-orange);
+            color: #000;
+        }
+
+        .target-circle {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border: 4px solid var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #000;
+            box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
+        }
+
+        .step-info {
+            text-align: left;
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .step-info strong {
+            color: var(--accent-orange);
+        }
+
+        .result-badge {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        /* Bottom Cards */
+        .bottom-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .how-works-card {
+            background: var(--card-bg);
+        }
+
+        .icon-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .icon-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 12px 0;
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .icon-list .icon {
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .icon.search { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .icon.check { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .icon.iterate { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+        .icon.compare { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .icon.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Complexity Card */
+        .complexity-card {
+            background: linear-gradient(135deg, #6b8dd8 0%, #5a73d4 100%);
+            border: 2px solid var(--accent-orange);
+            position: relative;
+        }
+
+        .complexity-card .card-title {
+            color: var(--text-white);
+            margin-bottom: 15px;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            padding: 10px;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--accent-orange);
+            border-radius: 50%;
+            color: var(--accent-orange);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: var(--accent-orange);
+            color: #000;
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dot.active {
+            background: var(--accent-orange);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .case-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .case-card h4 {
+            color: var(--accent-orange);
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .case-card p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .case-card .example {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .case-card .example strong {
+            color: var(--accent-blue);
+        }
+
+        .graph-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            height: 200px;
+        }
+
+        .graph-title {
+            color: var(--text-white);
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .graph-svg {
+            width: 100%;
+            height: 150px;
+        }
+
+        .graph-curve {
+            stroke: var(--accent-orange);
+            stroke-width: 4;
+            fill: none;
+            filter: drop-shadow(0 0 8px var(--accent-orange));
+        }
+
+        .graph-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 11px;
+            text-align: center;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        /* Videos Section */
+        .videos-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .videos-button {
+            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
+            color: var(--text-white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px var(--shadow-glow-orange);
+            transition: all 0.3s ease;
+        }
+
+        .videos-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px var(--shadow-glow-orange);
+        }
+
+        /* Level Progress */
+        .level-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        .level-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        .level-wrapper button {
+            background: var(--shadow-glow-blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .slider {
+            width: 100px;
+            height: 5px;
+            background: #ccc;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+      
+        /* Inline all CSS from binary search for completeness */
+        .slider{width:100px;height:5px;background:#ccc;position:relative;overflow:hidden;border-radius:10px}
+        .slider::before{content:"";position:absolute;height:100%;width:0;background:#FF8C00;transition:width 1s ease}
+        .slider.active::before{width:100%}
+        .modal{display:none;position:fixed;z-index:100;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}
+    </style>
+</head>
+<body>
+    <!-- Same Navbar as Binary Search -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-title">DSA VISUALIZER</div>
+            <div class="navbar-subtitle">Data Structures & Algorithms</div>
+        </div>
+        <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </button>
+    </nav>
+
+    <!-- Same Sidebar - but Linear Search is active -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Menu</div>
+            <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-category">🔍 Searching Algorithms</div>
+            <div class="menu-item active" onclick="selectAlgorithm('linear-search')">
+                <i class="fas fa-search"></i>
+                <span>Linear Search</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('binary-search')">
+                <i class="fas fa-chart-line"></i>
+                <span>Binary Search</span>
+            </div>
+            <div class="menu-category">📊 Data Structures</div>
+            <div class="menu-item" onclick="selectAlgorithm('stack')">
+                <i class="fas fa-layer-group"></i>
+                <span>Stack</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('queue')">
+                <i class="fas fa-stream"></i>
+                <span>Queue</span>
+            </div>
+            <div class="menu-category">🔄 Sorting Algorithms</div>
+            <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
+                <i class="fas fa-code-branch"></i>
+                <span>Merge Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
+                <i class="fas fa-circle"></i>
+                <span>Bubble Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('selection-sort')">
+                <i class="fas fa-hand-pointer"></i>
+                <span>Selection Sort</span>
+            </div>
+            <div class="menu-item" onclick="selectAlgorithm('quick-sort')">
+                <i class="fas fa-bolt"></i>
+                <span>Quick Sort</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content - LINEAR SEARCH CONTENT -->
+    <div class="container">
+        <div class="header-section">
+            <div class="main-title">MASTERING LINEAR SEARCH</div>
+            <div class="prerequisites-box">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>Arrays</li>
+                    <li>Basic Loops</li>
+                    <li>Time Complexity</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="top-cards">
+            <div class="card">
+                <h3 class="card-title">What is a Linear Search?</h3>
+                <div class="main-topic-text">
+                    <p>
+                        <span class="glossary-term-chip">Linear Search
+                            <span class="glossary-definition-popup">
+                                <strong>Linear Search:</strong> A simple searching algorithm that checks every element in the array sequentially until the target is found or the end is reached.
+                            </span>
+                        </span>
+                        is the simplest searching algorithm. It works by <strong>sequentially checking each element</strong> in the array from start to finish until the target element is found or the array ends. This algorithm works on both <strong>sorted and unsorted arrays</strong>.
+                    </p>
+
+                    <div class="inner-definition-box">
+                        💡 <strong>Real-World Analogy:</strong> Imagine searching for a specific book on a shelf 📚 — you check each book one by one from left to right until you find the one you're looking for.
+                    </div>
+
+                    <h3 style="margin-top:25px;">Sequential Search Approach</h3>
+                    <ul>
+                        <li>Start from the <strong>first element</strong> of the array.</li>
+                        <li>Compare each element with the target value.</li>
+                        <li>If a match is found, return the <strong>index</strong> of that element.</li>
+                        <li>If the end of the array is reached without finding the target, return <strong>-1</strong>.</li>
+                        <li>Continue until the element is found or array ends.</li>
+                    </ul>
+
+                    <div class="inner-definition-box">
+                        🧩 <strong>Key Principle:</strong>
+                        <ul style="margin: 8px 0 0 18px;">
+                            <li>Works on both sorted and unsorted arrays.</li>
+                            <li>Checks every element one by one.</li>
+                            <li>Simple but can be slow for large datasets: O(n).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card algorithm-card">
+                <div class="info-icon">i</div>
+                <h3 class="card-title">Algorithm: Linear Search (Array A, Value x)</h3>
+                <div class="algorithm-steps">
+                    <p><strong>Step 1:</strong> Start from index i = 0</p>
+                    <p><strong>Step 2:</strong> While i < n, repeat the following steps:</p>
+                    <p><strong>Step 3:</strong> If A[i] == x, return i</p>
+                    <p><strong>Step 4:</strong> Increment i by 1</p>
+                    <p><strong>Step 5:</strong> If i >= n, return -1 (element not found)</p>
+                    <p><strong>Step 6:</strong> Exit</p>
+                </div>
+                <div class="method-buttons">
+                    <button class="method-btn" onclick="openModal('iteration')">Iteration Method</button>
+                    <button class="method-btn" onclick="openModal('recursive')">Recursive Method</button>
+                </div>
+
+                 <div class="stack-image" style="text-align:center; margin-top:20px;">
+                        <img src="./image/linearSearch.png" 
+                             alt="Stack illustration showing LIFO concept" 
+                             style="max-width:50%; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+                    </div>
+            </div>
+
+            
+        </div>
+
+        <div class="manual-card">
+            <h3 class="card-title">Manual Run-Through: Search for 11</h3>
+            <p class="card-text" style="margin-bottom: 15px;">We will search for value 11 in the array: [5, 9, 3, 11, 7, 2, 15, 1]</p>
+            <div class="array-container">
+                <div class="nav-arrow">◄</div>
+                <div class="array-row">
+                    <div class="array-item">5</div>
+                    <div class="array-item">9</div>
+                    <div class="array-item">3</div>
+                    <div class="array-item highlight">11</div>
+                    <div class="array-item">7</div>
+                    <div class="array-item">2</div>
+                    <div class="array-item">15</div>
+                    <div class="array-item">1</div>
+                </div>
+                <div class="nav-arrow">►</div>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 30px; align-items: center; margin-top: 25px; flex-wrap: wrap;">
+                <div class="target-circle">11</div>
+                <div class="step-info">
+                    <p><strong>Step 1:</strong> Check arr[0] = 5 ≠ 11</p>
+                    <p><strong>Step 2:</strong> Check arr[1] = 9 ≠ 11</p>
+                    <p><strong>Step 3:</strong> Check arr[2] = 3 ≠ 11</p>
+                    <p><strong>Step 4:</strong> Check arr[3] = 11 ✅ Found!</p>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <span class="result-badge"><i class="fas fa-check-circle"></i> Result: Value 11 is found at index 3</span>
+            </div>
+        </div>
+
+        <div class="bottom-cards">
+            <div class="card how-works-card">
+                <h3 class="card-title">How Linear Search Works</h3>
+                <ul class="icon-list">
+                    <li>
+                        <span class="icon search"><i class="fas fa-arrow-right"></i></span>
+                        <span>Start from the first element and move sequentially through the array</span>
+                    </li>
+                    <li>
+                        <span class="icon compare"><i class="fas fa-equals"></i></span>
+                        <span>Compare each element with the target value</span>
+                    </li>
+                    <li>
+                        <span class="icon check"><i class="fas fa-check-circle"></i></span>
+                        <span>If a match is found, return the index immediately</span>
+                    </li>
+                    <li>
+                        <span class="icon iterate"><i class="fas fa-redo"></i></span>
+                        <span>Continue checking until the target is found or array ends</span>
+                    </li>
+                    <li>
+                        <span class="icon error"><i class="fas fa-times-circle"></i></span>
+                        <span>If no match is found after checking all elements, return -1</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card complexity-card">
+                <h3 class="card-title">Linear Search Time Complexity</h3>
+                <div class="carousel-container">
+                    <button class="carousel-nav prev" onclick="changeSlide(-1)">◄</button>
+                    <button class="carousel-nav next" onclick="changeSlide(1)">►</button>
+                    
+                    <div class="carousel-track" id="carouselTrack">
+                        <div class="carousel-slide">
+                            <p style="color: rgba(255, 255, 255, 0.9); font-size: 13px; line-height: 1.6; margin-bottom: 15px;">
+                                Linear Search has a time complexity of <strong style="color: var(--accent-orange); font-size: 15px;">O(n)</strong> where n is the number of elements in the array.
+                            </p>
+                            <div class="graph-container">
+                                <div class="graph-title">Time Complexity Graph</div>
+                                <svg class="graph-svg" viewBox="0 0 300 150" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:var(--accent-orange);stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#ffb84d;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path class="graph-curve" d="M 0,140 L 300,10" stroke="url(#grad)"/>
+                                </svg>
+                                <div class="graph-label">Time increases linearly as number of values increases</div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-slide">
+                            <div class="case-card">
+                                <h4>⭐ Best Case Scenario: O(1)</h4>
+                                <p>The best case occurs when the target element is the first element in the array.</p>
+                                <p><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1) - Constant time</p>
+                                <div class="example">
+                                    <p><strong>Example:</strong></p>
+                                    <p>Array: [11, 3, 5, 7, 9, 13, 15, 1]</p>
+                                    <p>Target: 11</p>
+                                    <p style="margin-top: 8px;">Step 1: Check arr[0] = 11 ✅</p>
+                                    <p style="margin-top: 8px; color: #4ade80;"><strong>Result:</strong> Only 1 comparison needed</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="carousel-slide">
+                            <div class="case-card">
+                                <h4>⚠️ Worst Case Scenario: O(n)</h4>
+                                <p>The worst case occurs when the target element is the last element or not present in the array.</p>
+                                <p><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(n) - Linear time</p>
+                                <div class="example">
+                                    <p><strong>Example:</strong></p>
+                                    <p>Array: [3, 5, 7, 9, 11, 13, 15, 1]</p>
+                                    <p>Target: 1 (last element)</p>
+                                    <p style="margin-top: 8px;">Must check all 8 elements</p>
+                                    <p>arr[0]=3, arr[1]=5, arr[2]=7...arr[7]=1 ✅</p>
+                                    <p style="margin-top: 8px; color: #f87171;"><strong>Result:</strong> 8 comparisons needed (n comparisons)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-indicators">
+                    <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+                    <div class="carousel-dot" onclick="goToSlide(1)"></div>
+                    <div class="carousel-dot" onclick="goToSlide(2)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="videos-section">
+            <button class="videos-button"><i class="fas fa-play-circle"></i> LEARN MORE WITH VIDEOS</button>
+        </div>
+
+        <div class="level-container">
+            <div class="level-wrapper">
+                <button id="l1">Level 1</button>
+                <div class="slider" id="slider1"></div>
+                <button id="l2">Level 2</button>
+                <div class="slider" id="slider2"></div>
+                <button id="l3">Level 3</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Method Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h3 class="modal-title" id="modalTitle">Iteration Method</h3>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModal" class="modal" style="display:none;position:fixed;z-index:3000;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;">
+        <div class="modal-content" style="background:var(--card-bg);border:2px solid #00aaff;padding:20px 30px;border-radius:15px;text-align:center;width:300px;">
+            <h3>Level 2 Quiz</h3>
+            <p>Attempt the quiz to unlock Level 2 and move forward.</p>
+            <div class="modal-buttons" style="display:flex;justify-content:center;margin-top:15px;gap:10px;">
+                <button id="startQuiz" style="background:#FF8C00;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;">Start Quiz</button>
+                <button id="cancelBtn" style="background:#FF8C00;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy all JavaScript from binary search document
+        // Modal, Carousel, Sidebar functions - exactly the same
+        
+        function openModal(method) {
+            const modal = document.getElementById('modalOverlay');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+
+            if (method === 'iteration') {
+                title.textContent = 'Iteration Method';
+                body.innerHTML = `
+                    <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 20px;">
+                        The iterative approach uses a loop to check each element sequentially until the target is found.
+                    </p>
+                    <div class="modal-code">
+                        <pre><span class="keyword" style="color:#ff79c6">function</span> <span class="function" style="color:#50fa7b">linearSearchIterative</span>(arr, x) {
+    <span class="keyword" style="color:#ff79c6">for</span> (<span class="keyword" style="color:#ff79c6">let</span> i = 0; i < arr.length; i++) {
+        <span class="comment" style="color:#6272a4;font-style:italic">// Check if current element matches target</span>
+        <span class="keyword" style="color:#ff79c6">if</span> (arr[i] == x)
+            <span class="keyword" style="color:#ff79c6">return</span> i;
+    }
+    
+    <span class="comment" style="color:#6272a4;font-style:italic">// Element not found</span>
+    <span class="keyword" style="color:#ff79c6">return</span> -1;
+}</pre>
+                    </div>
+                    <p style="color: var(--text-light); line-height: 1.8; margin-top: 15px;">
+                        <strong style="color: var(--accent-orange);">Key Points:</strong><br>
+                        • Uses a simple for loop<br>
+                        • Checks elements sequentially<br>
+                        • Very easy to understand and implement<br>
+                        • Works on sorted and unsorted arrays
+                    </p>
+                `;
+            } else if (method === 'recursive') {
+                title.textContent = 'Recursive Method';
+                body.innerHTML = `
+                    <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 20px;">
+                        The recursive approach checks one element at a time and calls itself with the next index.
+                    </p>
+                    <div class="modal-code">
+                        <pre><span class="keyword" style="color:#ff79c6">function</span> <span class="function" style="color:#50fa7b">linearSearchRecursive</span>(arr, x, index = 0) {
+    <span class="comment" style="color:#6272a4;font-style:italic">// Base case: reached end of array</span>
+    <span class="keyword" style="color:#ff79c6">if</span> (index >= arr.length)
+        <span class="keyword" style="color:#ff79c6">return</span> -1;
+    
+    <span class="comment" style="color:#6272a4;font-style:italic">// Check if current element matches</span>
+    <span class="keyword" style="color:#ff79c6">if</span> (arr[index] == x)
+        <span class="keyword" style="color:#ff79c6">return</span> index;
+    
+    <span class="comment" style="color:#6272a4;font-style:italic">// Recursively check next element</span>
+    <span class="keyword" style="color:#ff79c6">return</span> linearSearchRecursive(arr, x, index + 1);
+}</pre>
+                    </div>
+                    <p style="color: var(--text-light); line-height: 1.8; margin-top: 15px;">
+                        <strong style="color: var(--accent-orange);">Key Points:</strong><br>
+                        • Uses recursive function calls<br>
+                        • Checks one element per recursion<br>
+                        • Less efficient due to call stack<br>
+                        • Demonstrates recursion concept
+                    </p>
+                `;
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'modalOverlay') {
+                closeModal();
+            }
+        }
+
+        let currentSlide = 0;
+        const totalSlides = 3;
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        function updateCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+                if (document.getElementById('sidebar').classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const hamburger = document.getElementById('hamburger');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+
+ function selectAlgorithm(algorithm) {
+    // Mapping IDs to filenames
+    const routes = {
+        'linear-search': 'linearSearch_L1.html',
+        'binary-search': 'binarySearch_L1.html',
+        'quick-sort': 'quickSort_L1.html',
+        'merge-sort': 'mergeSort_L1.html',
+        'bubble-sort': 'bubbleSort_L1.html',
+        'stack': 'stack_L1.html',
+        'queue': 'queue.html'
+    };
+
+    const targetPage = routes[algorithm];
+
+    if (targetPage) {
+        // Redirect to the new page
+        window.location.href = targetPage;
+    } else {
+        console.error("Route not found for:", algorithm);
+        toggleSidebar();
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    // Get the current filename (e.g., "quick_sort.html")
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Map of filenames back to IDs
+    const pageToId = {
+        'quickSort_L1.html': 'quick-sort',
+        'binarySearch_L1.html': 'binary-search',
+        'linearSearch_L1.html': 'linear-search',
+        'mergeSort_L1.html': 'merge-sort',
+        'bubbleSort_L1.html': 'bubble-sort',
+        'stack_L1.html': 'stack',
+        'queue_L1.html': 'queue'
+
+    };
+
+    const activeId = pageToId[currentPage];
+    if (activeId) {
+        // Find the menu item with the matching onclick and add 'active'
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            if (item.getAttribute('onclick').includes(activeId)) {
+                item.classList.add('active');
+            }
+        });
+    }
+});
+
+
+        const l1 = document.getElementById("l1");
+        const l2 = document.getElementById("l2");
+        const l3 = document.getElementById("l3");
+        const slider1 = document.getElementById("slider1");
+        const slider2 = document.getElementById("slider2");
+        const modal = document.getElementById("quizModal");
+        const startQuiz = document.getElementById("startQuiz");
+        const cancelBtn = document.getElementById("cancelBtn");
+
+        let level2Unlocked = false;
+
+        l1.addEventListener("click", () => {
+            slider1.classList.add("active");
+        });
+
+        l2.addEventListener("click", () => {
+            if (!level2Unlocked) {
+                modal.style.display = "flex";
+            }
+        });
+
+        l3.addEventListener("click", () => {
+            if (!level2Unlocked) {
+                modal.style.display = "flex";
+            }
+        });
+
+        startQuiz.addEventListener("click", () => {
+            window.location.href = "linearSearch_L1_Quiz.html";
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+    </script>
+
+   
+</body>
+</html>

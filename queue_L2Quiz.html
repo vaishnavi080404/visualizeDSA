@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2 Quiz - Queue Logic</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Root Variables (Cyber Industrial Theme - Identical to your UI) --- */
+        :root {
+            --bg-dark: #10121A;
+            --bg-medium: #1A1E29;
+            --card-bg: #212531;
+            --navbar-bg-main: #2B3242;
+            --navbar-bg-right: #3C4456;
+            --accent-blue: #00FFFF;
+            --accent-orange: #FF8C00;
+            --accent-green: #00FF7F; 
+            --accent-red: #FF4136;   
+            --text-light: #E0E0E0;
+            --text-white: #FFFFFF;
+            --text-subtle: #99A1B3;
+            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
+            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--bg-medium);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0A141E;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='a' gradientUnits='userSpaceOnUse' x1='100' y1='33' x2='100' y2='-3'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='100' y1='135' x2='100' y2='97'%3E%3Cstop offset='0' stop-color='%23000' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23000' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='%2307121c' fill-opacity='0.6'%3E%3Crect x='100' width='100' height='100'/%3E%3Crect y='100' width='100' height='100'/%3E%3C/g%3E%3Cg fill-opacity='0.5'%3E%3Cpolygon fill='url(%23a)' points='100 30 0 0 200 0'/%3E%3Cpolygon fill='url(%23b)' points='100 100 0 130 0 100 200 100 200 130'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: -1;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 0 15px var(--shadow-glow-blue), 0 6px 20px var(--shadow-dark);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quiz-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-white);
+            font-size: 1.75rem;
+            text-shadow: 0 0 10px var(--shadow-glow-blue);
+        }
+
+        .progress-bar {
+            width: 100%; height: 10px;
+            background: var(--bg-dark);
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid var(--navbar-bg-right);
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--accent-orange);
+            width: 0%;
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--shadow-glow-orange);
+        }
+
+        .question-card { margin-top: 20px; text-align: left; }
+        
+        #question {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        #options button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            border: 1px solid var(--navbar-bg-right);
+            border-radius: 6px;
+            background: var(--navbar-bg-main);
+            color: var(--text-subtle);
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        #options button:hover:not(:disabled) {
+            background: var(--navbar-bg-right);
+            border-color: var(--accent-blue);
+            color: var(--text-light);
+        }
+        
+        .correct { background-color: rgba(0, 255, 127, 0.1) !important; border-color: var(--accent-green) !important; color: var(--text-white); }
+        .incorrect { background-color: rgba(255, 65, 54, 0.1) !important; border-color: var(--accent-red) !important; color: var(--text-white); }
+        .correct, .incorrect { pointer-events: none !important; }
+
+        .navigation-controls { display: flex; gap: 10px; margin-top: 20px; }
+        .navigation-controls button {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: background 0.2s;
+        }
+
+        #next-btn { background: var(--accent-blue); }
+        #next-btn:hover:not(:disabled) { background: var(--text-white); box-shadow: 0 0 15px var(--shadow-glow-blue); }
+        #previous-btn { background: var(--accent-orange); }
+        #previous-btn:disabled, #next-btn:disabled { background: var(--navbar-bg-main); color: var(--text-subtle); cursor: not-allowed; }
+
+        .modal {
+            position: fixed; top: 0; left: 0; height: 100%; width: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000;
+        }
+
+        .hidden { display: none; }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--accent-orange);
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .modal-content h3 { font-family: 'Orbitron', sans-serif; color: var(--accent-orange); margin-bottom: 1rem; }
+
+        .modal-btn {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--bg-dark);
+            font-weight: 700;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-top: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #level-3-btn { background: var(--accent-blue); box-shadow: 0 0 15px var(--shadow-glow-blue); }
+        #retry-btn { background: var(--accent-orange); box-shadow: 0 0 15px var(--shadow-glow-orange); }
+
+        #rationale-container {
+            margin-top: 1rem;
+            padding: 10px;
+            background: var(--bg-dark);
+            border: 1px solid var(--navbar-bg-main);
+            border-radius: 6px;
+        }
+        #rationale-text { color: var(--text-subtle); font-size: 0.85rem; }
+        #rationale-text strong { color: var(--accent-orange); }
+
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>Level 2: Queue Sequential Logic</h2>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <p id="question"></p>
+            <div id="options"></div>
+            <div id="rationale-container" class="hidden">
+                <p id="rationale-text"><strong>System Log:</strong> <span id="rationale-content"></span></p>
+            </div>
+            
+            <div class="navigation-controls">
+                <button id="previous-btn" disabled>Previous</button>
+                <button id="next-btn" disabled>Next</button>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3 id="result-title"></h3>
+                <p id="result-text"></p>
+                <div id="modal-actions"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { 
+                question: "If you Enqueue(10), Enqueue(20), Dequeue(), then Enqueue(30), what is currently at the Front of the queue?", 
+                answerOptions: [
+                    { text: "20", rationale: "The queue started as [10, 20]. Dequeue() removed the oldest element (10), leaving 20 at the front.", isCorrect: true },
+                    { text: "10", rationale: "10 was already removed by the Dequeue() operation.", isCorrect: false },
+                    { text: "30", rationale: "30 is at the Rear of the queue because it was the most recently added.", isCorrect: false }
+                ]
+            },
+            { 
+                question: "Which pointer is incremented/moved when a new element is added to a standard Queue?", 
+                answerOptions: [
+                    { text: "Rear Pointer", rationale: "New elements enter from the back, so the Rear pointer moves to accommodate them.", isCorrect: true },
+                    { text: "Front Pointer", rationale: "The Front pointer only moves when an element is removed (Dequeue).", isCorrect: false },
+                    { text: "Both Pointers", rationale: "Pointers move independently based on whether you are adding or removing.", isCorrect: false }
+                ]
+            },
+            { 
+                question: "In a 'First-In-First-Out' (FIFO) structure, where does the Dequeue operation happen?", 
+                answerOptions: [
+                    { text: "At the Front", rationale: "To maintain FIFO order, elements must be removed from the front (the oldest entry).", isCorrect: true },
+                    { text: "At the Rear", rationale: "Removing from the rear would make it a Stack (LIFO).", isCorrect: false },
+                    { text: "In the middle", rationale: "Queues do not typically allow access to the middle elements.", isCorrect: false }
+                ]
+            }
+        ];
+
+        const PASS_THRESHOLD = 70;
+        let current = 0;
+        let userAnswers = new Array(quizData.length).fill(null); 
+
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const nextBtn = document.getElementById("next-btn");
+        const previousBtn = document.getElementById("previous-btn");
+        const progress = document.querySelector(".progress");
+        const modal = document.getElementById("result-modal");
+        const rationaleContainer = document.getElementById("rationale-container");
+        const rationaleContent = document.getElementById("rationale-content");
+
+        function loadQuestion() {
+            const q = quizData[current];
+            questionEl.textContent = `${current + 1}. ${q.question}`;
+            optionsEl.innerHTML = "";
+            rationaleContainer.classList.add("hidden");
+            
+            const previouslySelected = userAnswers[current];
+
+            q.answerOptions.forEach((opt, index) => {
+                const btn = document.createElement("button");
+                btn.textContent = opt.text;
+                btn.addEventListener("click", () => handleOptionClick(btn, index));
+                optionsEl.appendChild(btn);
+                
+                if (previouslySelected !== null) {
+                    if (opt.isCorrect) btn.classList.add('correct');
+                    else if (index === previouslySelected) btn.classList.add('incorrect');
+                    btn.style.pointerEvents = 'none';
+                }
+            });
+
+            if (previouslySelected !== null) {
+                rationaleContent.textContent = q.answerOptions[previouslySelected].rationale;
+                rationaleContainer.classList.remove("hidden");
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+
+            previousBtn.disabled = current === 0;
+            nextBtn.textContent = current === quizData.length - 1 ? "Finish" : "Next";
+            progress.style.width = `${((current) / quizData.length) * 100}%`;
+        }
+
+        function handleOptionClick(clickedBtn, index) {
+            if (userAnswers[current] !== null) return;
+            userAnswers[current] = index;
+            const q = quizData[current];
+            
+            rationaleContent.textContent = q.answerOptions[index].rationale;
+            rationaleContainer.classList.remove("hidden");
+
+            optionsEl.querySelectorAll('button').forEach((btn, i) => {
+                if (q.answerOptions[i].isCorrect) btn.classList.add('correct');
+                else if (i === index) btn.classList.add('incorrect');
+                btn.style.pointerEvents = 'none';
+            });
+
+            nextBtn.disabled = false;
+            progress.style.width = `${((current + 1) / quizData.length) * 100}%`;
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (current < quizData.length - 1) {
+                current++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        previousBtn.addEventListener("click", () => {
+            if (current > 0) {
+                current--;
+                loadQuestion();
+            }
+        });
+
+        function showResult() {
+            let score = 0;
+            userAnswers.forEach((ans, i) => { if(ans !== null && quizData[i].answerOptions[ans].isCorrect) score++; });
+            
+            const percentage = (score / quizData.length) * 100;
+            modal.classList.remove("hidden");
+            const actions = document.getElementById("modal-actions");
+            actions.innerHTML = "";
+
+            document.getElementById("result-title").textContent = percentage >= PASS_THRESHOLD ? "FIFO Certified!" : "Queue Interrupted";
+            document.getElementById("result-text").textContent = `Score: ${percentage.toFixed(0)}%. ${score}/${quizData.length} Correct.`;
+
+            if (percentage >= PASS_THRESHOLD) {
+                const l3Btn = document.createElement('button');
+                l3Btn.className = 'modal-btn';
+                l3Btn.id = 'level-3-btn';
+                l3Btn.textContent = 'Unlock Level 3';
+                l3Btn.onclick = () => window.location.href = 'queue_L3.html'; 
+                actions.appendChild(l3Btn);
+            }
+
+            const retry = document.createElement('button');
+            retry.className = 'modal-btn';
+            retry.id = 'retry-btn';
+            retry.textContent = 'Re-sync Queue';
+            retry.onclick = () => location.reload();
+            actions.appendChild(retry);
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
