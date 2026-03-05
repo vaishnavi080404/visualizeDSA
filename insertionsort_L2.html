@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insertion Sort - Level 2 | DSA Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+      --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-pink:#ec4899;
+      --dark-bg:#0a0a0a;--card-bg:#1a1a1a;--text-primary:#ffffff;
+      --text-secondary:#a0a0a0;--border-color:#2a2a2a;
+      --nav-bg:rgba(10,10,10,.8);--code-bg:#0d1117;--terminal-bg:#0d1117;
+    }
+    [data-theme="light"]{--dark-bg:#f8fafc;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(248,250,252,.8);--code-bg:#f1f5f9;--terminal-bg:#f1f5f9;--primary-cyan:#0891b2;--primary-green:#059669;}
+    [data-theme="blue"]{--dark-bg:#011425;--card-bg:#1e293b;--text-primary:#ffffff;--text-secondary:#94a3b8;--border-color:#242424;--nav-bg:rgba(1,20,37,.8);--code-bg:#011425;--terminal-bg:#011425;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+    nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);}
+    .nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+    .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+    .logo-icon{width:35px;height:35px;background:linear-gradient(135deg,var(--primary-green),var(--primary-cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+    .nav-links{display:flex;gap:2.5rem;list-style:none;}
+    .nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+    .nav-links a:hover{color:var(--primary-green);}
+    .theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+    .theme-toggle:hover{border-color:var(--primary-green);background:rgba(16,185,129,.1);}
+    .theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+    .container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+    .breadcrumb a{color:var(--text-secondary);text-decoration:none;}
+    .breadcrumb span.sep{opacity:.5;}
+    .page-header{margin-bottom:3rem;}
+    .page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;}
+    .level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+    .level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+    .level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1.05rem;}
+    .implementation-selector{display:flex;gap:1rem;margin:2rem 0;padding:1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+    .impl-option{padding:1rem 2rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center;min-width:220px;}
+    .impl-option:hover{border-color:var(--primary-cyan);transform:translateY(-2px);}
+    .impl-option.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 4px 15px rgba(6,182,212,.3);}
+    .impl-option-icon{font-size:2rem;margin-bottom:.5rem;}
+    .impl-option-title{font-weight:700;font-size:1.1rem;margin-bottom:.3rem;}
+    .impl-option-desc{font-size:.85rem;color:var(--text-secondary);}
+    .impl-option.active .impl-option-desc{color:rgba(255,255,255,.8);}
+    .visualizer-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;}
+    .pseudo-code-container{background:var(--card-bg);border-radius:15px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);max-height:680px;overflow-y:auto;position:sticky;top:90px;}
+    .pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:20px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:1px;}
+    .pseudo-step{background:var(--code-bg);padding:12px 15px;margin:10px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;}
+    .pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00a8a8);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+    .pseudo-step strong{color:var(--primary-cyan);}
+    .pseudo-step.active strong{color:#000;font-weight:800;}
+    .visualization-card{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);overflow:hidden;}
+    .card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:20px;border-bottom:2px solid var(--border-color);}
+    .card-header h5{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0;}
+    .card-body{background:var(--code-bg);padding:24px;min-height:380px;}
+    .card-footer{background:var(--card-bg);padding:20px;border-top:2px solid var(--border-color);}
+    .stat-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:4px;}
+    .stat-badge{display:inline-flex;align-items:center;gap:.4rem;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+    .sb-purple{background:rgba(139,92,246,.15);border:1px solid var(--primary-purple);color:var(--primary-purple);}
+    .sb-pink  {background:rgba(236,72,153,.15);border:1px solid var(--primary-pink);color:var(--primary-pink);}
+    .sb-green {background:rgba(16,185,129,.15);border:1px solid var(--primary-green);color:var(--primary-green);}
+    .sb-orange{background:rgba(245,158,11,.15);border:1px solid var(--primary-orange);color:var(--primary-orange);}
+    .sb-cyan  {background:rgba(6,182,212,.15);border:1px solid var(--primary-cyan);color:var(--primary-cyan);}
+    .sort-display{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
+    .arr-strip{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:4px 0;}
+    .arr-cell{width:50px;height:50px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;color:var(--text-secondary);background:rgba(255,255,255,.03);transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;}
+    .arr-cell:first-child{border-radius:8px 0 0 8px;}
+    .arr-cell:last-child {border-radius:0 8px 8px 0;}
+    .arr-cell.ac-default  {background:rgba(255,255,255,.04);border-color:var(--border-color);color:var(--text-secondary);}
+    .arr-cell.ac-sorted   {background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));border-color:var(--primary-green);color:var(--primary-green);box-shadow:0 0 12px rgba(16,185,129,.25);}
+    .arr-cell.ac-key      {background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);transform:translateY(-8px);box-shadow:0 10px 22px rgba(245,158,11,.35);animation:keyPop .35s ease;}
+    .arr-cell.ac-comparing{background:rgba(236,72,153,.15);border-color:var(--primary-pink);color:var(--primary-pink);transform:translateY(-5px);box-shadow:0 7px 18px rgba(236,72,153,.35);animation:comparePop .3s ease;}
+    .arr-cell.ac-shifting {background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);transform:translateY(-4px);box-shadow:0 6px 16px rgba(139,92,246,.3);}
+    .arr-cell.ac-placing  {background:rgba(6,182,212,.15);border-color:var(--primary-cyan);color:var(--primary-cyan);transform:translateY(-5px);box-shadow:0 7px 18px rgba(6,182,212,.35);animation:placePop .4s ease;}
+    @keyframes keyPop    {0%{transform:translateY(0) scale(1.05)}100%{transform:translateY(-8px) scale(1)}}
+    @keyframes comparePop{0%,100%{transform:translateY(-5px)}50%{transform:translateY(-9px)}}
+    @keyframes placePop  {0%{transform:translateY(-12px) scale(1.1)}100%{transform:translateY(-5px) scale(1)}}
+    .idx-strip{display:flex;justify-content:center;gap:0;}
+    .idx-cell{width:50px;text-align:center;font-size:.65rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .key-row{display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0;}
+    .key-badge{background:rgba(245,158,11,.15);border:1.5px solid var(--primary-orange);color:var(--primary-orange);padding:5px 16px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;}
+    .key-badge span{color:var(--text-secondary);font-weight:400;}
+    .j-badge{background:rgba(139,92,246,.12);border:1.5px solid var(--primary-purple);color:var(--primary-purple);padding:5px 16px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;}
+    .j-badge span{color:var(--text-secondary);font-weight:400;}
+    .caption-box{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:10px 16px;font-size:.88rem;color:var(--primary-cyan);text-align:center;font-family:'JetBrains Mono',monospace;min-height:38px;transition:all .3s;width:100%;}
+    .caption-box.cap-key    {background:rgba(245,158,11,.1);border-color:var(--primary-orange);color:var(--primary-orange);}
+    .caption-box.cap-compare{background:rgba(236,72,153,.1);border-color:var(--primary-pink);color:var(--primary-pink);}
+    .caption-box.cap-shift  {background:rgba(139,92,246,.1);border-color:var(--primary-purple);color:var(--primary-purple);}
+    .caption-box.cap-place  {background:rgba(6,182,212,.1);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .caption-box.cap-done   {background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
+    .legend{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:2px;}
+    .leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .leg-dot{width:10px;height:10px;border-radius:3px;}
+    #msg_show{color:var(--text-primary);text-align:center;margin-top:14px;font-size:15px;padding:12px;border-radius:10px;min-height:40px;display:none;}
+    .alert-success{background:rgba(16,185,129,.2);border:2px solid var(--primary-green);color:var(--primary-green);}
+    .alert-danger {background:rgba(239,68,68,.2);border:2px solid var(--primary-red);color:var(--primary-red);}
+    .form-control{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:10px;width:100%;}
+    .form-control:focus{background:var(--dark-bg);border-color:var(--primary-cyan);outline:none;box-shadow:0 0 10px rgba(6,182,212,.3);}
+    .btn{border:none;font-weight:700;padding:10px 20px;border-radius:8px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;}
+    .btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+    .btn-info   {background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;}
+    .btn-danger {background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+    .btn-warning{background:linear-gradient(135deg,var(--primary-orange),#ff6b00);color:#fff;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(6,182,212,.3);}
+    .section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+    .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+    .section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;}
+    .section-title{font-size:1.8rem;font-weight:700;}
+    .scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+    .scenario-tab{padding:.55rem 1.25rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+    .scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .scenario-tab.active-best  {background:var(--primary-green);border-color:var(--primary-green);color:#fff;}
+    .scenario-tab.active-avg   {background:var(--primary-cyan);border-color:var(--primary-cyan);color:#fff;}
+    .scenario-tab.active-worst {background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+    .scenario-tab.active-custom{background:var(--primary-purple);border-color:var(--primary-purple);color:#fff;}
+    .scenario-panel{display:none;}
+    .scenario-panel.active{display:block;}
+    .scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+    .scenario-inner h4{font-size:1.15rem;font-weight:700;margin-bottom:.4rem;}
+    .scenario-inner p{color:var(--text-secondary);font-size:.95rem;margin-bottom:1.2rem;}
+    .scenario-divider{border:none;border-top:1px solid var(--border-color);margin:1rem 0 1.4rem;}
+    .input-label{color:var(--text-secondary);font-size:.88rem;font-weight:600;margin-bottom:.9rem;text-transform:uppercase;letter-spacing:.5px;}
+    .s-arr-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+    .s-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+    .s-label{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);min-width:60px;text-align:right;padding-right:6px;}
+    .sc{width:38px;height:38px;border:1.5px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;color:var(--text-secondary);background:rgba(255,255,255,.03);transition:all .3s;border-radius:5px;}
+    .sc.sc-default  {background:rgba(255,255,255,.03);border-color:var(--border-color);}
+    .sc.sc-sorted   {background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.1));border-color:var(--primary-green);color:var(--primary-green);}
+    .sc.sc-key      {background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);transform:translateY(-4px);}
+    .sc.sc-comparing{background:rgba(236,72,153,.15);border-color:var(--primary-pink);color:var(--primary-pink);transform:translateY(-3px);}
+    .sc.sc-shifting {background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);transform:translateY(-3px);}
+    .sc.sc-placing  {background:rgba(6,182,212,.15);border-color:var(--primary-cyan);color:var(--primary-cyan);transform:translateY(-3px);}
+    .log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;min-height:160px;max-height:230px;overflow-y:auto;}
+    .log-panel .log-title{color:var(--primary-cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem;font-weight:700;}
+    .log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:fadeLog .3s ease both;}
+    @keyframes fadeLog{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+    .log-entry.log-key    {color:var(--primary-orange);}
+    .log-entry.log-compare{color:var(--primary-pink);}
+    .log-entry.log-shift  {color:var(--primary-purple);}
+    .log-entry.log-place  {color:var(--primary-cyan);}
+    .log-entry.log-sorted {color:var(--primary-green);font-weight:700;}
+    .log-entry.log-info   {color:var(--text-secondary);}
+    .log-entry.log-warn   {color:var(--primary-orange);}
+    .log-entry.log-result {color:var(--primary-purple);font-weight:700;}
+    .ctl-row{display:flex;align-items:center;gap:.75rem;margin-top:1.2rem;flex-wrap:wrap;}
+    .ctl-btn{padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .ctl-btn-green {background:var(--primary-green);color:#fff;}
+    .ctl-btn-green:hover{box-shadow:0 4px 14px rgba(16,185,129,.4);}
+    .ctl-btn-red   {background:var(--primary-red);color:#fff;}
+    .ctl-btn-red:hover  {box-shadow:0 4px 14px rgba(239,68,68,.4);}
+    .ctl-btn-cyan  {background:var(--primary-cyan);color:#000;}
+    .ctl-btn-cyan:hover {box-shadow:0 4px 14px rgba(6,182,212,.4);}
+    .ctl-btn-orange{background:var(--primary-orange);color:#000;}
+    .ctl-btn-orange:hover{box-shadow:0 4px 14px rgba(245,158,11,.4);}
+    .ctl-btn-ghost {background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+    .ctl-btn-ghost:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .ctl-btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .ctl-btn:not(:disabled):hover{transform:translateY(-1px);}
+    .custom-wide-input{padding:8px 12px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s;}
+    .custom-wide-input:focus{border-color:var(--primary-cyan);}
+    .custom-input-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
+    .custom-complexity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.9rem;}
+    .custom-complexity-card{background:rgba(0,0,0,.35);border:1.5px solid rgba(0,255,255,.14);border-radius:10px;padding:.85rem 1rem;transition:all .25s;}
+    .custom-complexity-card.cc-active-best {border-color:#00ff64;box-shadow:0 0 18px rgba(0,255,100,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-avg  {border-color:var(--primary-cyan);box-shadow:0 0 18px rgba(0,255,255,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-worst{border-color:#ff5555;box-shadow:0 0 18px rgba(255,85,85,.3);transform:translateY(-2px);}
+    .cc-op{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.55rem;font-family:'Space Grotesk',sans-serif;}
+    .cc-time,.cc-space{font-size:.78rem;color:var(--text-secondary);font-family:'Courier New',monospace;line-height:1.7;}
+    .cc-val{font-weight:700;font-size:.82rem;}
+    .cc-green{color:#00ff64;}.cc-orange{color:var(--primary-orange);}.cc-red{color:#ff5555;}
+    .cc-reason{margin-top:.5rem;font-size:.71rem;color:rgba(153,161,179,.7);font-style:italic;line-height:1.45;border-top:1px solid rgba(255,255,255,.05);padding-top:.45rem;}
+    .cc-toast{display:none;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.4rem;animation:toastIn .3s ease both;border:1.5px solid;}
+    .cc-toast.show{display:flex;}
+    .cc-toast.toast-best {background:rgba(0,255,100,.08);border-color:#00ff64;color:#00ff64;}
+    .cc-toast.toast-avg  {background:rgba(0,255,255,.08);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .cc-toast.toast-worst{background:rgba(255,85,85,.08);border-color:#ff5555;color:#ff5555;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .impl-tabs{display:flex;gap:.8rem;margin:0 0 1rem;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .impl-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .impl-tab.active{background:var(--primary-purple);color:white;border-color:var(--primary-purple);}
+    .lang-tabs{display:flex;gap:.8rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .lang-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+    .editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+    .code-copy{width:50px;height:40px;background:var(--primary-purple);border:1px solid var(--border-color);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-size:14px;}
+    .run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;}
+    .run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+    .output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:160px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:14px;line-height:1.6;}
+    .output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+    .input-prompt{background:var(--card-bg);padding:15px;border-radius:8px;margin-top:10px;border:1px solid var(--border-color);}
+    .input-prompt input{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:8px 12px;margin-right:10px;font-family:'JetBrains Mono',monospace;}
+    .input-prompt button{background:var(--primary-cyan);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;}
+    .CodeMirror{height:430px!important;font-size:14px;border-radius:0 0 12px 12px;}
+    .level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+    .level-wrapper button{position:relative;z-index:20!important;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+    #l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan)!important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+    #l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green)!important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+    .slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+    #slider1{left:22%;}#slider2{left:58%;}
+    .slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+    .level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+    .level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+    #startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;box-shadow:none;border:none;cursor:pointer;font-weight:700;}
+    #startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+    #cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;border:none;cursor:pointer;font-weight:700;}
+    @media(max-width:900px){.visualizer-grid{grid-template-columns:1fr;}.pseudo-code-container{position:relative;top:0;max-height:400px;}.implementation-selector{flex-direction:column;}.impl-option{min-width:100%;}.custom-complexity-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body data-theme="dark">
+
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+       <img src="dsa.gif" alt="Logo" class="logo-icon">
+      <span>DSA Visualizer</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="#editor">Code Editor</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="insertion_sort_basics.html">Insertion Sort</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Insertion Sort — Interactive Visualizer</h1>
+    <p class="content-text">Watch Insertion Sort <strong style="color:var(--primary-orange)">pick each key element</strong>, <strong style="color:var(--primary-purple)">shift larger elements right</strong>, and <strong style="color:var(--primary-cyan)">insert the key at its correct position</strong>. Best case is a blazing fast <strong style="color:var(--primary-green)">O(N)</strong> — great for nearly-sorted data.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="iterative" onclick="switchImplementation('iterative')">
+      <div class="impl-option-icon">🔁</div>
+      <div class="impl-option-title">Iterative</div>
+      <div class="impl-option-desc">Classic in-place loop, O(1) extra space</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔄</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">Sort first N-1 elements, then insert Nth</div>
+    </div>
+  </div>
+
+  <!-- VISUALIZER GRID -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+
+      <div id="pseudo-iterative">
+        <div class="pseudo-step" data-step="it-outer">
+          <strong>OUTER LOOP:</strong> Pick each key<br>
+          <span>for i = 1 to n-1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-key">
+          <strong>KEY:</strong> Store current element<br>
+          <span>key = arr[i]; j = i-1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-compare">
+          <strong>COMPARE:</strong> Key vs sorted element<br>
+          <span>while j &ge; 0 and arr[j] &gt; key</span>
+        </div>
+        <div class="pseudo-step" data-step="it-shift">
+          <strong>SHIFT RIGHT:</strong> Move element<br>
+          <span>arr[j+1] = arr[j]; j--</span>
+        </div>
+        <div class="pseudo-step" data-step="it-place">
+          <strong>INSERT:</strong> Place key at position<br>
+          <span>arr[j+1] = key</span>
+        </div>
+        <div class="pseudo-step" data-step="it-done">
+          <strong>SORTED:</strong> All keys placed ✓<br>
+          <span>i reached n, array sorted</span>
+        </div>
+      </div>
+
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="rc-base">
+          <strong>BASE CASE:</strong> Single element<br>
+          <span>if n &le; 1: return</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-recurse">
+          <strong>RECURSE:</strong> Sort first n-1 elements<br>
+          <span>insertionSortRec(arr, n-1)</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-key">
+          <strong>KEY:</strong> Last element to insert<br>
+          <span>key = arr[n-1]; j = n-2</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-compare">
+          <strong>COMPARE:</strong> Key vs element at j<br>
+          <span>while j &ge; 0 and arr[j] &gt; key</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-shift">
+          <strong>SHIFT RIGHT:</strong> Move element<br>
+          <span>arr[j+1] = arr[j]; j--</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-place">
+          <strong>INSERT:</strong> Place key at position<br>
+          <span>arr[j+1] = key</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-done">
+          <strong>SORTED:</strong> All recursive calls done ✓<br>
+          <span>base case reached and unwound</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Insertion Sort Visualizer — Iterative</h5>
+        </div>
+        <div class="card-body">
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-orange" id="badge-phase">Phase: —</div>
+              <div class="stat-badge sb-pink"   id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-purple" id="badge-shifts">Shifts: 0</div>
+              <div class="stat-badge sb-cyan"   id="badge-inserts">Inserts: 0</div>
+            </div>
+            <!-- key + j display -->
+            <div class="key-row" id="keyRow" style="display:none;">
+              <div class="key-badge"><span>key = </span><span id="keyVal">—</span></div>
+              <div class="j-badge"><span>j = </span><span id="jVal">—</span></div>
+            </div>
+            <!-- main array strip -->
+            <div class="arr-strip" id="arrStrip"></div>
+            <div class="idx-strip" id="idxStrip"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-green)"></div>Sorted</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-orange)"></div>Key (current)</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-pink)"></div>Comparing</div>
+              <div class="leg-item"><div class="leg-dot" style="background:rgba(139,92,246,.8)"></div>Shifting</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-cyan)"></div>Inserting</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g. 12, 11, 13, 5, 6">
+            <button class="btn btn-warning" onclick="startSort()">Sort</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSort()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSort()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"  id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"              id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"              id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"              id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div>
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — Already Sorted</h4>
+          <p>When the array is already sorted, each key element only requires <strong style="color:var(--primary-green)">one comparison</strong> per iteration — compare with the immediate left neighbour, no shift needed. This results in <strong style="color:var(--primary-green)">O(N)</strong> time, a huge advantage over Merge Sort and Quick Sort for nearly-sorted inputs.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [5, 10, 15, 20, 25, 30] — sorted, O(N) comparisons</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-best"></div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — Random Order</h4>
+          <p>Random input — each key shifts past roughly half the sorted portion on average. Results in <strong style="color:var(--primary-orange)">O(N²/4)</strong> comparisons and shifts overall. Watch the key travel leftwards, nudging elements to the right until its spot is found.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [29, 10, 14, 37, 13, 8] — random order</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-avg"></div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — Reverse Sorted</h4>
+          <p>Reverse-sorted input forces every key to shift past the <strong style="color:var(--primary-red)">entire sorted portion</strong> — maximum shifts per iteration. The 2nd element shifts 1, 3rd shifts 2, … Nth shifts N-1. Total: <strong style="color:var(--primary-red)">O(N²)</strong> comparisons and shifts.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [60, 50, 40, 30, 20, 10] — reverse sorted, max shifts</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-worst"></div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own array and watch every step of Insertion Sort. The complexity cards highlight which case your input represents. Insertion Sort is unique — its <strong style="color:var(--primary-cyan)">O(N) best case</strong> is genuinely useful and its <strong style="color:var(--primary-green)">O(1) space</strong> is always guaranteed.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-green">O(N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Sorted input — 1 compare per key, zero shifts needed</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-orange">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Random input — each key shifts ~N/4 places on average</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Reverse sorted — every key shifts past the full sorted portion</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 64, 25, 12, 22, 11" style="width:240px;">
+            <button class="ctl-btn ctl-btn-green"  onclick="customLoad()">▶ Load &amp; Sort</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"     id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-custom"></div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE EDITOR -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-tabs">
+      <button class="impl-tab active" onclick="switchEditorImpl('iterative', this)">🔁 Iterative</button>
+      <button class="impl-tab"        onclick="switchEditorImpl('recursive', this)">🔄 Recursive</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Iterative</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;font-size:1.25rem;font-weight:600;justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Insertion Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   CODE TEMPLATES
+══════════════════════════════════════════════ */
+const codeTemplates = {
+  iterative: {
+    cpp:`#include <iostream>
+using namespace std;
+
+void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];   // element to be inserted
+        int j = i - 1;
+        // Shift elements greater than key to the right
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;   // insert key at correct position
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    insertionSort(arr, n);
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python:`def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]      # element to be inserted
+        j = i - 1
+        # Shift elements greater than key to the right
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key  # insert key at correct position
+
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+print(f"\\nBefore: {arr}")
+insertion_sort(arr)
+print(f"After:  {arr}")`,
+    java:`import java.util.Arrays;
+import java.util.Scanner;
+
+public class InsertionSort {
+    static void insertionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        insertionSort(arr);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c:`#include <stdio.h>
+
+void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    insertionSort(arr, n);
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\n");
+    return 0;
+}`,
+    javascript:`function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+const arr = [29, 10, 14, 37, 13, 8];
+console.log("Before:", arr.join(", "));
+insertionSort(arr);
+console.log("After: ", arr.join(", "));`
+  },
+  recursive: {
+    cpp:`#include <iostream>
+using namespace std;
+
+void insertionSortRec(int arr[], int n) {
+    if (n <= 1) return;           // base case
+    insertionSortRec(arr, n - 1); // sort first n-1 elements
+    int key = arr[n - 1];
+    int j = n - 2;
+    while (j >= 0 && arr[j] > key) {
+        arr[j + 1] = arr[j];
+        j--;
+    }
+    arr[j + 1] = key;
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    insertionSortRec(arr, n);
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python:`def insertion_sort_rec(arr, n=None):
+    if n is None: n = len(arr)
+    if n <= 1: return          # base case
+    insertion_sort_rec(arr, n - 1)
+    key = arr[n - 1]
+    j = n - 2
+    while j >= 0 and arr[j] > key:
+        arr[j + 1] = arr[j]
+        j -= 1
+    arr[j + 1] = key
+
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+print(f"\\nBefore: {arr}")
+insertion_sort_rec(arr)
+print(f"After:  {arr}")`,
+    java:`import java.util.Arrays;
+import java.util.Scanner;
+
+public class InsertionSortRecursive {
+    static void insertionSortRec(int[] arr, int n) {
+        if (n <= 1) return;
+        insertionSortRec(arr, n - 1);
+        int key = arr[n - 1];
+        int j = n - 2;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        insertionSortRec(arr, n);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c:`#include <stdio.h>
+
+void insertionSortRec(int arr[], int n) {
+    if (n <= 1) return;
+    insertionSortRec(arr, n - 1);
+    int key = arr[n - 1];
+    int j = n - 2;
+    while (j >= 0 && arr[j] > key) {
+        arr[j + 1] = arr[j];
+        j--;
+    }
+    arr[j + 1] = key;
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    insertionSortRec(arr, n);
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\n");
+    return 0;
+}`,
+    javascript:`function insertionSortRec(arr, n = arr.length) {
+    if (n <= 1) return;
+    insertionSortRec(arr, n - 1);
+    let key = arr[n - 1];
+    let j = n - 2;
+    while (j >= 0 && arr[j] > key) {
+        arr[j + 1] = arr[j];
+        j--;
+    }
+    arr[j + 1] = key;
+}
+
+const arr = [29, 10, 14, 37, 13, 8];
+console.log("Before:", arr.join(", "));
+insertionSortRec(arr);
+console.log("After: ", arr.join(", "));`
+  }
+};
+
+/* ══════════════════════════════════════════════
+   GLOBALS
+══════════════════════════════════════════════ */
+let codeEditor, currentLang='cpp', editorImpl='iterative', currentImpl='iterative';
+let mainArr=[], mainSteps=[], mainStepIdx=0, mainDone=false, mainTimer=null;
+let mainComps=0, mainShifts=0, mainInserts=0;
+let inputResolver=null;
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ══════════════════════════════════════════════
+   STEP PRE-COMPUTATION
+══════════════════════════════════════════════ */
+function computeSteps(input){
+  const arr=[...input], n=arr.length, steps=[];
+
+  if(currentImpl==='iterative'){
+    for(let i=1;i<n;i++){
+      const key=arr[i];
+      steps.push({type:'outer',i,key,arr:[...arr],caption:`OUTER LOOP: i=${i}, picking key = arr[${i}] = ${key}`,pseudo:'it-outer',keyVal:key,jVal:i});
+      steps.push({type:'key',i,key,arr:[...arr],caption:`KEY: key = ${key}, inner loop starts at j = ${i-1}`,pseudo:'it-key',keyVal:key,jVal:i-1});
+      let j=i-1;
+      while(j>=0&&arr[j]>key){
+        steps.push({type:'compare',i,j,key,arr:[...arr],caption:`COMPARE: arr[${j}]=${arr[j]} > key ${key} → shift right`,pseudo:'it-compare',keyVal:key,jVal:j});
+        arr[j+1]=arr[j];
+        steps.push({type:'shift',i,j,key,arr:[...arr],caption:`SHIFT: arr[${j+1}] ← arr[${j}] = ${arr[j+1]}`,pseudo:'it-shift',keyVal:key,jVal:j});
+        j--;
+      }
+      if(j>=0) steps.push({type:'no-shift',i,j,key,arr:[...arr],caption:`COMPARE: arr[${j}]=${arr[j]} ≤ key ${key} → stop shifting`,pseudo:'it-compare',keyVal:key,jVal:j});
+      arr[j+1]=key;
+      steps.push({type:'place',i,j,key,placeIdx:j+1,arr:[...arr],caption:`INSERT: arr[${j+1}] = key = ${key} ✓`,pseudo:'it-place',keyVal:key,jVal:j+1});
+    }
+  } else {
+    function sim(a,callN,depth){
+      if(callN<=1){
+        steps.push({type:'rc-base',callN,depth,arr:[...a],caption:`BASE CASE: n=${callN} ≤ 1, return`,pseudo:'rc-base',keyVal:'—',jVal:'—'});
+        return;
+      }
+      steps.push({type:'recurse',callN,depth,arr:[...a],caption:`RECURSE: insertionSortRec(arr, ${callN}) — sort first ${callN-1} elements`,pseudo:'rc-recurse',keyVal:'—',jVal:'—'});
+      sim(a,callN-1,depth+1);
+      const key=a[callN-1];
+      steps.push({type:'key',callN,depth,key,arr:[...a],caption:`KEY (n=${callN}): key = arr[${callN-1}] = ${key}, j = ${callN-2}`,pseudo:'rc-key',keyVal:key,jVal:callN-2});
+      let j=callN-2;
+      while(j>=0&&a[j]>key){
+        steps.push({type:'compare',callN,depth,j,key,arr:[...a],caption:`COMPARE: arr[${j}]=${a[j]} > key ${key} → shift`,pseudo:'rc-compare',keyVal:key,jVal:j});
+        a[j+1]=a[j];
+        steps.push({type:'shift',callN,depth,j,key,arr:[...a],caption:`SHIFT: arr[${j+1}] ← arr[${j}] = ${a[j+1]}`,pseudo:'rc-shift',keyVal:key,jVal:j});
+        j--;
+      }
+      if(j>=0) steps.push({type:'no-shift',callN,depth,j,key,arr:[...a],caption:`COMPARE: arr[${j}]=${a[j]} ≤ key ${key} → stop`,pseudo:'rc-compare',keyVal:key,jVal:j});
+      a[j+1]=key;
+      steps.push({type:'place',callN,depth,j,key,placeIdx:j+1,arr:[...a],caption:`INSERT (n=${callN}): arr[${j+1}] = ${key} ✓`,pseudo:'rc-place',keyVal:key,jVal:j+1});
+    }
+    sim(arr,n,0);
+  }
+
+  steps.push({type:'done',arr:[...arr],caption:`✅ Array fully sorted: [${arr.join(', ')}]`,pseudo:currentImpl==='iterative'?'it-done':'rc-done',keyVal:'✓',jVal:'✓'});
+  return steps;
+}
+
+/* ══════════════════════════════════════════════
+   MAIN VISUALIZER
+══════════════════════════════════════════════ */
+function buildMainStrip(arr){
+  const s=document.getElementById('arrStrip'),ix=document.getElementById('idxStrip');
+  s.innerHTML='';ix.innerHTML='';
+  arr.forEach((v,i)=>{
+    const c=document.createElement('div');c.className='arr-cell ac-default';c.id='mc-'+i;c.textContent=v;s.appendChild(c);
+    const id=document.createElement('div');id.className='idx-cell';id.textContent=i;ix.appendChild(id);
+  });
+}
+
+function applyStepToStrip(step){
+  const arr=step.arr;
+  arr.forEach((v,i)=>{const c=document.getElementById('mc-'+i);if(!c)return;c.textContent=v;c.className='arr-cell ac-default';});
+  if(!step)return;
+  if(step.type==='done'){arr.forEach((_,i)=>{const c=document.getElementById('mc-'+i);if(c)c.className='arr-cell ac-sorted';});return;}
+  const sortedUpTo=(step.i!==undefined?step.i:(step.callN!==undefined?step.callN-1:-1))-1;
+  for(let i=0;i<=sortedUpTo;i++){const c=document.getElementById('mc-'+i);if(c)c.className='arr-cell ac-sorted';}
+  if(step.type==='outer'){const c=document.getElementById('mc-'+step.i);if(c)c.className='arr-cell ac-key';return;}
+  if(step.type==='key'||step.type==='recurse'||step.type==='rc-base')return;
+  if(step.type==='compare'||step.type==='no-shift'){
+    const ki=step.i!==undefined?step.i:step.callN-1;
+    const c=document.getElementById('mc-'+ki);if(c&&c.className!=='arr-cell ac-sorted')c.className='arr-cell ac-key';
+    const cj=document.getElementById('mc-'+step.j);if(cj)cj.className='arr-cell ac-comparing';return;
+  }
+  if(step.type==='shift'){
+    const ki=step.i!==undefined?step.i:step.callN-1;
+    const c=document.getElementById('mc-'+ki);if(c)c.className='arr-cell ac-key';
+    const cj1=document.getElementById('mc-'+(step.j+1));if(cj1)cj1.className='arr-cell ac-shifting';return;
+  }
+  if(step.type==='place'){const cp=document.getElementById('mc-'+step.placeIdx);if(cp)cp.className='arr-cell ac-placing';return;}
+}
+
+function setCaption(text,type=''){const box=document.getElementById('captionBox');box.className='caption-box'+(type?' cap-'+type:'');box.innerHTML=text;}
+function updateBadges(phase){
+  document.getElementById('badge-phase').textContent=`Phase: ${phase||'—'}`;
+  document.getElementById('badge-comps').textContent=`Comparisons: ${mainComps}`;
+  document.getElementById('badge-shifts').textContent=`Shifts: ${mainShifts}`;
+  document.getElementById('badge-inserts').textContent=`Inserts: ${mainInserts}`;
+}
+function highlightStep(pseudo){
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+  const el=document.querySelector(`.pseudo-step[data-step="${pseudo}"]`);if(el)el.classList.add('active');
+}
+function updateKeyDisplay(step){
+  const row=document.getElementById('keyRow');
+  if(!step||step.type==='done'||step.type==='rc-base'){row.style.display='none';return;}
+  row.style.display='flex';
+  document.getElementById('keyVal').textContent=step.keyVal!==undefined?step.keyVal:'—';
+  document.getElementById('jVal').textContent=step.jVal!==undefined?step.jVal:'—';
+}
+function showMsg(text,type){const el=document.getElementById('msg_show');el.style.display='block';el.className='alert alert-'+type;el.innerHTML=text;}
+
+function startSort(){
+  clearTimeout(mainTimer);
+  const raw=document.getElementById('arrayInput').value.trim();
+  if(!raw){showMsg('Please enter an array to sort.','danger');return;}
+  mainArr=raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if(mainArr.length<2){showMsg('Enter at least 2 numbers.','danger');return;}
+  if(mainArr.length>12){showMsg('Keep to 12 elements or fewer for best visualization.','danger');return;}
+  mainSteps=computeSteps(mainArr);mainStepIdx=0;mainDone=false;mainComps=0;mainShifts=0;mainInserts=0;
+  buildMainStrip(mainArr);updateBadges('Ready');
+  setCaption(`Array loaded: [${mainArr.join(', ')}]. Click <strong>Step ▶</strong> or <strong>Auto ▶▶</strong> to begin.`);
+  document.getElementById('stepBtn').disabled=false;document.getElementById('autoBtn').disabled=false;
+  document.getElementById('msg_show').style.display='none';document.getElementById('keyRow').style.display='none';
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+function applyMainStep(){
+  if(mainDone||mainStepIdx>=mainSteps.length)return false;
+  const step=mainSteps[mainStepIdx++];
+  if(step.type==='compare'||step.type==='no-shift')mainComps++;
+  if(step.type==='shift')mainShifts++;
+  if(step.type==='place')mainInserts++;
+  const phaseMap={'outer':'Pick Key','key':'Store Key','recurse':'Recurse','rc-base':'Base Case','compare':'Compare','no-shift':'Compare','shift':'Shift','place':'Insert','done':'Done'};
+  updateBadges(phaseMap[step.type]||step.type);
+  applyStepToStrip(step);updateKeyDisplay(step);
+  setCaption(step.caption,
+    step.type==='outer'||step.type==='key'?'key':
+    step.type==='compare'||step.type==='no-shift'?'compare':
+    step.type==='shift'?'shift':step.type==='place'?'place':step.type==='done'?'done':'');
+  highlightStep(step.pseudo);
+  if(step.type==='done'){
+    mainDone=true;document.getElementById('keyRow').style.display='none';
+    showMsg(`<i class="fas fa-check-circle"></i>&nbsp; Sorted! Comparisons: ${mainComps} | Shifts: ${mainShifts} | Inserts: ${mainInserts}`,'success');
+    document.getElementById('stepBtn').disabled=true;document.getElementById('autoBtn').disabled=true;return false;
+  }
+  return true;
+}
+
+function stepSort(){applyMainStep();}
+function autoSort(){if(mainDone)return;document.getElementById('autoBtn').disabled=true;function tick(){const cont=applyMainStep();if(cont&&!mainDone)mainTimer=setTimeout(tick,520);}tick();}
+function resetSort(){
+  clearTimeout(mainTimer);mainArr=[];mainSteps=[];mainStepIdx=0;mainDone=false;mainComps=0;mainShifts=0;mainInserts=0;
+  document.getElementById('arrStrip').innerHTML='';document.getElementById('idxStrip').innerHTML='';
+  document.getElementById('keyRow').style.display='none';document.getElementById('msg_show').style.display='none';
+  document.getElementById('stepBtn').disabled=true;document.getElementById('autoBtn').disabled=true;
+  setCaption('Enter an array and click Sort to begin.');updateBadges(null);
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+/* SWITCH IMPL */
+function switchImplementation(type){
+  currentImpl=type;
+  document.querySelectorAll('.impl-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('active');
+  document.getElementById('visualizer-title').textContent='Insertion Sort Visualizer — '+(type==='iterative'?'Iterative':'Recursive');
+  document.getElementById('pseudo-iterative').style.display=type==='iterative'?'block':'none';
+  document.getElementById('pseudo-recursive').style.display=type==='recursive'?'block':'none';
+  resetSort();
+}
+
+/* ══════════════════════════════════════════════
+   SCENARIO HELPERS
+══════════════════════════════════════════════ */
+function buildScenArr(wrapId,data){
+  const wrap=document.getElementById(wrapId);if(!wrap)return;wrap.innerHTML='';
+  const row=document.createElement('div');row.className='s-row';
+  const lbl=document.createElement('div');lbl.className='s-label';lbl.textContent='arr:';row.appendChild(lbl);
+  data.forEach((v,i)=>{const c=document.createElement('div');c.className='sc sc-default';c.id=wrapId+'-c'+i;c.textContent=v;row.appendChild(c);});
+  wrap.appendChild(row);
+}
+
+function renderScenStep(wrapId,step,data){
+  if(!step)return;const a=step.arr||data;
+  a.forEach((v,i)=>{const c=document.getElementById(wrapId+'-c'+i);if(!c)return;c.textContent=v;c.className='sc sc-default';});
+  if(step.type==='done'){a.forEach((_,i)=>{const c=document.getElementById(wrapId+'-c'+i);if(c)c.className='sc sc-sorted';});return;}
+  const sortedUpTo=(step.i!==undefined?step.i:(step.callN!==undefined?step.callN-1:-1))-1;
+  for(let i=0;i<=sortedUpTo;i++){const c=document.getElementById(wrapId+'-c'+i);if(c)c.className='sc sc-sorted';}
+  if(step.type==='outer'){const c=document.getElementById(wrapId+'-c'+step.i);if(c)c.className='sc sc-key';return;}
+  if(step.type==='compare'||step.type==='no-shift'){
+    const ki=step.i!==undefined?step.i:step.callN-1;
+    const c=document.getElementById(wrapId+'-c'+ki);if(c&&!c.className.includes('sorted'))c.className='sc sc-key';
+    const cj=document.getElementById(wrapId+'-c'+step.j);if(cj)cj.className='sc sc-comparing';return;
+  }
+  if(step.type==='shift'){
+    const ki=step.i!==undefined?step.i:step.callN-1;
+    const c=document.getElementById(wrapId+'-c'+ki);if(c)c.className='sc sc-key';
+    const cj1=document.getElementById(wrapId+'-c'+(step.j+1));if(cj1)cj1.className='sc sc-shifting';return;
+  }
+  if(step.type==='place'){const cp=document.getElementById(wrapId+'-c'+step.placeIdx);if(cp)cp.className='sc sc-placing';return;}
+}
+
+function addLog(logEl,text,cls='log-info'){const e=document.createElement('div');e.className='log-entry '+cls;e.textContent='> '+text;logEl.appendChild(e);logEl.scrollTop=logEl.scrollHeight;}
+function switchScenario(name){
+  const map={best:'active-best',avg:'active-avg',worst:'active-worst',custom:'active-custom'};
+  document.querySelectorAll('.scenario-tab').forEach(t=>t.className='scenario-tab');
+  document.getElementById('stab-'+name).classList.add(map[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('spanel-'+name).classList.add('active');
+}
+
+function makeScenEngine(data){
+  const saved=currentImpl;currentImpl='iterative';const steps=computeSteps([...data]);currentImpl=saved;
+  return{steps,idx:0,done:false,data:[...data]};
+}
+
+function runScenStep(eng,wrapId,logId,doneCallback){
+  if(eng.done||eng.idx>=eng.steps.length)return;
+  const step=eng.steps[eng.idx++];const log=document.getElementById(logId);
+  const logMap={
+    'outer'    :{text:`Pick key: arr[${step.i}] = ${step.key}`,cls:'log-key'},
+    'key'      :{text:`key = ${step.key}, start at j = ${step.i!==undefined?step.i-1:step.callN-2}`,cls:'log-key'},
+    'compare'  :{text:`  Compare arr[${step.j}]=${step.arr[step.j]} > key ${step.key} → shift`,cls:'log-compare'},
+    'no-shift' :{text:`  Compare arr[${step.j}]=${step.arr[step.j]} ≤ key ${step.key} → stop`,cls:'log-compare'},
+    'shift'    :{text:`  Shift: arr[${step.j+1}] ← arr[${step.j}]`,cls:'log-shift'},
+    'place'    :{text:`  Insert: arr[${step.placeIdx}] = ${step.key} ✓`,cls:'log-place'},
+    'recurse'  :{text:`Recurse: insertionSortRec(arr, ${step.callN})`,cls:'log-key'},
+    'rc-base'  :{text:`Base case: n=${step.callN} ≤ 1`,cls:'log-info'},
+    'done'     :{text:`✓ Fully sorted!`,cls:'log-sorted'}
+  };
+  const entry=logMap[step.type];if(entry)addLog(log,entry.text,entry.cls);
+  renderScenStep(wrapId,step,eng.data);
+  if(step.type==='done'){eng.done=true;addLog(log,'Best O(N) | Avg/Worst O(N²) | Space O(1)','log-result');if(doneCallback)doneCallback();}
+}
+
+/* BEST */
+const BEST_DATA=[5,10,15,20,25,30];let bestEng=null,bestTimer=null;
+function initBest(){bestEng=makeScenEngine(BEST_DATA);buildScenArr('sarr-best',BEST_DATA);document.getElementById('log-best').innerHTML='<div class="log-title">📋 Operation Log</div>';addLog(document.getElementById('log-best'),`Array: [${BEST_DATA.join(', ')}] — already sorted`,'log-info');addLog(document.getElementById('log-best'),'Best case: O(N) — only 1 compare per key, no shifts','log-info');document.getElementById('best-step-btn').disabled=false;document.getElementById('best-auto-btn').disabled=false;}
+function bestStep(){runScenStep(bestEng,'sarr-best','log-best',()=>{document.getElementById('best-step-btn').disabled=true;document.getElementById('best-auto-btn').disabled=true;});}
+function bestAuto(){document.getElementById('best-auto-btn').disabled=true;function tick(){if(!bestEng.done){bestStep();if(!bestEng.done)bestTimer=setTimeout(tick,550);}}tick();}
+function resetBest(){clearTimeout(bestTimer);initBest();}
+
+/* AVERAGE */
+const AVG_DATA=[29,10,14,37,13,8];let avgEng=null,avgTimer=null;
+function initAvg(){avgEng=makeScenEngine(AVG_DATA);buildScenArr('sarr-avg',AVG_DATA);document.getElementById('log-avg').innerHTML='<div class="log-title">📋 Operation Log</div>';addLog(document.getElementById('log-avg'),`Array: [${AVG_DATA.join(', ')}] — random`,'log-info');document.getElementById('avg-step-btn').disabled=false;document.getElementById('avg-auto-btn').disabled=false;}
+function avgStep(){runScenStep(avgEng,'sarr-avg','log-avg',()=>{document.getElementById('avg-step-btn').disabled=true;document.getElementById('avg-auto-btn').disabled=true;});}
+function avgAuto(){document.getElementById('avg-auto-btn').disabled=true;function tick(){if(!avgEng.done){avgStep();if(!avgEng.done)avgTimer=setTimeout(tick,520);}}tick();}
+function resetAvg(){clearTimeout(avgTimer);initAvg();}
+
+/* WORST */
+const WORST_DATA=[60,50,40,30,20,10];let worstEng=null,worstTimer=null;
+function initWorst(){worstEng=makeScenEngine(WORST_DATA);buildScenArr('sarr-worst',WORST_DATA);document.getElementById('log-worst').innerHTML='<div class="log-title">📋 Operation Log</div>';addLog(document.getElementById('log-worst'),`Array: [${WORST_DATA.join(', ')}] — reverse sorted`,'log-warn');addLog(document.getElementById('log-worst'),'Worst case: O(N²) — max shifts per key','log-warn');document.getElementById('worst-step-btn').disabled=false;document.getElementById('worst-auto-btn').disabled=false;}
+function worstStep(){runScenStep(worstEng,'sarr-worst','log-worst',()=>{document.getElementById('worst-step-btn').disabled=true;document.getElementById('worst-auto-btn').disabled=true;});}
+function worstAuto(){document.getElementById('worst-auto-btn').disabled=true;function tick(){if(!worstEng.done){worstStep();if(!worstEng.done)worstTimer=setTimeout(tick,500);}}tick();}
+function resetWorst(){clearTimeout(worstTimer);initWorst();}
+
+/* CUSTOM */
+let custEng=null,custTimer=null,ccTimerId=null;
+function initCustom(){
+  document.getElementById('sarr-custom').innerHTML='';document.getElementById('log-custom').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'),'Enter an array and click ▶ Load & Sort.','log-info');
+  custEng=null;document.getElementById('custom-step-btn').disabled=true;document.getElementById('custom-auto-btn').disabled=true;
+  ['best','avg','worst'].forEach(t=>{const c=document.getElementById('cc-'+t);if(c)c.classList.remove('cc-active-best','cc-active-avg','cc-active-worst');});
+  document.getElementById('cc-toast').className='cc-toast';
+}
+function customLoad(){
+  clearTimeout(custTimer);const raw=document.getElementById('custom-arr').value.trim();
+  if(!raw){addLog(document.getElementById('log-custom'),'Enter an array first!','log-warn');return;}
+  const data=raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if(data.length<2){addLog(document.getElementById('log-custom'),'Need at least 2 numbers.','log-warn');return;}
+  if(data.length>10){addLog(document.getElementById('log-custom'),'Keep to 10 elements for best visualization.','log-warn');return;}
+  custEng=makeScenEngine(data);buildScenArr('sarr-custom',data);
+  document.getElementById('log-custom').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'),`Array: [${data.join(', ')}]  N=${data.length}`,'log-info');
+  const sorted=[...data].sort((a,b)=>a-b),reverse=[...data].sort((a,b)=>b-a);
+  const isSorted=JSON.stringify(data)===JSON.stringify(sorted),isReverse=JSON.stringify(data)===JSON.stringify(reverse);
+  const cplx=isSorted?'O(N) — Best case!':isReverse?'O(N²) — Worst case!':'O(N²) — Average case';
+  addLog(document.getElementById('log-custom'),`Expected: Time ${cplx} | Space O(1)`,'log-info');
+  document.getElementById('custom-step-btn').disabled=false;document.getElementById('custom-auto-btn').disabled=false;
+}
+function highlightCC(type){
+  ['best','avg','worst'].forEach(t=>document.getElementById('cc-'+t).classList.remove('cc-active-best','cc-active-avg','cc-active-worst'));
+  clearTimeout(ccTimerId);const card=document.getElementById('cc-'+type);
+  if(card){card.classList.add('cc-active-'+type);ccTimerId=setTimeout(()=>card.classList.remove('cc-active-'+type),2200);}
+}
+function showCCToast(type,msg){
+  const toast=document.getElementById('cc-toast'),icons={best:'⚡',avg:'〜',worst:'⚠'};
+  document.getElementById('cc-toast-icon').textContent=icons[type]||'📊';document.getElementById('cc-toast-text').textContent=msg;
+  toast.className='cc-toast show toast-'+type;clearTimeout(toast._t);toast._t=setTimeout(()=>{toast.className='cc-toast';},2800);
+}
+function customStep(){
+  if(!custEng||custEng.done)return;
+  runScenStep(custEng,'sarr-custom','log-custom',()=>{
+    const data=custEng.data,sorted=[...data].sort((a,b)=>a-b),reverse=[...data].sort((a,b)=>b-a);
+    const isSorted=JSON.stringify(data)===JSON.stringify(sorted),isReverse=JSON.stringify(data)===JSON.stringify(reverse);
+    const type=isSorted?'best':isReverse?'worst':'avg';
+    const label=isSorted?'O(N) — sorted input, minimal comparisons':isReverse?'O(N²) — reverse sorted, max shifts':'O(N²) — random, average shifts';
+    highlightCC(type);showCCToast(type,label);
+    document.getElementById('custom-step-btn').disabled=true;document.getElementById('custom-auto-btn').disabled=true;
+  });
+}
+function customAutoPlay(){document.getElementById('custom-auto-btn').disabled=true;function tick(){if(!custEng.done){customStep();if(!custEng.done)custTimer=setTimeout(tick,510);}}tick();}
+function resetCustom(){clearTimeout(custTimer);document.getElementById('custom-arr').value='';initCustom();}
+
+/* ══════════════════════════════════════════════
+   CODE EDITOR
+══════════════════════════════════════════════ */
+function getCMTheme(t){return t==='light'?'eclipse':t==='blue'?'nord':'material-ocean';}
+function initEditor(){
+  const theme=document.body.getAttribute('data-theme')||'dark';
+  codeEditor=CodeMirror.fromTextArea(document.getElementById('code-editor'),{mode:'text/x-c++src',theme:getCMTheme(theme),lineNumbers:true,indentUnit:4,lineWrapping:true});
+  codeEditor.setValue(codeTemplates.iterative.cpp);
+}
+function switchEditorImpl(impl,btn){editorImpl=impl;document.querySelectorAll('.impl-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');updateEditorDisplay();}
+function switchLang(lang,btn){currentLang=lang;document.querySelectorAll('.lang-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');updateEditorDisplay();}
+function updateEditorDisplay(){
+  const modeMap={cpp:'text/x-c++src',python:'text/x-python',java:'text/x-java',c:'text/x-csrc',javascript:'text/javascript'};
+  const nameMap={cpp:'C++',python:'Python',java:'Java',c:'C',javascript:'JavaScript'};
+  codeEditor.setOption('mode',modeMap[currentLang]);codeEditor.setValue(codeTemplates[editorImpl][currentLang]);
+  document.querySelector('.lang-display').textContent=nameMap[currentLang]+' — '+(editorImpl==='iterative'?'Iterative':'Recursive');
+}
+function copyCode(){
+  navigator.clipboard.writeText(codeEditor.getValue()).then(()=>{
+    const btn=document.querySelector('.code-copy');btn.textContent='✓';btn.style.background='var(--primary-green)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.background='var(--primary-purple)';},2000);
+  });
+}
+
+async function getInput(prompt){
+  return new Promise(resolve=>{
+    document.getElementById('promptText').textContent=prompt;document.getElementById('inputPrompt').style.display='block';
+    document.getElementById('userInput').value='';document.getElementById('userInput').focus();inputResolver=resolve;
+  });
+}
+function submitInput(){const val=document.getElementById('userInput').value.trim();if(val&&inputResolver){document.getElementById('inputPrompt').style.display='none';inputResolver(val);inputResolver=null;}}
+document.getElementById('userInput').addEventListener('keypress',e=>{if(e.key==='Enter')submitInput();});
+
+async function runInteractiveCode(){
+  const out=document.getElementById('codeOutput');
+  out.innerHTML='<span style="color:#fbbf24">🔄 Executing...</span><br><br>';
+  const langN={cpp:'C++',python:'Python',java:'Java',c:'C',javascript:'JavaScript'};
+  out.innerHTML+=`<span style="color:var(--primary-cyan)">Insertion Sort (${editorImpl==='iterative'?'Iterative':'Recursive'}) — ${langN[currentLang]}</span><br><br>`;
+  const n=parseInt(await getInput('Enter number of elements: '));
+  out.innerHTML+=`<span style="color:#a0a0a0">Enter number of elements: </span>${n}<br>`;
+  const arr=[];
+  for(let i=0;i<n;i++){const v=parseInt(await getInput(`arr[${i}] = `));arr.push(v);out.innerHTML+=`<span style="color:#a0a0a0">arr[${i}] = </span>${v}<br>`;}
+  out.innerHTML+=`<br><span style="color:var(--primary-cyan)">Before: [${arr.join(', ')}]</span><br><br>`;
+  let comps=0,shifts=0;
+
+  if(editorImpl==='iterative'){
+    for(let i=1;i<arr.length;i++){
+      const key=arr[i];out.innerHTML+=`<span style="color:var(--primary-orange)">i=${i}, key=${key}</span><br>`;
+      let j=i-1;
+      while(j>=0&&arr[j]>key){comps++;out.innerHTML+=`  <span style="color:var(--primary-pink)">arr[${j}]=${arr[j]} > ${key}</span> → shift<br>`;arr[j+1]=arr[j];j--;shifts++;await sleep(40);}
+      if(j>=0)comps++;arr[j+1]=key;
+      out.innerHTML+=`  <span style="color:var(--primary-cyan)">Insert arr[${j+1}] = ${key}</span> → [${arr.join(',')}]<br>`;await sleep(60);
+    }
+  } else {
+    async function simRec(a,callN,depth){
+      if(callN<=1)return;const indent='  '.repeat(depth);
+      out.innerHTML+=`${indent}<span style="color:#8b5cf6">insertionSortRec(arr, ${callN})</span><br>`;
+      await simRec(a,callN-1,depth+1);
+      const key=a[callN-1];out.innerHTML+=`${indent}<span style="color:var(--primary-orange)">Insert key=${key} (n=${callN})</span><br>`;
+      let j=callN-2;
+      while(j>=0&&a[j]>key){comps++;out.innerHTML+=`${indent}  <span style="color:var(--primary-pink)">arr[${j}]=${a[j]} > ${key}</span> → shift<br>`;a[j+1]=a[j];j--;shifts++;await sleep(40);}
+      if(j>=0)comps++;a[j+1]=key;out.innerHTML+=`${indent}  <span style="color:var(--primary-cyan)">arr[${j+1}] = ${key}</span><br>`;await sleep(60);
+    }
+    await simRec(arr,n,0);
+  }
+  out.innerHTML+=`<br><span style="color:var(--primary-green)">✅ After:  [${arr.join(', ')}]</span><br>`;
+  out.innerHTML+=`<span style="color:var(--primary-cyan)">Comparisons: ${comps}  |  Shifts: ${shifts}  |  Space: O(1)</span>`;
+}
+
+/* ══════════════════════════════════════════════
+   THEME / LEVELS / INIT
+══════════════════════════════════════════════ */
+document.getElementById('themeToggle').onclick=()=>{
+  const themes=['dark','light','blue'],cur=document.body.getAttribute('data-theme')||'dark',next=themes[(themes.indexOf(cur)+1)%3];
+  document.body.setAttribute('data-theme',next);localStorage.setItem('dsa-theme',next);codeEditor.setOption('theme',getCMTheme(next));
+};
+document.getElementById('l1').addEventListener('click',()=>window.location.href='insertion_sort_L1.html');
+document.getElementById('l2').addEventListener('click',()=>document.getElementById('slider1').classList.add('active'));
+document.getElementById('l3').addEventListener('click',()=>document.getElementById('quizModal').style.display='flex');
+document.getElementById('startQuiz').addEventListener('click',()=>window.location.href='insertion_sort_L2_Quiz.html');
+document.getElementById('cancelBtn').addEventListener('click',()=>document.getElementById('quizModal').style.display='none');
+window.onclick=e=>{if(e.target===document.getElementById('quizModal'))document.getElementById('quizModal').style.display='none';};
+
+window.onload=()=>{
+  const savedTheme=localStorage.getItem('dsa-theme')||'dark';
+  document.body.setAttribute('data-theme',savedTheme);
+  initEditor();initBest();initAvg();initWorst();initCustom();
+};
+
+
+// --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'insertionsort';
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
+
+window.onclick = (event) => { 
+  if (event.target == modal) modal.style.display = "none"; 
+};
+
+window.onload = () => {
+    const savedTheme = localStorage.getItem('dsa-theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    initEditor();
+    updateLevelButtons();
+};
+
+
+</script>
+</body>
+</html>

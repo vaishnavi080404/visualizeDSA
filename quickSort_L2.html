@@ -1,1621 +1,1590 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quick Sort Visualizer - DSA Mastering</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>Quick Sort - Level 2 | DSA Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ========================================
-       RESET & ROOT VARIABLES
-       ======================================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      /* Color Palette */
-      --bg-dark: #10121A;
-      --bg-medium: #1A1E29;
-      --card-bg: #212531;
-      --navbar-bg-main: #2B3242;
-      --navbar-bg-right: #3C4456;
-      --accent-blue: #00FFFF;
-      --accent-orange: #FF8C00;
-      --text-light: #E0E0E0;
-      --text-white: #FFFFFF;
-      --text-subtle: #99A1B3;
-      
-      /* Shadows and Glows */
-      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
-      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
-      --shadow-dark: rgba(0, 0, 0, 0.6);
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
-      color: var(--text-light);
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* ========================================
-       NAVBAR
-       ======================================== */
-   /* Navbar */
-    .navbar {
-      background: var(--navbar-bg-main);
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 2px solid var(--accent-blue);
-    }
-
-    .navbar-left {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .navbar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text-white);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .navbar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: -2px;
-    }
-
-    .hamburger-menu {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 30px;
-      height: 25px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
-
-    .hamburger-line {
-      width: 100%;
-      height: 3px;
-      background: var(--accent-orange);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px var(--shadow-glow-orange);
-    }
-
-    .hamburger-menu:hover .hamburger-line {
-      background: var(--accent-blue);
-      box-shadow: 0 0 10px var(--shadow-glow-blue);
-    }
-
-    .hamburger-menu.active .hamburger-line:nth-child(1) {
-      transform: rotate(45deg) translate(8px, 8px);
-    }
-
-    .hamburger-menu.active .hamburger-line:nth-child(2) {
-      opacity: 0;
-    }
-
-    .hamburger-menu.active .hamburger-line:nth-child(3) {
-      transform: rotate(-45deg) translate(8px, -8px);
-    }
-
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: -350px;
-      width: 350px;
-      height: 100%;
-      background: var(--card-bg);
-      border-left: 2px solid var(--accent-blue);
-      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
-      z-index: 2500;
-      transition: right 0.4s ease;
-      overflow-y: auto;
-    }
-
-    .sidebar.active {
-      right: 0;
-    }
-
-    .sidebar-header {
-      padding: 30px 25px;
-      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
-      border-bottom: 2px solid var(--accent-blue);
-    }
-
-    .sidebar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1px;
-    }
-
-    .sidebar-menu {
-      padding: 20px 0;
-    }
-
-    .menu-category {
-      padding: 15px 25px 10px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      color: var(--accent-orange);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    .menu-item {
-      padding: 15px 25px;
-      color: var(--text-light);
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .menu-item:hover {
-      background: rgba(0, 255, 255, 0.1);
-      border-left-color: var(--accent-blue);
-      color: var(--accent-blue);
-      padding-left: 30px;
-    }
-
-    .menu-item.active {
-      background: rgba(0, 255, 255, 0.15);
-      border-left-color: var(--accent-orange);
-      color: var(--accent-orange);
-    }
-
-    .menu-item i {
-      font-size: 16px;
-      width: 20px;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 2000;
-      backdrop-filter: blur(3px);
-    }
-
-    .sidebar-overlay.active {
-      display: block;
-    }
-
-
-    /* ========================================
-       MAIN CONTAINER
-       ======================================== */
-    .container { 
-      max-width: 1400px; 
-      margin: 40px auto; 
-      padding: 0 30px; 
-    }
-
-    /* ========================================
-       PSEUDO CODE PANEL
-       ======================================== */
-    .pseudo-code-container {
-      background: var(--card-bg);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      max-height: 600px;
-      overflow-y: auto;
-      position: sticky;
-      top: 90px;
-    }
-
-    .pseudo-code-container h5 { 
-      color: var(--accent-orange); 
-      font-weight: 700; 
-      margin-bottom: 20px; 
-      text-align: center; 
-      font-family: 'Orbitron'; 
-    }
-
-    .pseudo-step { 
-      background: rgba(0, 255, 255, 0.05); 
-      padding: 12px 15px; 
-      margin: 10px 0; 
-      border-radius: 8px; 
-      color: var(--text-light); 
-      border-left: 3px solid transparent; 
-      transition: 0.3s; 
-      font-family: 'Courier New'; 
-      font-size: 13px; 
-      line-height: 1.6; 
-    }
-
-    .pseudo-step.active { 
-      background: linear-gradient(90deg, var(--accent-orange), #ff6b00); 
-      color: #000; 
-      border-left-color: var(--accent-blue); 
-      transform: translateX(10px); 
-      box-shadow: 0 4px 15px var(--shadow-glow-orange); 
-      font-weight: 600; 
-    }
-
-    /* ========================================
-       VISUALIZER AREA
-       ======================================== */
-    .visualization-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      overflow: hidden;
-    }
-
-    .card-header { 
-      background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%); 
-      padding: 20px; 
-      border-bottom: 2px solid var(--accent-blue); 
-    }
-
-    .card-header h5 { 
-      font-family: 'Orbitron'; 
-      font-size: 20px; 
-      color: var(--text-white); 
-      margin: 0; 
-    }
-
-    .card-body { 
-      background: linear-gradient(135deg, #1e2a3f, #2a3f5f); 
-      padding: 30px; 
-      min-height: 500px; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-    }
-
-    /* ========================================
-       QUICK SORT BAR VISUALIZATION
-       ======================================== */
-    .bars-container {
-      width: 100%;
-      height: 400px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 2px;
-      padding: 20px;
-      border: 2px solid var(--accent-blue);
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .bar {
-      flex: 1;
-      background: linear-gradient(to top, #2C5282, #4299E1);
-      border-radius: 4px 4px 0 0;
-      position: relative;
-      transition: height 0.3s ease;
-    }
-
-    .bar.comparing {
-      background: linear-gradient(180deg, #fbbf24, #f59e0b);
-      box-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
-    }
-
-    .bar.pivot {
-      background: linear-gradient(180deg, #ef4444, #dc2626);
-      box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-    }
-
-    .bar.sorted {
-      background: linear-gradient(180deg, #22c55e, #16a34a);
-      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
-    }
-
-    .bar-value {
-      position: absolute;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      color: var(--text-light);
-      font-weight: 600;
-      font-family: 'Orbitron';
-    }
-
-    /* ========================================
-       MESSAGE DISPLAY
-       ======================================== */
-    #msg-show { 
-      margin-top: 20px; 
-      padding: 15px; 
-      border-radius: 10px; 
-      min-height: 55px; 
-      width: 100%; 
-      text-align: center; 
-      display: none;
-    }
-
-    .alert-success { 
-      background: rgba(74, 222, 128, 0.2); 
-      border: 2px solid #22c55e; 
-      color: #22c55e; 
-    }
-
-    .alert-danger { 
-      background: rgba(239, 68, 68, 0.2); 
-      border: 2px solid #ef4444; 
-      color: #ef4444; 
-    }
-
-    .alert-info { 
-      background: rgba(59, 130, 246, 0.2); 
-      border: 2px solid #3b82f6; 
-      color: #3b82f6; 
-    }
-
-    /* ========================================
-       CONTROLS FOOTER
-       ======================================== */
-    .card-footer { 
-      background: var(--navbar-bg-main); 
-      padding: 20px; 
-      border-top: 2px solid var(--accent-blue); 
-    }
-
-    .form-control { 
-      background: var(--bg-dark); 
-      border: 2px solid var(--accent-blue); 
-      color: var(--text-white); 
-      border-radius: 8px; 
-      padding: 10px; 
-      width: 100%;
-    }
-
-    .form-control:focus {
-      outline: none;
-      border-color: var(--accent-orange);
-    }
-
-    .form-label {
-      color: var(--text-light);
-      font-weight: 600;
-      margin-bottom: 8px;
-      display: block;
-    }
-    
-    /* Button Styles */
-    .btn { 
-      border: none; 
-      font-weight: 700; 
-      padding: 10px 20px; 
-      border-radius: 8px; 
-      transition: 0.3s; 
-      cursor: pointer; 
-      font-family: 'Inter'; 
-    }
-
-    .btn-success { 
-      background: linear-gradient(135deg, #22c55e, #16a34a); 
-      color: #000; 
-    }
-
-    .btn-danger { 
-      background: linear-gradient(135deg, #ef4444, #dc2626); 
-      color: #fff; 
-    }
-
-    .btn-primary { 
-      background: linear-gradient(135deg, var(--accent-blue), #00d4d4); 
-      color: #000; 
-    }
-
-    .btn-warning { 
-      background: linear-gradient(135deg, var(--accent-orange), #ff6b00); 
-      color: #000; 
-    }
-
-    .btn:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 6px 20px var(--shadow-glow-blue); 
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    /* ========================================
-       CODE IMPLEMENTATION SECTION
-       ======================================== */
-    .code-section {
-      background: var(--card-bg);
-      margin: 30px 0;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-
-    .code-section h3 { 
-      color: var(--accent-orange); 
-      margin-bottom: 20px; 
-      font-family: 'Orbitron'; 
-      font-size: 28px; 
-    }
-
-    .menu-btns { 
-      display: flex; 
-      gap: 10px; 
-      margin-bottom: 20px; 
-    }
-
-    .menu-btns button { 
-      background: rgba(0, 255, 255, 0.1); 
-      border: 2px solid var(--accent-blue); 
-      padding: 10px 20px; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      transition: 0.3s; 
-    }
-
-    .menu-btns button.active { 
-      background: var(--accent-blue); 
-      color: #000; 
-      transform: translateY(-2px); 
-      box-shadow: 0 4px 15px var(--shadow-glow-blue); 
-    }
-
-    .code-container { 
-      display: none;
-    }
-
-    .code-container.active { 
-      display: block;
-    }
-
-    .code-container pre { 
-      background: rgba(0, 0, 0, 0.4); 
-      padding: 20px; 
-      border-radius: 12px; 
-      border-left: 4px solid var(--accent-orange); 
-      overflow-x: auto; 
-      color: #fff; 
-      font-size: 14px; 
-      line-height: 1.7; 
-    }
-
-    .run-code-btn { 
-      background: linear-gradient(90deg, #10b981, #059669); 
-      color: white; 
-      border: none; 
-      padding: 12px 30px; 
-      border-radius: 8px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      margin-top: 15px; 
-      font-family: 'Orbitron'; 
-      transition: 0.3s; 
-    }
-
-    .run-code-btn:hover {
-      background: linear-gradient(90deg, #059669, #047857);
-      transform: translateY(-2px);
-    }
-
-    .output-container { 
-      background: rgba(0, 0, 0, 0.4); 
-      color: #10b981; 
-      padding: 20px; 
-      border-radius: 12px; 
-      margin-top: 15px; 
-      min-height: 100px; 
-      border: 2px solid rgba(0, 255, 255, 0.2); 
-      font-family: 'Courier New'; 
-    }
-
-    .output-container h6 { 
-      color: var(--accent-orange); 
-      margin-bottom: 10px; 
-      font-family: 'Orbitron'; 
-    }
-
-    #code-output {
-      min-height: 100px;
-      max-height: 300px;
-      overflow-y: auto;
-      font-family: monospace;
-      background: #1e1e1e;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-
-    #interactive-input-area {
-      display: none;
-      gap: 10px;
-      align-items: center;
-      margin-top: 10px;
-    }
-
-    #terminal-input {
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid #444;
-      color: white;
-      outline: none;
-      flex-grow: 1;
-      padding: 5px;
-    }
-
-    /* Syntax highlighting */
-    .hljs-comment { 
-      color: #6b7280; 
-      font-style: italic; 
-    }
-
-    .hljs-keyword { 
-      color: #c084fc; 
-    }
-
-    .hljs-function {
-      color: #60a5fa;
-    }
-
-    .hljs-string {
-      color: #34d399;
-    }
-
-          .level-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 100px;
-  padding: 20px;
-}
-
-.level-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-}
-
-button {
-  background: var(--shadow-glow-blue);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.slider {
-  width: 100px;
-  height: 5px;
-  background: #ccc;
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  height: 100%;
-  width: 0;
-  background: #FF8C00;
-  transition: width 1s ease;
-}
-
-.active::before {
-  width: 100%;
-}
-
-/* Modal */
-.level-modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.level-modal-content {
-  background: var(--card-bg);
-    border: 2px solid #00aaff;
-  padding: 20px 30px;
-  border-radius: 15px;
-  text-align: center;
-  width: 300px;
-}
-
-.level-modal-buttons {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 10px;
-}
-
-.level-modal-buttons button {
-  background: #FF8C00;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-    /* ========================================
-       RESPONSIVE DESIGN
-       ======================================== */
-    @media (max-width: 768px) { 
-      .container { 
-        padding: 0 15px; 
-      } 
-      .navbar-title { 
-        font-size: 18px; 
-      }
-      
-      .main-grid {
-        grid-template-columns: 1fr !important;
-      }
-
-      .pseudo-code-container {
-        position: relative;
-        top: 0;
-      }
-    }
+    :root{--primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;--primary-orange:#f59e0b;--primary-red:#ef4444;--primary-pink:#ec4899;--primary-yellow:#facc15;--dark-bg:#0a0a0a;--card-bg:#1a1a1a;--text-primary:#ffffff;--text-secondary:#a0a0a0;--border-color:#2a2a2a;--nav-bg:rgba(10,10,10,.8);--code-bg:#0d1117;--terminal-bg:#0d1117;}
+    [data-theme="light"]{--dark-bg:#f8fafc;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(248,250,252,.8);--code-bg:#f1f5f9;--terminal-bg:#f1f5f9;--primary-cyan:#0891b2;--primary-green:#059669;}
+    [data-theme="blue"]{--dark-bg:#011425;--card-bg:#1e293b;--text-primary:#ffffff;--text-secondary:#94a3b8;--border-color:#242424;--nav-bg:rgba(1,20,37,.8);--code-bg:#011425;--terminal-bg:#011425;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+    nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);}
+    .nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+    .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+    .logo-icon{width:35px;height:35px;background:linear-gradient(135deg,var(--primary-green),var(--primary-cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+    .nav-links{display:flex;gap:2.5rem;list-style:none;}
+    .nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+    .nav-links a:hover{color:var(--primary-green);}
+    .theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+    .theme-toggle:hover{border-color:var(--primary-green);background:rgba(16,185,129,.1);}
+    .theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+    .container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+    .breadcrumb a{color:var(--text-secondary);text-decoration:none;}
+    .breadcrumb span.sep{opacity:.5;}
+    .page-header{margin-bottom:3rem;}
+    .page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;}
+    .level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+    .level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+    .level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1.05rem;}
+    .content-title{font-size:1.25rem;font-weight:600;margin-bottom:1rem;color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;}
+    .implementation-selector{display:flex;gap:1rem;margin:2rem 0;padding:1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+    .impl-option{padding:1rem 2rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center;min-width:240px;}
+    .impl-option:hover{border-color:var(--primary-cyan);transform:translateY(-2px);}
+    .impl-option.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 4px 15px rgba(6,182,212,.3);}
+    .impl-option-icon{font-size:2rem;margin-bottom:.5rem;}
+    .impl-option-title{font-weight:700;font-size:1.1rem;margin-bottom:.3rem;}
+    .impl-option-desc{font-size:.85rem;color:var(--text-secondary);}
+    .impl-option.active .impl-option-desc{color:rgba(255,255,255,.8);}
+    .visualizer-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;}
+    .pseudo-code-container{background:var(--card-bg);border-radius:15px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);max-height:700px;overflow-y:auto;position:sticky;top:90px;}
+    .pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:20px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:1px;}
+    .pseudo-step{background:var(--code-bg);padding:12px 15px;margin:10px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;}
+    .pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00a8a8);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+    .pseudo-step strong{color:var(--primary-cyan);}
+    .pseudo-step.active strong{color:#000;font-weight:800;}
+    .visualization-card{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);overflow:hidden;}
+    .card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:20px;border-bottom:2px solid var(--border-color);}
+    .card-header h5{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0;}
+    .card-body{background:var(--code-bg);padding:24px;min-height:400px;}
+    .card-footer{background:var(--card-bg);padding:20px;border-top:2px solid var(--border-color);}
+    .sort-display{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
+    .stat-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:4px;}
+    .stat-badge{display:inline-flex;align-items:center;gap:.4rem;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+    .sb-purple{background:rgba(139,92,246,.15);border:1px solid var(--primary-purple);color:var(--primary-purple);}
+    .sb-pink{background:rgba(236,72,153,.15);border:1px solid var(--primary-pink);color:var(--primary-pink);}
+    .sb-green{background:rgba(16,185,129,.15);border:1px solid var(--primary-green);color:var(--primary-green);}
+    .sb-orange{background:rgba(245,158,11,.15);border:1px solid var(--primary-orange);color:var(--primary-orange);}
+    .sb-cyan{background:rgba(6,182,212,.15);border:1px solid var(--primary-cyan);color:var(--primary-cyan);}
+    .sb-yellow{background:rgba(250,204,21,.15);border:1px solid var(--primary-yellow);color:var(--primary-yellow);}
+    .arr-strip{display:flex;align-items:flex-end;justify-content:center;gap:0;flex-wrap:nowrap;}
+    .arr-cell-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+    .arr-cell{width:52px;height:52px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;color:var(--text-secondary);background:rgba(255,255,255,.03);transition:all .38s cubic-bezier(.34,1.56,.64,1);position:relative;}
+    .ac-default{background:rgba(255,255,255,.04)!important;border-color:var(--border-color)!important;color:var(--text-secondary)!important;}
+    .ac-pivot{background:linear-gradient(135deg,rgba(245,158,11,.6),rgba(245,158,11,.3))!important;border-color:var(--primary-orange)!important;color:#fff!important;transform:translateY(-8px);box-shadow:0 10px 24px rgba(245,158,11,.55);animation:pivotPop .4s ease;z-index:4;}
+    .ac-i{background:rgba(6,182,212,.25)!important;border-color:var(--primary-cyan)!important;color:var(--primary-cyan)!important;transform:translateY(-5px);box-shadow:0 6px 16px rgba(6,182,212,.3);}
+    .ac-j{background:rgba(236,72,153,.25)!important;border-color:var(--primary-pink)!important;color:var(--primary-pink)!important;transform:translateY(-5px);box-shadow:0 6px 16px rgba(236,72,153,.3);}
+    .ac-swapping{background:linear-gradient(135deg,rgba(139,92,246,.4),rgba(139,92,246,.15))!important;border-color:var(--primary-purple)!important;color:#fff!important;animation:swapFlash .45s ease;}
+    .ac-placed{background:linear-gradient(135deg,rgba(250,204,21,.4),rgba(250,204,21,.15))!important;border-color:var(--primary-yellow)!important;color:#000!important;transform:translateY(-6px);box-shadow:0 8px 20px rgba(250,204,21,.45);animation:placedGlow .5s ease;}
+    .ac-sorted{background:linear-gradient(135deg,rgba(16,185,129,.28),rgba(16,185,129,.08))!important;border-color:var(--primary-green)!important;color:var(--primary-green)!important;box-shadow:0 0 10px rgba(16,185,129,.25);}
+    @keyframes pivotPop{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.12)}100%{transform:translateY(-8px) scale(1)}}
+    @keyframes swapFlash{0%,100%{transform:translateY(0)}25%{transform:translateY(-8px) rotate(-3deg)}75%{transform:translateY(-8px) rotate(3deg)}}
+    @keyframes placedGlow{0%{box-shadow:0 0 0 rgba(250,204,21,0)}50%{box-shadow:0 0 30px rgba(250,204,21,.7)}100%{box-shadow:0 8px 20px rgba(250,204,21,.45)}}
+    .arr-ptr{font-size:.62rem;font-family:'JetBrains Mono',monospace;font-weight:700;min-height:14px;text-align:center;transition:color .3s;}
+    .ptr-pivot{color:var(--primary-orange);}
+    .ptr-i{color:var(--primary-cyan);}
+    .ptr-j{color:var(--primary-pink);}
+    .ptr-placed{color:var(--primary-yellow);}
+    .ptr-sorted{color:var(--primary-green);}
+    .range-row{display:flex;justify-content:center;gap:0;margin-top:2px;}
+    .range-cell{width:52px;height:3px;border-radius:2px;background:transparent;transition:background .3s;}
+    .rc-active{background:rgba(245,158,11,.35);}
+    .rc-sorted{background:var(--primary-green);}
+    .legend{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+    .leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .leg-dot{width:10px;height:10px;border-radius:3px;}
+    .caption-box{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:10px 16px;font-size:.88rem;color:var(--primary-cyan);text-align:center;font-family:'JetBrains Mono',monospace;min-height:38px;transition:all .3s;width:100%;}
+    .caption-box.cap-pivot{background:rgba(245,158,11,.1);border-color:var(--primary-orange);color:var(--primary-orange);}
+    .caption-box.cap-swap{background:rgba(139,92,246,.1);border-color:var(--primary-purple);color:var(--primary-purple);}
+    .caption-box.cap-placed{background:rgba(250,204,21,.1);border-color:var(--primary-yellow);color:var(--primary-yellow);}
+    .caption-box.cap-done{background:rgba(16,185,129,.1);border-color:var(--primary-green);color:var(--primary-green);}
+    #msg_show{color:var(--text-primary);text-align:center;margin-top:14px;font-size:15px;padding:12px;border-radius:10px;min-height:40px;display:none;}
+    .alert-success{background:rgba(16,185,129,.2);border:2px solid var(--primary-green);color:var(--primary-green);}
+    .alert-danger{background:rgba(239,68,68,.2);border:2px solid var(--primary-red);color:var(--primary-red);}
+    .form-control{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:10px;width:100%;}
+    .form-control:focus{background:var(--dark-bg);border-color:var(--primary-cyan);outline:none;box-shadow:0 0 10px rgba(6,182,212,.3);}
+    .btn{border:none;font-weight:700;padding:10px 20px;border-radius:8px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;}
+    .btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+    .btn-info{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;}
+    .btn-danger{background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+    .btn-warning{background:linear-gradient(135deg,var(--primary-orange),#ff6b00);color:#fff;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(6,182,212,.3);}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+    .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+    .section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;}
+    .section-title{font-size:1.8rem;font-weight:700;}
+    .scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+    .scenario-tab{padding:.55rem 1.25rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+    .scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .scenario-tab.active-best{background:var(--primary-green);border-color:var(--primary-green);color:#fff;}
+    .scenario-tab.active-avg{background:var(--primary-cyan);border-color:var(--primary-cyan);color:#fff;}
+    .scenario-tab.active-worst{background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+    .scenario-tab.active-custom{background:var(--primary-purple);border-color:var(--primary-purple);color:#fff;}
+    .scenario-panel{display:none;}
+    .scenario-panel.active{display:block;}
+    .scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+    .scenario-inner h4{font-size:1.15rem;font-weight:700;margin-bottom:.4rem;}
+    .scenario-inner p{color:var(--text-secondary);font-size:.95rem;margin-bottom:1.2rem;}
+    .scenario-divider{border:none;border-top:1px solid var(--border-color);margin:1rem 0 1.4rem;}
+    .input-label{color:var(--text-secondary);font-size:.88rem;font-weight:600;margin-bottom:.9rem;text-transform:uppercase;letter-spacing:.5px;}
+    .s-arr-strip{display:flex;align-items:flex-end;justify-content:flex-start;gap:4px;flex-wrap:wrap;}
+    .s-cell-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+    .sc{width:40px;height:40px;border:1.5px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;color:var(--text-secondary);background:rgba(255,255,255,.03);transition:all .3s;border-radius:5px;}
+    .sc.sc-default{border-color:var(--border-color);}
+    .sc.sc-pivot{background:linear-gradient(135deg,rgba(245,158,11,.4),rgba(245,158,11,.15))!important;border-color:var(--primary-orange)!important;color:var(--primary-orange)!important;transform:translateY(-4px);}
+    .sc.sc-i{background:rgba(6,182,212,.15)!important;border-color:var(--primary-cyan)!important;color:var(--primary-cyan)!important;transform:translateY(-3px);}
+    .sc.sc-j{background:rgba(236,72,153,.15)!important;border-color:var(--primary-pink)!important;color:var(--primary-pink)!important;transform:translateY(-3px);}
+    .sc.sc-swapping{background:rgba(139,92,246,.2)!important;border-color:var(--primary-purple)!important;color:var(--primary-purple)!important;}
+    .sc.sc-placed{background:rgba(250,204,21,.2)!important;border-color:var(--primary-yellow)!important;color:var(--primary-yellow)!important;transform:translateY(-4px);}
+    .sc.sc-sorted{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.06))!important;border-color:var(--primary-green)!important;color:var(--primary-green)!important;}
+    .s-ptr{font-size:.58rem;font-family:'JetBrains Mono',monospace;font-weight:700;min-height:12px;text-align:center;}
+    .log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;min-height:170px;max-height:240px;overflow-y:auto;}
+    .log-panel .log-title{color:var(--primary-cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem;font-weight:700;}
+    .log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:fadeLog .3s ease both;}
+    @keyframes fadeLog{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+    .log-entry.log-pivot{color:var(--primary-orange);}
+    .log-entry.log-compare{color:var(--primary-cyan);}
+    .log-entry.log-swap{color:var(--primary-purple);}
+    .log-entry.log-placed{color:var(--primary-yellow);}
+    .log-entry.log-sorted{color:var(--primary-green);font-weight:700;}
+    .log-entry.log-info{color:var(--text-secondary);}
+    .log-entry.log-warn{color:var(--primary-orange);}
+    .log-entry.log-result{color:var(--primary-purple);font-weight:700;}
+    .ctl-row{display:flex;align-items:center;gap:.75rem;margin-top:1.2rem;flex-wrap:wrap;}
+    .ctl-btn{padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .ctl-btn-green{background:var(--primary-green);color:#fff;}
+    .ctl-btn-green:hover{box-shadow:0 4px 14px rgba(16,185,129,.4);}
+    .ctl-btn-red{background:var(--primary-red);color:#fff;}
+    .ctl-btn-red:hover{box-shadow:0 4px 14px rgba(239,68,68,.4);}
+    .ctl-btn-cyan{background:var(--primary-cyan);color:#000;}
+    .ctl-btn-cyan:hover{box-shadow:0 4px 14px rgba(6,182,212,.4);}
+    .ctl-btn-orange{background:var(--primary-orange);color:#000;}
+    .ctl-btn-orange:hover{box-shadow:0 4px 14px rgba(245,158,11,.4);}
+    .ctl-btn-purple{background:var(--primary-purple);color:#fff;}
+    .ctl-btn-ghost{background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+    .ctl-btn-ghost:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .ctl-btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .ctl-btn:not(:disabled):hover{transform:translateY(-1px);}
+    .custom-wide-input{padding:8px 12px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s;}
+    .custom-wide-input:focus{border-color:var(--primary-cyan);}
+    .custom-input-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
+    .custom-complexity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.9rem;}
+    .custom-complexity-card{background:rgba(0,0,0,.35);border:1.5px solid rgba(0,255,255,.14);border-radius:10px;padding:.85rem 1rem;transition:all .25s;}
+    .custom-complexity-card.cc-active-best{border-color:#00ff64;box-shadow:0 0 18px rgba(0,255,100,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-avg{border-color:var(--primary-cyan);box-shadow:0 0 18px rgba(0,255,255,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-worst{border-color:#ff5555;box-shadow:0 0 18px rgba(255,85,85,.3);transform:translateY(-2px);}
+    .cc-op{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.55rem;font-family:'Space Grotesk',sans-serif;}
+    .cc-time,.cc-space{font-size:.78rem;color:var(--text-secondary);font-family:'Courier New',monospace;line-height:1.7;}
+    .cc-val{font-weight:700;font-size:.82rem;}
+    .cc-green{color:#00ff64;}.cc-orange{color:var(--primary-orange);}.cc-red{color:#ff5555;}
+    .cc-reason{margin-top:.5rem;font-size:.71rem;color:rgba(153,161,179,.7);font-style:italic;line-height:1.45;border-top:1px solid rgba(255,255,255,.05);padding-top:.45rem;}
+    .cc-toast{display:none;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.4rem;animation:toastIn .3s ease both;border:1.5px solid;}
+    .cc-toast.show{display:flex;}
+    .cc-toast.toast-best{background:rgba(0,255,100,.08);border-color:#00ff64;color:#00ff64;}
+    .cc-toast.toast-avg{background:rgba(0,255,255,.08);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .cc-toast.toast-worst{background:rgba(255,85,85,.08);border-color:#ff5555;color:#ff5555;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .impl-tabs{display:flex;gap:.8rem;margin:0 0 1rem;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .impl-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .impl-tab.active{background:var(--primary-purple);color:white;border-color:var(--primary-purple);}
+    .lang-tabs{display:flex;gap:.8rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .lang-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+    .editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+    .code-copy{width:50px;height:40px;background:var(--primary-purple);border:1px solid var(--border-color);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-size:14px;}
+    .code-copy:hover{background:#7c3aed;}
+    .run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;}
+    .run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+    .output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:160px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:14px;line-height:1.6;}
+    .output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+    .input-prompt{background:var(--card-bg);padding:15px;border-radius:8px;margin-top:10px;border:1px solid var(--border-color);}
+    .input-prompt input{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:8px 12px;margin-right:10px;font-family:'JetBrains Mono',monospace;}
+    .input-prompt button{background:var(--primary-cyan);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;}
+    .CodeMirror{height:430px!important;font-size:14px;border-radius:0 0 12px 12px;}
+    .level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+    .level-wrapper button{position:relative;z-index:20!important;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+    #l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan)!important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+    #l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green)!important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+    .slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+    #slider1{left:22%;}#slider2{left:58%;}
+    .slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+    .level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+    .level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+    #startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;box-shadow:none;border:none;cursor:pointer;font-weight:700;}
+    #startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+    #cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;border:none;cursor:pointer;font-weight:700;}
+    @media(max-width:900px){.visualizer-grid{grid-template-columns:1fr;}.pseudo-code-container{position:relative;top:0;max-height:420px;}.implementation-selector{flex-direction:column;}.impl-option{min-width:100%;}.custom-complexity-grid{grid-template-columns:1fr;}}
   </style>
 </head>
-<body>
-
-<!-- ========================================
-     NAVIGATION BAR
-     ======================================== -->
-<nav class="navbar">
-  <div class="navbar-left">
-    <div class="navbar-title">DSA VISUALIZER</div>
-    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+<body data-theme="dark">
+<nav>
+  <div class="nav-container">
+    <div class="logo"><img src="dsa.gif" alt="Logo" class="logo-icon"><span>DSA Visualizer</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="#editor">Code Editor</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+    </button>
   </div>
-  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-  </button>
 </nav>
-
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">Menu</div>
-    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="menu-category">🔍 Searching Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
-      <i class="fas fa-search"></i>
-      <span>Linear Search</span>
-    </div>
-    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
-      <i class="fas fa-chart-line"></i>
-      <span>Binary Search</span>
-    </div>
-    <div class="menu-category">📊 Data Structures</div>
-    <div class="menu-item" onclick="selectAlgorithm('stack')">
-      <i class="fas fa-layer-group"></i>
-      <span>Stack</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('queue')">
-      <i class="fas fa-stream"></i>
-      <span>Queue</span>
-    </div>
-    <div class="menu-category">🔄 Sorting Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
-      <i class="fas fa-code-branch"></i>
-      <span>Merge Sort</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
-      <i class="fas fa-circle"></i>
-      <span>Bubble Sort</span>
-    </div>
-  </div>
-</div>
-
-<!-- ========================================
-     MAIN CONTENT
-     ======================================== -->
 <div class="container">
-  <div class="main-grid" style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start; margin-top: 30px;">
-    
-    <!-- ========================================
-         PSEUDO CODE PANEL
-         ======================================== -->
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">&rsaquo;</span>
+    <a href="quick_sort_basics.html">Quick Sort</a><span class="sep">&rsaquo;</span>
+    <span>Level 2</span>
+  </div>
+  <div class="page-header">
+    <h1 class="page-title">Quick Sort &mdash; Interactive Visualizer</h1>
+    <p class="content-text">Watch Quick Sort pick a <strong style="color:var(--primary-orange)">pivot</strong>, partition all elements around it, then recursively sort each side. Average <strong style="color:var(--primary-green)">O(N log N)</strong> but degrades to <strong style="color:var(--primary-red)">O(N&sup2;)</strong> on sorted input with a poor pivot choice.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="lomuto" onclick="switchImpl('lomuto')">
+      <div class="impl-option-icon">&#128282;</div>
+      <div class="impl-option-title">Lomuto Partition</div>
+      <div class="impl-option-desc">Last element as pivot &mdash; i pointer grows inward</div>
+    </div>
+    <div class="impl-option" data-type="hoare" onclick="switchImpl('hoare')">
+      <div class="impl-option-icon">&#128283;</div>
+      <div class="impl-option-title">Hoare Partition</div>
+      <div class="impl-option-desc">First element as pivot &mdash; two pointers converge</div>
+    </div>
+  </div>
+
+  <div class="visualizer-grid">
     <div class="pseudo-code-container">
-      <h5>📋 PSEUDO CODE</h5>
-      <div class="pseudo-step" data-step="partition">
-        <strong>PARTITION:</strong><br>
-        Choose pivot (last element)<br>
-        i = low - 1<br>
-        for j = low to high-1:<br>
-        &nbsp;&nbsp;if arr[j] ≤ pivot:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;i++<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;swap(arr[i], arr[j])<br>
-        swap(arr[i+1], arr[high])<br>
-        return i+1
+      <h5>&#128203; PSEUDO CODE</h5>
+      <div id="pseudo-lomuto">
+        <div class="pseudo-step" data-step="lo-base"><strong>BASE CASE:</strong> 0 or 1 element<br><span>if low &ge; high: return</span></div>
+        <div class="pseudo-step" data-step="lo-pivot"><strong>PIVOT:</strong> Last element<br><span>pivot = arr[high]</span></div>
+        <div class="pseudo-step" data-step="lo-iinit"><strong>i POINTER:</strong> Boundary init<br><span>i = low &minus; 1</span></div>
+        <div class="pseudo-step" data-step="lo-scan"><strong>SCAN j:</strong> Traverse left&rarr;right<br><span>for j = low to high&minus;1</span></div>
+        <div class="pseudo-step" data-step="lo-compare"><strong>COMPARE:</strong> Is arr[j] &le; pivot?<br><span>if arr[j] &le; pivot</span></div>
+        <div class="pseudo-step" data-step="lo-swap-ij"><strong>SWAP i&harr;j:</strong> Grow left region<br><span>i++ ; swap(arr[i], arr[j])</span></div>
+        <div class="pseudo-step" data-step="lo-place"><strong>PLACE PIVOT:</strong> Final position<br><span>swap(arr[i+1], arr[high])</span></div>
+        <div class="pseudo-step" data-step="lo-recurse"><strong>RECURSE:</strong> Left &amp; right sub-arrays<br><span>quickSort(low, i)<br>quickSort(i+2, high)</span></div>
+        <div class="pseudo-step" data-step="lo-done"><strong>SORTED:</strong> All partitions done &#10003;<br><span>pivot in its final position</span></div>
       </div>
-      <div class="pseudo-step" data-step="quicksort">
-        <strong>QUICKSORT:</strong><br>
-        if low &lt; high:<br>
-        &nbsp;&nbsp;pi = partition(arr, low, high)<br>
-        &nbsp;&nbsp;quickSort(arr, low, pi-1)<br>
-        &nbsp;&nbsp;quickSort(arr, pi+1, high)
-      </div>
-      <div class="pseudo-step" data-step="complexity">
-        <strong>TIME COMPLEXITY:</strong><br>
-        Best: O(n log n)<br>
-        Average: O(n log n)<br>
-        Worst: O(n²)<br>
-        <strong>SPACE:</strong> O(log n)
+      <div id="pseudo-hoare" style="display:none;">
+        <div class="pseudo-step" data-step="ho-base"><strong>BASE CASE:</strong> 0 or 1 element<br><span>if low &ge; high: return</span></div>
+        <div class="pseudo-step" data-step="ho-pivot"><strong>PIVOT:</strong> First element<br><span>pivot = arr[low]</span></div>
+        <div class="pseudo-step" data-step="ho-init"><strong>INIT POINTERS:</strong> i &amp; j from ends<br><span>i = low&minus;1 ; j = high+1</span></div>
+        <div class="pseudo-step" data-step="ho-advance-i"><strong>ADVANCE i:</strong> Find element &ge; pivot<br><span>do i++ while arr[i] &lt; pivot</span></div>
+        <div class="pseudo-step" data-step="ho-advance-j"><strong>ADVANCE j:</strong> Find element &le; pivot<br><span>do j-- while arr[j] &gt; pivot</span></div>
+        <div class="pseudo-step" data-step="ho-check"><strong>CHECK:</strong> Pointers crossed?<br><span>if i &ge; j: return j (boundary)</span></div>
+        <div class="pseudo-step" data-step="ho-swap"><strong>SWAP i&harr;j:</strong> Move elements<br><span>swap(arr[i], arr[j])</span></div>
+        <div class="pseudo-step" data-step="ho-recurse"><strong>RECURSE:</strong> Two sub-arrays<br><span>quickSort(low, j)<br>quickSort(j+1, high)</span></div>
+        <div class="pseudo-step" data-step="ho-done"><strong>SORTED:</strong> All partitions done &#10003;<br><span>array fully sorted</span></div>
       </div>
     </div>
 
-    <!-- ========================================
-         VISUALIZER PANEL
-         ======================================== -->
     <div>
       <div class="visualization-card">
-        <div class="card-header">
-          <h5>Quick Sort Visualizer (Divide & Conquer)</h5>
-        </div>
-        
+        <div class="card-header"><h5 id="visualizer-title">Quick Sort Visualizer &mdash; Lomuto Partition (Last Element Pivot)</h5></div>
         <div class="card-body">
-          <div class="bars-container" id="bars-container">
-            <!-- Bars will be dynamically generated here -->
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-orange" id="badge-pivot">Pivot: &mdash;</div>
+              <div class="stat-badge sb-cyan" id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-purple" id="badge-swaps">Swaps: 0</div>
+              <div class="stat-badge sb-yellow" id="badge-parts">Partitions: 0</div>
+              <div class="stat-badge sb-green" id="badge-sorted">Sorted: 0</div>
+            </div>
+            <div class="arr-strip" id="ptrStrip" style="margin-bottom:0;"></div>
+            <div class="arr-strip" id="arrStrip"></div>
+            <div class="arr-strip" id="idxStrip" style="margin-top:0;"></div>
+            <div class="range-row" id="rangeRow"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#f59e0b,#d97706)"></div>Pivot</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-cyan)"></div>i pointer</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-pink)"></div>j pointer</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-purple)"></div>Swapping</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-yellow)"></div>Pivot placed</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-green)"></div>Sorted</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
           </div>
-          <div id="msg-show"></div>
+          <div id="msg_show"></div>
         </div>
-        
         <div class="card-footer">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div>
-              <label class="form-label">Speed</label>
-              <input type="range" class="form-control" id="speed-slider" min="1" max="100" value="50">
-            </div>
-            <div>
-              <label class="form-label">Array Size</label>
-              <input type="range" class="form-control" id="size-slider" min="5" max="50" value="15">
-            </div>
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g. 10, 80, 30, 90, 40, 50, 70">
+            <button class="btn btn-warning" onclick="startSort()">Sort</button>
           </div>
-          
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
-            <input 
-              type="text" 
-              id="array-input" 
-              class="form-control" 
-              placeholder="Enter comma-separated numbers (e.g., 64,34,25,12,22)"
-              aria-label="Array input">
-            <button class="btn btn-warning" onclick="generateRandomArray()">Random Array</button>
-          </div>
-          
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="createArray()">Create Array</button>
-            <button class="btn btn-success" onclick="startSort()" id="sort-btn">Start Sort</button>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()" id="stepBtn" disabled>Step &#9654;</button>
+            <button class="btn btn-info" onclick="autoSort()" id="autoBtn" disabled>Auto &#9654;&#9654;</button>
+            <button class="btn btn-danger" onclick="resetSort()" id="resetBtn">Reset &#8635;</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ========================================
-       CODE IMPLEMENTATION SECTION
-       ======================================== -->
-  <div class="code-section">
-    <h3>💻 IMPLEMENTATIONS</h3>
-    
-    <div class="menu-btns">
-      <button id="cpp-btn" class="active" onclick="changeCode('cpp')">
-        <img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" height="32" alt="C++">
-      </button>
-      <button id="python-btn" onclick="changeCode('python')">
-        <img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" height="32" alt="Python">
-      </button>
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">&#129514;</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best" id="stab-best" onclick="switchScenario('best')">&#9889; Best Case</button>
+      <button class="scenario-tab" id="stab-avg" onclick="switchScenario('avg')">&#12316; Average Case</button>
+      <button class="scenario-tab" id="stab-worst" onclick="switchScenario('worst')">&#9888; Worst Case</button>
+      <button class="scenario-tab" id="stab-custom" onclick="switchScenario('custom')">&#9999; Custom Input</button>
     </div>
 
-    <!-- C++ Implementation -->
-    <div class="code-container active" id="cpp-content">
-      <pre><code class="cpp"><span class="hljs-comment">// Quick Sort Implementation in C++</span>
-<span class="hljs-comment">// Divide and conquer algorithm with in-place sorting</span>
-
-<span class="hljs-keyword">#include</span> &lt;iostream&gt;
-<span class="hljs-keyword">using namespace</span> std;
-
-<span class="hljs-comment">/**
- * Swaps two elements in the array
- * @param a - pointer to first element
- * @param b - pointer to second element
- */</span>
-<span class="hljs-keyword">void</span> <span class="hljs-function">swap</span>(<span class="hljs-keyword">int</span>* a, <span class="hljs-keyword">int</span>* b) {
-    <span class="hljs-keyword">int</span> temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-<span class="hljs-comment">/**
- * Partition function: places pivot in correct position
- * Elements smaller than pivot go to left, larger go to right
- * @param array - array to partition
- * @param low - starting index
- * @param high - ending index (pivot position)
- * @return final position of pivot
- */</span>
-<span class="hljs-keyword">int</span> <span class="hljs-function">partition</span>(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high) {
-    <span class="hljs-keyword">int</span> pivot = array[high];  <span class="hljs-comment">// Choose last element as pivot</span>
-    <span class="hljs-keyword">int</span> i = (low - <span class="hljs-number">1</span>);        <span class="hljs-comment">// Index of smaller element</span>
-
-    <span class="hljs-comment">// Traverse through array and move smaller elements to left</span>
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = low; j &lt; high; j++) {
-        <span class="hljs-keyword">if</span> (array[j] &lt;= pivot) {
-            i++;
-            swap(&amp;array[i], &amp;array[j]);
-        }
-    }
-    
-    <span class="hljs-comment">// Place pivot in correct position</span>
-    swap(&amp;array[i + <span class="hljs-number">1</span>], &amp;array[high]);
-    <span class="hljs-keyword">return</span> (i + <span class="hljs-number">1</span>);
-}
-
-<span class="hljs-comment">/**
- * Quick Sort: Recursively sorts array using divide and conquer
- * @param array - array to sort
- * @param low - starting index
- * @param high - ending index
- */</span>
-<span class="hljs-keyword">void</span> <span class="hljs-function">quickSort</span>(<span class="hljs-keyword">int</span> array[], <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high) {
-    <span class="hljs-keyword">if</span> (low &lt; high) {
-        <span class="hljs-comment">// Partition array and get pivot index</span>
-        <span class="hljs-keyword">int</span> pi = partition(array, low, high);
-        
-        <span class="hljs-comment">// Recursively sort left and right subarrays</span>
-        quickSort(array, low, pi - <span class="hljs-number">1</span>);   <span class="hljs-comment">// Before pivot</span>
-        quickSort(array, pi + <span class="hljs-number">1</span>, high);  <span class="hljs-comment">// After pivot</span>
-    }
-}
-
-<span class="hljs-comment">// Example usage</span>
-<span class="hljs-keyword">int</span> <span class="hljs-function">main</span>() {
-    <span class="hljs-keyword">int</span> arr[] = {<span class="hljs-number">64</span>, <span class="hljs-number">34</span>, <span class="hljs-number">25</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">11</span>, <span class="hljs-number">90</span>};
-    <span class="hljs-keyword">int</span> n = <span class="hljs-keyword">sizeof</span>(arr) / <span class="hljs-keyword">sizeof</span>(arr[<span class="hljs-number">0</span>]);
-    
-    quickSort(arr, <span class="hljs-number">0</span>, n - <span class="hljs-number">1</span>);
-    
-    cout &lt;&lt; <span class="hljs-string">"Sorted array: "</span>;
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)
-        cout &lt;&lt; arr[i] &lt;&lt; <span class="hljs-string">" "</span>;
-    
-    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
-}</code></pre>
-      <button class="run-code-btn" onclick="runCode('cpp')">▶ Run Interactive Code</button>
+    <div class="scenario-panel active" id="spanel-best">
+      <div class="scenario-inner">
+        <h4>Best Case &mdash; Balanced Partitions</h4>
+        <p>Pivot always lands near the <strong style="color:var(--primary-green)">middle</strong> of the sub-array. Each partition creates two roughly equal halves, so recursion depth stays at <strong style="color:var(--primary-green)">log&#8322;(N)</strong>, giving <strong style="color:var(--primary-green)">O(N log N)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [3, 10, 20, 30, 40, 50, 60] &mdash; pivot lands near middle</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-best" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-best"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-green" onclick="bestStep()" id="best-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetBest()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Python Implementation -->
-    <div class="code-container" id="python-content">
-      <pre><code class="python"><span class="hljs-comment"># Quick Sort Implementation in Python</span>
-<span class="hljs-comment"># Divide and conquer algorithm with in-place sorting</span>
-
-<span class="hljs-keyword">def</span> <span class="hljs-function">partition</span>(array, start, end):
-    <span class="hljs-string">"""
-    Partition function using Hoare's scheme
-    Places elements smaller than pivot on left, larger on right
-    
-    Args:
-        array: List to partition
-        start: Starting index
-        end: Ending index
-    
-    Returns:
-        Final position of pivot element
-    """</span>
-    pivot = array[start]  <span class="hljs-comment"># Choose first element as pivot</span>
-    low = start + <span class="hljs-number">1</span>
-    high = end
-
-    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
-        <span class="hljs-comment"># Move high pointer left until element &lt;= pivot found</span>
-        <span class="hljs-keyword">while</span> low &lt;= high <span class="hljs-keyword">and</span> array[high] &gt;= pivot:
-            high = high - <span class="hljs-number">1</span>
-
-        <span class="hljs-comment"># Move low pointer right until element &gt;= pivot found</span>
-        <span class="hljs-keyword">while</span> low &lt;= high <span class="hljs-keyword">and</span> array[low] &lt;= pivot:
-            low = low + <span class="hljs-number">1</span>
-
-        <span class="hljs-comment"># If pointers crossed, partition is complete</span>
-        <span class="hljs-keyword">if</span> low &lt;= high:
-            array[low], array[high] = array[high], array[low]
-        <span class="hljs-keyword">else</span>:
-            <span class="hljs-keyword">break</span>
-
-    <span class="hljs-comment"># Place pivot in final position</span>
-    array[start], array[high] = array[high], array[start]
-    <span class="hljs-keyword">return</span> high
-
-
-<span class="hljs-keyword">def</span> <span class="hljs-function">quick_sort</span>(array, start, end):
-    <span class="hljs-string">"""
-    Quick Sort: Recursively sorts array using divide and conquer
-    
-    Args:
-        array: List to sort
-        start: Starting index
-        end: Ending index
-    """</span>
-    <span class="hljs-keyword">if</span> start &gt;= end:
-        <span class="hljs-keyword">return</span>  <span class="hljs-comment"># Base case: single element or empty</span>
-
-    <span class="hljs-comment"># Partition array and get pivot position</span>
-    p = partition(array, start, end)
-    
-    <span class="hljs-comment"># Recursively sort left and right subarrays</span>
-    quick_sort(array, start, p - <span class="hljs-number">1</span>)  <span class="hljs-comment"># Before pivot</span>
-    quick_sort(array, p + <span class="hljs-number">1</span>, end)    <span class="hljs-comment"># After pivot</span>
-
-
-<span class="hljs-comment"># Example usage</span>
-<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
-    arr = [<span class="hljs-number">64</span>, <span class="hljs-number">34</span>, <span class="hljs-number">25</span>, <span class="hljs-number">12</span>, <span class="hljs-number">22</span>, <span class="hljs-number">11</span>, <span class="hljs-number">90</span>]
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Original array: {arr}"</span>)
-    
-    quick_sort(arr, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(arr) - <span class="hljs-number">1</span>)
-    
-    <span class="hljs-built_in">print</span>(<span class="hljs-string">f"Sorted array: {arr}"</span>)</code></pre>
-      <button class="run-code-btn" onclick="runCode('python')">▶ Run Interactive Code</button>
+    <div class="scenario-panel" id="spanel-avg">
+      <div class="scenario-inner">
+        <h4>Average Case &mdash; Random Input</h4>
+        <p>Random array &mdash; pivot lands somewhere in the middle on average, giving roughly balanced partitions. This is Quick Sort&rsquo;s typical real-world performance at <strong style="color:var(--primary-cyan)">O(N log N)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [10, 80, 30, 90, 40, 50, 70] &mdash; random order</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-avg" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-avg"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-cyan" onclick="avgStep()" id="avg-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetAvg()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Interactive Terminal -->
+    <div class="scenario-panel" id="spanel-worst">
+      <div class="scenario-inner">
+        <h4>Worst Case &mdash; Already Sorted (Lomuto)</h4>
+        <p>With <strong style="color:var(--primary-red)">sorted input and Lomuto&rsquo;s last-element pivot</strong>, every pivot is the largest element &mdash; partitions into 0 + (N&minus;1) sub-arrays. Recursion depth = N, giving <strong style="color:var(--primary-red)">O(N&sup2;)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [10, 20, 30, 40, 50, 60] &mdash; sorted: worst for Lomuto</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-worst" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-worst"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-red" onclick="worstAuto()" id="worst-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetWorst()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-panel" id="spanel-custom">
+      <div class="scenario-inner">
+        <h4>Custom Input</h4>
+        <p>Enter your own array. Complexity cards highlight based on how many partitions were needed vs. optimal log&#8322;(N) depth &mdash; revealing best, average, or worst-case behaviour.</p>
+        <hr class="scenario-divider">
+        <div class="custom-complexity-grid">
+          <div class="custom-complexity-card" id="cc-best">
+            <div class="cc-op">&#9889; Best Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-green">O(N log N)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-green">O(log N)</span></div>
+            <div class="cc-reason">Pivot lands at midpoint &mdash; balanced partitions, depth = log&#8322;N</div>
+          </div>
+          <div class="custom-complexity-card" id="cc-avg">
+            <div class="cc-op">&#12316; Average Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-green">O(N log N)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-green">O(log N)</span></div>
+            <div class="cc-reason">Random input &mdash; partitions roughly balanced on average</div>
+          </div>
+          <div class="custom-complexity-card" id="cc-worst">
+            <div class="cc-op">&#9888; Worst Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-red">O(N&sup2;)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-red">O(N)</span></div>
+            <div class="cc-reason">Sorted/reverse-sorted with last-element pivot &mdash; depth = N</div>
+          </div>
+        </div>
+        <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+        <div class="input-label" style="margin-top:1.2rem;">&#128452; Your Array</div>
+        <div class="custom-input-row">
+          <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 15, 3, 9, 8, 27, 5, 12" style="width:250px;">
+          <button class="ctl-btn ctl-btn-green" onclick="customLoad()">&#9654; Load &amp; Sort</button>
+          <button class="ctl-btn ctl-btn-cyan" onclick="customStep()" id="custom-step-btn" disabled>&#9654; Step</button>
+          <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>&#9889; Auto</button>
+          <button class="ctl-btn ctl-btn-ghost" onclick="resetCustom()">&#8635; Reset</button>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-custom" style="max-width:480px;flex-wrap:wrap;"></div></div>
+          <div><div class="log-panel" id="log-custom"><div class="log-title">&#128203; Operation Log</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+    <div class="impl-tabs">
+      <button class="impl-tab active" onclick="switchEditorImpl('lomuto',this)">&#128282; Lomuto Partition (Last Pivot)</button>
+      <button class="impl-tab" onclick="switchEditorImpl('hoare',this)">&#128283; Hoare Partition (First Pivot)</button>
+    </div>
+    <div class="lang-tabs">
+      <button class="lang-tab active" onclick="switchLang('cpp',this)">C++</button>
+      <button class="lang-tab" onclick="switchLang('python',this)">Python</button>
+      <button class="lang-tab" onclick="switchLang('java',this)">Java</button>
+      <button class="lang-tab" onclick="switchLang('c',this)">C</button>
+      <button class="lang-tab" onclick="switchLang('javascript',this)">JS</button>
+    </div>
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ &mdash; Lomuto Partition (Last Pivot)</span>
+        <button class="code-copy" onclick="copyCode()" title="Copy code"><i class="fas fa-copy"></i></button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+    <button class="run-code-btn" onclick="runCode()"><i class="fas fa-play"></i> Run Code</button>
     <div class="output-container">
-      <h6>📤 Interactive Terminal:</h6>
-      <div id="code-output">
-        Click "Run Interactive Code" to initialize Quick Sort and start the interactive session.
+      <h6>&#128228; Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
       </div>
-      
-      <div id="interactive-input-area">
-        <span style="color: #10b981;">&gt;</span>
-        <input 
-          type="text" 
-          id="terminal-input" 
-          placeholder="Enter command or array..."
-          aria-label="Terminal input">
-        <button onclick="processTerminalCommand()" style="padding: 5px 15px; cursor: pointer; border-radius: 4px; border: none; background: #10b981; color: white;">Send</button>
-      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? &rarr;</h3>
+  <div class="level-wrapper">
+    <button id="l1" onclick="window.location.href='quick_sort_basics.html'">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3" onclick="document.getElementById('quizModal').style.display='flex'">Level 3</button>
+  </div>
+</div>
+
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">&#128274;</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Quick Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz" onclick="window.location.href='quick_sort_quiz.html'">Start Quiz</button>
+      <button id="cancelBtn" onclick="document.getElementById('quizModal').style.display='none'">Cancel</button>
     </div>
   </div>
 </div>
 
-       <div class="level-container">
-        <div class="level-wrapper">
-            <button id="l1">Level 1</button>
-            <div class="slider" id="slider1"></div>
-            <button id="l2">Level 2</button>
-            <div class="slider" id="slider2"></div>
-            <button id="l3">Level 3</button>
-        </div>
-    </div>
-
-    <!-- Modal for Level 2 Quiz -->
-    <div id="quizModal" class="level-modal">
-        <div class="level-modal-content">
-            <h3>Level 3 Quiz</h3>
-            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
-            
-            <div class="level-modal-buttons">
-                <button id="startQuiz">Start Quiz</button>
-                <button id="cancelBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
 <script>
-// ========================================
-// CONFIGURATION CONSTANTS
-// ========================================
-const CONFIG = {
-  DEFAULT_SPEED: 50,
-  DEFAULT_SIZE: 15,
-  MIN_VALUE: 5,
-  MAX_VALUE: 100,
-  ANIMATION_BASE_DELAY: 1000
+// ─────────────────────────────────────────────────────────
+//  CODE TEMPLATES
+// ─────────────────────────────────────────────────────────
+const CODE = {
+  lomuto: {
+    cpp: `#include <iostream>
+using namespace std;
+
+// Lomuto partition: pivot = arr[high] (last element)
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];   // last element is pivot
+    int i = low - 1;         // boundary of "smaller" region
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);  // grow smaller region
+        }
+    }
+    swap(arr[i + 1], arr[high]);   // place pivot in final position
+    return i + 1;                  // return pivot index
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low >= high) return;       // base case: 0 or 1 element
+    int pi = partition(arr, low, high);
+    quickSort(arr, low, pi - 1);   // sort left sub-array
+    quickSort(arr, pi + 1, high);  // sort right sub-array
+}
+
+int main() {
+    int arr[] = {10, 80, 30, 90, 40, 50, 70};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    cout << "Before: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    quickSort(arr, 0, n - 1);
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python: `def partition(arr, low, high):
+    pivot = arr[high]    # last element is pivot
+    i = low - 1          # boundary of "smaller" region
+
+    for j in range(low, high):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]   # grow smaller region
+
+    arr[i + 1], arr[high] = arr[high], arr[i + 1]  # place pivot
+    return i + 1                                    # pivot index
+
+
+def quick_sort(arr, low=None, high=None):
+    if low is None:  low  = 0
+    if high is None: high = len(arr) - 1
+    if low >= high: return             # base case
+    pi = partition(arr, low, high)
+    quick_sort(arr, low, pi - 1)       # sort left
+    quick_sort(arr, pi + 1, high)      # sort right
+
+
+# --- Demo ---
+arr = [10, 80, 30, 90, 40, 50, 70]
+print(f"Before: {arr}")
+quick_sort(arr)
+print(f"After:  {arr}")`,
+    java: `import java.util.Arrays;
+
+public class QuickSortLomuto {
+
+    static int partition(int[] arr, int low, int high) {
+        int pivot = arr[high];
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+            }
+        }
+        int tmp = arr[i + 1]; arr[i + 1] = arr[high]; arr[high] = tmp;
+        return i + 1;
+    }
+
+    static void quickSort(int[] arr, int low, int high) {
+        if (low >= high) return;
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {10, 80, 30, 90, 40, 50, 70};
+        System.out.println("Before: " + Arrays.toString(arr));
+        quickSort(arr, 0, arr.length - 1);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c: `#include <stdio.h>
+void swap(int *a, int *b){ int t=*a; *a=*b; *b=t; }
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high], i = low - 1;
+    for (int j = low; j < high; j++)
+        if (arr[j] <= pivot) { i++; swap(&arr[i], &arr[j]); }
+    swap(&arr[i + 1], &arr[high]);
+    return i + 1;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low >= high) return;
+    int pi = partition(arr, low, high);
+    quickSort(arr, low, pi - 1);
+    quickSort(arr, pi + 1, high);
+}
+
+int main() {
+    int arr[] = {10, 80, 30, 90, 40, 50, 70};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    printf("Before: "); for (int i=0;i<n;i++) printf("%d ",arr[i]);
+    quickSort(arr, 0, n - 1);
+    printf("\\nAfter:  "); for (int i=0;i<n;i++) printf("%d ",arr[i]);
+    printf("\\n"); return 0;
+}`,
+    javascript: `function partition(arr, low, high) {
+    const pivot = arr[high];   // last element is pivot
+    let i = low - 1;
+    for (let j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+    return i + 1;
+}
+
+function quickSort(arr, low = 0, high = arr.length - 1) {
+    if (low >= high) return;
+    const pi = partition(arr, low, high);
+    quickSort(arr, low, pi - 1);
+    quickSort(arr, pi + 1, high);
+}
+
+// Demo
+const arr = [10, 80, 30, 90, 40, 50, 70];
+console.log("Before:", arr.join(", "));
+quickSort(arr);
+console.log("After: ", arr.join(", "));`
+  },
+  hoare: {
+    cpp: `#include <iostream>
+using namespace std;
+
+// Hoare partition: pivot = arr[low] (first element)
+int partition(int arr[], int low, int high) {
+    int pivot = arr[low];
+    int i = low - 1;
+    int j = high + 1;
+    while (true) {
+        do { i++; } while (arr[i] < pivot);
+        do { j--; } while (arr[j] > pivot);
+        if (i >= j) return j;
+        swap(arr[i], arr[j]);
+    }
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low >= high) return;
+    int pi = partition(arr, low, high);
+    quickSort(arr, low, pi);
+    quickSort(arr, pi + 1, high);
+}
+
+int main() {
+    int arr[] = {10, 80, 30, 90, 40, 50, 70};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    cout << "Before: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    quickSort(arr, 0, n - 1);
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python: `def partition(arr, low, high):
+    pivot = arr[low]     # first element is pivot
+    i = low - 1
+    j = high + 1
+    while True:
+        i += 1
+        while arr[i] < pivot:
+            i += 1
+        j -= 1
+        while arr[j] > pivot:
+            j -= 1
+        if i >= j:
+            return j
+        arr[i], arr[j] = arr[j], arr[i]
+
+
+def quick_sort(arr, low=None, high=None):
+    if low is None:  low  = 0
+    if high is None: high = len(arr) - 1
+    if low >= high: return
+    pi = partition(arr, low, high)
+    quick_sort(arr, low, pi)
+    quick_sort(arr, pi + 1, high)
+
+
+# Demo
+arr = [10, 80, 30, 90, 40, 50, 70]
+print(f"Before: {arr}")
+quick_sort(arr)
+print(f"After:  {arr}")`,
+    java: `import java.util.Arrays;
+
+public class QuickSortHoare {
+
+    static int partition(int[] arr, int low, int high) {
+        int pivot = arr[low];
+        int i = low - 1, j = high + 1;
+        while (true) {
+            do { i++; } while (arr[i] < pivot);
+            do { j--; } while (arr[j] > pivot);
+            if (i >= j) return j;
+            int tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+    }
+
+    static void quickSort(int[] arr, int low, int high) {
+        if (low >= high) return;
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi);
+        quickSort(arr, pi + 1, high);
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {10, 80, 30, 90, 40, 50, 70};
+        System.out.println("Before: " + Arrays.toString(arr));
+        quickSort(arr, 0, arr.length - 1);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c: `#include <stdio.h>
+void swap(int *a, int *b){ int t=*a; *a=*b; *b=t; }
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[low], i = low - 1, j = high + 1;
+    while (1) {
+        do { i++; } while (arr[i] < pivot);
+        do { j--; } while (arr[j] > pivot);
+        if (i >= j) return j;
+        swap(&arr[i], &arr[j]);
+    }
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low >= high) return;
+    int pi = partition(arr, low, high);
+    quickSort(arr, low, pi);
+    quickSort(arr, pi + 1, high);
+}
+
+int main() {
+    int arr[] = {10, 80, 30, 90, 40, 50, 70};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    printf("Before: "); for (int i=0;i<n;i++) printf("%d ",arr[i]);
+    quickSort(arr, 0, n - 1);
+    printf("\\nAfter:  "); for (int i=0;i<n;i++) printf("%d ",arr[i]);
+    printf("\\n"); return 0;
+}`,
+    javascript: `function partition(arr, low, high) {
+    const pivot = arr[low];    // first element is pivot
+    let i = low - 1;
+    let j = high + 1;
+    while (true) {
+        do { i++; } while (arr[i] < pivot);
+        do { j--; } while (arr[j] > pivot);
+        if (i >= j) return j;
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+function quickSort(arr, low = 0, high = arr.length - 1) {
+    if (low >= high) return;
+    const pi = partition(arr, low, high);
+    quickSort(arr, low, pi);
+    quickSort(arr, pi + 1, high);
+}
+
+// Demo
+const arr = [10, 80, 30, 90, 40, 50, 70];
+console.log("Before:", arr.join(", "));
+quickSort(arr);
+console.log("After: ", arr.join(", "));`
+  }
 };
 
-// ========================================
-// GLOBAL STATE
-// ========================================
-let array = [];
-let speed = CONFIG.DEFAULT_SPEED;
-let isSorting = false;
-let currentLang = 'cpp';
-let virtualArray = [];
-let inputState = 'initial';
-
-// ========================================
-// UTILITY FUNCTIONS
-// ========================================
-
-/**
- * Creates a delay for animations
- * @param {number} ms - Milliseconds to wait
- */
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Calculates delay based on speed slider
- */
-function getDelay() {
-  return CONFIG.ANIMATION_BASE_DELAY / speed;
-}
-
-/**
- * Highlights pseudo-code step
- * @param {string} step - Step identifier
- */
-function highlightStep(step) {
-  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
-  const element = document.querySelector(`.pseudo-step[data-step="${step}"]`);
-  if (element) element.classList.add('active');
-}
-
-/**
- * Shows message to user
- * @param {string} text - Message text
- * @param {string} type - Message type
- */
-function showMsg(text, type) {
-  const element = document.getElementById('msg-show');
-  element.style.display = 'block';
-  element.className = `alert alert-${type}`;
-  element.innerHTML = text;
-}
-
-// ========================================
-// SIDEBAR NAVIGATION
-// ========================================
-
- function selectAlgorithm(algorithm) {
-    // Mapping IDs to filenames
-    const routes = {
-        'linear-search': 'linearSearch_L1.html',
-        'binary-search': 'binarySearch_L1.html',
-        'quick-sort': 'quickSort_L1.html',
-        'merge-sort': 'mergeSort_L1.html',
-        'bubble-sort': 'bubbleSort_L1.html',
-        'stack': 'stack_L1.html',
-        'queue': 'queue.html'
-    };
-
-    const targetPage = routes[algorithm];
-
-    if (targetPage) {
-        // Redirect to the new page
-        window.location.href = targetPage;
-    } else {
-        console.error("Route not found for:", algorithm);
-        toggleSidebar();
-    }
-}
-document.addEventListener("DOMContentLoaded", () => {
-    // Get the current filename (e.g., "quick_sort.html")
-    const currentPage = window.location.pathname.split("/").pop();
-    
-    // Map of filenames back to IDs
-    const pageToId = {
-        'quickSort_L1.html': 'quick-sort',
-        'binarySearch_L1.html': 'binary-search',
-        'linearSearch_L1.html': 'linear-search',
-        'mergeSort_L1.html': 'merge-sort',
-        'bubbleSort_L1.html': 'bubble-sort',
-        'stack_L1.html': 'stack',
-        'queue_L1.html': 'queue'
-
-    };
-
+// ─────────────────────────────────────────────────────────
+//  THEME TOGGLE
+// ─────────────────────────────────────────────────────────
+const themes = ['dark','light','blue'];
+let themeIdx = 0;
+document.getElementById('themeToggle').addEventListener('click', () => {
+  themeIdx = (themeIdx + 1) % themes.length;
+  document.body.setAttribute('data-theme', themes[themeIdx]);
+  if (codeEditor) codeEditor.setOption('theme', getCMTheme(themes[themeIdx]));
 });
-function selectAlgorithm(algo) {
-  if (algo === 'quick-sort') {
-    toggleSidebar();
-  } else {
-    alert('Navigating to ' + algo.toUpperCase() + ' (not implemented in this demo)');
-  }
-}
 
-// ========================================
-// ARRAY VISUALIZATION
-// ========================================
+// ─────────────────────────────────────────────────────────
+//  MAIN VISUALIZER STATE
+// ─────────────────────────────────────────────────────────
+let mainArr=[], mainSteps=[], mainIdx=0, mainDone=false, mainTimer=null;
+let mComps=0, mSwaps=0, mParts=0, mSorted=0;
+let currentImpl='lomuto';
 
-/**
- * Renders the array as bars
- */
-function renderBars() {
-  const container = document.getElementById('bars-container');
-  container.innerHTML = '';
-  
-  const maxValue = Math.max(...array);
-  
-  array.forEach((value, index) => {
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = `${(value / maxValue) * 350}px`;
-    bar.id = `bar-${index}`;
-    
-    const valueLabel = document.createElement('div');
-    valueLabel.className = 'bar-value';
-    valueLabel.textContent = value;
-    bar.appendChild(valueLabel);
-    
-    container.appendChild(bar);
-  });
-}
+// ─────────────────────────────────────────────────────────
+//  STEP COMPUTATION ENGINE
+// ─────────────────────────────────────────────────────────
+function computeSteps(input, scheme) {
+  const arr=[...input], steps=[], sorted=new Set();
 
-/**
- * Highlights bars during sorting
- * @param {number[]} indices - Array indices to highlight
- * @param {string} className - CSS class to apply
- */
-async function highlightBars(indices, className) {
-  indices.forEach(i => {
-    const bar = document.getElementById(`bar-${i}`);
-    if (bar) bar.classList.add(className);
-  });
-  await sleep(getDelay());
-}
-
-/**
- * Removes highlight from bars
- * @param {number[]} indices - Array indices to unhighlight
- * @param {string} className - CSS class to remove
- */
-function unhighlightBars(indices, className) {
-  indices.forEach(i => {
-    const bar = document.getElementById(`bar-${i}`);
-    if (bar) bar.classList.remove(className);
-  });
-}
-
-/**
- * Swaps two bars visually
- * @param {number} i - First index
- * @param {number} j - Second index
- */
-async function swapBars(i, j) {
-  [array[i], array[j]] = [array[j], array[i]];
-  renderBars();
-  await sleep(getDelay());
-}
-
-// ========================================
-// QUICK SORT ALGORITHM
-// ========================================
-
-/**
- * Partition function for Quick Sort
- * @param {number} low - Starting index
- * @param {number} high - Ending index
- * @returns {number} Pivot index
- */
-async function partition(low, high) {
-  highlightStep('partition');
-  
-  const pivot = array[high];
-  // CAPTION: Choosing the pivot
-  showMsg(`<i class="fas fa-thumbtack"></i> Picking <strong>${pivot}</strong> (at index ${high}) as the pivot for this partition.`, 'info');
-  
-  await highlightBars([high], 'pivot');
-  let i = low - 1;
-  
-  for (let j = low; j < high; j++) {
-    highlightStep('partition'); // Keep partition step active
-    
-    // CAPTION: Comparing current element with pivot
-    showMsg(`<i class="fas fa-search"></i> Comparing <strong>${array[j]}</strong> with pivot <strong>${pivot}</strong>.`, 'info');
-    
-    await highlightBars([j], 'comparing');
-    
-    if (array[j] <= pivot) {
-      i++;
-      // CAPTION: Element is smaller, swap it to the "left" zone
-      showMsg(`<i class="fas fa-arrow-left"></i> ${array[j]} <= ${pivot}. Moving to the left of future pivot position.`, 'warning');
-      
-      if (i !== j) {
-        await swapBars(i, j);
+  function lo(a, low, high) {
+    if (low >= high) { if (low === high) sorted.add(low); return; }
+    const pv = a[high];
+    steps.push({t:'ps',low,high,pi:high,pv,arr:[...a],sorted:new Set(sorted),
+      cap:`PARTITION [${low}..${high}]: pivot = arr[${high}] = ${pv}  (last element)`,ps:'lo-pivot'});
+    steps.push({t:'ii',low,high,pi:high,pv,i:low-1,arr:[...a],sorted:new Set(sorted),
+      cap:`INIT: i = ${low-1} (grows as we find elements <= pivot)`,ps:'lo-iinit'});
+    let i = low - 1;
+    for (let j = low; j < high; j++) {
+      steps.push({t:'cmp',low,high,pi:high,pv,i,j,arr:[...a],sorted:new Set(sorted),
+        cap:`COMPARE: arr[${j}]=${a[j]} ${a[j]<=pv?'<=':'>'} pivot(${pv}) → ${a[j]<=pv?'i++ & swap':'skip'}`,ps:'lo-compare'});
+      if (a[j] <= pv) {
+        i++;
+        if (i !== j) {
+          [a[i],a[j]]=[a[j],a[i]];
+          steps.push({t:'sij',low,high,pi:high,pv,i,j,arr:[...a],sorted:new Set(sorted),
+            cap:`SWAP: arr[${i}]=${a[i]} ↔ arr[${j}]=${a[j]}  (i advanced to ${i})`,ps:'lo-swap-ij'});
+        } else {
+          steps.push({t:'iadv',low,high,pi:high,pv,i,j,arr:[...a],sorted:new Set(sorted),
+            cap:`i advanced to ${i} — arr[${j}]=${a[j]} <= pivot, same position`,ps:'lo-swap-ij'});
+        }
       }
-    } else {
-      // CAPTION: Element is larger
-      showMsg(`<i class="fas fa-arrow-right"></i> ${array[j]} > ${pivot}. Keeping it in the right zone.`, 'info');
     }
-    
-    unhighlightBars([j], 'comparing');
+    const pf = i + 1; [a[pf],a[high]]=[a[high],a[pf]]; sorted.add(pf);
+    steps.push({t:'place',low,high,pi:pf,pv,i,arr:[...a],sorted:new Set(sorted),
+      cap:`PLACE PIVOT: arr[${pf}] = ${pv}  ← pivot is now in its final sorted position!`,ps:'lo-place'});
+    steps.push({t:'rec',low,high,pi:pf,arr:[...a],sorted:new Set(sorted),
+      cap:`RECURSE: sort left [${low}..${pf-1}] and right [${pf+1}..${high}]`,ps:'lo-recurse'});
+    lo(a,low,pf-1); lo(a,pf+1,high);
   }
-  
-  // CAPTION: Finalizing the pivot position
-  showMsg(`<i class="fas fa-flag-checkered"></i> Partitioning done. Placing pivot <strong>${pivot}</strong> at index ${i + 1}.`, 'success');
-  
-  if (i + 1 !== high) {
-    await swapBars(i + 1, high);
+
+  function ho(a, low, high) {
+    if (low >= high) { if (low === high) sorted.add(low); return; }
+    const pv = a[low];
+    steps.push({t:'ps',low,high,pi:low,pv,arr:[...a],sorted:new Set(sorted),
+      cap:`PARTITION [${low}..${high}]: pivot = arr[${low}] = ${pv}  (first element)`,ps:'ho-pivot'});
+    steps.push({t:'ii',low,high,pi:low,pv,i:low-1,j:high+1,arr:[...a],sorted:new Set(sorted),
+      cap:`INIT: i=${low-1} (left boundary), j=${high+1} (right boundary) — two-pointer approach`,ps:'ho-init'});
+    let i=low-1, j=high+1;
+    while (true) {
+      do { i++; } while (a[i] < pv);
+      steps.push({t:'ai',low,high,pi:low,pv,i,j,arr:[...a],sorted:new Set(sorted),
+        cap:`ADVANCE i: i=${i} — arr[${i}]=${a[i]} >= pivot(${pv})  (found element >= pivot)`,ps:'ho-advance-i'});
+      do { j--; } while (a[j] > pv);
+      steps.push({t:'aj',low,high,pi:low,pv,i,j,arr:[...a],sorted:new Set(sorted),
+        cap:`ADVANCE j: j=${j} — arr[${j}]=${a[j]} <= pivot(${pv})  (found element <= pivot)`,ps:'ho-advance-j'});
+      if (i >= j) {
+        steps.push({t:'cross',low,high,pi:j,pv,i,j,arr:[...a],sorted:new Set(sorted),
+          cap:`POINTERS CROSSED: i(${i}) >= j(${j}) — partition boundary at j=${j}`,ps:'ho-check'});
+        steps.push({t:'rec',low,high,pi:j,arr:[...a],sorted:new Set(sorted),
+          cap:`RECURSE: sort [${low}..${j}] and [${j+1}..${high}]`,ps:'ho-recurse'});
+        ho(a,low,j); ho(a,j+1,high); return;
+      }
+      [a[i],a[j]]=[a[j],a[i]];
+      steps.push({t:'sij',low,high,pi:low,pv,i,j,arr:[...a],sorted:new Set(sorted),
+        cap:`SWAP: arr[${i}]=${a[i]} ↔ arr[${j}]=${a[j]}  (moving to correct sides)`,ps:'ho-swap'});
+    }
   }
-  
-  unhighlightBars([high], 'pivot');
-  await highlightBars([i + 1], 'sorted');
-  
-  return i + 1;
+
+  if (scheme === 'lomuto') lo(arr, 0, arr.length-1);
+  else ho(arr, 0, arr.length-1);
+
+  arr.forEach((_,k) => sorted.add(k));
+  steps.push({t:'done',arr:[...arr],sorted:new Set(sorted),
+    cap:`✅ Array fully sorted: [${arr.join(', ')}]`,
+    ps: scheme==='lomuto'?'lo-done':'ho-done'});
+  return steps;
 }
 
-/**
- * Quick Sort algorithm implementation
- * @param {number} low - Starting index
- * @param {number} high - Ending index
- */
-async function quickSort(low, high) {
-  if (low < high) {
-    highlightStep('quicksort');
-    
-    const pi = await partition(low, high);
-    
-    // CAPTION: Recursive Calls
-    showMsg(`<i class="fas fa-share-alt"></i> Now recursively sorting left sub-array [${low}...${pi-1}] and right sub-array [${pi+1}...${high}].`, 'info');
-    
-    await quickSort(low, pi - 1);
-    await quickSort(pi + 1, high);
-  } else if (low === high) {
-    // Single element is already sorted
-    await highlightBars([low], 'sorted');
-  }
+// ─────────────────────────────────────────────────────────
+//  MAIN VISUALIZER RENDERING
+// ─────────────────────────────────────────────────────────
+function buildStrip(arr) {
+  ['arrStrip','ptrStrip','idxStrip','rangeRow'].forEach(id => document.getElementById(id).innerHTML='');
+  const n = arr.length;
+  arr.forEach((v,i) => {
+    // Pointer row
+    const pw = document.createElement('div'); pw.className='arr-cell-wrap';
+    const pt = document.createElement('div'); pt.className='arr-ptr'; pt.id='mp-'+i;
+    pw.appendChild(pt); document.getElementById('ptrStrip').appendChild(pw);
+    // Cell row
+    const cw = document.createElement('div'); cw.className='arr-cell-wrap';
+    const c = document.createElement('div'); c.className='arr-cell ac-default'; c.id='mc-'+i; c.textContent=v;
+    if (i===0) c.style.borderRadius='8px 0 0 8px';
+    if (i===n-1) c.style.borderRadius='0 8px 8px 0';
+    cw.appendChild(c); document.getElementById('arrStrip').appendChild(cw);
+    // Index row
+    const iw = document.createElement('div'); iw.className='arr-cell-wrap';
+    const ix = document.createElement('div'); ix.className='arr-ptr'; ix.style.color='var(--text-secondary)'; ix.textContent=i;
+    iw.appendChild(ix); document.getElementById('idxStrip').appendChild(iw);
+    // Range row
+    const rc = document.createElement('div'); rc.className='range-cell'; rc.id='rr-'+i;
+    document.getElementById('rangeRow').appendChild(rc);
+  });
 }
 
-/**
- * Starts the sorting visualization
- */
-async function startSort() {
-  if (isSorting) return;
-  if (array.length === 0) {
-    showMsg('⚠️ Please create an array first!', 'danger');
-    return;
+function applyStep(step) {
+  const arr=step.arr, n=arr.length;
+  arr.forEach((v,i) => { const c=document.getElementById('mc-'+i); if(c) c.textContent=v; });
+  // Reset all
+  arr.forEach((_,i) => {
+    const c=document.getElementById('mc-'+i), p=document.getElementById('mp-'+i), r=document.getElementById('rr-'+i);
+    if (!c||!p||!r) return;
+    if (step.sorted&&step.sorted.has(i)) {
+      c.className='arr-cell ac-sorted'; p.textContent=''; p.className='arr-ptr ptr-sorted'; r.className='range-cell rc-sorted';
+    } else {
+      c.className='arr-cell ac-default'; p.textContent=''; p.className='arr-ptr'; r.className='range-cell';
+    }
+  });
+  if (step.t==='done') { arr.forEach((_,i)=>{const c=document.getElementById('mc-'+i);if(c)c.className='arr-cell ac-sorted';}); return; }
+  // Active range highlight
+  if (step.low!==undefined&&step.high!==undefined) {
+    for (let x=step.low;x<=step.high;x++) { const r=document.getElementById('rr-'+x); if(r&&r.className==='range-cell')r.className='range-cell rc-active'; }
   }
-  
-  isSorting = true;
-  document.getElementById('sort-btn').disabled = true;
-  
-  // CAPTION: Initialization
-  showMsg('<i class="fas fa-rocket"></i> Starting Quick Sort (Divide & Conquer Strategy)...', 'info');
-  
-  await quickSort(0, array.length - 1);
-  
-  // CAPTION: Completion
-  showMsg('<i class="fas fa-check-double"></i> <strong>Sorted!</strong> Quick Sort completed in average O(n log n) time.', 'success');
-  highlightStep('complexity');
-  
-  isSorting = false;
-  document.getElementById('sort-btn').disabled = false;
+  function setCell(idx,cls,ptext,pcls) {
+    const c=document.getElementById('mc-'+idx),p=document.getElementById('mp-'+idx);
+    if (!c||!p) return;
+    if (step.sorted&&step.sorted.has(idx)) return;
+    c.className='arr-cell '+cls; p.textContent=ptext; p.className='arr-ptr '+pcls;
+  }
+  const t=step.t;
+  if (t==='ps'||t==='ii') { setCell(step.pi,'ac-pivot','P','ptr-pivot'); }
+  if (t==='cmp'||t==='iadv') {
+    setCell(step.pi,'ac-pivot','P','ptr-pivot');
+    if (step.i>=0) setCell(step.i,'ac-i','i','ptr-i');
+    if (step.j>=0&&step.j!==step.pi) setCell(step.j,'ac-j','j','ptr-j');
+  }
+  if (t==='ai') {
+    setCell(step.pi,'ac-pivot','P','ptr-pivot');
+    setCell(step.i,'ac-i','i→','ptr-i');
+    if (step.j>=0&&step.j<arr.length) {
+      const c2=document.getElementById('mc-'+step.j),p2=document.getElementById('mp-'+step.j);
+      if (c2&&p2&&!(step.sorted&&step.sorted.has(step.j))&&!c2.className.includes('ac-i')) {
+        c2.className='arr-cell ac-j'; p2.textContent='j'; p2.className='arr-ptr ptr-j';
+      }
+    }
+  }
+  if (t==='aj') {
+    setCell(step.pi,'ac-pivot','P','ptr-pivot');
+    setCell(step.i,'ac-i','i','ptr-i');
+    setCell(step.j,'ac-j','←j','ptr-j');
+  }
+  if (t==='sij') {
+    setCell(step.i,'ac-swapping','↔','ptr-i');
+    setCell(step.j,'ac-swapping','↔','ptr-j');
+    if (step.pi!==step.i&&step.pi!==step.j) setCell(step.pi,'ac-pivot','P','ptr-pivot');
+  }
+  if (t==='cross') { setCell(step.i,'ac-i','i','ptr-i'); setCell(step.j,'ac-j','j','ptr-j'); setCell(step.pi,'ac-pivot','B','ptr-placed'); }
+  if (t==='place') { setCell(step.pi,'ac-placed','✓','ptr-placed'); }
 }
 
-// ========================================
-// ARRAY CONTROLS
-// ========================================
+function setCaption(text, type='') {
+  const b=document.getElementById('captionBox');
+  b.className='caption-box'+(type?' cap-'+type:'');
+  b.innerHTML=text;
+}
+function updateBadges(pv) {
+  document.getElementById('badge-pivot').textContent='Pivot: '+(pv!==undefined?pv:'—');
+  document.getElementById('badge-comps').textContent='Comparisons: '+mComps;
+  document.getElementById('badge-swaps').textContent='Swaps: '+mSwaps;
+  document.getElementById('badge-parts').textContent='Partitions: '+mParts;
+  document.getElementById('badge-sorted').textContent='Sorted: '+mSorted;
+}
+function hilite(ps) {
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+  const e=document.querySelector('.pseudo-step[data-step="'+ps+'"]');
+  if (e) { e.classList.add('active'); e.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+}
+function showMsg(text, type) {
+  const e=document.getElementById('msg_show');
+  e.style.display='block'; e.className='alert alert-'+type; e.innerHTML=text;
+}
 
-/**
- * Creates array from input or generates random
- */
-function createArray() {
-  const input = document.getElementById('array-input').value.trim();
-  
-  if (input) {
-    // Parse comma-separated input
-    const values = input.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
-    
-    if (values.length === 0) {
-      showMsg('⚠️ Invalid input. Please enter valid numbers.', 'danger');
+function startSort() {
+  clearTimeout(mainTimer);
+  const raw=document.getElementById('arrayInput').value.trim();
+  if (!raw) { showMsg('Please enter an array.','danger'); return; }
+  mainArr=raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if (mainArr.length<2) { showMsg('Enter at least 2 numbers.','danger'); return; }
+  if (mainArr.length>12) { showMsg('Keep to 12 elements or fewer for best visualization.','danger'); return; }
+  mComps=0; mSwaps=0; mParts=0; mSorted=0;
+  mainSteps=computeSteps(mainArr, currentImpl);
+  mainIdx=0; mainDone=false;
+  buildStrip(mainArr);
+  updateBadges(); setCaption('Array loaded — click Step ▶ or Auto ▶▶');
+  document.getElementById('stepBtn').disabled=false;
+  document.getElementById('autoBtn').disabled=false;
+  document.getElementById('msg_show').style.display='none';
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+function applyMain() {
+  if (mainDone||mainIdx>=mainSteps.length) return false;
+  const step=mainSteps[mainIdx++];
+  const t=step.t;
+  if (t==='cmp'||t==='ai'||t==='aj') mComps++;
+  if (t==='sij') mSwaps++;
+  if (t==='place') mParts++;
+  mSorted=step.sorted?step.sorted.size:mSorted;
+  applyStep(step);
+  hilite(step.ps);
+  const capType=t==='ps'?'pivot':t==='sij'?'swap':t==='place'?'placed':t==='done'?'done':'';
+  setCaption(step.cap, capType);
+  updateBadges(step.pv);
+  if (t==='done') {
+    mainDone=true;
+    showMsg('<i class="fas fa-check-circle"></i>&nbsp;Sorted! Comparisons: '+mComps+' | Swaps: '+mSwaps+' | Partitions: '+mParts,'success');
+    document.getElementById('stepBtn').disabled=true;
+    document.getElementById('autoBtn').disabled=true;
+    return false;
+  }
+  return true;
+}
+
+function stepSort() { applyMain(); }
+function autoSort() {
+  if (mainDone) return;
+  document.getElementById('autoBtn').disabled=true;
+  function tick() { const c=applyMain(); if (c&&!mainDone) mainTimer=setTimeout(tick,520); else document.getElementById('autoBtn').disabled=false; }
+  tick();
+}
+function resetSort() {
+  clearTimeout(mainTimer);
+  mainArr=[]; mainSteps=[]; mainIdx=0; mainDone=false; mComps=0; mSwaps=0; mParts=0; mSorted=0;
+  ['arrStrip','ptrStrip','idxStrip','rangeRow'].forEach(id=>document.getElementById(id).innerHTML='');
+  document.getElementById('msg_show').style.display='none';
+  document.getElementById('stepBtn').disabled=true;
+  document.getElementById('autoBtn').disabled=false;
+  setCaption('Enter an array and click Sort to begin.');
+  updateBadges();
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+// ─────────────────────────────────────────────────────────
+//  IMPL SWITCH
+// ─────────────────────────────────────────────────────────
+function switchImpl(type) {
+  currentImpl=type;
+  document.querySelectorAll('.impl-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector('[data-type="'+type+'"]').classList.add('active');
+  document.getElementById('visualizer-title').textContent=
+    'Quick Sort Visualizer — '+(type==='lomuto'?'Lomuto Partition (Last Element Pivot)':'Hoare Partition (First Element Pivot)');
+  document.getElementById('pseudo-lomuto').style.display=type==='lomuto'?'block':'none';
+  document.getElementById('pseudo-hoare').style.display=type==='hoare'?'block':'none';
+  resetSort();
+}
+
+// ─────────────────────────────────────────────────────────
+//  SCENARIO ENGINE (shared helpers)
+// ─────────────────────────────────────────────────────────
+function mkScenEngine(data) {
+  const steps=computeSteps([...data],'lomuto');
+  return {steps, idx:0, done:false, data:[...data]};
+}
+
+function buildSArr(wrapId, data) {
+  const w=document.getElementById(wrapId); if (!w) return;
+  w.innerHTML='';
+  data.forEach((v,i) => {
+    const cw=document.createElement('div'); cw.className='s-cell-wrap';
+    const p=document.createElement('div'); p.className='s-ptr'; p.id=wrapId+'-p'+i;
+    const c=document.createElement('div'); c.className='sc sc-default'; c.id=wrapId+'-c'+i; c.textContent=v;
+    cw.appendChild(p); cw.appendChild(c); w.appendChild(cw);
+  });
+}
+
+function renderSStep(wrapId, step, data) {
+  if (!step) return;
+  const arr=step.arr||data, n=arr.length;
+  arr.forEach((v,i) => {
+    const c=document.getElementById(wrapId+'-c'+i), p=document.getElementById(wrapId+'-p'+i);
+    if (!c||!p) return;
+    c.textContent=v; p.textContent='';
+    const t=step.t;
+    if (t==='done') { c.className='sc sc-sorted'; return; }
+    if (step.sorted&&step.sorted.has(i)) { c.className='sc sc-sorted'; return; }
+    if (t==='place'&&i===step.pi) { c.className='sc sc-placed'; p.textContent='✓'; return; }
+    if (t==='sij'&&(i===step.i||i===step.j)) { c.className='sc sc-swapping'; return; }
+    if (i===step.pi&&t!=='cross'&&t!=='aj') { c.className='sc sc-pivot'; p.textContent='P'; return; }
+    if (t==='cmp'||t==='iadv') {
+      if (i===step.i) { c.className='sc sc-i'; p.textContent='i'; }
+      else if (i===step.j&&i!==step.pi) { c.className='sc sc-j'; p.textContent='j'; }
+      else c.className='sc sc-default';
       return;
     }
+    if (t==='ai') {
+      if (i===step.i) { c.className='sc sc-i'; p.textContent='i'; }
+      else if (i===step.j) { c.className='sc sc-j'; p.textContent='j'; }
+      else c.className='sc sc-default';
+      return;
+    }
+    if (t==='aj') {
+      if (i===step.i) { c.className='sc sc-i'; p.textContent='i'; }
+      else if (i===step.j) { c.className='sc sc-j'; p.textContent='j'; }
+      else c.className='sc sc-default';
+      return;
+    }
+    if (t==='cross') {
+      if (i===step.i) c.className='sc sc-i';
+      else if (i===step.j) c.className='sc sc-j';
+      else c.className='sc sc-default';
+      return;
+    }
+    c.className='sc sc-default';
+  });
+}
+
+function addLog(logId, text, cls='log-info') {
+  const log=document.getElementById(logId); if (!log) return;
+  const e=document.createElement('div'); e.className='log-entry '+cls; e.textContent='> '+text;
+  log.appendChild(e); log.scrollTop=log.scrollHeight;
+}
+
+function runScenStep(eng, wrapId, logId, doneCb) {
+  if (!eng||eng.done||eng.idx>=eng.steps.length) return;
+  const step=eng.steps[eng.idx++];
+  const logMap={
+    'ps':   s=>({text:`PARTITION [${s.low}..${s.high}] pivot=${s.pv}`, cls:'log-pivot'}),
+    'ii':   s=>({text:`INIT i=${s.i}${s.j!==undefined?' j='+s.j:''}`, cls:'log-info'}),
+    'cmp':  s=>({text:`  Compare arr[${s.j}]=${step.arr[s.j]} ${step.arr[s.j]<=s.pv?'<=':'>'} ${s.pv}`, cls:'log-compare'}),
+    'iadv': s=>({text:`  i advanced, arr[${s.i}] already in place`, cls:'log-info'}),
+    'sij':  s=>({text:`  SWAP arr[${s.i}]=${step.arr[s.i]} ↔ arr[${s.j}]=${step.arr[s.j]}`, cls:'log-swap'}),
+    'ai':   s=>({text:`  i→${s.i} (arr[${s.i}]=${step.arr[s.i]} >= pivot)`, cls:'log-compare'}),
+    'aj':   s=>({text:`  j←${s.j} (arr[${s.j}]=${step.arr[s.j]} <= pivot)`, cls:'log-compare'}),
+    'cross':s=>({text:`  Crossed: boundary at j=${s.j}`, cls:'log-pivot'}),
+    'place':s=>({text:`  PLACED pivot ${s.pv} at idx ${s.pi} ✓`, cls:'log-placed'}),
+    'rec':  s=>({text:`RECURSE [${s.low}..${s.pi-1>-1?s.pi-1:'—'}] & [${s.pi+1}..${s.high}]`, cls:'log-info'}),
+    'done': ()=>({text:`✓ Fully sorted!`, cls:'log-sorted'})
+  };
+  const entry=logMap[step.t]?logMap[step.t](step):{text:step.cap, cls:'log-info'};
+  addLog(logId, entry.text, entry.cls);
+  renderSStep(wrapId, step, eng.data);
+  if (step.t==='done') {
+    eng.done=true;
+    addLog(logId, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'log-info');
+    addLog(logId, 'Result: O(N log N) average performance', 'log-result');
+    if (doneCb) doneCb(eng);
+  }
+}
+
+function switchScenario(name) {
+  const map={best:'active-best',avg:'active-avg',worst:'active-worst',custom:'active-custom'};
+  document.querySelectorAll('.scenario-tab').forEach(t=>t.className='scenario-tab');
+  document.getElementById('stab-'+name).classList.add(map[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('spanel-'+name).classList.add('active');
+}
+
+// ─────────────────────────────────────────────────────────
+//  BEST CASE SCENARIO
+// ─────────────────────────────────────────────────────────
+const BEST_DATA=[3,10,20,30,40,50,60];
+let bestEng=null, bestTimer=null;
+function initBest() {
+  bestEng=mkScenEngine(BEST_DATA);
+  buildSArr('sarr-best', BEST_DATA);
+  document.getElementById('log-best').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-best','Array: ['+BEST_DATA.join(', ')+'] — balanced pivot scenario','log-info');
+  addLog('log-best','With Lomuto, pivot=last element, so 60 is first pivot','log-info');
+  document.getElementById('best-step-btn').disabled=false;
+  document.getElementById('best-auto-btn').disabled=false;
+}
+function bestStep() {
+  runScenStep(bestEng,'sarr-best','log-best',()=>{
+    document.getElementById('best-step-btn').disabled=true;
+    document.getElementById('best-auto-btn').disabled=true;
+  });
+}
+function bestAuto() {
+  document.getElementById('best-auto-btn').disabled=true;
+  function tick() { if (!bestEng.done) { bestStep(); if (!bestEng.done) bestTimer=setTimeout(tick,560); } }
+  tick();
+}
+function resetBest() { clearTimeout(bestTimer); initBest(); }
+
+// ─────────────────────────────────────────────────────────
+//  AVERAGE CASE SCENARIO
+// ─────────────────────────────────────────────────────────
+const AVG_DATA=[10,80,30,90,40,50,70];
+let avgEng=null, avgTimer=null;
+function initAvg() {
+  avgEng=mkScenEngine(AVG_DATA);
+  buildSArr('sarr-avg', AVG_DATA);
+  document.getElementById('log-avg').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-avg','Array: ['+AVG_DATA.join(', ')+'] — random order','log-info');
+  addLog('log-avg','Typical O(N log N) average case performance','log-info');
+  document.getElementById('avg-step-btn').disabled=false;
+  document.getElementById('avg-auto-btn').disabled=false;
+}
+function avgStep() {
+  runScenStep(avgEng,'sarr-avg','log-avg',()=>{
+    document.getElementById('avg-step-btn').disabled=true;
+    document.getElementById('avg-auto-btn').disabled=true;
+  });
+}
+function avgAuto() {
+  document.getElementById('avg-auto-btn').disabled=true;
+  function tick() { if (!avgEng.done) { avgStep(); if (!avgEng.done) avgTimer=setTimeout(tick,530); } }
+  tick();
+}
+function resetAvg() { clearTimeout(avgTimer); initAvg(); }
+
+// ─────────────────────────────────────────────────────────
+//  WORST CASE SCENARIO
+// ─────────────────────────────────────────────────────────
+const WORST_DATA = [10, 20, 30, 40, 50, 60];
+let worstEng = null, worstTimer = null;
+
+function initWorst() {
+  worstEng = mkScenEngine(WORST_DATA);
+  buildSArr('sarr-worst', WORST_DATA);
+  document.getElementById('log-worst').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog('log-worst', 'Array: [' + WORST_DATA.join(', ') + '] — already sorted', 'log-warn');
+  addLog('log-worst', 'With Lomuto (last pivot), this is the WORST CASE!', 'log-warn');
+  document.getElementById('worst-step-btn').disabled = false;
+  document.getElementById('worst-auto-btn').disabled = false;
+}
+
+function worstStep() {
+  runScenStep(worstEng, 'sarr-worst', 'log-worst', () => {
+    document.getElementById('worst-step-btn').disabled = true;
+    document.getElementById('worst-auto-btn').disabled = true;
+  });
+}
+
+function worstAuto() {
+  document.getElementById('worst-auto-btn').disabled = true;
+  function tick() { if (!worstEng.done) { worstStep(); if (!worstEng.done) worstTimer = setTimeout(tick, 450); } }
+  tick();
+}
+
+function resetWorst() { clearTimeout(worstTimer); initWorst(); }
+
+// ─────────────────────────────────────────────────────────
+//  CUSTOM INPUT SCENARIO
+// ─────────────────────────────────────────────────────────
+let custEng = null, custTimer = null, ccTimerId = null;
+
+function initCustom() {
+  document.getElementById('sarr-custom').innerHTML = '';
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog('log-custom', 'Enter an array and click ▶ Load & Sort.', 'log-info');
+  custEng = null;
+  document.getElementById('custom-step-btn').disabled = true;
+  document.getElementById('custom-auto-btn').disabled = true;
+  ['best', 'avg', 'worst'].forEach(t => document.getElementById('cc-' + t).classList.remove('cc-active-' + t));
+  document.getElementById('cc-toast').className = 'cc-toast';
+}
+
+function customLoad() {
+  clearTimeout(custTimer);
+  const raw = document.getElementById('custom-arr').value.trim();
+  if (!raw) { addLog('log-custom', 'Enter an array first!', 'log-warn'); return; }
+  const data = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  if (data.length < 2) { addLog('log-custom', 'Need at least 2 numbers.', 'log-warn'); return; }
+  if (data.length > 10) { addLog('log-custom', 'Keep to 10 elements for best visualization.', 'log-warn'); return; }
+
+  custEng = mkScenEngine(data);
+  buildSArr('sarr-custom', data);
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog('log-custom', `Array Loaded: [${data.join(', ')}]  N=${data.length}`, 'log-info');
+  document.getElementById('custom-step-btn').disabled = false;
+  document.getElementById('custom-auto-btn').disabled = false;
+}
+
+function highlightCC(type) {
+  ['best', 'avg', 'worst'].forEach(t => document.getElementById('cc-' + t).classList.remove('cc-active-' + t));
+  clearTimeout(ccTimerId);
+  const card = document.getElementById('cc-' + type);
+  if (card) {
+    card.classList.add('cc-active-' + type);
+    ccTimerId = setTimeout(() => card.classList.remove('cc-active-' + type), 3000);
+  }
+}
+
+function showCCToast(type, msg) {
+  const toast = document.getElementById('cc-toast');
+  const icons = { best: '⚡', avg: '〜', worst: '⚠' };
+  document.getElementById('cc-toast-icon').textContent = icons[type] || '📊';
+  document.getElementById('cc-toast-text').textContent = msg;
+  toast.className = 'cc-toast show toast-' + type;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.className = 'cc-toast'; }, 3500);
+}
+
+function customStep() {
+  if (!custEng || custEng.done) return;
+  runScenStep(custEng, 'sarr-custom', 'log-custom', (eng) => {
+    // Determine complexity based on partition depth vs array length
+    const n = eng.data.length;
+    const isSorted = JSON.stringify([...eng.data].sort((a,b)=>a-b)) === JSON.stringify(eng.data);
+    const isReverse = JSON.stringify([...eng.data].sort((a,b)=>b-a)) === JSON.stringify(eng.data);
     
-    array = values;
-  } else {
-    // Generate random array based on size slider
-    const size = parseInt(document.getElementById('size-slider').value);
-    array = Array.from({ length: size }, () => 
-      Math.floor(Math.random() * (CONFIG.MAX_VALUE - CONFIG.MIN_VALUE + 1)) + CONFIG.MIN_VALUE
-    );
-  }
-  
-  renderBars();
-  showMsg(`<i class="fas fa-check"></i> Array created with ${array.length} elements`, 'success');
+    let type = 'avg', label = "O(N log N) - Average Case Performance";
+    if (isSorted || isReverse) {
+       type = 'worst';
+       label = "O(N²) - Worst Case! Sorted input + Last element pivot = Unbalanced.";
+    } else if (n > 4) {
+       type = 'best';
+       label = "O(N log N) - Near-Balanced partitions detected.";
+    }
+
+    highlightCC(type);
+    showCCToast(type, label);
+    document.getElementById('custom-step-btn').disabled = true;
+    document.getElementById('custom-auto-btn').disabled = true;
+  });
 }
 
-/**
- * Generates a random array
- */
-function generateRandomArray() {
-  const size = parseInt(document.getElementById('size-slider').value);
-  array = Array.from({ length: size }, () => 
-    Math.floor(Math.random() * (CONFIG.MAX_VALUE - CONFIG.MIN_VALUE + 1)) + CONFIG.MIN_VALUE
-  );
-  
-  document.getElementById('array-input').value = array.join(', ');
-  renderBars();
-  showMsg(`<i class="fas fa-dice"></i> Random array generated!`, 'success');
+function customAutoPlay() {
+  document.getElementById('custom-auto-btn').disabled = true;
+  function tick() { if (!custEng.done) { customStep(); if (!custEng.done) custTimer = setTimeout(tick, 500); } }
+  tick();
 }
 
-// ========================================
-// CODE IMPLEMENTATION CONTROLS
-// ========================================
+function resetCustom() { clearTimeout(custTimer); document.getElementById('custom-arr').value = ''; initCustom(); }
 
-function changeCode(lang) {
-  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
-  
-  document.getElementById(`${lang}-content`).classList.add('active');
-  document.getElementById(`${lang}-btn`).classList.add('active');
+// ─────────────────────────────────────────────────────────
+//  CODE EDITOR LOGIC
+// ─────────────────────────────────────────────────────────
+let codeEditor;
+let currentLang = 'cpp';
+let editorImpl = 'lomuto';
+
+function getCMTheme(t) { return t === 'light' ? 'eclipse' : t === 'blue' ? 'nord' : 'material-ocean'; }
+
+function initEditor() {
+  const theme = document.body.getAttribute('data-theme') || 'dark';
+  codeEditor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+    mode: 'text/x-c++src',
+    theme: getCMTheme(theme),
+    lineNumbers: true,
+    indentUnit: 4,
+    lineWrapping: true,
+    autoCloseBrackets: true
+  });
+  codeEditor.setValue(CODE[editorImpl][currentLang]);
 }
 
-// ========================================
-// INTERACTIVE TERMINAL
-// ========================================
+function switchEditorImpl(impl, btn) {
+  editorImpl = impl;
+  document.querySelectorAll('.impl-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
 
-function runCode(lang) {
+function switchLang(lang, btn) {
   currentLang = lang;
-  virtualArray = [];
-  inputState = 'array';
-  
-  const output = document.getElementById('code-output');
-  const inputArea = document.getElementById('interactive-input-area');
-  
-  output.innerHTML = `
-    <div style="color: #fbbf24;">[${lang.toUpperCase()} Environment Initialized]</div>
-    <div style="color: #10b981;">✓ Quick Sort functions compiled successfully</div>
-    <div style="margin-top: 10px;">Enter an array of numbers (comma-separated, e.g., 64,34,25,12,22):</div>
-  `;
-  
-  inputArea.style.display = 'flex';
-  document.getElementById('terminal-input').value = '';
-  document.getElementById('terminal-input').focus();
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
 }
 
-function processTerminalCommand() {
-  const inputEl = document.getElementById('terminal-input');
-  const output = document.getElementById('code-output');
-  const rawInput = inputEl.value.trim();
+function updateEditorDisplay() {
+  const modeMap = { cpp:'text/x-c++src', python:'text/x-python', java:'text/x-java', c:'text/x-csrc', javascript:'text/javascript' };
+  const nameMap = { cpp:'C++', python:'Python', java:'Java', c:'C', javascript:'JavaScript' };
+  const implLabel = editorImpl === 'lomuto' ? 'Lomuto Partition (Last Pivot)' : 'Hoare Partition (First Pivot)';
   
-  if (!rawInput) return;
-  
-  output.innerHTML += `<div style="color: #666;">&gt; ${rawInput}</div>`;
-  
-  switch(inputState) {
-    case 'array':
-      handleArrayInput(rawInput, output);
-      break;
-      
-    case 'command':
-      handleSortCommand(rawInput, output);
-      break;
+  codeEditor.setOption('mode', modeMap[currentLang]);
+  codeEditor.setValue(CODE[editorImpl][currentLang]);
+  document.querySelector('.lang-display').textContent = nameMap[currentLang] + ' — ' + implLabel;
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(codeEditor.getValue()).then(() => {
+    const icon = document.querySelector('.code-copy i');
+    icon.className = 'fas fa-check';
+    setTimeout(() => { icon.className = 'fas fa-copy'; }, 2000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────
+//  INTERACTIVE CODE RUNNER (SIMULATION)
+// ─────────────────────────────────────────────────────────
+let inputResolver = null;
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function getInput(prompt) {
+  return new Promise(resolve => {
+    document.getElementById('promptText').textContent = prompt;
+    document.getElementById('inputPrompt').style.display = 'block';
+    document.getElementById('userInput').value = '';
+    document.getElementById('userInput').focus();
+    inputResolver = resolve;
+  });
+}
+
+function submitInput() {
+  const val = document.getElementById('userInput').value.trim();
+  if (val && inputResolver) {
+    document.getElementById('inputPrompt').style.display = 'none';
+    inputResolver(val);
+    inputResolver = null;
   }
-  
-  inputEl.value = '';
-  output.scrollTop = output.scrollHeight;
 }
 
-function handleArrayInput(input, output) {
-  const values = input.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+document.getElementById('userInput').addEventListener('keypress', e => { if (e.key === 'Enter') submitInput(); });
+
+async function runCode() {
+  const out = document.getElementById('codeOutput');
+  out.innerHTML = '<span style="color:#facc15">🔄 Initializing Quick Sort...</span><br>';
   
-  if (values.length === 0) {
-    output.innerHTML += `<div style="color: #ef4444;">❌ Invalid input. Please enter valid numbers separated by commas.</div>`;
+  const rawInput = await getInput("Enter 5-7 numbers separated by commas (e.g. 10, 5, 8, 12, 3):");
+  const arr = rawInput.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  
+  if (arr.length < 2) {
+    out.innerHTML += '<span style="color:var(--primary-red)">❌ Error: Need at least 2 numbers.</span>';
     return;
   }
-  
-  virtualArray = [...values];
-  inputState = 'command';
-  
-  output.innerHTML += `
-    <div style="color: #10b981;">✓ Array initialized: [${virtualArray.join(', ')}]</div>
-    <div style="margin-top: 10px; color: #3b82f6;">Available commands:</div>
-    <div style="color: #9ca3af; margin-left: 15px;">
-      • <span style="color: #fff;">sort</span> - Sort the array using Quick Sort<br>
-      • <span style="color: #fff;">show</span> - Display current array<br>
-      • <span style="color: #fff;">reset</span> - Enter a new array
-    </div>
-    <div style="margin-top: 10px;">Enter a command:</div>
-  `;
-}
 
-function handleSortCommand(input, output) {
-  const command = input.toLowerCase();
-  
-  switch(command) {
-    case 'sort':
-      const original = [...virtualArray];
-      quickSortTerminal(virtualArray, 0, virtualArray.length - 1);
-      output.innerHTML += `
-        <div style="color: #10b981;">✓ Quick Sort completed!</div>
-        <div>Original: [${original.join(', ')}]</div>
-        <div>Sorted: [${virtualArray.join(', ')}]</div>
-      `;
-      break;
-      
-    case 'show':
-    case 'display':
-      output.innerHTML += `<div style="color: #3b82f6;">Current array: [${virtualArray.join(', ')}]</div>`;
-      break;
-      
-    case 'reset':
-      inputState = 'array';
-      virtualArray = [];
-      output.innerHTML += `<div style="color: #fbbf24;">Enter a new array (comma-separated numbers):</div>`;
-      break;
-      
-    default:
-      output.innerHTML += `<div style="color: #ef4444;">❌ Unknown command: '${command}'</div>`;
-  }
-}
+  out.innerHTML = `<span style="color:var(--primary-cyan)">Input Array: [${arr.join(', ')}]</span><br><br>`;
+  let comps = 0, swaps = 0;
 
-function partitionTerminal(arr, low, high) {
-  const pivot = arr[high];
-  let i = low - 1;
-  
-  for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) {
-      i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+  async function simulateQS(a, low, high) {
+    if (low < high) {
+      out.innerHTML += `<span style="color:var(--primary-purple)">Sorting Sub-array [${low}...${high}]</span><br>`;
+      await sleep(400);
+
+      let pivotIdx;
+      if (editorImpl === 'lomuto') {
+        let pivot = a[high];
+        let i = low - 1;
+        out.innerHTML += `&nbsp;&nbsp;Pivot chosen: <span style="color:var(--primary-orange)">${pivot}</span> (last index)<br>`;
+        for (let j = low; j < high; j++) {
+          comps++;
+          if (a[j] <= pivot) {
+            i++;
+            swaps++;
+            [a[i], a[j]] = [a[j], a[i]];
+            out.innerHTML += `&nbsp;&nbsp;&nbsp;&nbsp;Swap ${a[i]} ↔ ${a[j]} (found element ≤ pivot)<br>`;
+          }
+          await sleep(150);
+        }
+        [a[i+1], a[high]] = [a[high], a[i+1]];
+        swaps++;
+        pivotIdx = i + 1;
+      } else {
+        // Hoare Sim
+        let pivot = a[low];
+        let i = low - 1, j = high + 1;
+        out.innerHTML += `&nbsp;&nbsp;Pivot chosen: <span style="color:var(--primary-orange)">${pivot}</span> (first index)<br>`;
+        while (true) {
+          do { i++; comps++; } while (a[i] < pivot);
+          do { j--; comps++; } while (a[j] > pivot);
+          if (i >= j) { pivotIdx = j; break; }
+          swaps++;
+          [a[i], a[j]] = [a[j], a[i]];
+          out.innerHTML += `&nbsp;&nbsp;&nbsp;&nbsp;Swap ${a[i]} ↔ ${a[j]} (crossing pointers finding bounds)<br>`;
+          await sleep(150);
+        }
+      }
+
+      out.innerHTML += `&nbsp;&nbsp;<span style="color:var(--primary-yellow)">Partitioned at index ${pivotIdx}.</span> Current: [${a.join(', ')}]<br><br>`;
+      
+      if (editorImpl === 'lomuto') {
+        await simulateQS(a, low, pivotIdx - 1);
+        await simulateQS(a, pivotIdx + 1, high);
+      } else {
+        await simulateQS(a, low, pivotIdx);
+        await simulateQS(a, pivotIdx + 1, high);
+      }
     }
   }
-  
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-  return i + 1;
+
+  await simulateQS(arr, 0, arr.length - 1);
+  out.innerHTML += `<br><span style="color:var(--primary-green)">✅ Final Sorted Array: [${arr.join(', ')}]</span><br>`;
+  out.innerHTML += `<span style="color:var(--primary-cyan)">Total Comparisons: ${comps} | Total Swaps: ${swaps}</span>`;
 }
 
-function quickSortTerminal(arr, low, high) {
-  if (low < high) {
-    const pi = partitionTerminal(arr, low, high);
-    quickSortTerminal(arr, low, pi - 1);
-    quickSortTerminal(arr, pi + 1, high);
-  }
-}
+// ─────────────────────────────────────────────────────────
+//  INITIALIZATION
+// ─────────────────────────────────────────────────────────
+window.onload = () => {
+  const savedTheme = localStorage.getItem('dsa-theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  initEditor();
+  initBest();
+  initAvg();
+  initWorst();
+  initCustom();
+};
 
-// ========================================
-// EVENT LISTENERS
-// ========================================
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'quicksort'; // This should match the algorithm name used in the quiz IDs and localStorage keys
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Speed slider
-  const speedSlider = document.getElementById('speed-slider');
-  if (speedSlider) {
-    speedSlider.addEventListener('input', (e) => {
-      speed = parseInt(e.target.value);
-    });
-  }
-  
-  // Terminal input
-  const terminalInput = document.getElementById('terminal-input');
-  if (terminalInput) {
-    terminalInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') processTerminalCommand();
-    });
-  }
-  
-  // Array input
-  const arrayInput = document.getElementById('array-input');
-  if (arrayInput) {
-    arrayInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') createArray();
-    });
-  }
-  
-  // Generate initial random array
-  generateRandomArray();
-});
-
-const l1 = document.getElementById("l1");
-const l2 = document.getElementById("l2");
-const l3 = document.getElementById("l3");
-
-const slider1 = document.getElementById("slider1");
-const slider2 = document.getElementById("slider2");
-
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
 const modal = document.getElementById("quizModal");
-const startQuiz = document.getElementById("startQuiz");
 const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
 
-// Level 2 is now unlocked by default
-let level2Unlocked = true; 
-let level3Unlocked = false;
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
 
-// Level 1: Always works
-l1.addEventListener("click", () => {
-  slider1.classList.add("active");
-});
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
 
-// Level 2: Now unlocked, so it just activates the slider without a modal
-l2.addEventListener("click", () => {
-  slider1.classList.add("active");
-  // Optional: you can add logic here to show Level 2 content
-});
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
 
-// Level 3: This is the only one that triggers the modal now
-l3.addEventListener("click", () => {
-  if (!level3Unlocked) {
-    // Show modal because Level 3 is still locked
-    modal.style.display = "flex";
-  } else {
-    // If Level 3 were already unlocked, just activate the slider
-    slider1.classList.add("active");
-    slider2.classList.add("active");
-  }
-});
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
 
-// ✅ Start Quiz → goes to the quiz page to unlock Level 3
-startQuiz.addEventListener("click", () => {
-  window.location.href = "quickSort_L2Quiz.html";
-});
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
 
-// Cancel modal
-cancelBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-
-
-// Close sidebar on Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.getElementById('sidebar').classList.contains('active')) {
-    toggleSidebar();
-  }
-});
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
 </script>
-
 </body>
 </html>

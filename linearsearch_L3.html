@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Search — Level 3 | DSA Visualizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-pink:#ec4899;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--card-bg2:#161616;
+  --text-primary:#ffffff;--text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{
+  --dark-bg:#f0f4f8;--card-bg:#ffffff;--card-bg2:#f8fafc;
+  --text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;
+  --nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;
+}
+[data-theme="blue"]{
+  --dark-bg:#010e1a;--card-bg:#0a1628;--card-bg2:#0d1d35;
+  --text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;
+  --nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-green);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-purple);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-purple),var(--primary-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-purple);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+/* CONCEPT BOX */
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+.concept-desc code{font-family:'JetBrains Mono',monospace;color:var(--primary-cyan);background:rgba(6,182,212,.08);padding:.1rem .35rem;border-radius:4px;font-size:.82rem;}
+/* Linear search visual */
+.ls-visual{display:flex;align-items:center;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem;}
+.ls-cell{width:52px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;border:2px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);position:relative;transition:all .3s;}
+.ls-cell.checking{border-color:var(--primary-orange);background:rgba(245,158,11,.12);color:var(--primary-orange);}
+.ls-cell.found{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green);}
+.ls-cell.passed{border-color:var(--border-color);background:rgba(255,255,255,.03);color:rgba(255,255,255,.2);}
+.ls-cell .idx{position:absolute;bottom:-18px;font-size:.6rem;color:var(--text-secondary);font-weight:400;}
+.ls-pointer{font-size:1.2rem;color:var(--primary-orange);}
+
+/* SECTION */
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+/* APP CARDS */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.red:hover{border-color:var(--primary-red);box-shadow:0 8px 40px rgba(239,68,68,.12);}
+.app-card.pink:hover{border-color:var(--primary-pink);box-shadow:0 8px 40px rgba(236,72,153,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.red{background:rgba(239,68,68,.15);}
+.card-icon.pink{background:rgba(236,72,153,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+
+/* SHARED DEMO */
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-purple);color:var(--primary-purple);}
+.d-btn.search{background:rgba(139,92,246,.12);border-color:var(--primary-purple);color:var(--primary-purple);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.d-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* Mini array visualizer */
+.mini-array{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:.6rem;min-height:44px;align-items:flex-end;}
+.m-cell{min-width:36px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;border:1px solid var(--border-color);background:rgba(255,255,255,.04);color:var(--text-secondary);transition:all .3s;flex-shrink:0;}
+.m-cell.checking{border-color:var(--primary-orange);background:rgba(245,158,11,.15);color:var(--primary-orange);transform:scale(1.1);}
+.m-cell.found{border-color:var(--primary-green);background:rgba(16,185,129,.2);color:var(--primary-green);transform:scale(1.15);}
+.m-cell.passed{opacity:.3;}
+@keyframes popIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;}
+.status-line span{color:var(--primary-purple);font-weight:700;}
+.step-count{font-size:.72rem;color:var(--text-secondary);margin-top:.5rem;}
+.step-count b{color:var(--primary-orange);}
+
+/* SEARCH INPUT DEMO */
+.search-demo-input{width:100%;background:var(--card-bg);border:1px solid var(--border-color);border-radius:7px;padding:.45rem .8rem;font-size:.82rem;color:var(--text-primary);outline:none;transition:border-color .2s;margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;}
+.search-demo-input:focus{border-color:var(--primary-purple);}
+.search-result-item{padding:.35rem .7rem;border-radius:6px;font-size:.78rem;border:1px solid transparent;margin-bottom:.25rem;transition:all .2s;}
+.search-result-item.match{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green);}
+.search-result-item.no-match{background:rgba(255,255,255,.02);color:var(--text-secondary);}
+.search-result-item.checking-item{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange);}
+
+/* COMPLEXITY TABLE */
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .time{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+/* PRO/CON */
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+/* WHEN TO USE */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-purple);}
+
+/* CTA */
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-purple);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-purple);text-shadow:0 0 40px rgba(139,92,246,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-purple),var(--primary-pink));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-pink),var(--primary-purple));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+/* Scanning visual for CTA */
+.scan-visual{display:flex;gap:4px;justify-content:center;margin:2rem auto;flex-wrap:wrap;max-width:380px;}
+.scan-block{height:38px;flex:1;min-width:44px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;border:1px solid;animation:scanPulse 2.5s ease-in-out infinite;}
+.scan-block:nth-child(2){animation-delay:.2s;}
+.scan-block:nth-child(3){animation-delay:.4s;}
+.scan-block:nth-child(4){animation-delay:.6s;}
+.scan-block:nth-child(5){animation-delay:.8s;}
+.scan-block:nth-child(6){animation-delay:1s;}
+@keyframes scanPulse{0%,80%,100%{opacity:.4;transform:scaleY(1);}40%{opacity:1;transform:scaleY(1.08);}}
+.scan-label{font-size:.65rem;text-align:center;color:var(--text-secondary);margin-top:.4rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-container">
+    <a class="logo" href="index.html">
+       <img src="dsa.gif" alt="Logo" class="logo-icon">
+      <span>DSA Visualizer</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle">
+        <svg viewBox="0 0 24 24" id="themeIcon">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="linearsearch_L1.html">Linear Search</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Linear Search in the <span class="highlight">Real World</span></h1>
+  <p>The simplest search algorithm — yet it powers features in every app you use. Sometimes brute force is the right answer.</p>
+</div>
+
+<!-- CONCEPT EXPLAINER -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Check Every Element One by One</div>
+    <p class="concept-desc">Linear Search (also called <strong>Sequential Search</strong>) is the most straightforward searching algorithm. It starts at the <strong>first element</strong> and checks each element one by one until it either <strong>finds the target</strong> or <strong>reaches the end</strong> of the array. No sorting required. No preprocessing. Just scan.</p>
+    <div style="margin-bottom:2rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Watch it scan — searching for <strong style="color:var(--primary-purple)">7</strong> in the array</div>
+      <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:1.5rem" id="conceptArray"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap">
+        <button class="d-btn search" onclick="conceptSearch()">▶ Start Search</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="margin-top:.8rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Start Search" to see linear search in action</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.3);border:1px solid var(--primary-orange)"></div>Currently Checking</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.3);border:1px solid var(--primary-green)"></div>Found!</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);opacity:.4"></div>Already Checked</div>
+    </div>
+  </div>
+</div>
+
+<!-- REAL WORLD APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Linear search isn't "inefficient" — it's the only option when data is unsorted, and it runs millions of times per second in real software.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. Ctrl+F Find in Page -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🔍</div>
+        <div class="card-title-wrap">
+          <h3>Ctrl+F — Find in Page</h3>
+          <p>Every browser's "Find in Page" (Ctrl+F) scans the entire document linearly — character by character — looking for your search term. Text is not sorted, so linear is the only option.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type to search — watch it scan word by word</div>
+        <div class="demo-box">
+          <input class="search-demo-input" id="ctrlFInput" type="text" placeholder="Type a word to find..." oninput="ctrlFSearch(this.value)"/>
+          <div id="ctrlFList"></div>
+          <div class="step-count" id="ctrlFSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Contacts Search -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">📱</div>
+        <div class="card-title-wrap">
+          <h3>Phone Contacts Search</h3>
+          <p>When you type in the contacts search bar, your phone scans every contact's name linearly. With hundreds of contacts, this is still fast enough — and requires no sorting upfront.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Search the contacts list — linear scan in real time</div>
+        <div class="demo-box">
+          <input class="search-demo-input" id="contactInput" type="text" placeholder="Search contacts..." oninput="contactSearch(this.value)"/>
+          <div id="contactList" style="max-height:130px;overflow-y:auto"></div>
+          <div class="step-count" id="contactSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Antivirus File Scan -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">🛡️</div>
+        <div class="card-title-wrap">
+          <h3>Antivirus / File Scanner</h3>
+          <p>Antivirus software scans every byte of every file looking for known virus signatures. There's no shortcut — every single byte must be checked. Pure linear search at massive scale.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Simulate a file scan — scanning bytes for a virus signature</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn search" onclick="antivirusScan()">🔍 Start Scan</button>
+            <button class="d-btn reset" onclick="antivirusReset()">↺ Reset</button>
+          </div>
+          <div class="mini-array" id="antivirusArray"></div>
+          <div class="status-line" id="antivirusStatus">Press Start Scan to begin</div>
+          <div class="step-count" id="antivirusSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Streaming Service Filter -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🎬</div>
+        <div class="card-title-wrap">
+          <h3>Netflix / YouTube Filter</h3>
+          <p>When you filter movies by genre or search a channel's videos, the app linearly scans its local list. Small datasets (your watchlist, subscriptions) don't need binary search — linear is simpler and fast enough.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Filter movies by genre — each one is checked linearly</div>
+        <div class="demo-box">
+          <div class="demo-btns" id="genreBtns">
+            <button class="d-btn" onclick="filterGenre('Action')">🎬 Action</button>
+            <button class="d-btn" onclick="filterGenre('Comedy')">😂 Comedy</button>
+            <button class="d-btn" onclick="filterGenre('Sci-Fi')">🚀 Sci-Fi</button>
+            <button class="d-btn" onclick="filterGenre('')">All</button>
+          </div>
+          <div id="movieList" style="display:flex;flex-direction:column;gap:.25rem"></div>
+          <div class="step-count" id="movieSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. ID Card / Barcode Lookup -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🏷️</div>
+        <div class="card-title-wrap">
+          <h3>Barcode / ID Lookup</h3>
+          <p>Small stores, event check-ins, library systems — when the list is short (under a few hundred items), a linear scan of the ID list is faster to implement and maintain than a sorted index.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Scan an ID — watch it search the attendee list</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn search" onclick="scanID('A-103')">Scan A-103</button>
+            <button class="d-btn search" onclick="scanID('B-205')">Scan B-205</button>
+            <button class="d-btn search" onclick="scanID('X-999')">Scan X-999</button>
+            <button class="d-btn reset" onclick="idReset()">↺ Reset</button>
+          </div>
+          <div class="mini-array" id="idArray"></div>
+          <div class="status-line" id="idStatus">Select an ID to scan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Undo History Search -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🕐</div>
+        <div class="card-title-wrap">
+          <h3>Git Log / History Search</h3>
+          <p>When you search your Git commit history or browser history for a specific message, it performs a linear scan from newest to oldest. History is ordered by time, not alphabetically — no binary search possible.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Search commit history — scans from newest to oldest</div>
+        <div class="demo-box">
+          <input class="search-demo-input" id="gitInput" type="text" placeholder="Search commits..." oninput="gitSearch(this.value)"/>
+          <div id="gitList" style="max-height:140px;overflow-y:auto"></div>
+          <div class="step-count" id="gitSteps"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Linear search is simple — but understanding its complexity tells you exactly when to use it and when to upgrade to binary search.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time Complexity</th><th>When it happens</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="time">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Target is the very first element</td><td style="color:var(--text-secondary);font-size:.82rem">Search 5 in [5, 3, 8, 1] → found at index 0</td></tr>
+        <tr><td class="op">Average Case</td><td class="ok">O(n/2)</td><td style="color:var(--text-secondary);font-size:.82rem">Target is somewhere in the middle</td><td style="color:var(--text-secondary);font-size:.82rem">On average, check half the elements</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Target is last OR not in array</td><td style="color:var(--text-secondary);font-size:.82rem">Search 9 in [1,2,3,4,5] → check all 5</td></tr>
+        <tr><td class="op">Space</td><td class="time">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">No extra memory needed</td><td style="color:var(--text-secondary);font-size:.82rem">Just one index variable — always constant</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">vs Binary Search:</strong> Binary search is O(log n) but requires a <strong style="color:var(--primary-purple)">sorted array</strong>. If your data is unsorted, or you only search once, linear search's O(n) cost is often cheaper than the O(n log n) cost of sorting first.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Linear search is often underestimated. Here's the honest, complete picture.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Works on unsorted data</h4><p>No sorting required. Binary search needs O(n log n) preprocessing — linear search works immediately on any array, sorted or not.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) space — no extra memory</h4><p>Just a loop and an index. No auxiliary arrays, no recursion stack, no hash tables. Perfect for memory-constrained environments.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Simplest possible implementation</h4><p>A single for loop. No off-by-one bugs, no mid-calculation errors. When correctness matters more than speed, simplicity wins.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Best for small datasets</h4><p>For n &lt; 50, linear search is often faster in practice than binary search due to zero preprocessing overhead and better cache behavior.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Works on linked lists</h4><p>Binary search requires random access (arrays). Linear search works on any data structure — arrays, linked lists, streams, even files.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Finds all occurrences easily</h4><p>With one small modification (don't stop at first match), linear search finds every occurrence. Binary search only finds one.</p></div>
+      </div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Slow on large datasets</h4><p>O(n) means 1,000,000 elements = 1,000,000 comparisons in the worst case. Databases with millions of records cannot afford linear search.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Does not benefit from sorting</h4><p>Even if your data IS sorted, linear search ignores that fact. You'd need binary search to take advantage of sorted order.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Repeated searches are expensive</h4><p>If you search the same dataset 1000 times, O(n) × 1000 = O(1000n). Much better to sort once and use binary search for each lookup.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No early termination on sorted data</h4><p>Basic linear search checks all n elements even when it could stop early. (Sentinel search is a workaround, but adds complexity.)</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Poor cache performance on large arrays</h4><p>Scanning through a large array causes frequent cache misses. Hash tables or sorted + binary search are more cache-efficient at scale.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Linear Search — and When to Avoid It
+  </div>
+  <p class="section-sub">Linear search isn't a bad algorithm — it's just used in the wrong place. Here's the decision framework.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Linear Search When...</div>
+      <div class="when-item">
+        <div class="when-icon">🔀</div>
+        <div class="when-text"><h4>Data is unsorted</h4><p>If your array has no order, linear search is the only option. Sorting + binary search costs O(n log n) — only worth it if you'll search many times.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text"><h4>Dataset is small (n &lt; 100)</h4><p>For tiny arrays, <span class="when-code">for(int i=0; i&lt;n; i++)</span> is practically instant. No need for complex algorithms when brute force finishes in microseconds.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">1️⃣</div>
+        <div class="when-text"><h4>You only search once</h4><p>If you search the array just once, sorting it first (O(n log n)) then binary searching (O(log n)) is actually slower than linear (O(n)).</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔗</div>
+        <div class="when-text"><h4>Data structure doesn't support random access</h4><p>Linked lists, streams, generators — you can only access elements one by one. Linear search is your only choice.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎯</div>
+        <div class="when-text"><h4>Finding all occurrences</h4><p>Need every index where value appears? Linear search naturally finds all matches. <span class="when-code">if arr[i] == target: results.add(i)</span></p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🧪</div>
+        <div class="when-text"><h4>Prototyping / correctness first</h4><p>Write linear search first to verify your solution is correct, then optimize to binary search if performance requires it.</p></div>
+      </div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Linear Search When...</div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text"><h4>Data is already sorted</h4><p>Use binary search — O(log n) vs O(n). On 1 million sorted elements, binary search takes ~20 comparisons. Linear takes 1,000,000.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔁</div>
+        <div class="when-text"><h4>Searching the same data repeatedly</h4><p>Sort once + binary search for each query. Or use a HashMap for O(1) average lookups. Never linear-search the same array in a loop.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🗃️</div>
+        <div class="when-text"><h4>Database / large-scale data</h4><p>Use indexed columns (B-Tree, Hash Index). A database with 10 million rows cannot afford O(n) per query — indexes make it O(log n) or O(1).</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">⚡</div>
+        <div class="when-text"><h4>Performance-critical inner loops</h4><p>If your search is inside a loop that runs 10,000 times, O(n) inside O(m) = O(n×m). Use a HashSet for O(1) lookups instead.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌐</div>
+        <div class="when-text"><h4>Real-time / autocomplete features</h4><p>For instant search suggestions on large datasets, use Trie data structures or inverted indexes — not a linear scan of all records.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔑</div>
+        <div class="when-text"><h4>Unique key lookups</h4><p>If you're searching for a unique key (user ID, email, username), use a HashMap. O(1) average vs O(n) linear — no contest.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Search problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how linear search powers Ctrl+F, antivirus scans, contact lists, and more.<br>
+      Now it's time to solve the actual coding problems — and know when to use it vs binary search.
+    </p>
+    <div class="scan-visual">
+      <div class="scan-block" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:var(--primary-red);">3</div>
+      <div class="scan-block" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange);">7</div>
+      <div class="scan-block" style="background:rgba(139,92,246,.25);border-color:var(--primary-purple);color:var(--primary-purple);">12</div>
+      <div class="scan-block" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);">5</div>
+      <div class="scan-block" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green);">9</div>
+      <div class="scan-block" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--primary-pink);">1</div>
+    </div>
+    <div class="scan-label">← scanning for target →</div>
+    <br>
+    <a href="practice.html?topic=linearsearch" class="cta-btn">
+      <span>🔍 Solve Linear Search Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ═══ THEME ═══ */
+const themes=['dark','light','blue'];
+const themeIcons={
+  dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+function applyTheme(t){
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('themeIcon').innerHTML=themeIcons[t];
+  localStorage.setItem('dsa-theme',t);
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const cur=localStorage.getItem('dsa-theme')||'dark';
+  applyTheme(themes[(themes.indexOf(cur)+1)%3]);
+});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ═══ CONCEPT ARRAY DEMO ═══ */
+const CONCEPT_DATA = [2, 5, 9, 1, 7, 4, 8, 3];
+const CONCEPT_TARGET = 7;
+let conceptTimer = null;
+let conceptStep = 0;
+
+function buildConceptArray(highlight=-1, found=false){
+  const el = document.getElementById('conceptArray');
+  el.innerHTML = '';
+  CONCEPT_DATA.forEach((v,i)=>{
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;';
+    const cell = document.createElement('div');
+    cell.className = 'ls-cell' + (i===highlight&&found?' found':i===highlight?' checking':i<highlight?' passed':'');
+    cell.innerHTML = `${v}<span class="idx">[${i}]</span>`;
+    wrap.appendChild(cell);
+    el.appendChild(wrap);
+  });
+}
+
+function conceptSearch(){
+  clearInterval(conceptTimer);
+  conceptStep = 0;
+  buildConceptArray();
+  document.getElementById('conceptStatus').textContent = `Searching for ${CONCEPT_TARGET}...`;
+  document.getElementById('conceptStatus').style.color = 'var(--text-secondary)';
+  conceptTimer = setInterval(()=>{
+    if(conceptStep >= CONCEPT_DATA.length){
+      clearInterval(conceptTimer);
+      document.getElementById('conceptStatus').innerHTML = `❌ <span style="color:var(--primary-red)">${CONCEPT_TARGET} not found</span> — checked all ${CONCEPT_DATA.length} elements`;
+      return;
+    }
+    if(CONCEPT_DATA[conceptStep] === CONCEPT_TARGET){
+      clearInterval(conceptTimer);
+      buildConceptArray(conceptStep, true);
+      document.getElementById('conceptStatus').innerHTML = `✅ Found <strong style="color:var(--primary-green)">${CONCEPT_TARGET}</strong> at index [${conceptStep}] — took ${conceptStep+1} comparison${conceptStep>0?'s':''}`;
+      return;
+    }
+    buildConceptArray(conceptStep, false);
+    document.getElementById('conceptStatus').innerHTML = `Checking index [${conceptStep}]: <strong style="color:var(--primary-orange)">${CONCEPT_DATA[conceptStep]}</strong> ≠ ${CONCEPT_TARGET}`;
+    conceptStep++;
+  }, 600);
+}
+function conceptReset(){
+  clearInterval(conceptTimer);
+  conceptStep=0;
+  buildConceptArray();
+  document.getElementById('conceptStatus').textContent='Click "Start Search" to see linear search in action';
+  document.getElementById('conceptStatus').style.color='var(--text-secondary)';
+}
+buildConceptArray();
+
+/* ═══ 1. CTRL+F SEARCH ═══ */
+const ctrlFWords = ['The','quick','brown','fox','jumps','over','the','lazy','dog','and','runs','into','the','forest'];
+function ctrlFSearch(q){
+  const list = document.getElementById('ctrlFList');
+  const steps = document.getElementById('ctrlFSteps');
+  list.innerHTML='';
+  if(!q){steps.textContent='';return;}
+  let count=0,matches=0;
+  ctrlFWords.forEach(w=>{
+    count++;
+    const div=document.createElement('div');
+    div.className='search-result-item';
+    const isMatch=w.toLowerCase().includes(q.toLowerCase());
+    if(isMatch){div.className+=' match';div.textContent=`✓ "${w}" — match!`;matches++;}
+    else{div.className+=' no-match';div.textContent=`  "${w}"`;}
+    list.appendChild(div);
+  });
+  steps.innerHTML=`Scanned <b>${count}</b> words — found <b style="color:var(--primary-green)">${matches}</b> match${matches!==1?'es':''}`;
+}
+
+/* ═══ 2. CONTACTS SEARCH ═══ */
+const contacts=['Alice Johnson','Bob Smith','Carol White','Dave Brown','Eve Davis','Frank Wilson','Grace Lee','Henry Taylor','Iris Martin','Jack Anderson','Karen Thomas','Liam Jackson','Maya Harris','Noah Clark'];
+function contactSearch(q){
+  const list=document.getElementById('contactList');
+  const steps=document.getElementById('contactSteps');
+  list.innerHTML='';
+  if(!q){steps.textContent='';return;}
+  let count=0,found=0;
+  contacts.forEach(c=>{
+    count++;
+    const div=document.createElement('div');
+    div.className='search-result-item';
+    if(c.toLowerCase().includes(q.toLowerCase())){
+      div.className+=' match';
+      div.innerHTML=`👤 ${c}`;
+      found++;list.appendChild(div);
+    }
+  });
+  if(found===0){
+    const div=document.createElement('div');
+    div.className='search-result-item no-match';
+    div.textContent='No contacts found';
+    list.appendChild(div);
+  }
+  steps.innerHTML=`Scanned <b>${count}</b> contacts — <b style="color:var(--primary-green)">${found}</b> match${found!==1?'es':''}`;
+}
+
+/* ═══ 3. ANTIVIRUS SCAN ═══ */
+const avBytes=['0xAF','0x3C','0x9B','0xD2','0x4E','VIRUS','0x71','0x88','0x1A','0xF3','0x6D','0x29'];
+let avTimer=null;
+
+function buildAVArray(step=-1,found=false){
+  const el=document.getElementById('antivirusArray');
+  el.innerHTML='';
+  avBytes.forEach((b,i)=>{
+    const cell=document.createElement('div');
+    cell.className='m-cell'+(i===step&&found?' found':i===step?' checking':i<step?' passed':'');
+    cell.textContent=b;
+    el.appendChild(cell);
+  });
+}
+function antivirusScan(){
+  clearInterval(avTimer);
+  let i=0;buildAVArray();
+  document.getElementById('antivirusStatus').textContent='Scanning...';
+  document.getElementById('antivirusSteps').textContent='';
+  avTimer=setInterval(()=>{
+    if(i>=avBytes.length){
+      clearInterval(avTimer);
+      document.getElementById('antivirusStatus').innerHTML='✅ <span>Scan complete — no threats found</span>';
+      buildAVArray(avBytes.length);
+      return;
+    }
+    buildAVArray(i,false);
+    if(avBytes[i]==='VIRUS'){
+      clearInterval(avTimer);
+      buildAVArray(i,true);
+      document.getElementById('antivirusStatus').innerHTML=`🚨 <span style="color:var(--primary-red)">VIRUS DETECTED at byte ${i}!</span>`;
+      document.getElementById('antivirusSteps').innerHTML=`Found after <b>${i+1}</b> byte checks`;
+      return;
+    }
+    document.getElementById('antivirusStatus').innerHTML=`Checking byte ${i}: <span>${avBytes[i]}</span>`;
+    document.getElementById('antivirusSteps').innerHTML=`Checked <b>${i+1}</b> of ${avBytes.length} bytes`;
+    i++;
+  },400);
+}
+function antivirusReset(){clearInterval(avTimer);buildAVArray();document.getElementById('antivirusStatus').textContent='Press Start Scan to begin';document.getElementById('antivirusSteps').textContent='';}
+buildAVArray();
+
+/* ═══ 4. MOVIE FILTER ═══ */
+const movies=[
+  {t:'Avengers',g:'Action'},{t:'The Office',g:'Comedy'},{t:'Interstellar',g:'Sci-Fi'},
+  {t:'Die Hard',g:'Action'},{t:'Superbad',g:'Comedy'},{t:'The Matrix',g:'Sci-Fi'},
+  {t:'Mad Max',g:'Action'},{t:'Inception',g:'Sci-Fi'},{t:'Hangover',g:'Comedy'},
+];
+const genreColors={Action:'var(--primary-red)',Comedy:'var(--primary-orange)','Sci-Fi':'var(--primary-cyan)'};
+function filterGenre(genre){
+  const list=document.getElementById('movieList');
+  const steps=document.getElementById('movieSteps');
+  list.innerHTML='';
+  let count=0,shown=0;
+  movies.forEach(m=>{
+    count++;
+    const div=document.createElement('div');
+    div.className='search-result-item';
+    const match=!genre||m.g===genre;
+    if(match){
+      div.className+=' match';
+      div.innerHTML=`🎬 ${m.t} <span style="font-size:.68rem;color:${genreColors[m.g]};margin-left:.4rem">${m.g}</span>`;
+      shown++;
+    } else {
+      div.className+=' no-match';
+      div.innerHTML=`  ${m.t} <span style="font-size:.68rem;opacity:.4">${m.g}</span>`;
+    }
+    list.appendChild(div);
+  });
+  steps.innerHTML=genre?`Scanned <b>${count}</b> movies — showing <b style="color:var(--primary-green)">${shown}</b> ${genre} films`:`Showing all <b>${count}</b> movies`;
+}
+filterGenre('');
+
+/* ═══ 5. ID CARD LOOKUP ═══ */
+const idList=['A-101','A-102','A-103','B-201','B-202','B-205','C-301','C-302'];
+function buildIDArray(step=-1,found=false){
+  const el=document.getElementById('idArray');
+  el.innerHTML='';
+  idList.forEach((id,i)=>{
+    const cell=document.createElement('div');
+    cell.className='m-cell'+(i===step&&found?' found':i===step?' checking':i<step?' passed':'');
+    cell.style.minWidth='52px';cell.textContent=id;
+    el.appendChild(cell);
+  });
+}
+function scanID(target){
+  idReset();
+  let i=0;
+  const timer=setInterval(()=>{
+    if(i>=idList.length){
+      clearInterval(timer);
+      buildIDArray(idList.length);
+      document.getElementById('idStatus').innerHTML=`❌ <span style="color:var(--primary-red)">${target} not found — access denied</span>`;
+      return;
+    }
+    buildIDArray(i,false);
+    if(idList[i]===target){
+      clearInterval(timer);
+      buildIDArray(i,true);
+      document.getElementById('idStatus').innerHTML=`✅ <span>${target} verified!</span> Found at position ${i} after ${i+1} check${i>0?'s':''}`;
+      return;
+    }
+    document.getElementById('idStatus').innerHTML=`Checking <span>${idList[i]}</span>...`;
+    i++;
+  },400);
+}
+function idReset(){buildIDArray();document.getElementById('idStatus').textContent='Select an ID to scan';}
+buildIDArray();
+
+/* ═══ 6. GIT HISTORY SEARCH ═══ */
+const commits=[
+  {hash:'a3f9c2','msg':'fix: resolve login bug on mobile'},
+  {hash:'b81e45','msg':'feat: add dark mode support'},
+  {hash:'c72d11','msg':'refactor: clean up auth module'},
+  {hash:'d4a830','msg':'fix: broken navbar on Safari'},
+  {hash:'e99f12','msg':'feat: implement search feature'},
+  {hash:'f55b67','msg':'docs: update README'},
+  {hash:'g21c93','msg':'test: add unit tests for queue'},
+  {hash:'h78d40','msg':'chore: update dependencies'},
+];
+function gitSearch(q){
+  const list=document.getElementById('gitList');
+  const steps=document.getElementById('gitSteps');
+  list.innerHTML='';
+  if(!q){steps.textContent='';return;}
+  let count=0,found=0;
+  commits.forEach(c=>{
+    count++;
+    const div=document.createElement('div');
+    const match=c.msg.toLowerCase().includes(q.toLowerCase());
+    div.className='search-result-item'+(match?' match':' no-match');
+    div.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--primary-orange);margin-right:.5rem">${c.hash}</span>${c.msg}`;
+    if(match)found++;
+    list.appendChild(div);
+  });
+  steps.innerHTML=`Scanned <b>${count}</b> commits — <b style="color:var(--primary-green)">${found}</b> match${found!==1?'es':''}`;
+}
+</script>
+</body>
+</html>

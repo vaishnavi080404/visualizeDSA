@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Sort — Level 3 | DSA Visualizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-amber:#d97706;
+  --primary-yellow:#eab308;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-orange);}
+.nav-right{display:flex;align-items:center;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-orange);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-orange),var(--primary-amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-orange);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+.sort-bars{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:100px;margin-bottom:1.2rem;}
+.bar{border-radius:6px 6px 0 0;transition:all .35s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;min-width:38px;border:2px solid transparent;}
+.bar.def{background:rgba(255,255,255,.08);border-color:var(--border-color);color:var(--text-secondary);}
+.bar.pivot{background:rgba(245,158,11,.25);border-color:var(--primary-orange);color:var(--primary-orange);}
+.bar.less{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.bar.greater{background:rgba(239,68,68,.12);border-color:var(--primary-red);color:var(--primary-red);}
+.bar.sorted{background:rgba(6,182,212,.15);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.bar.comparing{background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.amber:hover{border-color:var(--primary-amber);box-shadow:0 8px 40px rgba(217,119,6,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.yellow:hover{border-color:var(--primary-yellow);box-shadow:0 8px 40px rgba(234,179,8,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.amber{background:rgba(217,119,6,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.yellow{background:rgba(234,179,8,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-orange);color:var(--primary-orange);}
+.d-btn.go{background:rgba(245,158,11,.1);border-color:var(--primary-orange);color:var(--primary-orange);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.d-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.mini-bars{display:flex;gap:3px;align-items:flex-end;height:60px;margin-bottom:.6rem;}
+.smbar{border-radius:4px 4px 0 0;transition:all .3s;min-width:20px;border:1px solid transparent;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;}
+.smbar.def{background:rgba(255,255,255,.07);border-color:var(--border-color);color:var(--text-secondary);}
+.smbar.piv{background:rgba(245,158,11,.22);border-color:var(--primary-orange);color:var(--primary-orange);}
+.smbar.lo{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.smbar.hi{background:rgba(239,68,68,.12);border-color:var(--primary-red);color:var(--primary-red);}
+.smbar.done{background:rgba(6,182,212,.15);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.smbar.cmp{background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-orange);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-amber);}
+
+.list-item{display:flex;align-items:center;gap:.6rem;padding:.35rem .6rem;border-radius:6px;font-size:.78rem;border:1px solid transparent;margin-bottom:.22rem;transition:all .2s;}
+.list-item.pivot{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange);}
+.list-item.less{background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.2);color:var(--primary-green);}
+.list-item.greater{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.2);color:var(--primary-red);}
+.list-item.done{background:rgba(6,182,212,.07);border-color:rgba(6,182,212,.2);color:var(--primary-cyan);}
+.list-item.idle{color:var(--text-secondary);}
+
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-orange);}
+
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-orange);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-orange);text-shadow:0 0 40px rgba(245,158,11,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-amber),var(--primary-orange));color:#000;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-orange),var(--primary-yellow));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(245,158,11,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+.qs-cta-viz{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:70px;margin:2rem auto;max-width:300px;}
+.qcbar{border-radius:5px 5px 0 0;min-width:26px;border:1px solid;}
+.qcbar:nth-child(1){animation:qsPulse 1.8s ease-in-out infinite;}
+.qcbar:nth-child(2){animation:qsPulse 1.8s ease-in-out .12s infinite;}
+.qcbar:nth-child(3){animation:qsPulse 1.8s ease-in-out .24s infinite;}
+.qcbar:nth-child(4){animation:qsPulse 1.8s ease-in-out .36s infinite;}
+.qcbar:nth-child(5){animation:qsPulse 1.8s ease-in-out .48s infinite;}
+.qcbar:nth-child(6){animation:qsPulse 1.8s ease-in-out .6s infinite;}
+.qcbar:nth-child(7){animation:qsPulse 1.8s ease-in-out .72s infinite;}
+@keyframes qsPulse{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.1);}}
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-container">
+    <a class="logo" href="index.html"><img src="dsa.gif" alt="Logo" class="logo-icon"><span>DSA Visualizer</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle">
+        <svg viewBox="0 0 24 24" id="themeIcon"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="quicksort_L1.html">Quick Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Quick Sort in the <span class="highlight">Real World</span></h1>
+  <p>The fastest in-memory sort in practice — powering C++'s std::sort, V8's JavaScript engine, and high-performance systems that need cache-friendly O(n log n) with zero extra space.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Pick a Pivot, Partition, Recurse</div>
+    <p class="concept-desc">Quick sort picks a <strong>pivot element</strong>, then <strong>partitions</strong> the array so all elements less than the pivot go left, all greater go right. The pivot is now in its <strong>final sorted position</strong>. Recurse on left and right sub-arrays. No merge step needed — partitioning is done in-place. Good pivot choice = O(n log n). Bad pivot (always min/max) = O(n²). Random pivot or <strong>median-of-three</strong> makes worst case nearly impossible in practice.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through partitioning — watch the pivot lock into its final position</div>
+      <div class="sort-bars" id="conceptBars"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Partition</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Partition" to step through quick sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.25);border:2px solid var(--primary-orange)"></div>Pivot</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>≤ Pivot (left)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(239,68,68,.12);border:2px solid var(--primary-red)"></div>&gt; Pivot (right)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(6,182,212,.15);border:2px solid var(--primary-cyan)"></div>Sorted</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Quick sort's cache-friendly in-place partitioning makes it the fastest practical sort for random in-memory data — and the foundation of most production sort implementations.</p>
+  <div class="app-grid">
+
+    <!-- 1. std::sort / introsort -->
+    <div class="app-card amber">
+      <div class="card-header">
+        <div class="card-icon amber">⚡</div>
+        <div class="card-title-wrap">
+          <h3>C++ std::sort — Introsort</h3>
+          <p>C++'s <code style="color:var(--primary-orange);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">std::sort</code> uses <strong>introsort</strong>: quicksort by default, but switches to heapsort if recursion depth exceeds 2·log n (preventing O(n²) worst case). Falls back to insertion sort for n ≤ 16. Quicksort's cache-friendliness drives its real-world speed dominance.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Partition step — pivot locks in place, smaller/larger split</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="introStep()">▶ Partition Step</button>
+            <button class="d-btn reset" onclick="introReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="introBars"></div>
+          <div class="status-line" id="introStatus">Ready to partition — pivot = last element</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Pivot: <b id="introPivot" style="color:var(--primary-orange)">—</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Sorted: <b id="introSorted" style="color:var(--primary-cyan)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Database index build -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗄️</div>
+        <div class="card-title-wrap">
+          <h3>Database Index Building</h3>
+          <p>When building a B-tree index on a column, databases first sort the rows by key value, then bulk-load the sorted data. Quick sort's in-place partitioning lets them sort millions of rows without doubling memory usage — critical when RAM is the bottleneck.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort DB rows by ID — partition around pivot, no extra memory</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbQsStep()">▶ Partition</button>
+            <button class="d-btn reset" onclick="dbQsReset()">↺ Reset</button>
+          </div>
+          <div id="dbQsList" style="display:flex;flex-direction:column;gap:.2rem;max-height:160px;overflow-y:auto"></div>
+          <div class="step-info" id="dbQsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. QuickSelect / kth element -->
+    <div class="app-card yellow">
+      <div class="card-header">
+        <div class="card-icon yellow">🏆</div>
+        <div class="card-title-wrap">
+          <h3>QuickSelect — kth Largest / Median</h3>
+          <p>Quick sort's partition step gives us <strong>QuickSelect</strong> — find the kth smallest element in O(n) average without fully sorting. Used everywhere: find the median salary, the 95th percentile response time, the top-k recommendations, the nth highest score.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Find the 3rd largest salary using QuickSelect — no full sort</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="qselectStep()">▶ Partition Step</button>
+            <button class="d-btn reset" onclick="qselectReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="qselectBars"></div>
+          <div class="status-line" id="qselectStatus">Find 3rd largest — QuickSelect homes in</div>
+          <div class="step-info" id="qselectInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. V8 / JavaScript engine -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🟨</div>
+        <div class="card-title-wrap">
+          <h3>JavaScript V8 Engine — Array.sort()</h3>
+          <p>V8 (Node.js, Chrome) uses Timsort for <code style="color:var(--primary-green);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">Array.prototype.sort()</code>, but SpiderFire (Firefox) historically used a quicksort variant, and many embedded JS engines still do. Understanding quicksort explains why sort performance varies by engine and array size.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort JS objects by value — pivot partitioning in action</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="jsQsStep()">▶ Next Partition</button>
+            <button class="d-btn reset" onclick="jsQsReset()">↺ Reset</button>
+          </div>
+          <div id="jsQsList" style="display:flex;flex-direction:column;gap:.2rem;max-height:155px;overflow-y:auto"></div>
+          <div class="step-info" id="jsQsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 3-way quicksort / Dutch flag -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🇳🇱</div>
+        <div class="card-title-wrap">
+          <h3>Dutch National Flag — 3-Way Partition</h3>
+          <p>When data has many <strong>duplicate keys</strong> (e.g. sort products by category, students by grade letter), standard quicksort degrades. <strong>3-way quicksort</strong> partitions into less / equal / greater — equal elements are handled in one pass, making it O(n) on arrays with few distinct keys.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Dutch flag partition — separate into 3 regions in one pass</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dutchStep()">▶ Next Move</button>
+            <button class="d-btn reset" onclick="dutchReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="dutchBars"></div>
+          <div class="status-line" id="dutchStatus">3-way partition: pivot = 5</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;margin-top:.4rem">
+            <div style="padding:.3rem .5rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">≤5: <b id="dutchLo" style="color:var(--primary-green)">0</b></div>
+            <div style="padding:.3rem .5rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">=5: <b id="dutchEq" style="color:var(--primary-orange)">0</b></div>
+            <div style="padding:.3rem .5rem;border-radius:6px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">&gt;5: <b id="dutchHi" style="color:var(--primary-red)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Random pivot / security -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🔐</div>
+        <div class="card-title-wrap">
+          <h3>Randomized Pivot — Hash DoS Defense</h3>
+          <p>Attackers can craft inputs that make deterministic quicksort hit O(n²) — crashing web servers via <strong>Hash DoS</strong>. Randomized quicksort with a random pivot makes worst-case inputs computationally impossible to engineer. Python, Perl, and Ruby all added hash randomization after this attack was published in 2011.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Compare: sorted input kills naive pivot, random pivot stays fast</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="pivotCompare('naive')">⚠ Naive Pivot</button>
+            <button class="d-btn go" onclick="pivotCompare('random')" style="border-color:var(--primary-cyan);color:var(--primary-cyan);background:rgba(6,182,212,.1)">🎲 Random Pivot</button>
+            <button class="d-btn reset" onclick="pivotReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="pivotBars"></div>
+          <div class="status-line" id="pivotStatus">Try both strategies on the same sorted input</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Comparisons: <b id="pivotComps" style="color:var(--primary-red)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Recursion: <b id="pivotDepth" style="color:var(--primary-cyan)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Quick sort's average O(n log n) with O(1) auxiliary space is what makes it the fastest practical in-memory sort — but the worst case is the risk you manage.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Comparisons</th><th>Space (stack)</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="good">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Pivot always splits array exactly in half</td></tr>
+        <tr><td class="op">Average Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="good">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Random pivot — expected O(n log n) with small constant</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Pivot always min/max — sorted/reverse-sorted input with naive pivot</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="bad">❌ Not stable</td><td class="good">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Partitioning swaps can reorder equal elements</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Quick sort has the <strong style="color:var(--primary-orange)">best average-case constant factor</strong> of any comparison sort — roughly 2× faster than merge sort in practice because it accesses memory sequentially (pivot comparisons = cache-friendly). Its O(n²) worst case is virtually eliminated by <strong style="color:var(--primary-orange)">randomized pivot selection</strong> or introsort's heapsort fallback.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Quick sort is the speed king of in-memory sorting. Its trade-offs explain why every systems language uses it as the default — and when you reach for merge sort instead.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Fastest in-memory sort in practice</h4><p>Sequential memory access during partitioning gives excellent cache locality. In real benchmarks on random data, quicksort is 2–3x faster than merge sort and 3–5x faster than heapsort due to fewer cache misses.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>In-place — O(1) auxiliary space</h4><p>Only needs O(log n) stack space for recursion — no auxiliary array. At 1 billion elements, merge sort needs 4GB extra RAM. Quick sort needs only a few hundred bytes of stack. Huge memory win.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>QuickSelect gives O(n) kth element</h4><p>The partition step alone solves "find the kth smallest" in O(n) average — no full sort needed. Used for medians, percentiles, top-k recommendations, and order statistics everywhere.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Naturally parallelizable subproblems</h4><p>Left and right sub-arrays after partitioning are fully independent. Parallel quicksort assigns each partition to a separate thread. Performance scales linearly with cores up to a point.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>3-way partition handles duplicates in O(n)</h4><p>Dutch flag partition makes quicksort O(n) on arrays with few distinct keys — e.g. sorting by category, grade, status. Standard quicksort is O(n²) on such data without this optimization.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Small constant factor — practical winner</h4><p>Even though merge sort and heapsort are both O(n log n), quicksort's constants are ~2x smaller. For sorting 10 million random integers, quicksort consistently wins in wall-clock time.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) worst case — a real risk</h4><p>Sorted or reverse-sorted input with a naive last-element pivot causes every partition to be maximally unbalanced. Web servers crashed this way before hash randomization. Must use random pivot or introsort.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Not stable — equal elements may reorder</h4><p>Partitioning swaps equal elements around the pivot. If you sort [{A,5},{B,5}] by value, you might get B before A. Stability requires merge sort, Timsort, or a separate stability trick.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor for external sort (disk-based)</h4><p>Quicksort accesses data non-sequentially after partitioning. HDDs and network storage are 100-1000x slower for random access than sequential. Merge sort's sequential I/O is the right choice for large files.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Hard to implement correctly</h4><p>Off-by-one errors in partition boundaries, stack overflow on degenerate inputs, incorrect 3-way partition, pivot selection bugs — quick sort has many subtle failure modes that merge sort and heapsort don't share.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n) stack depth on degenerate input</h4><p>Without tail recursion optimization or introsort's depth limit, sorted input causes O(n) recursive calls → stack overflow on large arrays. Must recurse on smaller partition first to guarantee O(log n) stack.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Slower than Timsort on real-world data</h4><p>Real data often has natural runs, sorted regions, or structure. Timsort (Python/Java) exploits these for O(n) behavior. Pure quicksort treats every input the same — missing these optimization opportunities.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Quick Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Quick sort is the default for raw speed on random in-memory data. Know exactly when its trade-offs make it the wrong choice.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Quick Sort When...</div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Maximum raw speed on random data</h4><p>For primitive arrays (int, float, double) in memory with random distribution, quicksort is the fastest practical choice — 2-3x faster than merge sort due to cache-friendly sequential partitioning.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory is constrained</h4><p>O(log n) stack space vs merge sort's O(n) auxiliary array. When sorting 100M records in tight RAM, quicksort's in-place partitioning may be the only viable O(n log n) option.</p></div></div>
+      <div class="when-item"><div class="when-icon">🎯</div><div class="when-text"><h4>Finding kth element / order statistics</h4><p>QuickSelect finds kth smallest in O(n) average with no full sort. For "find median", "find 95th percentile", "find top-k" — QuickSelect beats sorting + indexing by a constant factor.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Sorting primitives where stability doesn't matter</h4><p>Integers, floats, raw numbers with no associated data — stability is irrelevant. Use <span class="when-code">std::sort</span> (introsort) or randomized quicksort for maximum throughput.</p></div></div>
+      <div class="when-item"><div class="when-icon">🇳🇱</div><div class="when-text"><h4>Data has many duplicate keys</h4><p>Use 3-way (Dutch flag) quicksort. On an array of n elements with only k distinct values (k ≪ n), 3-way quicksort runs in O(n·H) where H is entropy — O(n) when k=1, much faster than merge sort.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚙️</div><div class="when-text"><h4>Systems programming / embedded with recursion budget</h4><p>When you control the pivot strategy and recursion limit, quicksort's simple in-place logic is easy to tune. Combined with insertion sort for small subarrays, it beats any single-strategy sort.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Quick Sort When...</div>
+      <div class="when-item"><div class="when-icon">🛡️</div><div class="when-text"><h4>Worst-case guarantee is required</h4><p>Real-time or latency-sensitive systems (medical, financial, trading) can't accept O(n²) spikes. Use merge sort or heapsort. Introsort (quicksort + heapsort fallback) is an acceptable compromise.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability is required</h4><p>Multi-key sort chains, database ORDER BY, or preserving insertion order for equal elements all need stable sort. Use merge sort, Timsort, or insertion sort instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">💿</div><div class="when-text"><h4>Data is on disk or doesn't fit in RAM</h4><p>External sort requires sequential I/O patterns — merge sort's strength. Quicksort's non-sequential access after partitioning causes thrashing on HDDs and distributed file systems.</p></div></div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Data is nearly sorted or has natural runs</h4><p>Timsort or insertion sort will beat quicksort significantly. Timsort is O(n) on sorted input; quicksort with naive pivot is O(n²). Even with random pivot, Timsort has smaller constants on structured data.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔗</div><div class="when-text"><h4>Data is in a linked list</h4><p>Quicksort on a linked list requires O(n) pivot finding or O(n) random access — both expensive. Merge sort on linked lists runs in O(n log n) with no extra space. Use merge sort for any non-array structure.</p></div></div>
+      <div class="when-item"><div class="when-icon">🌐</div><div class="when-text"><h4>Adversarial or untrusted input</h4><p>If input comes from users or the network, deterministic quicksort can be exploited for DoS. Always use randomized pivot or a hash-based sort. Never expose naive quicksort to external inputs.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Quick Sort problems</span></div>
+    <p class="cta-sub">You've seen how quicksort powers C++'s std::sort, QuickSelect, Dutch flag partition, and Hash DoS defense.<br>Now prove you can implement it — and know when the pivot choice is the difference between O(n log n) and O(n²).</p>
+    <div class="qs-cta-viz">
+      <div class="qcbar" style="height:22px;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)"></div>
+      <div class="qcbar" style="height:42px;background:rgba(217,119,6,.12);border-color:rgba(217,119,6,.3)"></div>
+      <div class="qcbar" style="height:55px;background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.5)"></div>
+      <div class="qcbar" style="height:30px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="qcbar" style="height:48px;background:rgba(217,119,6,.12);border-color:rgba(217,119,6,.3)"></div>
+      <div class="qcbar" style="height:18px;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)"></div>
+      <div class="qcbar" style="height:38px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+    </div>
+    <a href="practice.html?topic=quick_sort" class="cta-btn">
+      <span>⚡ Solve Quick Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* THEME */
+const themes=['dark','light','blue'];
+const themeIcons={dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=themeIcons[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ── CONCEPT ── */
+// Pre-computed partition phases for [7,2,9,4,6,1,8,3,5]
+const cPhases=[
+  {arr:[7,2,9,4,6,1,8,3,5],pivot:-1,left:-1,right:-1,sorted:[],label:'Original array — pivot will be last element (5)'},
+  {arr:[2,4,1,3,5,6,8,9,7],pivot:4,left:[0,1,2,3],right:[5,6,7,8],sorted:[4],label:'After first partition: 5 is in final position [4]. Left≤5, Right>5'},
+  {arr:[1,2,3,4,5,6,7,8,9],pivot:-1,left:[],right:[],sorted:[0,1,2,3,4,5,6,7,8],label:'Recurse on sub-arrays → fully sorted!'},
+];
+let cPhaseIdx=0;
+function renderConceptBars(ph){
+  const el=document.getElementById('conceptBars');el.innerHTML='';
+  const mx=Math.max(...ph.arr);
+  ph.arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='bar';
+    b.style.height=Math.max(18,Math.round((v/mx)*85))+'px';
+    if(ph.sorted.includes(i))b.classList.add('sorted');
+    else if(i===ph.pivot)b.classList.add('pivot');
+    else if(ph.left.includes(i))b.classList.add('less');
+    else if(ph.right.includes(i))b.classList.add('greater');
+    else b.classList.add('def');
+    b.textContent=v;el.appendChild(b);
+  });
+  document.getElementById('conceptStatus').innerHTML=`<span style="color:var(--primary-orange)">${ph.label}</span>`;
+}
+function conceptStep(){
+  if(cPhaseIdx>=cPhases.length){conceptReset();return;}
+  renderConceptBars(cPhases[cPhaseIdx]);cPhaseIdx++;
+}
+function conceptReset(){cPhaseIdx=0;renderConceptBars(cPhases[0]);document.getElementById('conceptStatus').textContent='Click "Next Partition" to step through quick sort';}
+renderConceptBars(cPhases[0]);
+
+/* ── HELPER: build mini bars ── */
+function buildMB(elId,arr,classes=[]){
+  const el=document.getElementById(elId);if(!el)return;el.innerHTML='';
+  const mx=Math.max(...arr,1);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='smbar '+(classes[i]||'def');
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';b.textContent=v;el.appendChild(b);
+  });
+}
+
+/* ── 1. INTROSORT / std::sort ── */
+let introArr=[8,3,6,1,9,4,7,2,5],introOrig=[...introArr],introSorted=0,introPivotVal=null;
+const introSteps=[
+  {arr:[8,3,6,1,9,4,7,2,5],cls:[],piv:'—',s:0,msg:'Array ready — pivot = last element (5)'},
+  {arr:[3,1,4,2,5,9,6,7,8],cls:['lo','lo','lo','lo','piv','hi','hi','hi','hi'],piv:5,s:1,msg:'Partition done: [3,1,4,2] | 5 | [9,6,7,8]'},
+  {arr:[1,2,3,4,5,6,7,8,9],cls:Array(9).fill('done'),piv:'—',s:9,msg:'Recurse on sub-arrays → fully sorted ✅'},
+];
+let introIdx=0;
+function introStep(){
+  if(introIdx>=introSteps.length){introReset();return;}
+  const s=introSteps[introIdx];
+  buildMB('introBars',s.arr,s.cls);
+  document.getElementById('introStatus').innerHTML=`<span>${s.msg}</span>`;
+  document.getElementById('introPivot').textContent=s.piv;
+  document.getElementById('introSorted').textContent=s.s;
+  introIdx++;
+}
+function introReset(){introIdx=0;buildMB('introBars',introOrig);document.getElementById('introStatus').textContent='Ready to partition — pivot = last element';document.getElementById('introPivot').textContent='—';document.getElementById('introSorted').textContent=0;}
+buildMB('introBars',introOrig);
+
+/* ── 2. DB QUICKSORT ── */
+const dbRows=[{id:347,name:'Eve'},{id:101,name:'Alice'},{id:289,name:'Dave'},{id:412,name:'Grace'},{id:156,name:'Bob'},{id:203,name:'Carol'}];
+let dbQsArr=[...dbRows],dbQsPass=0;
+const dbPivotColors=['var(--primary-orange)','var(--primary-amber)','var(--primary-yellow)'];
+function renderDbQs(pivotIdx=-1,leftEnd=-1){
+  const el=document.getElementById('dbQsList');el.innerHTML='';
+  dbQsArr.forEach((r,i)=>{
+    const d=document.createElement('div');
+    const isPivot=i===pivotIdx;const isLeft=leftEnd>=0&&i<leftEnd;const isRight=leftEnd>=0&&i>pivotIdx;
+    d.className='list-item '+(isPivot?'pivot':isLeft?'less':isRight?'greater':'idle');
+    d.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;min-width:38px">${r.id}</span><span style="flex:1;font-size:.76rem;font-weight:600">${r.name}</span>${isPivot?'<span style="font-size:.62rem;font-weight:700;color:var(--primary-orange)">PIVOT</span>':''}`;
+    el.appendChild(d);
+  });
+}
+const dbSteps=[
+  {arr:[...dbRows],pivotIdx:5,leftEnd:4,info:'Pivot = Carol(203) — IDs < 203 go left, > 203 go right'},
+  {arr:[{id:101,name:'Alice'},{id:156,name:'Bob'},{id:203,name:'Carol'},{id:289,name:'Dave'},{id:347,name:'Eve'},{id:412,name:'Grace'}],pivotIdx:2,leftEnd:2,info:'203 is in final position. Recurse on left [101,156] and right [289,347,412]'},
+  {arr:[{id:101,name:'Alice'},{id:156,name:'Bob'},{id:203,name:'Carol'},{id:289,name:'Dave'},{id:347,name:'Eve'},{id:412,name:'Grace'}],pivotIdx:-1,leftEnd:-1,info:'✅ All rows sorted by ID — B-tree index ready to build'},
+];
+let dbQsIdx=0;
+function dbQsStep(){
+  if(dbQsIdx>=dbSteps.length){dbQsReset();return;}
+  const s=dbSteps[dbQsIdx];dbQsArr=[...s.arr];
+  renderDbQs(s.pivotIdx,s.leftEnd);
+  document.getElementById('dbQsInfo').innerHTML=`Step ${dbQsIdx+1}: <b>${s.info}</b>`;dbQsIdx++;
+}
+function dbQsReset(){dbQsIdx=0;dbQsArr=[...dbRows];renderDbQs();document.getElementById('dbQsInfo').textContent='';}
+renderDbQs();
+
+/* ── 3. QUICKSELECT ── */
+const qsArr=[9,3,7,1,8,4,6,2,5];
+const qsSteps=[
+  {arr:[9,3,7,1,8,4,6,2,5],cls:[],msg:'Find 3rd largest (= 7). Pivot = 5'},
+  {arr:[3,1,4,2,5,9,7,8,6],cls:['lo','lo','lo','lo','piv','hi','hi','hi','hi'],msg:'Partition: 5 at index 4. 3rd largest is in right [9,7,8,6]'},
+  {arr:[3,1,4,2,5,6,7,9,8],cls:['def','def','def','def','done','piv','done','hi','hi'],msg:'Pivot=6 in right sub. 3rd largest in [9,8] — recurse right'},
+  {arr:[3,1,4,2,5,6,7,8,9],cls:['def','def','def','def','done','done','done','done','done'],msg:'✅ 3rd largest = 7 found at index 6 — O(n) average!'},
+];
+let qsIdx=0;
+function qselectStep(){
+  if(qsIdx>=qsSteps.length){qselectReset();return;}
+  const s=qsSteps[qsIdx];
+  buildMB('qselectBars',s.arr,s.cls);
+  document.getElementById('qselectStatus').innerHTML=`<span>${s.msg}</span>`;
+  document.getElementById('qselectInfo').innerHTML=qsIdx>0?`Step <b>${qsIdx}</b> — only recurse on relevant partition`:'';
+  qsIdx++;
+}
+function qselectReset(){qsIdx=0;buildMB('qselectBars',qsArr);document.getElementById('qselectStatus').textContent='Find 3rd largest — QuickSelect homes in';document.getElementById('qselectInfo').textContent='';}
+buildMB('qselectBars',qsArr);
+
+/* ── 4. JS OBJECTS SORT ── */
+const jsObjs=[{k:'render',v:85},{k:'fetch',v:42},{k:'parse',v:93},{k:'init',v:17},{k:'sort',v:67},{k:'hash',v:55}];
+let jsArr=[...jsObjs],jsPass=0;
+function renderJsQs(pivotIdx=-1,leftEnd=-1,sorted=[]){
+  const el=document.getElementById('jsQsList');el.innerHTML='';
+  jsArr.forEach((r,i)=>{
+    const isPivot=i===pivotIdx;const isL=leftEnd>=0&&i<leftEnd;const isR=leftEnd>=0&&i>pivotIdx;const isDone=sorted.includes(i);
+    const d=document.createElement('div');d.className='list-item '+(isDone?'done':isPivot?'pivot':isL?'less':isR?'greater':'idle');
+    const bar=Math.round((r.v/100)*60);
+    d.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;min-width:45px;color:var(--text-secondary)">${r.k}</span><div style="flex:1;height:6px;background:var(--border-color);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${bar}%;background:${isDone?'var(--primary-cyan)':isPivot?'var(--primary-orange)':'rgba(255,255,255,.3)'};border-radius:3px;transition:width .3s"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;min-width:28px;text-align:right">${r.v}</span>`;
+    el.appendChild(d);
+  });
+}
+const jsSteps=[
+  {arr:[...jsObjs],piv:5,le:3,s:[],info:'Pivot = hash(55): parse(93),render(85),sort(67) go right'},
+  {arr:[{k:'init',v:17},{k:'fetch',v:42},{k:'hash',v:55},{k:'sort',v:67},{k:'render',v:85},{k:'parse',v:93}],piv:2,le:2,s:[2],info:'hash(55) in final slot. Recurse on [init,fetch] and [sort,render,parse]'},
+  {arr:[{k:'init',v:17},{k:'fetch',v:42},{k:'hash',v:55},{k:'sort',v:67},{k:'render',v:85},{k:'parse',v:93}],piv:-1,le:-1,s:[0,1,2,3,4,5],info:'✅ All objects sorted by value ascending'},
+];
+let jsQsIdx=0;
+function jsQsStep(){
+  if(jsQsIdx>=jsSteps.length){jsQsReset();return;}
+  const s=jsSteps[jsQsIdx];jsArr=[...s.arr];renderJsQs(s.piv,s.le,s.s);
+  document.getElementById('jsQsInfo').innerHTML=`<b>${s.info}</b>`;jsQsIdx++;
+}
+function jsQsReset(){jsQsIdx=0;jsArr=[...jsObjs];renderJsQs();document.getElementById('jsQsInfo').textContent='';}
+renderJsQs();
+
+/* ── 5. DUTCH NATIONAL FLAG ── */
+const dutchOrig=[3,5,8,5,2,5,7,1,5,4];
+let dutchArr=[...dutchOrig],lo=0,mid=0,hi=dutchArr.length-1,pivot5=5;
+function renderDutch(){
+  const el=document.getElementById('dutchBars');el.innerHTML='';
+  const mx=Math.max(...dutchArr);
+  dutchArr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='smbar';
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';
+    if(i<lo)b.classList.add('lo');
+    else if(i>=lo&&i<mid)b.classList.add('piv');
+    else if(i>hi)b.classList.add('hi');
+    else b.classList.add('def');
+    b.textContent=v;el.appendChild(b);
+  });
+  document.getElementById('dutchLo').textContent=lo;
+  document.getElementById('dutchEq').textContent=Math.max(0,mid-lo);
+  document.getElementById('dutchHi').textContent=dutchArr.length-1-hi;
+}
+function dutchStep(){
+  if(mid>hi){
+    document.getElementById('dutchStatus').innerHTML=`✅ <span>3-way partition done</span> — all equal keys grouped in O(n)`;
+    renderDutch();return;
+  }
+  if(dutchArr[mid]<pivot5){[dutchArr[lo],dutchArr[mid]]=[dutchArr[mid],dutchArr[lo]];lo++;mid++;document.getElementById('dutchStatus').innerHTML=`${dutchArr[lo-1]}<5 → moved to left region`;}
+  else if(dutchArr[mid]===pivot5){mid++;document.getElementById('dutchStatus').innerHTML=`${dutchArr[mid-1]}=5 → equal region grows`;}
+  else{[dutchArr[mid],dutchArr[hi]]=[dutchArr[hi],dutchArr[mid]];hi--;document.getElementById('dutchStatus').innerHTML=`${dutchArr[hi+1]}>5 → moved to right region`;}
+  renderDutch();
+}
+function dutchReset(){dutchArr=[...dutchOrig];lo=0;mid=0;hi=dutchArr.length-1;renderDutch();document.getElementById('dutchStatus').textContent='3-way partition: pivot = 5';}
+renderDutch();
+
+/* ── 6. PIVOT COMPARISON ── */
+const pivotInput=[1,2,3,4,5,6,7,8,9,10];// sorted — worst case for naive
+let pivotArr=[...pivotInput];
+function buildPivotBars(arr,classes=[]){buildMB('pivotBars',arr,classes);}
+function pivotCompare(type){
+  buildPivotBars(pivotInput);
+  const n=pivotInput.length;
+  if(type==='naive'){
+    // Naive pivot = last element on sorted array = O(n²)
+    const comps=n*(n-1)/2;
+    const depth=n-1;
+    document.getElementById('pivotStatus').innerHTML=`⚠ Naive pivot on sorted data: <span style="color:var(--primary-red)">O(n²) = ${comps} comparisons, depth ${depth}</span>`;
+    document.getElementById('pivotComps').textContent=comps;
+    document.getElementById('pivotDepth').textContent=depth;
+    buildPivotBars(pivotInput,pivotInput.map((_,i)=>i===n-1?'piv':'hi'));
+  } else {
+    const comps=Math.round(n*Math.log2(n));
+    const depth=Math.ceil(Math.log2(n));
+    document.getElementById('pivotStatus').innerHTML=`✅ Random pivot: <span>~O(n log n) = ${comps} comparisons, depth ${depth}</span> — DoS impossible`;
+    document.getElementById('pivotComps').textContent=comps;
+    document.getElementById('pivotDepth').textContent=depth;
+    const shuffled=[...pivotInput].sort(()=>Math.random()-.5);
+    const pivIdx=Math.floor(n/2);
+    buildPivotBars(shuffled,shuffled.map((v,i)=>i===pivIdx?'piv':v<shuffled[pivIdx]?'lo':'hi'));
+  }
+}
+function pivotReset(){buildPivotBars(pivotInput);document.getElementById('pivotStatus').textContent='Try both strategies on the same sorted input';document.getElementById('pivotComps').textContent=0;document.getElementById('pivotDepth').textContent=0;}
+buildPivotBars(pivotInput);
+</script>
+</body>
+</html>

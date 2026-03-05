@@ -3,968 +3,2036 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Merge Sort Visualizer - DSA Mastering</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>Merge Sort - Level 2 | DSA Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* ========================================
-       RESET & ROOT VARIABLES
-       ======================================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     :root {
-      --bg-dark: #10121A;
-      --bg-medium: #1A1E29;
-      --card-bg: #212531;
-      --navbar-bg-main: #2B3242;
-      --navbar-bg-right: #3C4456;
-      --accent-blue: #00FFFF;
-      --accent-orange: #FF8C00;
-      --text-light: #E0E0E0;
-      --text-white: #FFFFFF;
-      --text-subtle: #99A1B3;
-      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
-      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
-      --shadow-dark: rgba(0, 0, 0, 0.6);
+      --primary-green:#10b981; --primary-cyan:#06b6d4; --primary-purple:#8b5cf6;
+      --primary-orange:#f59e0b; --primary-red:#ef4444; --primary-pink:#ec4899;
+      --dark-bg:#0a0a0a; --card-bg:#1a1a1a; --text-primary:#ffffff;
+      --text-secondary:#a0a0a0; --border-color:#2a2a2a;
+      --nav-bg:rgba(10,10,10,.8); --code-bg:#0d1117; --terminal-bg:#0d1117;
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
-      color: var(--text-light);
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
+    [data-theme="light"]{
+      --dark-bg:#f8fafc;--card-bg:#ffffff;--text-primary:#0f172a;
+      --text-secondary:#475569;--border-color:#e2e8f0;
+      --nav-bg:rgba(248,250,252,.8);--code-bg:#f1f5f9;--terminal-bg:#f1f5f9;
+      --primary-cyan:#0891b2;--primary-green:#059669;
     }
-
-  /* Navbar */
-    .navbar {
-      background: var(--navbar-bg-main);
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 2px solid var(--accent-blue);
+    [data-theme="blue"]{
+      --dark-bg:#011425;--card-bg:#1e293b;--text-primary:#ffffff;
+      --text-secondary:#94a3b8;--border-color:#242424;
+      --nav-bg:rgba(1,20,37,.8);--code-bg:#011425;--terminal-bg:#011425;
     }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
 
-    .navbar-left {
-      display: flex;
-      flex-direction: column;
+    /* ── NAV ── */
+    nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);}
+    .nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+    .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+    .logo-icon{width:35px;height:35px;background:linear-gradient(135deg,var(--primary-green),var(--primary-cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+    .nav-links{display:flex;gap:2.5rem;list-style:none;}
+    .nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+    .nav-links a:hover{color:var(--primary-green);}
+    .theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+    .theme-toggle:hover{border-color:var(--primary-green);background:rgba(16,185,129,.1);}
+    .theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+
+    /* ── LAYOUT ── */
+    .container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+    .breadcrumb a{color:var(--text-secondary);text-decoration:none;}
+    .breadcrumb span.sep{opacity:.5;}
+    .page-header{margin-bottom:3rem;}
+    .page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;}
+    .level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+    .level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+    .level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1.05rem;}
+    .content-title{font-size:1.25rem;font-weight:600;margin-bottom:1rem;color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;}
+
+    /* ── IMPLEMENTATION SELECTOR ── */
+    .implementation-selector{display:flex;gap:1rem;margin:2rem 0;padding:1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+    .impl-option{padding:1rem 2rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center;min-width:220px;}
+    .impl-option:hover{border-color:var(--primary-cyan);transform:translateY(-2px);}
+    .impl-option.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 4px 15px rgba(6,182,212,.3);}
+    .impl-option-icon{font-size:2rem;margin-bottom:.5rem;}
+    .impl-option-title{font-weight:700;font-size:1.1rem;margin-bottom:.3rem;}
+    .impl-option-desc{font-size:.85rem;color:var(--text-secondary);}
+    .impl-option.active .impl-option-desc{color:rgba(255,255,255,.8);}
+
+    /* ── VISUALIZER GRID ── */
+    .visualizer-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;}
+
+    /* ── PSEUDO CODE ── */
+    .pseudo-code-container{background:var(--card-bg);border-radius:15px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);max-height:680px;overflow-y:auto;position:sticky;top:90px;}
+    .pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:20px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:1px;}
+    .pseudo-step{background:var(--code-bg);padding:12px 15px;margin:10px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;}
+    .pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00a8a8);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+    .pseudo-step strong{color:var(--primary-cyan);}
+    .pseudo-step.active strong{color:#000;font-weight:800;}
+
+    /* ── VISUALIZATION CARD ── */
+    .visualization-card{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);overflow:hidden;}
+    .card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:20px;border-bottom:2px solid var(--border-color);}
+    .card-header h5{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0;}
+    .card-body{background:var(--code-bg);padding:24px;min-height:380px;}
+    .card-footer{background:var(--card-bg);padding:20px;border-top:2px solid var(--border-color);}
+
+    /* ── MERGE TREE VISUALIZER ── */
+    .sort-display{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
+
+    /* stat badges */
+    .stat-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:4px;}
+    .stat-badge{display:inline-flex;align-items:center;gap:.4rem;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+    .sb-purple{background:rgba(139,92,246,.15);border:1px solid var(--primary-purple);color:var(--primary-purple);}
+    .sb-pink  {background:rgba(236,72,153,.15);border:1px solid var(--primary-pink);color:var(--primary-pink);}
+    .sb-green {background:rgba(16,185,129,.15);border:1px solid var(--primary-green);color:var(--primary-green);}
+    .sb-orange{background:rgba(245,158,11,.15);border:1px solid var(--primary-orange);color:var(--primary-orange);}
+    .sb-cyan  {background:rgba(6,182,212,.15);border:1px solid var(--primary-cyan);color:var(--primary-cyan);}
+
+    /* array strip */
+    .arr-strip{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:4px 0;}
+    .arr-cell{
+      width:50px;height:50px;border:2px solid var(--border-color);
+      display:flex;align-items:center;justify-content:center;
+      font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;
+      color:var(--text-secondary);background:rgba(255,255,255,.03);
+      transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;
     }
+    .arr-cell:first-child{border-radius:8px 0 0 8px;}
+    .arr-cell:last-child {border-radius:0 8px 8px 0;}
+    .arr-cell.ac-default  {background:rgba(255,255,255,.04);border-color:var(--border-color);color:var(--text-secondary);}
+    .arr-cell.ac-dividing {background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);transform:translateY(-4px);box-shadow:0 6px 16px rgba(139,92,246,.3);}
+    .arr-cell.ac-left     {background:rgba(6,182,212,.12);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .arr-cell.ac-right    {background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+    .arr-cell.ac-comparing{background:rgba(236,72,153,.15);border-color:var(--primary-pink);color:var(--primary-pink);transform:translateY(-5px);box-shadow:0 7px 18px rgba(236,72,153,.35);animation:comparePop .3s ease;}
+    .arr-cell.ac-placing  {background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);transform:translateY(-5px);box-shadow:0 7px 18px rgba(16,185,129,.35);animation:placePop .4s ease;}
+    .arr-cell.ac-sorted   {background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));border-color:var(--primary-green);color:var(--primary-green);box-shadow:0 0 12px rgba(16,185,129,.25);}
+    @keyframes comparePop{0%,100%{transform:translateY(-5px)}50%{transform:translateY(-9px)}}
+    @keyframes placePop{0%{transform:translateY(-12px) scale(1.1)}100%{transform:translateY(-5px) scale(1)}}
 
-    .navbar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text-white);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+    .idx-strip{display:flex;justify-content:center;gap:0;}
+    .idx-cell{width:50px;text-align:center;font-size:.65rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+
+    /* sub-array bracket indicator */
+    .bracket-row{position:relative;display:flex;justify-content:center;height:16px;margin-bottom:2px;}
+    .bracket-bar{position:absolute;bottom:0;height:3px;border-radius:2px;transition:all .3s;}
+    .bb-left {background:var(--primary-cyan);}
+    .bb-right{background:var(--primary-orange);}
+    .bb-merge{background:linear-gradient(90deg,var(--primary-green),#059669);}
+
+    /* caption */
+    .caption-box{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:10px 16px;font-size:.88rem;color:var(--primary-cyan);text-align:center;font-family:'JetBrains Mono',monospace;min-height:38px;transition:all .3s;width:100%;}
+    .caption-box.cap-split  {background:rgba(139,92,246,.1);border-color:var(--primary-purple);color:var(--primary-purple);}
+    .caption-box.cap-merge  {background:rgba(236,72,153,.1);border-color:var(--primary-pink);color:var(--primary-pink);}
+    .caption-box.cap-place  {background:rgba(16,185,129,.1);border-color:var(--primary-green);color:var(--primary-green);}
+    .caption-box.cap-done   {background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
+
+    /* merge temp array row */
+    .temp-row{display:flex;flex-direction:column;align-items:center;gap:4px;margin:4px 0;}
+    .temp-label{font-size:.72rem;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);letter-spacing:.5px;}
+    .temp-strip{display:flex;gap:0;}
+    .temp-cell{width:46px;height:40px;border:1.5px dashed rgba(16,185,129,.4);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;color:var(--primary-green);background:rgba(16,185,129,.06);transition:all .3s;}
+    .temp-cell:first-child{border-radius:6px 0 0 6px;}
+    .temp-cell:last-child {border-radius:0 6px 6px 0;}
+    .temp-cell.tc-active{background:rgba(16,185,129,.2);border-color:var(--primary-green);animation:placePop .35s ease;}
+    .temp-cell.tc-empty{color:transparent;}
+
+    /* Legend */
+    .legend{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;margin-top:2px;}
+    .leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .leg-dot{width:10px;height:10px;border-radius:3px;}
+
+    #msg_show{color:var(--text-primary);text-align:center;margin-top:14px;font-size:15px;padding:12px;border-radius:10px;min-height:40px;display:none;}
+    .alert-success{background:rgba(16,185,129,.2);border:2px solid var(--primary-green);color:var(--primary-green);}
+    .alert-danger {background:rgba(239,68,68,.2);border:2px solid var(--primary-red);color:var(--primary-red);}
+
+    .form-control{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:10px;width:100%;}
+    .form-control:focus{background:var(--dark-bg);border-color:var(--primary-cyan);outline:none;box-shadow:0 0 10px rgba(6,182,212,.3);}
+    .btn{border:none;font-weight:700;padding:10px 20px;border-radius:8px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;}
+    .btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+    .btn-info   {background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;}
+    .btn-danger {background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+    .btn-warning{background:linear-gradient(135deg,var(--primary-orange),#ff6b00);color:#fff;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(6,182,212,.3);}
+
+    /* ── SECTION CARD ── */
+    .section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+    .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+    .section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;}
+    .section-title{font-size:1.8rem;font-weight:700;}
+
+    /* ── SCENARIO TABS ── */
+    .scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+    .scenario-tab{padding:.55rem 1.25rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+    .scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .scenario-tab.active-best  {background:var(--primary-green); border-color:var(--primary-green); color:#fff;}
+    .scenario-tab.active-avg   {background:var(--primary-cyan);  border-color:var(--primary-cyan);  color:#fff;}
+    .scenario-tab.active-worst {background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+    .scenario-tab.active-custom{background:var(--primary-purple);border-color:var(--primary-purple);color:#fff;}
+    .scenario-panel{display:none;}
+    .scenario-panel.active{display:block;}
+    .scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+    .scenario-inner h4{font-size:1.15rem;font-weight:700;margin-bottom:.4rem;}
+    .scenario-inner p{color:var(--text-secondary);font-size:.95rem;margin-bottom:1.2rem;}
+    .scenario-divider{border:none;border-top:1px solid var(--border-color);margin:1rem 0 1.4rem;}
+    .input-label{color:var(--text-secondary);font-size:.88rem;font-weight:600;margin-bottom:.9rem;text-transform:uppercase;letter-spacing:.5px;}
+
+    /* scenario mini array */
+    .s-arr-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:4px;}
+    .s-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;}
+    .s-label{font-size:.68rem;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);min-width:60px;text-align:right;padding-right:6px;}
+    .sc{
+      width:38px;height:38px;border:1.5px solid var(--border-color);display:flex;align-items:center;justify-content:center;
+      font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.8rem;color:var(--text-secondary);
+      background:rgba(255,255,255,.03);transition:all .3s;border-radius:5px;
     }
+    .sc.sc-default  {background:rgba(255,255,255,.03);border-color:var(--border-color);}
+    .sc.sc-split    {background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+    .sc.sc-left     {background:rgba(6,182,212,.12);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .sc.sc-right    {background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+    .sc.sc-comparing{background:rgba(236,72,153,.15);border-color:var(--primary-pink);color:var(--primary-pink);transform:translateY(-3px);}
+    .sc.sc-placing  {background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);transform:translateY(-3px);}
+    .sc.sc-sorted   {background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(6,182,212,.1));border-color:var(--primary-green);color:var(--primary-green);}
 
-    .navbar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: -2px;
-    }
+    /* log */
+    .log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;min-height:160px;max-height:230px;overflow-y:auto;}
+    .log-panel .log-title{color:var(--primary-cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem;font-weight:700;}
+    .log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:fadeLog .3s ease both;}
+    @keyframes fadeLog{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+    .log-entry.log-split   {color:var(--primary-purple);}
+    .log-entry.log-merge   {color:var(--primary-pink);}
+    .log-entry.log-compare {color:var(--primary-orange);}
+    .log-entry.log-place   {color:var(--primary-green);}
+    .log-entry.log-sorted  {color:var(--primary-green);font-weight:700;}
+    .log-entry.log-info    {color:var(--text-secondary);}
+    .log-entry.log-warn    {color:var(--primary-orange);}
+    .log-entry.log-result  {color:var(--primary-purple);font-weight:700;}
+    .log-entry.log-bottom  {color:var(--primary-cyan);}
 
-    .hamburger-menu {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 30px;
-      height: 25px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
+    /* controls */
+    .ctl-row{display:flex;align-items:center;gap:.75rem;margin-top:1.2rem;flex-wrap:wrap;}
+    .ctl-btn{padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .ctl-btn-green {background:var(--primary-green);color:#fff;}
+    .ctl-btn-green:hover{box-shadow:0 4px 14px rgba(16,185,129,.4);}
+    .ctl-btn-red   {background:var(--primary-red);color:#fff;}
+    .ctl-btn-red:hover  {box-shadow:0 4px 14px rgba(239,68,68,.4);}
+    .ctl-btn-cyan  {background:var(--primary-cyan);color:#000;}
+    .ctl-btn-cyan:hover {box-shadow:0 4px 14px rgba(6,182,212,.4);}
+    .ctl-btn-orange{background:var(--primary-orange);color:#000;}
+    .ctl-btn-orange:hover{box-shadow:0 4px 14px rgba(245,158,11,.4);}
+    .ctl-btn-purple{background:var(--primary-purple);color:#fff;}
+    .ctl-btn-purple:hover{box-shadow:0 4px 14px rgba(139,92,246,.4);}
+    .ctl-btn-ghost {background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+    .ctl-btn-ghost:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .ctl-btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .ctl-btn:not(:disabled):hover{transform:translateY(-1px);}
 
-    .hamburger-line {
-      width: 100%;
-      height: 3px;
-      background: var(--accent-orange);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px var(--shadow-glow-orange);
-    }
+    /* custom input */
+    .custom-wide-input{padding:8px 12px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s;}
+    .custom-wide-input:focus{border-color:var(--primary-cyan);}
+    .custom-input-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
 
-    .hamburger-menu:hover .hamburger-line {
-      background: var(--accent-blue);
-      box-shadow: 0 0 10px var(--shadow-glow-blue);
-    }
+    /* complexity cards */
+    .custom-complexity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.9rem;}
+    .custom-complexity-card{background:rgba(0,0,0,.35);border:1.5px solid rgba(0,255,255,.14);border-radius:10px;padding:.85rem 1rem;transition:all .25s;}
+    .custom-complexity-card.cc-active-best {border-color:#00ff64;box-shadow:0 0 18px rgba(0,255,100,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-avg  {border-color:var(--primary-cyan);box-shadow:0 0 18px rgba(0,255,255,.3);transform:translateY(-2px);}
+    .custom-complexity-card.cc-active-worst{border-color:#ff5555;box-shadow:0 0 18px rgba(255,85,85,.3);transform:translateY(-2px);}
+    .cc-op{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.55rem;font-family:'Space Grotesk',sans-serif;}
+    .cc-time,.cc-space{font-size:.78rem;color:var(--text-secondary);font-family:'Courier New',monospace;line-height:1.7;}
+    .cc-val{font-weight:700;font-size:.82rem;}
+    .cc-green{color:#00ff64;}.cc-orange{color:var(--primary-orange);}.cc-red{color:#ff5555;}
+    .cc-reason{margin-top:.5rem;font-size:.71rem;color:rgba(153,161,179,.7);font-style:italic;line-height:1.45;border-top:1px solid rgba(255,255,255,.05);padding-top:.45rem;}
 
-    .hamburger-menu.active .hamburger-line:nth-child(1) {
-      transform: rotate(45deg) translate(8px, 8px);
-    }
+    .cc-toast{display:none;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.4rem;animation:toastIn .3s ease both;border:1.5px solid;}
+    .cc-toast.show{display:flex;}
+    .cc-toast.toast-best {background:rgba(0,255,100,.08);border-color:#00ff64;color:#00ff64;}
+    .cc-toast.toast-avg  {background:rgba(0,255,255,.08);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .cc-toast.toast-worst{background:rgba(255,85,85,.08);border-color:#ff5555;color:#ff5555;}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
-    .hamburger-menu.active .hamburger-line:nth-child(2) {
-      opacity: 0;
-    }
+    /* ── CODE EDITOR ── */
+    .impl-tabs{display:flex;gap:.8rem;margin:0 0 1rem;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .impl-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .impl-tab.active{background:var(--primary-purple);color:white;border-color:var(--primary-purple);}
+    .lang-tabs{display:flex;gap:.8rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .lang-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+    .editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+    .code-copy{width:50px;height:40px;background:var(--primary-purple);border:1px solid var(--border-color);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-size:14px;}
+    .run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;}
+    .run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+    .output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:160px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:14px;line-height:1.6;}
+    .output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+    .input-prompt{background:var(--card-bg);padding:15px;border-radius:8px;margin-top:10px;border:1px solid var(--border-color);}
+    .input-prompt input{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:8px 12px;margin-right:10px;font-family:'JetBrains Mono',monospace;}
+    .input-prompt button{background:var(--primary-cyan);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;}
+    .CodeMirror{height:430px!important;font-size:14px;border-radius:0 0 12px 12px;}
 
-    .hamburger-menu.active .hamburger-line:nth-child(3) {
-      transform: rotate(-45deg) translate(8px, -8px);
-    }
+    /* ── LEVELS ── */
+    .level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+    .level-wrapper button{position:relative;z-index:20!important;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+    #l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan)!important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+    #l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green)!important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+    .slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+    #slider1{left:22%;}#slider2{left:58%;}
+    .slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+    .level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+    .level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+    #startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;box-shadow:none;border:none;cursor:pointer;font-weight:700;}
+    #startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+    #cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;border:none;cursor:pointer;font-weight:700;}
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: -350px;
-      width: 350px;
-      height: 100%;
-      background: var(--card-bg);
-      border-left: 2px solid var(--accent-blue);
-      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
-      z-index: 2500;
-      transition: right 0.4s ease;
-      overflow-y: auto;
-    }
-
-    .sidebar.active {
-      right: 0;
-    }
-
-    .sidebar-header {
-      padding: 30px 25px;
-      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
-      border-bottom: 2px solid var(--accent-blue);
-    }
-
-    .sidebar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1px;
-    }
-
-    .sidebar-menu {
-      padding: 20px 0;
-    }
-  .menu-category {
-      padding: 15px 25px 10px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      color: var(--accent-orange);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
-
-    .menu-item {
-      padding: 15px 25px;
-      color: var(--text-light);
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .menu-item:hover {
-      background: rgba(0, 255, 255, 0.1);
-      border-left-color: var(--accent-blue);
-      color: var(--accent-blue);
-      padding-left: 30px;
-    }
-
-    .menu-item.active {
-      background: rgba(0, 255, 255, 0.15);
-      border-left-color: var(--accent-orange);
-      color: var(--accent-orange);
-    }
-
-    .menu-item i {
-      font-size: 16px;
-      width: 20px;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 2000;
-      backdrop-filter: blur(3px);
-    }
-
-    .sidebar-overlay.active {
-      display: block;
-    }
-
-    /* ========================================
-       MAIN CONTENT
-       ======================================== */
-    .container { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
-
-    .pseudo-code-container {
-      background: var(--card-bg);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      max-height: 600px;
-      overflow-y: auto;
-      position: sticky;
-      top: 90px;
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none;
-    }
-
-    .pseudo-code-container h5 { color: var(--accent-orange); font-weight: 700; margin-bottom: 20px; text-align: center; font-family: 'Orbitron'; }
-
-    .pseudo-step { 
-      background: rgba(0, 255, 255, 0.05); 
-      padding: 12px 15px; 
-      margin: 10px 0; 
-      border-radius: 8px; 
-      color: var(--text-light); 
-      border-left: 3px solid transparent; 
-      transition: 0.3s; 
-      font-family: 'Courier New'; 
-      font-size: 13px; 
-      line-height: 1.6; 
-    }
-
-    .pseudo-step.active { 
-      background: linear-gradient(90deg, var(--accent-orange), #ff6b00); 
-      color: #000; 
-      border-left-color: var(--accent-blue); 
-      transform: translateX(10px); 
-      box-shadow: 0 4px 15px var(--shadow-glow-orange); 
-      font-weight: 600; 
-    }
-
-    /* ========================================
-       VISUALIZER
-       ======================================== */
-    .visualization-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      overflow: hidden;
-    }
-
-    .card-header { background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%); padding: 20px; border-bottom: 2px solid var(--accent-blue); }
-    .card-header h5 { font-family: 'Orbitron'; font-size: 20px; color: var(--text-white); margin: 0; }
-
-    .card-body { 
-      background: linear-gradient(135deg, #1e2a3f, #2a3f5f); 
-      padding: 30px; 
-      min-height: 500px; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-    }
-
-    .bars-container {
-      width: 100%;
-      height: 400px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 2px;
-      padding: 20px;
-      border: 2px solid var(--accent-blue);
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-   .bar {
-      flex: 1;
-      background: linear-gradient(to top, #2C5282, #4299E1);
-      border-radius: 4px 4px 0 0;
-      position: relative;
-      transition: height 0.3s ease;
-      
-    }
-
-    .bar.comparing { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
-    .bar.merging { background: linear-gradient(180deg, #ef4444, #dc2626); }
-    .bar.sorted { background: linear-gradient(180deg, #22c55e, #16a34a); }
-
-    .bar-value {
-      position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-      font-size: 10px; color: var(--text-light); font-family: 'Orbitron';
-    }
-
-    #msg-show { margin-top: 20px; padding: 15px; border-radius: 10px; min-height: 55px; width: 100%; text-align: center; display: none; }
-    .alert-info { background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; color: #3b82f6; }
-    .alert-success { background: rgba(74, 222, 128, 0.2); border: 2px solid #22c55e; color: #22c55e; }
-
-    .card-footer { background: var(--navbar-bg-main); padding: 20px; border-top: 2px solid var(--accent-blue); }
-    .form-control { background: var(--bg-dark); border: 2px solid var(--accent-blue); color: #fff; border-radius: 8px; padding: 10px; width: 100%; }
-
-    .btn { border: none; font-weight: 700; padding: 10px 20px; border-radius: 8px; transition: 0.3s; cursor: pointer; font-family: 'Inter'; }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #00d4d4); color: #000; }
-    .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: #000; }
-    .btn-warning { background: linear-gradient(135deg, var(--accent-orange), #ff6b00); color: #000; }
-
-    /* ========================================
-       IMPLEMENTATION SECTION
-       ======================================== */
-    .code-section {
-      background: var(--card-bg); margin: 30px 0; padding: 30px; border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark); border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-    .code-section h3 { color: var(--accent-orange); margin-bottom: 20px; font-family: 'Orbitron'; }
-    .menu-btns { display: flex; gap: 10px; margin-bottom: 20px; }
-    .menu-btns button { background: rgba(0, 255, 255, 0.1); border: 2px solid var(--accent-blue); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-    .menu-btns button.active { background: var(--accent-blue); color: #000; }
-
-    .code-container { display: none; }
-    .code-container.active { display: block; }
-    .code-container pre { background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 12px; border-left: 4px solid var(--accent-orange); overflow-x: auto; color: #fff; font-size: 14px; line-height: 1.7; }
-
-    .output-container { background: rgba(0, 0, 0, 0.4); color: #10b981; padding: 20px; border-radius: 12px; margin-top: 15px; min-height: 100px; border: 2px solid rgba(0, 255, 255, 0.2); font-family: 'Courier New'; }
-    .output-container h6 { color: var(--accent-orange); margin-bottom: 10px; font-family: 'Orbitron'; }
-    #interactive-input-area { display: none; gap: 10px; align-items: center; margin-top: 10px; }
-    #terminal-input { background: transparent; border: none; border-bottom: 1px solid #444; color: white; outline: none; flex-grow: 1; }
-
-    .hljs-keyword { color: #c084fc; }
-    .hljs-comment { color: #6b7280; font-style: italic; }
-
-    .run-code-btn { background: linear-gradient(90deg, #10b981, #059669); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 15px; font-family: 'Orbitron'; transition: 0.3s; }
-    .run-code-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-
-          .level-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 100px;
-  padding: 20px;
-}
-
-.level-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-}
-
-button {
-  background: var(--shadow-glow-blue);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.slider {
-  width: 100px;
-  height: 5px;
-  background: #ccc;
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  height: 100%;
-  width: 0;
-  background: #FF8C00;
-  transition: width 1s ease;
-}
-
-.active::before {
-  width: 100%;
-}
-
-/* Modal */
-.level-modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.level-modal-content {
-  background: var(--card-bg);
-    border: 2px solid #00aaff;
-  padding: 20px 30px;
-  border-radius: 15px;
-  text-align: center;
-  width: 300px;
-}
-
-.level-modal-buttons {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 10px;
-}
-
-.level-modal-buttons button {
-  background: #FF8C00;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-
-    @media (max-width: 768px) {
-      .main-grid { grid-template-columns: 1fr !important; }
-      .pseudo-code-container { position: relative; top: 0; }
+    @media(max-width:900px){
+      .visualizer-grid{grid-template-columns:1fr;}
+      .pseudo-code-container{position:relative;top:0;max-height:400px;}
+      .implementation-selector{flex-direction:column;}
+      .impl-option{min-width:100%;}
+      .custom-complexity-grid{grid-template-columns:1fr;}
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
 
-<nav class="navbar">
-  <div class="navbar-left">
-    <div class="navbar-title">DSA VISUALIZER</div>
-    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+       <img src="dsa.gif" alt="Logo" class="logo-icon">
+      <span>DSA Visualizer</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="#editor">Code Editor</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+    </button>
   </div>
-  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-  </button>
 </nav>
 
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">Menu</div>
-    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="menu-category">🔍 Searching Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
-      <i class="fas fa-search"></i>
-      <span>Linear Search</span>
-    </div>
-    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
-      <i class="fas fa-chart-line"></i>
-      <span>Binary Search</span>
-    </div>
-    <div class="menu-category">📊 Data Structures</div>
-    <div class="menu-item" onclick="selectAlgorithm('stack')">
-      <i class="fas fa-layer-group"></i>
-      <span>Stack</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('queue')">
-      <i class="fas fa-stream"></i>
-      <span>Queue</span>
-    </div>
-    <div class="menu-category">🔄 Sorting Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
-      <i class="fas fa-code-branch"></i>
-      <span>Merge Sort</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
-      <i class="fas fa-circle"></i>
-      <span>Bubble Sort</span>
-    </div>
-  </div>
-</div>
-
 <div class="container">
-  <div class="main-grid" style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start; margin-top: 30px;">
-    
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="merge_sort_basics.html">Merge Sort</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Merge Sort — Interactive Visualizer</h1>
+    <p class="content-text">Watch Merge Sort <strong style="color:var(--primary-purple)">divide</strong> the array recursively down to single elements, then <strong style="color:var(--primary-pink)">merge</strong> them back in sorted order. Guaranteed <strong style="color:var(--primary-green)">O(N log N)</strong> in all cases.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="topdown" onclick="switchImplementation('topdown')">
+      <div class="impl-option-icon">🔽</div>
+      <div class="impl-option-title">Top-Down (Recursive)</div>
+      <div class="impl-option-desc">Classic divide &amp; conquer, O(N log N)</div>
+    </div>
+    <div class="impl-option" data-type="bottomup" onclick="switchImplementation('bottomup')">
+      <div class="impl-option-icon">🔼</div>
+      <div class="impl-option-title">Bottom-Up (Iterative)</div>
+      <div class="impl-option-desc">No recursion — merge widths 1→2→4→…</div>
+    </div>
+  </div>
+
+  <!-- ── VISUALIZER GRID ── -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code -->
     <div class="pseudo-code-container">
       <h5>📋 PSEUDO CODE</h5>
-      <div class="pseudo-step" data-step="divide">
-        <strong>DIVIDE:</strong><br>
-        Find middle index 'm'<br>
-        m = (l + r) / 2
+
+      <div id="pseudo-topdown">
+        <div class="pseudo-step" data-step="td-base">
+          <strong>BASE CASE:</strong> Single element<br>
+          <span>if left &gt;= right: return</span>
+        </div>
+        <div class="pseudo-step" data-step="td-mid">
+          <strong>DIVIDE:</strong> Find midpoint<br>
+          <span>mid = left + (right−left)/2</span>
+        </div>
+        <div class="pseudo-step" data-step="td-recurse-l">
+          <strong>RECURSE LEFT:</strong> Sort left half<br>
+          <span>mergeSort(arr, left, mid)</span>
+        </div>
+        <div class="pseudo-step" data-step="td-recurse-r">
+          <strong>RECURSE RIGHT:</strong> Sort right half<br>
+          <span>mergeSort(arr, mid+1, right)</span>
+        </div>
+        <div class="pseudo-step" data-step="td-merge">
+          <strong>MERGE:</strong> Combine both halves<br>
+          <span>merge(arr, left, mid, right)</span>
+        </div>
+        <div class="pseudo-step" data-step="td-compare">
+          <strong>COMPARE:</strong> Pick smaller element<br>
+          <span>if L[i] &le; R[j]: temp[k]=L[i++]</span>
+        </div>
+        <div class="pseudo-step" data-step="td-copy">
+          <strong>COPY BACK:</strong> Write to original<br>
+          <span>arr[left..right] = temp[]</span>
+        </div>
+        <div class="pseudo-step" data-step="td-done">
+          <strong>SORTED:</strong> Array fully sorted ✓<br>
+          <span>all recursive calls returned</span>
+        </div>
       </div>
-      <div class="pseudo-step" data-step="conquer">
-        <strong>CONQUER:</strong><br>
-        Recursive call for left half:<br>
-        mergeSort(arr, l, m)<br>
-        Recursive call for right half:<br>
-        mergeSort(arr, m+1, r)
+
+      <div id="pseudo-bottomup" style="display:none;">
+        <div class="pseudo-step" data-step="bu-width">
+          <strong>WIDTH LOOP:</strong> Start size = 1<br>
+          <span>for width = 1; width &lt; n; width *= 2</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-left">
+          <strong>LEFT POINTER:</strong> Segment start<br>
+          <span>for left = 0; left &lt; n; left += 2*width</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-mid">
+          <strong>MID &amp; RIGHT:</strong> Compute bounds<br>
+          <span>mid = min(left+width−1, n−1)<br>right = min(left+2*width−1, n−1)</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-merge">
+          <strong>MERGE:</strong> Merge [left..mid] &amp; [mid+1..right]<br>
+          <span>merge(arr, left, mid, right)</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-compare">
+          <strong>COMPARE:</strong> Pick smaller element<br>
+          <span>if L[i] &le; R[j]: temp[k]=L[i++]</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-copy">
+          <strong>COPY BACK:</strong> Write to original<br>
+          <span>arr[left..right] = temp[]</span>
+        </div>
+        <div class="pseudo-step" data-step="bu-done">
+          <strong>SORTED:</strong> All widths processed ✓<br>
+          <span>width doubled until &gt;= n</span>
+        </div>
       </div>
-      <div class="pseudo-step" data-step="merge">
-        <strong>MERGE:</strong><br>
-        Compare elements from two halves<br>
-        Copy the smaller element into main array<br>
-        Continue until sub-arrays merged
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Merge Sort Visualizer — Top-Down (Recursive)</h5>
+        </div>
+        <div class="card-body">
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-purple" id="badge-phase">Phase: —</div>
+              <div class="stat-badge sb-orange" id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-pink"   id="badge-merges">Merges: 0</div>
+              <div class="stat-badge sb-green"  id="badge-copies">Copies: 0</div>
+            </div>
+            <!-- bracket row -->
+            <div class="bracket-row" id="bracketRow" style="width:100%;"></div>
+            <!-- main array strip -->
+            <div class="arr-strip" id="arrStrip"></div>
+            <div class="idx-strip" id="idxStrip"></div>
+            <!-- temp merge buffer -->
+            <div class="temp-row" id="tempRow" style="display:none;">
+              <div class="temp-label">TEMP BUFFER ←</div>
+              <div class="temp-strip" id="tempStrip"></div>
+            </div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:rgba(139,92,246,.8)"></div>Dividing</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-cyan)"></div>Left half</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-orange)"></div>Right half</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-pink)"></div>Comparing</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-green)"></div>Placing / Sorted</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g. 38, 27, 43, 3, 9, 82, 10">
+            <button class="btn btn-warning" onclick="startSort()">Sort</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSort()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSort()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
       </div>
-      <div class="pseudo-step" data-step="complexity">
-        <strong>TIME COMPLEXITY:</strong><br>
-        Best/Avg/Worst: O(n log n)<br>
-        <strong>SPACE:</strong> O(n)
-      </div>
+    </div>
+
+  </div><!-- /visualizer-grid -->
+
+  <!-- ─── SCENARIOS ─── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
     </div>
 
     <div>
-      <div class="visualization-card">
-        <div class="card-header"><h5>Merge Sort Visualizer (Divide & Conquer)</h5></div>
-        <div class="card-body">
-          <div class="bars-container" id="bars-container"></div>
-          <div id="msg-show"></div>
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — Already Sorted</h4>
+          <p>Even when already sorted, Merge Sort always does <strong style="color:var(--primary-orange)">O(N log N)</strong> comparisons — it still divides and merges every subarray. No early-exit like Bubble Sort. But comparisons are minimized: each merge only needs <strong style="color:var(--primary-green)">N/2 comparisons</strong> since left elements are always ≤ right.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [3, 7, 12, 18, 25, 31] — sorted, fewest comparisons per merge</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-best"></div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="card-footer">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div><label class="form-label">Speed</label><input type="range" class="form-control" id="speed-slider" min="1" max="100" value="50"></div>
-            <div><label class="form-label">Array Size</label><input type="range" class="form-control" id="size-slider" min="5" max="40" value="15"></div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — Random Order</h4>
+          <p>Random array — a typical number of comparisons and copies occur during each merge. Watch the divide phase break the array into halves, and the merge phase reconstruct it in sorted order.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [38, 27, 43, 3, 9, 82, 10] — random order</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-avg"></div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
           </div>
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
-            <input type="text" id="array-input" class="form-control" placeholder="e.g., 38,27,43,3,9,82,10">
-            <button class="btn btn-warning" onclick="generateRandomArray()">Random Array</button>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — Reverse Sorted</h4>
+          <p>Reverse-sorted array forces the <strong style="color:var(--primary-red)">maximum number of comparisons</strong> in each merge — every element from left and right halves interleaves. Still <strong style="color:var(--primary-orange)">O(N log N)</strong>, but with the highest constant.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [90, 70, 50, 30, 20, 10] — reverse sorted, max comparisons</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-worst"></div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="createArray()">Create Array</button>
-            <button class="btn btn-success" onclick="startSort()" id="sort-btn">Start Sort</button>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own array and watch Merge Sort work through every divide and merge. The complexity cards note how Merge Sort is unique — <strong style="color:var(--primary-cyan)">always O(N log N)</strong> regardless of input order.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-green">O(N log N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-orange">O(N)</span></div>
+              <div class="cc-reason">Sorted input — minimum comparisons per merge (N/2), still full divide+merge tree</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-green">O(N log N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-orange">O(N)</span></div>
+              <div class="cc-reason">Random input — typical interleaving during merge, always log N levels deep</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-green">O(N log N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-orange">O(N)</span></div>
+              <div class="cc-reason">Reverse sorted — max comparisons per merge (N−1), elements fully interleave</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 15, 3, 9, 8, 27, 5" style="width:240px;">
+            <button class="ctl-btn ctl-btn-green"  onclick="customLoad()">▶ Load &amp; Sort</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"    id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-custom"></div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="code-section">
-    <h3>💻 IMPLEMENTATIONS</h3>
-    <div class="menu-btns">
-      <button id="cpp-btn" class="active" onclick="changeCode('cpp')"><img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" alt="C++"></button>
-      <button id="python-btn" onclick="changeCode('python')"><img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" alt="Python"></button>
+  <!-- ─── CODE EDITOR ─── -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
     </div>
 
-    <div class="code-container active" id="cpp-content">
-      <pre><code><span class="hljs-comment">// Complete Merge Sort Implementation in C++</span>
-<span class="hljs-keyword">#include</span> &lt;iostream&gt;
-<span class="hljs-keyword">using namespace</span> std;
-
-<span class="hljs-comment">// Merges two subarrays of arr[].</span>
-<span class="hljs-comment">// First subarray is arr[l..m], Second subarray is arr[m+1..r]</span>
-<span class="hljs-keyword">void</span> <span class="hljs-function">merge</span>(<span class="hljs-keyword">int</span> arr[], <span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> m, <span class="hljs-keyword">int</span> r) {
-    <span class="hljs-keyword">int</span> n1 = m - l + <span class="hljs-number">1</span>;
-    <span class="hljs-keyword">int</span> n2 = r - m;
-    <span class="hljs-keyword">int</span> L[n1], R[n2]; <span class="hljs-comment">// Temporary arrays</span>
-
-    <span class="hljs-comment">// Copy data to temp arrays L[] and R[]</span>
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i < n1; i++) L[i] = arr[l + i];
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j < n2; j++) R[j] = arr[m + <span class="hljs-number">1</span> + j];
-
-    <span class="hljs-comment">// Merge the temp arrays back into arr[l..r]</span>
-    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>, k = l;
-    <span class="hljs-keyword">while</span> (i < n1 && j < n2) {
-        <span class="hljs-keyword">if</span> (L[i] <= R[j]) arr[k++] = L[i++];
-        <span class="hljs-keyword">else</span> arr[k++] = R[j++];
-    }
-    <span class="hljs-comment">// Copy remaining elements of L[], if any</span>
-    <span class="hljs-keyword">while</span> (i < n1) arr[k++] = L[i++];
-    <span class="hljs-comment">// Copy remaining elements of R[], if any</span>
-    <span class="hljs-keyword">while</span> (j < n2) arr[k++] = R[j++];
-}
-
-<span class="hljs-keyword">void</span> <span class="hljs-function">mergeSort</span>(<span class="hljs-keyword">int</span> arr[], <span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r) {
-    <span class="hljs-keyword">if</span> (l >= r) <span class="hljs-keyword">return</span>; <span class="hljs-comment">// Base case</span>
-    <span class="hljs-keyword">int</span> m = l + (r - l) / <span class="hljs-number">2</span>;
-    mergeSort(arr, l, m);     <span class="hljs-comment">// Sort left half</span>
-    mergeSort(arr, m + <span class="hljs-number">1</span>, r); <span class="hljs-comment">// Sort right half</span>
-    merge(arr, l, m, r);      <span class="hljs-comment">// Merge sorted halves</span>
-}</code></pre>
-      <button class="run-code-btn" onclick="runInteractive('cpp')">▶ Run Interactive Code</button>
+    <div class="impl-tabs">
+      <button class="impl-tab active" onclick="switchEditorImpl('topdown', this)">🔽 Top-Down (Recursive)</button>
+      <button class="impl-tab"        onclick="switchEditorImpl('bottomup', this)">🔼 Bottom-Up (Iterative)</button>
     </div>
 
-    <div class="code-container" id="python-content">
-      <pre><code><span class="hljs-comment"># Complete Merge Sort Implementation in Python</span>
-
-<span class="hljs-keyword">def</span> <span class="hljs-function">merge_sort</span>(arr):
-    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(arr) > <span class="hljs-number">1</span>:
-        <span class="hljs-comment"># Finding the mid of the array</span>
-        mid = <span class="hljs-built_in">len</span>(arr) // <span class="hljs-number">2</span>
-        <span class="hljs-comment"># Dividing the array elements into 2 halves</span>
-        L = arr[:mid]
-        R = arr[mid:]
-
-        <span class="hljs-comment"># Recursive calls for both halves</span>
-        merge_sort(L)
-        merge_sort(R)
-
-        i = j = k = <span class="hljs-number">0</span>
-        <span class="hljs-comment"># Copy data to temp arrays L[] and R[]</span>
-        <span class="hljs-keyword">while</span> i < <span class="hljs-built_in">len</span>(L) <span class="hljs-keyword">and</span> j < <span class="hljs-built_in">len</span>(R):
-            <span class="hljs-keyword">if</span> L[i] < R[j]:
-                arr[k] = L[i]; i += <span class="hljs-number">1</span>
-            <span class="hljs-keyword">else</span>:
-                arr[k] = R[j]; j += <span class="hljs-number">1</span>
-            k += <span class="hljs-number">1</span>
-
-        <span class="hljs-comment"># Checking if any element was left</span>
-        <span class="hljs-keyword">while</span> i < <span class="hljs-built_in">len</span>(L):
-            arr[k] = L[i]; i += <span class="hljs-number">1</span>; k += <span class="hljs-number">1</span>
-        <span class="hljs-keyword">while</span> j < <span class="hljs-built_in">len</span>(R):
-            arr[k] = R[j]; j += <span class="hljs-number">1</span>; k += <span class="hljs-number">1</span></code></pre>
-      <button class="run-code-btn" onclick="runInteractive('python')">▶ Run Interactive Code</button>
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
     </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Top-Down (Recursive)</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
 
     <div class="output-container">
-      <h6>📤 Interactive Terminal:</h6>
-      <div id="code-output">Initialize the environment by clicking "Run Interactive Code"...</div>
-      <div id="interactive-input-area">
-        <span style="color: #10b981;">&gt;</span>
-        <input type="text" id="terminal-input" placeholder="Type array (e.g. 10,5,8) or 'sort'...">
-        <button onclick="processTerminal()" style="padding:5px 15px; border-radius:4px; border:none; background:#10b981; color:white;">Send</button>
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
       </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Merge Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
     </div>
   </div>
 </div>
 
-       <div class="level-container">
-        <div class="level-wrapper">
-            <button id="l1">Level 1</button>
-            <div class="slider" id="slider1"></div>
-            <button id="l2">Level 2</button>
-            <div class="slider" id="slider2"></div>
-            <button id="l3">Level 3</button>
-        </div>
-    </div>
-
-    <!-- Modal for Level 2 Quiz -->
-    <div id="quizModal" class="level-modal">
-        <div class="level-modal-content">
-            <h3>Level 3 Quiz</h3>
-            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
-            
-            <div class="level-modal-buttons">
-                <button id="startQuiz">Start Quiz</button>
-                <button id="cancelBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
 <script>
-let array = [];
-let speed = 50;
-let isSorting = false;
-let inputState = 'initial';
-let virtualArray = [];
+/* ══════════════════════════════════════════════════════════════════════
+   CODE TEMPLATES — Top-Down & Bottom-Up × 5 languages
+══════════════════════════════════════════════════════════════════════ */
+const codeTemplates = {
+  topdown: {
+    cpp: `#include <iostream>
+using namespace std;
 
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-function getDelay() { return 1000 / speed; }
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
 
-function highlightStep(step) {
+    // Temporary sub-arrays
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    // Merge: compare and pick smaller element
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j])
+            arr[k++] = L[i++];
+        else
+            arr[k++] = R[j++];
+    }
+
+    // Copy remaining elements
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(int arr[], int left, int right) {
+    if (left >= right) return;   // base case
+
+    int mid = left + (right - left) / 2;
+
+    mergeSort(arr, left, mid);       // sort left half
+    mergeSort(arr, mid + 1, right);  // sort right half
+    merge(arr, left, mid, right);    // merge sorted halves
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+
+    mergeSort(arr, 0, n - 1);
+
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python: `def merge(arr, left, mid, right):
+    L = arr[left : mid + 1]      # left sub-array copy
+    R = arr[mid + 1 : right + 1] # right sub-array copy
+
+    i = j = 0
+    k = left
+
+    # Compare and place smaller element
+    while i < len(L) and j < len(R):
+        if L[i] <= R[j]:
+            arr[k] = L[i]; i += 1
+        else:
+            arr[k] = R[j]; j += 1
+        k += 1
+
+    # Copy remaining elements
+    while i < len(L): arr[k] = L[i]; i += 1; k += 1
+    while j < len(R): arr[k] = R[j]; j += 1; k += 1
+
+
+def merge_sort(arr, left=None, right=None):
+    if left is None: left  = 0
+    if right is None: right = len(arr) - 1
+
+    if left >= right:
+        return             # base case: 1 element
+
+    mid = left + (right - left) // 2
+    merge_sort(arr, left, mid)        # sort left half
+    merge_sort(arr, mid + 1, right)   # sort right half
+    merge(arr, left, mid, right)      # merge sorted halves
+
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+print(f"\\nBefore: {arr}")
+merge_sort(arr)
+print(f"After:  {arr}")`,
+    java: `import java.util.Arrays;
+import java.util.Scanner;
+
+public class MergeSort {
+
+    static void merge(int[] arr, int left, int mid, int right) {
+        int[] L = Arrays.copyOfRange(arr, left, mid + 1);
+        int[] R = Arrays.copyOfRange(arr, mid + 1, right + 1);
+
+        int i = 0, j = 0, k = left;
+        while (i < L.length && j < R.length)
+            arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+        while (i < L.length) arr[k++] = L[i++];
+        while (j < R.length) arr[k++] = R[j++];
+    }
+
+    static void mergeSort(int[] arr, int left, int right) {
+        if (left >= right) return;
+
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        mergeSort(arr, 0, n - 1);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c: `#include <stdio.h>
+#include <string.h>
+
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1, n2 = right - mid;
+    int L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(int arr[], int left, int right) {
+    if (left >= right) return;
+
+    int mid = left + (right - left) / 2;
+    mergeSort(arr, left, mid);
+    mergeSort(arr, mid + 1, right);
+    merge(arr, left, mid, right);
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+
+    mergeSort(arr, 0, n - 1);
+
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\n");
+    return 0;
+}`,
+    javascript: `function merge(arr, left, mid, right) {
+    const L = arr.slice(left, mid + 1);
+    const R = arr.slice(mid + 1, right + 1);
+
+    let i = 0, j = 0, k = left;
+
+    while (i < L.length && j < R.length) {
+        if (L[i] <= R[j]) arr[k++] = L[i++];
+        else               arr[k++] = R[j++];
+    }
+    while (i < L.length) arr[k++] = L[i++];
+    while (j < R.length) arr[k++] = R[j++];
+}
+
+function mergeSort(arr, left = 0, right = arr.length - 1) {
+    if (left >= right) return;   // base case
+
+    const mid = left + Math.floor((right - left) / 2);
+    mergeSort(arr, left, mid);        // sort left
+    mergeSort(arr, mid + 1, right);   // sort right
+    merge(arr, left, mid, right);     // merge
+}
+
+// --- Demo ---
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log("Before:", arr.join(", "));
+mergeSort(arr);
+console.log("After: ", arr.join(", "));`
+  },
+
+  bottomup: {
+    cpp: `#include <iostream>
+#include <algorithm>
+using namespace std;
+
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1, n2 = right - mid;
+    int L[n1], R[n2];
+
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSortBottomUp(int arr[], int n) {
+    // Start with sub-arrays of size 1 and double each pass
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid   = min(left + width - 1, n - 1);
+            int right = min(left + 2 * width - 1, n - 1);
+
+            if (mid < right)
+                merge(arr, left, mid, right);
+        }
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+
+    mergeSortBottomUp(arr, n);
+
+    cout << "\\nAfter:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python: `def merge(arr, left, mid, right):
+    L = arr[left : mid + 1]
+    R = arr[mid + 1 : right + 1]
+    i = j = 0; k = left
+
+    while i < len(L) and j < len(R):
+        if L[i] <= R[j]: arr[k] = L[i]; i += 1
+        else:             arr[k] = R[j]; j += 1
+        k += 1
+    while i < len(L): arr[k] = L[i]; i += 1; k += 1
+    while j < len(R): arr[k] = R[j]; j += 1; k += 1
+
+
+def merge_sort_bottom_up(arr):
+    n = len(arr)
+    width = 1          # start with sub-arrays of size 1
+
+    while width < n:
+        left = 0
+        while left < n:
+            mid   = min(left + width - 1, n - 1)
+            right = min(left + 2 * width - 1, n - 1)
+
+            if mid < right:
+                merge(arr, left, mid, right)
+            left += 2 * width
+        width *= 2     # double the merge width
+
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+print(f"\\nBefore: {arr}")
+merge_sort_bottom_up(arr)
+print(f"After:  {arr}")`,
+    java: `import java.util.Arrays;
+import java.util.Scanner;
+
+public class MergeSortBottomUp {
+
+    static void merge(int[] arr, int left, int mid, int right) {
+        int[] L = Arrays.copyOfRange(arr, left, mid + 1);
+        int[] R = Arrays.copyOfRange(arr, mid + 1, right + 1);
+        int i = 0, j = 0, k = left;
+        while (i < L.length && j < R.length)
+            arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+        while (i < L.length) arr[k++] = L[i++];
+        while (j < R.length) arr[k++] = R[j++];
+    }
+
+    static void mergeSortBottomUp(int[] arr) {
+        int n = arr.length;
+        for (int width = 1; width < n; width *= 2) {
+            for (int left = 0; left < n; left += 2 * width) {
+                int mid   = Math.min(left + width - 1, n - 1);
+                int right = Math.min(left + 2 * width - 1, n - 1);
+                if (mid < right)
+                    merge(arr, left, mid, right);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        mergeSortBottomUp(arr);
+        System.out.println("After:  " + Arrays.toString(arr));
+    }
+}`,
+    c: `#include <stdio.h>
+
+#define MIN(a,b) ((a)<(b)?(a):(b))
+
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1, n2 = right - mid;
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSortBottomUp(int arr[], int n) {
+    for (int width = 1; width < n; width *= 2) {
+        for (int left = 0; left < n; left += 2 * width) {
+            int mid   = MIN(left + width - 1, n - 1);
+            int right = MIN(left + 2 * width - 1, n - 1);
+            if (mid < right)
+                merge(arr, left, mid, right);
+        }
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i); scanf("%d", &arr[i]);
+    }
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    mergeSortBottomUp(arr, n);
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\n");
+    return 0;
+}`,
+    javascript: `function merge(arr, left, mid, right) {
+    const L = arr.slice(left, mid + 1);
+    const R = arr.slice(mid + 1, right + 1);
+    let i = 0, j = 0, k = left;
+
+    while (i < L.length && j < R.length)
+        arr[k++] = L[i] <= R[j] ? L[i++] : R[j++];
+    while (i < L.length) arr[k++] = L[i++];
+    while (j < R.length) arr[k++] = R[j++];
+}
+
+function mergeSortBottomUp(arr) {
+    const n = arr.length;
+
+    // Start with width 1 and double each pass
+    for (let width = 1; width < n; width *= 2) {
+        for (let left = 0; left < n; left += 2 * width) {
+            const mid   = Math.min(left + width - 1, n - 1);
+            const right = Math.min(left + 2 * width - 1, n - 1);
+            if (mid < right)
+                merge(arr, left, mid, right);
+        }
+    }
+}
+
+// --- Demo ---
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log("Before:", arr.join(", "));
+mergeSortBottomUp(arr);
+console.log("After: ", arr.join(", "));`
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════════════
+   GLOBALS
+══════════════════════════════════════════════════════════════════════ */
+let codeEditor;
+let currentLang = 'cpp';
+let editorImpl  = 'topdown';
+let currentImpl = 'topdown';
+
+// Main visualizer
+let mainArr      = [];
+let mainSteps    = [];
+let mainStepIdx  = 0;
+let mainDone     = false;
+let mainTimer    = null;
+let mainComps    = 0;
+let mainMerges   = 0;
+let mainCopies   = 0;
+
+let inputResolver = null;
+function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+/* ══════════════════════════════════════════════════════════════════════
+   STEP PRE-COMPUTATION
+   We pre-compute every meaningful visual event so Step/Auto can
+   drive the same sequence deterministically.
+
+   Step types:
+     split      — divide a range in two
+     recurse    — going deeper (label only)
+     merge-start— about to merge two ranges
+     compare    — picking smaller of two elements
+     place      — writing element into temp
+     copy-back  — writing temp[i] back to arr
+     done       — fully sorted
+   + bottomup variants:
+     bu-width   — starting a new width pass
+     bu-segment — about to merge a segment
+══════════════════════════════════════════════════════════════════════ */
+function computeSteps(input) {
+  const arr   = [...input];
+  const n     = arr.length;
+  const steps = [];
+
+  if (currentImpl === 'topdown') {
+    // --- Top-Down recursive simulation ---
+    function sim(a, left, right, depth) {
+      if (left >= right) return;
+      const mid = left + Math.floor((right - left) / 2);
+
+      steps.push({
+        type: 'split', left, mid, right, depth, arr: [...a],
+        caption: `DIVIDE: split [${left}…${right}] → left [${left}…${mid}] | right [${mid+1}…${right}]`,
+        pseudo: 'td-mid'
+      });
+
+      steps.push({
+        type: 'recurse-l', left, mid, right, depth, arr: [...a],
+        caption: `RECURSE LEFT: sorting sub-array [${left}…${mid}]`,
+        pseudo: 'td-recurse-l'
+      });
+      sim(a, left, mid, depth + 1);
+
+      steps.push({
+        type: 'recurse-r', left, mid, right, depth, arr: [...a],
+        caption: `RECURSE RIGHT: sorting sub-array [${mid+1}…${right}]`,
+        pseudo: 'td-recurse-r'
+      });
+      sim(a, mid + 1, right, depth + 1);
+
+      // merge simulation
+      steps.push({
+        type: 'merge-start', left, mid, right, depth, arr: [...a],
+        caption: `MERGE: combining [${left}…${mid}] and [${mid+1}…${right}] into sorted order`,
+        pseudo: 'td-merge'
+      });
+
+      const L = a.slice(left, mid + 1);
+      const R = a.slice(mid + 1, right + 1);
+      const temp = new Array(right - left + 1).fill(null);
+      let i = 0, j = 0, k = 0;
+
+      while (i < L.length && j < R.length) {
+        steps.push({
+          type: 'compare', left, mid, right, depth, arr: [...a],
+          ci: left + i, cj: mid + 1 + j,
+          lVal: L[i], rVal: R[j],
+          caption: `COMPARE: L[${left+i}]=${L[i]} vs R[${mid+1+j}]=${R[j]} → pick ${L[i]<=R[j]?L[i]:R[j]}`,
+          pseudo: 'td-compare', temp: [...temp]
+        });
+        if (L[i] <= R[j]) { temp[k] = L[i]; a[left + k] = L[i]; i++; }
+        else               { temp[k] = R[j]; a[left + k] = R[j]; j++; }
+        k++;
+        steps.push({
+          type: 'place', left, mid, right, depth, arr: [...a],
+          placeIdx: left + k - 1, placeVal: temp[k-1],
+          caption: `PLACE: arr[${left+k-1}] = ${temp[k-1]}`,
+          pseudo: 'td-copy', temp: [...temp]
+        });
+      }
+      while (i < L.length) {
+        temp[k] = L[i]; a[left + k] = L[i]; i++; k++;
+        steps.push({
+          type: 'place', left, mid, right, depth, arr: [...a],
+          placeIdx: left + k - 1, placeVal: temp[k-1],
+          caption: `COPY REMAINING LEFT: arr[${left+k-1}] = ${temp[k-1]}`,
+          pseudo: 'td-copy', temp: [...temp]
+        });
+      }
+      while (j < R.length) {
+        temp[k] = R[j]; a[left + k] = R[j]; j++; k++;
+        steps.push({
+          type: 'place', left, mid, right, depth, arr: [...a],
+          placeIdx: left + k - 1, placeVal: temp[k-1],
+          caption: `COPY REMAINING RIGHT: arr[${left+k-1}] = ${temp[k-1]}`,
+          pseudo: 'td-copy', temp: [...temp]
+        });
+      }
+
+      steps.push({
+        type: 'merge-done', left, mid, right, depth, arr: [...a],
+        caption: `MERGED: [${left}…${right}] = [${a.slice(left, right+1).join(', ')}] ✓`,
+        pseudo: 'td-copy', temp: null
+      });
+    }
+    sim(arr, 0, n - 1, 0);
+
+  } else {
+    // --- Bottom-Up iterative simulation ---
+    let width = 1;
+    while (width < n) {
+      steps.push({
+        type: 'bu-width', width, arr: [...arr],
+        caption: `BOTTOM-UP PASS: merge width = ${width} → merging pairs of size ${width}`,
+        pseudo: 'bu-width'
+      });
+
+      let left = 0;
+      while (left < n) {
+        const mid   = Math.min(left + width - 1, n - 1);
+        const right = Math.min(left + 2 * width - 1, n - 1);
+
+        if (mid < right) {
+          steps.push({
+            type: 'bu-segment', left, mid, right, width, arr: [...arr],
+            caption: `MERGE SEGMENT: [${left}…${mid}] + [${mid+1}…${right}]`,
+            pseudo: 'bu-merge'
+          });
+
+          const L = arr.slice(left, mid + 1);
+          const R = arr.slice(mid + 1, right + 1);
+          const temp = new Array(right - left + 1).fill(null);
+          let i = 0, j = 0, k = 0;
+
+          while (i < L.length && j < R.length) {
+            steps.push({
+              type: 'compare', left, mid, right, arr: [...arr],
+              ci: left + i, cj: mid + 1 + j,
+              lVal: L[i], rVal: R[j],
+              caption: `COMPARE: L[${left+i}]=${L[i]} vs R[${mid+1+j}]=${R[j]} → pick ${L[i]<=R[j]?L[i]:R[j]}`,
+              pseudo: 'bu-compare', temp: [...temp]
+            });
+            if (L[i] <= R[j]) { temp[k] = L[i]; arr[left + k] = L[i]; i++; }
+            else               { temp[k] = R[j]; arr[left + k] = R[j]; j++; }
+            k++;
+            steps.push({
+              type: 'place', left, mid, right, arr: [...arr],
+              placeIdx: left + k - 1, placeVal: temp[k-1],
+              caption: `PLACE: arr[${left+k-1}] = ${temp[k-1]}`,
+              pseudo: 'bu-copy', temp: [...temp]
+            });
+          }
+          while (i < L.length) {
+            temp[k] = L[i]; arr[left + k] = L[i]; i++; k++;
+            steps.push({
+              type: 'place', left, mid, right, arr: [...arr],
+              placeIdx: left + k - 1, placeVal: temp[k-1],
+              caption: `COPY LEFT REMAINDER: arr[${left+k-1}] = ${temp[k-1]}`,
+              pseudo: 'bu-copy', temp: [...temp]
+            });
+          }
+          while (j < R.length) {
+            temp[k] = R[j]; arr[left + k] = R[j]; j++; k++;
+            steps.push({
+              type: 'place', left, mid, right, arr: [...arr],
+              placeIdx: left + k - 1, placeVal: temp[k-1],
+              caption: `COPY RIGHT REMAINDER: arr[${left+k-1}] = ${temp[k-1]}`,
+              pseudo: 'bu-copy', temp: [...temp]
+            });
+          }
+
+          steps.push({
+            type: 'merge-done', left, mid, right, arr: [...arr],
+            caption: `MERGED SEGMENT [${left}…${right}] = [${arr.slice(left, right+1).join(', ')}] ✓`,
+            pseudo: 'bu-copy', temp: null
+          });
+        }
+        left += 2 * width;
+      }
+      width *= 2;
+    }
+  }
+
+  steps.push({
+    type: 'done', arr: [...arr],
+    caption: `✅ Array fully sorted: [${arr.join(', ')}]`,
+    pseudo: currentImpl === 'topdown' ? 'td-done' : 'bu-done'
+  });
+  return steps;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   MAIN VISUALIZER — RENDER
+══════════════════════════════════════════════════════════════════════ */
+function buildMainStrip(arr) {
+  const strip = document.getElementById('arrStrip');
+  const istrip = document.getElementById('idxStrip');
+  strip.innerHTML = ''; istrip.innerHTML = '';
+  arr.forEach((v, i) => {
+    const c = document.createElement('div');
+    c.className = 'arr-cell ac-default'; c.id = 'mc-' + i; c.textContent = v;
+    strip.appendChild(c);
+    const ix = document.createElement('div');
+    ix.className = 'idx-cell'; ix.textContent = i;
+    istrip.appendChild(ix);
+  });
+}
+
+function applyStepToStrip(step, arr) {
+  // reset all
+  arr.forEach((_, i) => {
+    const c = document.getElementById('mc-' + i);
+    if (!c) return;
+    c.className = 'arr-cell ac-default';
+    c.textContent = step.arr ? step.arr[i] : arr[i];
+  });
+
+  if (!step) return;
+  const a = step.arr || arr;
+
+  if (step.type === 'done') {
+    a.forEach((_, i) => { const c = document.getElementById('mc-'+i); if(c) c.className='arr-cell ac-sorted'; });
+    return;
+  }
+  if (step.type === 'merge-done' || step.type === 'bu-width' || step.type === 'bu-segment') {
+    if (step.left !== undefined) {
+      for (let i = step.left; i <= (step.right || step.left); i++) {
+        const c = document.getElementById('mc-'+i); if(c) c.className='arr-cell ac-sorted';
+      }
+    }
+    return;
+  }
+  if (step.type === 'split') {
+    for (let i = step.left; i <= step.right; i++) {
+      const c = document.getElementById('mc-'+i); if (!c) continue;
+      if (i <= step.mid) c.className = 'arr-cell ac-left';
+      else                c.className = 'arr-cell ac-right';
+    }
+    return;
+  }
+  if (step.type === 'recurse-l' || step.type === 'recurse-r') {
+    const lo = step.type === 'recurse-l' ? step.left : step.mid + 1;
+    const hi = step.type === 'recurse-l' ? step.mid  : step.right;
+    for (let i = lo; i <= hi; i++) {
+      const c = document.getElementById('mc-'+i); if(c) c.className='arr-cell ac-dividing';
+    }
+    return;
+  }
+  if (step.type === 'merge-start') {
+    for (let i = step.left; i <= step.mid;  i++) { const c = document.getElementById('mc-'+i); if(c) c.className='arr-cell ac-left'; }
+    for (let i = step.mid+1; i <= step.right; i++) { const c = document.getElementById('mc-'+i); if(c) c.className='arr-cell ac-right'; }
+    return;
+  }
+  if (step.type === 'compare') {
+    const cl = document.getElementById('mc-'+step.ci); if(cl) cl.className='arr-cell ac-comparing';
+    const cr = document.getElementById('mc-'+step.cj); if(cr) cr.className='arr-cell ac-comparing';
+    return;
+  }
+  if (step.type === 'place') {
+    for (let i = step.left; i <= step.right; i++) {
+      const c = document.getElementById('mc-'+i); if(!c) continue;
+      if (i === step.placeIdx) c.className = 'arr-cell ac-placing';
+      else c.className = 'arr-cell ac-default';
+    }
+    // show temp buffer
+    renderTempBuffer(step);
+    return;
+  }
+  renderTempBuffer(null);
+}
+
+function renderTempBuffer(step) {
+  const row   = document.getElementById('tempRow');
+  const strip = document.getElementById('tempStrip');
+  if (!step || !step.temp) { row.style.display = 'none'; return; }
+  row.style.display = 'flex';
+  strip.innerHTML = '';
+  step.temp.forEach((v, i) => {
+    const c = document.createElement('div');
+    c.className = v !== null ? 'temp-cell tc-active' : 'temp-cell tc-empty';
+    c.textContent = v !== null ? v : '·';
+    strip.appendChild(c);
+  });
+}
+
+function setCaption(text, type = '') {
+  const box = document.getElementById('captionBox');
+  box.className = 'caption-box' + (type ? ' cap-' + type : '');
+  box.innerHTML = text;
+}
+
+function updateBadges(phase) {
+  document.getElementById('badge-phase').textContent  = `Phase: ${phase || '—'}`;
+  document.getElementById('badge-comps').textContent  = `Comparisons: ${mainComps}`;
+  document.getElementById('badge-merges').textContent = `Merges: ${mainMerges}`;
+  document.getElementById('badge-copies').textContent = `Copies: ${mainCopies}`;
+}
+
+function highlightStep(pseudo) {
   document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
-  const el = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+  const el = document.querySelector(`.pseudo-step[data-step="${pseudo}"]`);
   if (el) el.classList.add('active');
 }
 
 function showMsg(text, type) {
-  const el = document.getElementById('msg-show');
-  el.style.display = 'block';
-  el.className = `alert alert-${type}`;
-  el.innerHTML = text;
+  const el = document.getElementById('msg_show');
+  el.style.display = 'block'; el.className = 'alert alert-' + type; el.innerHTML = text;
 }
 
- function selectAlgorithm(algorithm) {
-    // Mapping IDs to filenames
-    const routes = {
-        'linear-search': 'linearSearch_L1.html',
-        'binary-search': 'binarySearch_L1.html',
-        'quick-sort': 'quickSort_L1.html',
-        'merge-sort': 'mergeSort_L1.html',
-        'bubble-sort': 'bubbleSort_L1.html',
-        'stack': 'stack_L1.html',
-        'queue': 'queue.html'
-    };
+/* ── MAIN SORT CONTROLS ── */
+function startSort() {
+  clearTimeout(mainTimer);
+  const raw = document.getElementById('arrayInput').value.trim();
+  if (!raw) { showMsg('Please enter an array to sort.', 'danger'); return; }
+  mainArr = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  if (mainArr.length < 2) { showMsg('Enter at least 2 numbers.', 'danger'); return; }
+  if (mainArr.length > 12) { showMsg('Keep to 12 elements or fewer for best visualization.', 'danger'); return; }
 
-    const targetPage = routes[algorithm];
+  mainSteps = computeSteps(mainArr);
+  mainStepIdx = 0; mainDone = false; mainComps = 0; mainMerges = 0; mainCopies = 0;
+  buildMainStrip(mainArr);
+  document.getElementById('tempRow').style.display = 'none';
+  updateBadges('Ready');
+  setCaption(`Array loaded: [${mainArr.join(', ')}]. Click <strong>Step ▶</strong> or <strong>Auto ▶▶</strong> to begin.`);
+  document.getElementById('stepBtn').disabled = false;
+  document.getElementById('autoBtn').disabled = false;
+  document.getElementById('msg_show').style.display = 'none';
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+}
 
-    if (targetPage) {
-        // Redirect to the new page
-        window.location.href = targetPage;
-    } else {
-        console.error("Route not found for:", algorithm);
-        toggleSidebar();
+function applyMainStep() {
+  if (mainDone || mainStepIdx >= mainSteps.length) return false;
+  const step = mainSteps[mainStepIdx++];
+
+  if (step.type === 'compare')     mainComps++;
+  if (step.type === 'merge-start' || step.type === 'bu-segment') mainMerges++;
+  if (step.type === 'place')       mainCopies++;
+
+  const phaseMap = {
+    'split':'Divide','recurse-l':'Recurse','recurse-r':'Recurse',
+    'merge-start':'Merge','merge-done':'Merge','compare':'Compare',
+    'place':'Place','bu-width':'Width Pass','bu-segment':'Merge','done':'Done'
+  };
+  updateBadges(phaseMap[step.type] || step.type);
+  applyStepToStrip(step, mainArr);
+  setCaption(step.caption,
+    step.type === 'split'       ? 'split' :
+    step.type === 'place'       ? 'place'  :
+    step.type.includes('merge') ? 'merge'  :
+    step.type === 'done'        ? 'done'   : '');
+  highlightStep(step.pseudo);
+
+  if (step.type === 'done') {
+    mainDone = true;
+    document.getElementById('tempRow').style.display = 'none';
+    showMsg(`<i class="fas fa-check-circle"></i>&nbsp; Sorted! Comparisons: ${mainComps} | Merges: ${mainMerges} | Copies: ${mainCopies}`, 'success');
+    document.getElementById('stepBtn').disabled = true;
+    document.getElementById('autoBtn').disabled = true;
+    return false;
+  }
+  return true;
+}
+
+function stepSort() { applyMainStep(); }
+function autoSort() {
+  if (mainDone) return;
+  document.getElementById('autoBtn').disabled = true;
+  function tick() { const cont = applyMainStep(); if (cont && !mainDone) mainTimer = setTimeout(tick, 520); }
+  tick();
+}
+function resetSort() {
+  clearTimeout(mainTimer);
+  mainArr = []; mainSteps = []; mainStepIdx = 0; mainDone = false;
+  mainComps = 0; mainMerges = 0; mainCopies = 0;
+  document.getElementById('arrStrip').innerHTML = '';
+  document.getElementById('idxStrip').innerHTML = '';
+  document.getElementById('tempRow').style.display = 'none';
+  document.getElementById('msg_show').style.display = 'none';
+  document.getElementById('stepBtn').disabled = true;
+  document.getElementById('autoBtn').disabled = true;
+  setCaption('Enter an array and click Sort to begin.');
+  updateBadges(null);
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   IMPLEMENTATION SWITCH
+══════════════════════════════════════════════════════════════════════ */
+function switchImplementation(type) {
+  currentImpl = type;
+  document.querySelectorAll('.impl-option').forEach(o => o.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('active');
+  document.getElementById('visualizer-title').textContent =
+    'Merge Sort Visualizer — ' + (type === 'topdown' ? 'Top-Down (Recursive)' : 'Bottom-Up (Iterative)');
+  document.getElementById('pseudo-topdown').style.display  = type === 'topdown'  ? 'block' : 'none';
+  document.getElementById('pseudo-bottomup').style.display = type === 'bottomup' ? 'block' : 'none';
+  resetSort();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   SCENARIO HELPERS — mini array visualizer
+══════════════════════════════════════════════════════════════════════ */
+function buildScenArr(wrapId, data) {
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  // initial row
+  const row = document.createElement('div'); row.className = 's-row';
+  const lbl = document.createElement('div'); lbl.className = 's-label'; lbl.textContent = 'arr:';
+  row.appendChild(lbl);
+  data.forEach((v, i) => {
+    const c = document.createElement('div');
+    c.className = 'sc sc-default'; c.id = wrapId + '-c' + i; c.textContent = v;
+    row.appendChild(c);
+  });
+  wrap.appendChild(row);
+}
+
+function renderScenStep(wrapId, step, data) {
+  if (!step) return;
+  const a = step.arr || data;
+  a.forEach((v, i) => {
+    const c = document.getElementById(wrapId + '-c' + i); if (!c) return;
+    c.textContent = v;
+    if (step.type === 'done') { c.className = 'sc sc-sorted'; return; }
+    if (step.type === 'merge-done') {
+      if (i >= step.left && i <= step.right) c.className = 'sc sc-sorted';
+      else c.className = 'sc sc-default';
+      return;
     }
-}
-document.addEventListener("DOMContentLoaded", () => {
-    // Get the current filename (e.g., "quick_sort.html")
-    const currentPage = window.location.pathname.split("/").pop();
-    
-    // Map of filenames back to IDs
-    const pageToId = {
-        'quickSort_L1.html': 'quick-sort',
-        'binarySearch_L1.html': 'binary-search',
-        'linearSearch_L1.html': 'linear-search',
-        'mergeSort_L1.html': 'merge-sort',
-        'bubbleSort_L1.html': 'bubble-sort',
-        'stack_L1.html': 'stack',
-        'queue_L1.html': 'queue'
-
-    };
-
-});
-
-function renderBars() {
-  const container = document.getElementById('bars-container');
-  container.innerHTML = '';
-  const maxValue = Math.max(...array);
-  array.forEach((val, idx) => {
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = `${(val / maxValue) * 350}px`;
-    bar.id = `bar-${idx}`;
-    const lbl = document.createElement('div');
-    lbl.className = 'bar-value';
-    lbl.textContent = val;
-    bar.appendChild(lbl);
-    container.appendChild(bar);
+    if (step.type === 'split') {
+      if (i < step.left || i > step.right) c.className = 'sc sc-default';
+      else if (i <= step.mid) c.className = 'sc sc-left';
+      else c.className = 'sc sc-right';
+      return;
+    }
+    if (step.type === 'merge-start') {
+      if (i >= step.left && i <= step.mid)  c.className = 'sc sc-left';
+      else if (i > step.mid && i <= step.right) c.className = 'sc sc-right';
+      else c.className = 'sc sc-default';
+      return;
+    }
+    if (step.type === 'compare') {
+      if (i === step.ci || i === step.cj) c.className = 'sc sc-comparing';
+      else c.className = 'sc sc-default';
+      return;
+    }
+    if (step.type === 'place') {
+      if (i === step.placeIdx) c.className = 'sc sc-placing';
+      else c.className = 'sc sc-default';
+      return;
+    }
+    c.className = 'sc sc-default';
   });
 }
 
-async function merge(l, m, r) {
-  highlightStep('merge');
-  let n1 = m - l + 1;
-  let n2 = r - m;
-  let L = [], R = [];
+function addLog(logEl, text, cls = 'log-info') {
+  const e = document.createElement('div');
+  e.className = 'log-entry ' + cls; e.textContent = '> ' + text;
+  logEl.appendChild(e); logEl.scrollTop = logEl.scrollHeight;
+}
 
-  // CAPTION: Explaining the merge scope
-  showMsg(`<i class="fas fa-layer-group"></i> Merging sub-arrays: [${l}...${m}] and [${m+1}...${r}]`, 'info');
+function switchScenario(name) {
+  const map = { best:'active-best', avg:'active-avg', worst:'active-worst', custom:'active-custom' };
+  document.querySelectorAll('.scenario-tab').forEach(t => t.className = 'scenario-tab');
+  document.getElementById('stab-' + name).classList.add(map[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('spanel-' + name).classList.add('active');
+}
 
-  for (let i = 0; i < n1; i++) L.push(array[l + i]);
-  for (let j = 0; j < n2; j++) R.push(array[m + 1 + j]);
+/* ── Shared scenario step engine ── */
+function makeScenEngine(data) {
+  const steps = (() => {
+    const savedImpl = currentImpl;
+    currentImpl = 'topdown';  // scenarios always show top-down
+    const s = computeSteps([...data]);
+    currentImpl = savedImpl;
+    return s;
+  })();
+  return { steps, idx: 0, done: false, data: [...data] };
+}
 
-  let i = 0, j = 0, k = l;
+function runScenStep(eng, wrapId, logId, doneCallback) {
+  if (eng.done || eng.idx >= eng.steps.length) return;
+  const step = eng.steps[eng.idx++];
+  const log  = document.getElementById(logId);
 
-  while (i < n1 && j < n2) {
-    const bar1 = document.getElementById(`bar-${l+i}`);
-    const bar2 = document.getElementById(`bar-${m+1+j}`);
-    if(bar1) bar1.classList.add('comparing');
-    if(bar2) bar2.classList.add('comparing');
-    
-    // CAPTION: Comparison
-    showMsg(`<i class="fas fa-search"></i> Comparing <strong>${L[i]}</strong> from left and <strong>${R[j]}</strong> from right half.`, 'info');
-    
-    await sleep(getDelay());
+  const logMap = {
+    'split':      { text: `DIVIDE [${step.left}…${step.right}] → [${step.left}…${step.mid}] | [${step.mid+1}…${step.right}]`, cls: 'log-split' },
+    'recurse-l':  { text: `Recurse left  [${step.left}…${step.mid}]`,  cls: 'log-split' },
+    'recurse-r':  { text: `Recurse right [${step.mid+1}…${step.right}]`, cls: 'log-split' },
+    'merge-start':{ text: `MERGE [${step.left}…${step.mid}] + [${step.mid+1}…${step.right}]`, cls: 'log-merge' },
+    'compare':    { text: `  Compare ${step.lVal} vs ${step.rVal} → pick ${Math.min(step.lVal,step.rVal)}`, cls: 'log-compare' },
+    'place':      { text: `  Place arr[${step.placeIdx}] = ${step.placeVal}`, cls: 'log-place' },
+    'merge-done': { text: `  Merged [${step.left}…${step.right}] ✓`, cls: 'log-sorted' },
+    'done':       { text: `✓ Fully sorted!`, cls: 'log-sorted' }
+  };
 
-    if (L[i] <= R[j]) {
-      showMsg(`<i class="fas fa-arrow-left"></i> <strong>${L[i]}</strong> is smaller or equal. Placing in main array.`, 'info');
-      array[k] = L[i];
-      i++;
-    } else {
-      showMsg(`<i class="fas fa-arrow-right"></i> <strong>${R[j]}</strong> is smaller. Placing in main array.`, 'warning');
-      array[k] = R[j];
-      j++;
+  const entry = logMap[step.type];
+  if (entry) addLog(log, entry.text, entry.cls);
+  renderScenStep(wrapId, step, eng.data);
+
+  if (step.type === 'done') {
+    eng.done = true;
+    addLog(log, '✓ O(N log N) — always!', 'log-result');
+    if (doneCallback) doneCallback();
+  }
+}
+
+/* ── BEST ── */
+const BEST_DATA = [3, 7, 12, 18, 25, 31];
+let bestEng = null, bestTimer = null;
+function initBest() {
+  bestEng = makeScenEngine(BEST_DATA);
+  buildScenArr('sarr-best', BEST_DATA);
+  document.getElementById('log-best').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  const log = document.getElementById('log-best');
+  addLog(log, `Array: [${BEST_DATA.join(', ')}] — already sorted`, 'log-info');
+  addLog(log, `Best case: fewest comparisons per merge`, 'log-info');
+  document.getElementById('best-step-btn').disabled = false;
+  document.getElementById('best-auto-btn').disabled = false;
+}
+function bestStep() {
+  runScenStep(bestEng, 'sarr-best', 'log-best', () => {
+    document.getElementById('best-step-btn').disabled = true;
+    document.getElementById('best-auto-btn').disabled = true;
+  });
+}
+function bestAuto() {
+  document.getElementById('best-auto-btn').disabled = true;
+  function tick() { if (!bestEng.done) { bestStep(); if (!bestEng.done) bestTimer = setTimeout(tick, 550); } }
+  tick();
+}
+function resetBest() { clearTimeout(bestTimer); initBest(); }
+
+/* ── AVERAGE ── */
+const AVG_DATA = [38, 27, 43, 3, 9, 82, 10];
+let avgEng = null, avgTimer = null;
+function initAvg() {
+  avgEng = makeScenEngine(AVG_DATA);
+  buildScenArr('sarr-avg', AVG_DATA);
+  document.getElementById('log-avg').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-avg'), `Array: [${AVG_DATA.join(', ')}] — random`, 'log-info');
+  document.getElementById('avg-step-btn').disabled = false;
+  document.getElementById('avg-auto-btn').disabled = false;
+}
+function avgStep() {
+  runScenStep(avgEng, 'sarr-avg', 'log-avg', () => {
+    document.getElementById('avg-step-btn').disabled = true;
+    document.getElementById('avg-auto-btn').disabled = true;
+  });
+}
+function avgAuto() {
+  document.getElementById('avg-auto-btn').disabled = true;
+  function tick() { if (!avgEng.done) { avgStep(); if (!avgEng.done) avgTimer = setTimeout(tick, 520); } }
+  tick();
+}
+function resetAvg() { clearTimeout(avgTimer); initAvg(); }
+
+/* ── WORST ── */
+const WORST_DATA = [90, 70, 50, 30, 20, 10];
+let worstEng = null, worstTimer = null;
+function initWorst() {
+  worstEng = makeScenEngine(WORST_DATA);
+  buildScenArr('sarr-worst', WORST_DATA);
+  document.getElementById('log-worst').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  const log = document.getElementById('log-worst');
+  addLog(log, `Array: [${WORST_DATA.join(', ')}] — reverse sorted`, 'log-warn');
+  addLog(log, `Worst case: max comparisons per merge`, 'log-warn');
+  document.getElementById('worst-step-btn').disabled = false;
+  document.getElementById('worst-auto-btn').disabled = false;
+}
+function worstStep() {
+  runScenStep(worstEng, 'sarr-worst', 'log-worst', () => {
+    document.getElementById('worst-step-btn').disabled = true;
+    document.getElementById('worst-auto-btn').disabled = true;
+  });
+}
+function worstAuto() {
+  document.getElementById('worst-auto-btn').disabled = true;
+  function tick() { if (!worstEng.done) { worstStep(); if (!worstEng.done) worstTimer = setTimeout(tick, 500); } }
+  tick();
+}
+function resetWorst() { clearTimeout(worstTimer); initWorst(); }
+
+/* ── CUSTOM ── */
+let custEng = null, custTimer = null, ccTimerId = null;
+function initCustom() {
+  document.getElementById('sarr-custom').innerHTML = '';
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'), 'Enter an array and click ▶ Load & Sort.', 'log-info');
+  custEng = null;
+  document.getElementById('custom-step-btn').disabled = true;
+  document.getElementById('custom-auto-btn').disabled = true;
+  ['best','avg','worst'].forEach(t => {
+    const c = document.getElementById('cc-' + t);
+    if (c) c.classList.remove('cc-active-best', 'cc-active-avg', 'cc-active-worst');
+  });
+  document.getElementById('cc-toast').className = 'cc-toast';
+}
+function customLoad() {
+  clearTimeout(custTimer);
+  const raw = document.getElementById('custom-arr').value.trim();
+  if (!raw) { addLog(document.getElementById('log-custom'), 'Enter an array first!', 'log-warn'); return; }
+  const data = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  if (data.length < 2) { addLog(document.getElementById('log-custom'), 'Need at least 2 numbers.', 'log-warn'); return; }
+  if (data.length > 10) { addLog(document.getElementById('log-custom'), 'Keep to 10 elements for best visualization.', 'log-warn'); return; }
+  custEng = makeScenEngine(data);
+  buildScenArr('sarr-custom', data);
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'), `Array: [${data.join(', ')}]  N=${data.length}`, 'log-info');
+  addLog(document.getElementById('log-custom'), `Complexity: always O(N log N) = O(${data.length} × ${Math.ceil(Math.log2(data.length))})`, 'log-info');
+  document.getElementById('custom-step-btn').disabled = false;
+  document.getElementById('custom-auto-btn').disabled = false;
+}
+
+function highlightCC(type) {
+  ['best','avg','worst'].forEach(t =>
+    document.getElementById('cc-' + t).classList.remove('cc-active-best','cc-active-avg','cc-active-worst')
+  );
+  clearTimeout(ccTimerId);
+  const card = document.getElementById('cc-' + type);
+  if (card) {
+    card.classList.add('cc-active-' + type);
+    ccTimerId = setTimeout(() => card.classList.remove('cc-active-' + type), 2200);
+  }
+}
+function showCCToast(type, msg) {
+  const toast = document.getElementById('cc-toast');
+  const icons = { best: '⚡', avg: '〜', worst: '⚠' };
+  document.getElementById('cc-toast-icon').textContent = icons[type] || '📊';
+  document.getElementById('cc-toast-text').textContent = msg;
+  toast.className = 'cc-toast show toast-' + type;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { toast.className = 'cc-toast'; }, 2800);
+}
+
+function customStep() {
+  if (!custEng || custEng.done) return;
+  runScenStep(custEng, 'sarr-custom', 'log-custom', () => {
+    const n    = custEng.data.length;
+    const isSorted  = JSON.stringify([...custEng.data].sort((a,b)=>a-b)) === JSON.stringify(custEng.data);
+    const isReverse = JSON.stringify([...custEng.data].sort((a,b)=>b-a)) === JSON.stringify(custEng.data);
+    const type  = isSorted ? 'best' : isReverse ? 'worst' : 'avg';
+    const label = `O(N log N) — ${type === 'best' ? 'fewest comparisons (sorted input)' : type === 'worst' ? 'max comparisons (reverse sorted)' : 'typical comparisons (random)'}`;
+    highlightCC(type); showCCToast(type, label);
+    document.getElementById('custom-step-btn').disabled = true;
+    document.getElementById('custom-auto-btn').disabled = true;
+  });
+}
+function customAutoPlay() {
+  document.getElementById('custom-auto-btn').disabled = true;
+  function tick() { if (!custEng.done) { customStep(); if (!custEng.done) custTimer = setTimeout(tick, 510); } }
+  tick();
+}
+function resetCustom() {
+  clearTimeout(custTimer);
+  document.getElementById('custom-arr').value = '';
+  initCustom();
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CODE EDITOR
+══════════════════════════════════════════════════════════════════════ */
+function getCMTheme(t) { return t === 'light' ? 'eclipse' : t === 'blue' ? 'nord' : 'material-ocean'; }
+function initEditor() {
+  const theme = document.body.getAttribute('data-theme') || 'dark';
+  codeEditor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+    mode: 'text/x-c++src', theme: getCMTheme(theme),
+    lineNumbers: true, indentUnit: 4, lineWrapping: true
+  });
+  codeEditor.setValue(codeTemplates.topdown.cpp);
+}
+function switchEditorImpl(impl, btn) {
+  editorImpl = impl;
+  document.querySelectorAll('.impl-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+function switchLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+function updateEditorDisplay() {
+  const modeMap = { cpp:'text/x-c++src', python:'text/x-python', java:'text/x-java', c:'text/x-csrc', javascript:'text/javascript' };
+  const nameMap = { cpp:'C++', python:'Python', java:'Java', c:'C', javascript:'JavaScript' };
+  const implLabel = editorImpl === 'topdown' ? 'Top-Down (Recursive)' : 'Bottom-Up (Iterative)';
+  codeEditor.setOption('mode', modeMap[currentLang]);
+  codeEditor.setValue(codeTemplates[editorImpl][currentLang]);
+  document.querySelector('.lang-display').textContent = nameMap[currentLang] + ' — ' + implLabel;
+}
+function copyCode() {
+  navigator.clipboard.writeText(codeEditor.getValue()).then(() => {
+    const btn = document.querySelector('.code-copy');
+    btn.textContent = '✓'; btn.style.background = 'var(--primary-green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--primary-purple)'; }, 2000);
+  });
+}
+
+/* ── Interactive Runner ── */
+async function getInput(prompt) {
+  return new Promise(resolve => {
+    document.getElementById('promptText').textContent = prompt;
+    document.getElementById('inputPrompt').style.display = 'block';
+    document.getElementById('userInput').value = '';
+    document.getElementById('userInput').focus();
+    inputResolver = resolve;
+  });
+}
+function submitInput() {
+  const val = document.getElementById('userInput').value.trim();
+  if (val && inputResolver) {
+    document.getElementById('inputPrompt').style.display = 'none';
+    inputResolver(val); inputResolver = null;
+  }
+}
+document.getElementById('userInput').addEventListener('keypress', e => { if (e.key === 'Enter') submitInput(); });
+
+async function runInteractiveCode() {
+  const out = document.getElementById('codeOutput');
+  out.innerHTML = '<span style="color:#fbbf24">🔄 Executing...</span><br><br>';
+  const langN = { cpp:'C++', python:'Python', java:'Java', c:'C', javascript:'JavaScript' };
+  const implL = editorImpl === 'topdown' ? 'Top-Down (Recursive)' : 'Bottom-Up (Iterative)';
+  out.innerHTML += `<span style="color:var(--primary-cyan)">Merge Sort (${implL}) — ${langN[currentLang]}</span><br><br>`;
+
+  const n = parseInt(await getInput('Enter number of elements: '));
+  out.innerHTML += `<span style="color:#a0a0a0">Enter number of elements: </span>${n}<br>`;
+  const arr = [];
+  for (let i = 0; i < n; i++) {
+    const v = parseInt(await getInput(`arr[${i}] = `));
+    arr.push(v);
+    out.innerHTML += `<span style="color:#a0a0a0">arr[${i}] = </span>${v}<br>`;
+  }
+  out.innerHTML += `<br><span style="color:var(--primary-cyan)">Before: [${arr.join(', ')}]</span><br><br>`;
+
+  let comps = 0, mergeCount = 0, depth = 0;
+
+  if (editorImpl === 'topdown') {
+    async function simMerge(a, left, right, d) {
+      if (left >= right) return;
+      const mid = left + Math.floor((right - left) / 2);
+      const indent = '  '.repeat(d);
+      out.innerHTML += `${indent}<span style="color:#8b5cf6">mergeSort([${a.slice(left,right+1).join(',')}], left=${left}, right=${right})</span><br>`;
+      depth = Math.max(depth, d);
+      await sleep(60);
+      await simMerge(a, left, mid, d + 1);
+      await simMerge(a, mid + 1, right, d + 1);
+
+      // merge
+      mergeCount++;
+      const L = a.slice(left, mid + 1), R = a.slice(mid + 1, right + 1);
+      let i = 0, j = 0, k = left;
+      out.innerHTML += `${indent}<span style="color:var(--primary-pink)">merge([${L.join(',')}], [${R.join(',')}])</span><br>`;
+      while (i < L.length && j < R.length) {
+        comps++;
+        if (L[i] <= R[j]) { out.innerHTML += `${indent}  <span style="color:var(--primary-orange)">${L[i]} ≤ ${R[j]}</span> → place <span style="color:var(--primary-green)">${L[i]}</span><br>`; a[k++] = L[i++]; }
+        else               { out.innerHTML += `${indent}  <span style="color:var(--primary-orange)">${L[i]} &gt; ${R[j]}</span> → place <span style="color:var(--primary-green)">${R[j]}</span><br>`; a[k++] = R[j++]; }
+        await sleep(40);
+      }
+      while (i < L.length) { a[k++] = L[i++]; }
+      while (j < R.length) { a[k++] = R[j++]; }
+      out.innerHTML += `${indent}<span style="color:var(--primary-green)">merged → [${a.slice(left,right+1).join(',')}]</span><br>`;
     }
-    
-    renderBars();
-    document.getElementById(`bar-${k}`).classList.add('merging');
-    k++;
-    await sleep(getDelay());
-  }
+    await simMerge(arr, 0, n - 1, 0);
 
-  // CAPTION: Cleaning up remaining elements
-  if (i < n1 || j < n2) {
-    showMsg(`<i class="fas fa-plus-circle"></i> Adding remaining elements to the sorted sub-array.`, 'info');
-  }
-
-  while (i < n1) { 
-    array[k] = L[i]; 
-    renderBars(); 
-    document.getElementById(`bar-${k}`).classList.add('merging'); 
-    i++; k++; await sleep(getDelay()); 
-  }
-  while (j < n2) { 
-    array[k] = R[j]; 
-    renderBars(); 
-    document.getElementById(`bar-${k}`).classList.add('merging'); 
-    j++; k++; await sleep(getDelay()); 
-  }
-
-  for(let x = l; x <= r; x++) {
-    document.getElementById(`bar-${x}`).classList.add('sorted');
-  }
-}
-
-async function mergeSort(l, r) {
-  if (l < r) {
-    let m = Math.floor((l + r) / 2);
-    
-    highlightStep('divide');
-    // CAPTION: Division process
-    showMsg(`<i class="fas fa-columns"></i> <strong>Dividing:</strong> Splitting array at index ${m}.`, 'info');
-    
-    await sleep(getDelay());
-    
-    highlightStep('conquer');
-    await mergeSort(l, m);
-    await mergeSort(m + 1, r);
-    
-    await merge(l, m, r);
-  }
-}
-
-async function startSort() {
-  if (isSorting || array.length === 0) return;
-  isSorting = true;
-  document.getElementById('sort-btn').disabled = true;
-  
-  // Show message box
-  const msgBox = document.getElementById('msg-show');
-  msgBox.style.display = 'block';
-  
-  showMsg('<i class="fas fa-play"></i> Starting Merge Sort (Divide & Conquer)...', 'info');
-  await mergeSort(0, array.length - 1);
-  
-  showMsg('<i class="fas fa-check-double"></i> <strong>Sorted!</strong> Array merged in O(n log n) time.', 'success');
-  highlightStep('complexity');
-  
-  isSorting = false;
-  document.getElementById('sort-btn').disabled = false;
-}
-
-async function mergeSort(l, r) {
-  if (l < r) {
-    highlightStep('divide');
-    let m = Math.floor((l + r) / 2);
-    await sleep(getDelay());
-    
-    highlightStep('conquer');
-    await mergeSort(l, m);
-    await mergeSort(m + 1, r);
-    
-    await merge(l, m, r);
-  }
-}
-
-async function startSort() {
-  if (isSorting || array.length === 0) return;
-  isSorting = true;
-  document.getElementById('sort-btn').disabled = true;
-  showMsg('<i class="fas fa-sync fa-spin"></i> Merging sub-arrays...', 'info');
-  await mergeSort(0, array.length - 1);
-  showMsg('<i class="fas fa-check-circle"></i> Sorted!', 'success');
-  highlightStep('complexity');
-  isSorting = false;
-  document.getElementById('sort-btn').disabled = false;
-}
-
-function generateRandomArray() {
-  const size = parseInt(document.getElementById('size-slider').value);
-  array = Array.from({length: size}, () => Math.floor(Math.random() * 95) + 5);
-  document.getElementById('array-input').value = array.join(',');
-  renderBars();
-}
-
-function createArray() {
-  const raw = document.getElementById('array-input').value;
-  if(raw) array = raw.split(',').map(v => parseInt(v)).filter(v => !isNaN(v));
-  if(array.length > 0) renderBars();
-}
-
-function changeCode(lang) {
-  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
-  document.getElementById(`${lang}-content`).classList.add('active');
-  document.getElementById(`${lang}-btn`).classList.add('active');
-}
-
-function runInteractive(lang) {
-  inputMode = 'array';
-  document.getElementById('interactive-input-area').style.display = 'flex';
-  document.getElementById('code-output').innerHTML = `<div style="color:#fbbf24">[${lang.toUpperCase()} Env] Functions Compiled. Enter numbers:</div>`;
-}
-
-function processTerminal() {
-  const input = document.getElementById('terminal-input').value.trim();
-  const output = document.getElementById('code-output');
-  if(!input) return;
-  if(inputMode === 'array') {
-    virtualArr = input.split(',').map(v => parseInt(v)).filter(v => !isNaN(v));
-    output.innerHTML += `<div>Array loaded: [${virtualArr}]</div><div>Type 'sort' to execute.</div>`;
-    inputMode = 'cmd';
-  } else if(input === 'sort') {
-    virtualArr.sort((a,b) => a-b);
-    output.innerHTML += `<div style="color:#10b981">Merge Sort Complete: [${virtualArr}]</div>`;
-  }
-  document.getElementById('terminal-input').value = '';
-}
-
- const l1 = document.getElementById("l1");
-const l2 = document.getElementById("l2");
-const l3 = document.getElementById("l3");
-
-const slider1 = document.getElementById("slider1");
-const slider2 = document.getElementById("slider2");
-
-const modal = document.getElementById("quizModal");
-const startQuiz = document.getElementById("startQuiz");
-const cancelBtn = document.getElementById("cancelBtn");
-
-// Level 2 is now unlocked by default
-let level2Unlocked = true; 
-let level3Unlocked = false;
-
-// Level 1: Always works
-l1.addEventListener("click", () => {
-  slider1.classList.add("active");
-});
-
-// Level 2: Now unlocked, so it just activates the slider without a modal
-l2.addEventListener("click", () => {
-  slider1.classList.add("active");
-  // Optional: you can add logic here to show Level 2 content
-});
-
-// Level 3: This is the only one that triggers the modal now
-l3.addEventListener("click", () => {
-  if (!level3Unlocked) {
-    // Show modal because Level 3 is still locked
-    modal.style.display = "flex";
   } else {
-    // If Level 3 were already unlocked, just activate the slider
-    slider1.classList.add("active");
-    slider2.classList.add("active");
+    // Bottom-Up
+    let width = 1;
+    while (width < n) {
+      out.innerHTML += `<span style="color:#8b5cf6">Width = ${width}:</span><br>`;
+      let left = 0;
+      while (left < n) {
+        const mid   = Math.min(left + width - 1, n - 1);
+        const right = Math.min(left + 2 * width - 1, n - 1);
+        if (mid < right) {
+          mergeCount++;
+          const L = arr.slice(left, mid + 1), R = arr.slice(mid + 1, right + 1);
+          out.innerHTML += `  <span style="color:var(--primary-pink)">merge([${L.join(',')}]+[${R.join(',')}])</span>`;
+          let i = 0, j = 0, k = left;
+          while (i < L.length && j < R.length) {
+            comps++;
+            if (L[i] <= R[j]) arr[k++] = L[i++];
+            else               arr[k++] = R[j++];
+          }
+          while (i < L.length) arr[k++] = L[i++];
+          while (j < R.length) arr[k++] = R[j++];
+          out.innerHTML += ` → <span style="color:var(--primary-green)">[${arr.slice(left,right+1).join(',')}]</span><br>`;
+          await sleep(60);
+        }
+        left += 2 * width;
+      }
+      width *= 2;
+    }
   }
-});
 
-// ✅ Start Quiz → goes to the quiz page to unlock Level 3
-startQuiz.addEventListener("click", () => {
-  window.location.href = "mergeSort_L2Quiz.html";
-});
+  out.innerHTML += `<br><span style="color:var(--primary-green)">✅ After:  [${arr.join(', ')}]</span><br>`;
+  out.innerHTML += `<span style="color:var(--primary-cyan)">Comparisons: ${comps}  |  Merges: ${mergeCount}  |  Space: O(N)  |  Time: O(N log N)</span>`;
+}
 
-// Cancel modal
-cancelBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-document.getElementById('speed-slider').addEventListener('input', (e) => speed = e.target.value);
-generateRandomArray();
+/* ══════════════════════════════════════════════════════════════════════
+   THEME / LEVELS / INIT
+══════════════════════════════════════════════════════════════════════ */
+document.getElementById('themeToggle').onclick = () => {
+  const themes = ['dark', 'light', 'blue'];
+  const cur    = document.body.getAttribute('data-theme') || 'dark';
+  const next   = themes[(themes.indexOf(cur) + 1) % 3];
+  document.body.setAttribute('data-theme', next);
+  localStorage.setItem('dsa-theme', next);
+  codeEditor.setOption('theme', getCMTheme(next));
+};
+document.getElementById('l1').addEventListener('click', () => window.location.href = 'merge_sort_L1.html');
+document.getElementById('l2').addEventListener('click', () => document.getElementById('slider1').classList.add('active'));
+document.getElementById('l3').addEventListener('click', () => document.getElementById('quizModal').style.display = 'flex');
+document.getElementById('startQuiz').addEventListener('click', () => window.location.href = 'merge_sort_L2_Quiz.html');
+document.getElementById('cancelBtn').addEventListener('click', () => document.getElementById('quizModal').style.display = 'none');
+window.onclick = e => { if (e.target === document.getElementById('quizModal')) document.getElementById('quizModal').style.display = 'none'; };
+
+window.onload = () => {
+  const savedTheme = localStorage.getItem('dsa-theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  initEditor();
+  initBest(); initAvg(); initWorst(); initCustom();
+};
+
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'mergesort';  // Change this for each algorithm page (e.g., 'quicksort', 'heapsort', etc.)
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
 </script>
 </body>
 </html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursion — Level 3 | DSA Visualizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-orange:#f59e0b;
+  --primary-red:#ef4444;--primary-indigo:#f43f5e;--primary-violet:#8b5cf6;
+  --primary-blue:#3b82f6;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary-indigo),var(--primary-violet));border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#fff;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-indigo);}
+.nav-right{display:flex;align-items:center;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-indigo);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-indigo);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-indigo),var(--primary-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-indigo);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-indigo);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+/* Call stack frame */
+.stack-wrap{display:flex;flex-direction:column;gap:3px;min-width:220px;}
+.stack-frame{border-radius:7px;padding:.45rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;transition:all .3s;border:1px solid transparent;}
+.stack-frame.calling{background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.4);color:var(--primary-indigo);}
+.stack-frame.base{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--primary-orange);}
+.stack-frame.returning{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.4);color:var(--primary-green);}
+.stack-frame.done{background:rgba(255,255,255,.03);border-color:var(--border-color);color:var(--text-secondary);opacity:.55;}
+.frame-tag{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;opacity:.7;}
+
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.indigo:hover{border-color:var(--primary-indigo);box-shadow:0 8px 40px rgba(244,63,94,.12);}
+.app-card.violet:hover{border-color:var(--primary-violet);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.blue:hover{border-color:var(--primary-blue);box-shadow:0 8px 40px rgba(59,130,246,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.indigo{background:rgba(244,63,94,.15);}
+.card-icon.violet{background:rgba(139,92,246,.15);}
+.card-icon.blue{background:rgba(59,130,246,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.d-btn.go{background:rgba(244,63,94,.1);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+
+/* shared mini-viz primitives */
+.sm-grid{display:inline-flex;flex-direction:column;gap:2px;margin:0 auto .6rem;}
+.sm-row{display:flex;gap:2px;}
+.scell{width:32px;height:28px;border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;transition:all .3s;}
+.scell.def{background:rgba(255,255,255,.05);color:var(--text-secondary);}
+.scell.active{background:rgba(244,63,94,.2);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.scell.visited{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.35);color:var(--primary-violet);}
+.scell.found{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.scell.path{background:rgba(6,182,212,.12);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.scell.highlight{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.scell.memo{background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
+
+/* call tree node */
+.ct-node{display:inline-flex;align-items:center;justify-content:center;padding:.22rem .6rem;border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;transition:all .3s;min-width:54px;}
+.ct-node.def{background:rgba(255,255,255,.04);color:var(--text-secondary);}
+.ct-node.active{background:rgba(244,63,94,.2);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.ct-node.returning{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.ct-node.cached{background:rgba(6,182,212,.12);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.ct-node.base{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.ct-row{display:flex;gap:6px;justify-content:center;margin-bottom:4px;}
+
+/* tree node for BST */
+.t-node{display:inline-flex;align-items:center;justify-content:center;width:30px;height:26px;border-radius:5px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;transition:all .3s;}
+.t-node.def{background:rgba(255,255,255,.04);color:var(--text-secondary);}
+.t-node.active{background:rgba(244,63,94,.2);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.t-node.done{background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
+.t-node.empty{background:transparent;border-color:transparent;}
+.t-row{display:flex;gap:4px;justify-content:center;margin-bottom:3px;}
+
+/* hanoi pegs */
+.peg-area{display:flex;justify-content:center;gap:10px;align-items:flex-end;min-height:80px;}
+.peg-col{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.peg-label{font-size:.6rem;font-weight:700;color:var(--text-secondary);margin-top:3px;font-family:'JetBrains Mono',monospace;}
+.peg-rod{width:4px;height:13px;background:var(--border-color);border-radius:2px;}
+.disk{height:15px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:700;color:#fff;}
+
+/* queens grid */
+.q-grid{display:inline-flex;flex-direction:column;gap:2px;}
+.q-row{display:flex;gap:2px;}
+.q-cell{width:26px;height:24px;border-radius:4px;border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .3s;}
+.q-cell.light{background:rgba(255,255,255,.05);}
+.q-cell.dark2{background:rgba(0,0,0,.2);}
+.q-cell.queen{background:rgba(16,185,129,.15);border-color:var(--primary-green);}
+.q-cell.conflict{background:rgba(239,68,68,.12);border-color:var(--primary-red);}
+
+/* file tree */
+.ftree-line{font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.9;white-space:pre;}
+.ftree-line.ft-active{color:var(--primary-indigo);font-weight:700;}
+.ftree-line.ft-visited{color:var(--primary-green);}
+.ftree-line.ft-idle{color:var(--text-secondary);}
+
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-indigo);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-indigo);}
+
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-indigo);}
+
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-indigo);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-indigo);text-shadow:0 0 40px rgba(244,63,94,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-indigo),var(--primary-violet));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-violet),var(--primary-indigo));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(244,63,94,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+.rec-cta-viz{display:inline-flex;flex-direction:column;gap:4px;margin:2rem auto;animation:recPulse 2.2s ease-in-out infinite;}
+.rcta-frame{padding:.3rem .9rem;border-radius:6px;border:1px solid;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;}
+@keyframes recPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-container">
+    <a class="logo" href="index.html"><div class="logo-icon">ƒ(n)</div><span>DSA Visualizer</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle">
+        <svg viewBox="0 0 24 24" id="themeIcon"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="recursion_L1.html">Recursion</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Recursion in the <span class="highlight">Real World</span></h1>
+  <p>The self-referential superpower behind file systems, compilers, AI game trees, backtracking solvers, and every divide-and-conquer algorithm that powers modern software.</p>
+</div>
+
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — A Function That Calls Itself on a Smaller Problem</div>
+    <p class="concept-desc">Recursion solves a problem by <strong>reducing it to a smaller instance of the same problem</strong>, until reaching a <strong>base case</strong> that returns directly. Each call pushes a new <strong>stack frame</strong> onto the call stack — storing local variables and return address. When the base case fires, frames <strong>unwind in reverse</strong>, each returning its result upward. The key insight: many real-world problems are <em>self-similar</em> — a directory contains directories, a tree has subtrees, fib(n) depends on fib(n−1) and fib(n−2). Recursion lets the code mirror that structure directly.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1rem;text-align:center">🎮 Step through factorial(5) — watch the call stack grow then unwind</div>
+      <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <div>
+          <div style="font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;font-weight:700;letter-spacing:.5px;margin-bottom:.5rem;text-align:center">Call Stack (top = newest)</div>
+          <div class="stack-wrap" id="conceptStack"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;min-width:160px;text-align:center">
+          <div id="conceptFormula" style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text-secondary);min-height:22px;"></div>
+          <div id="conceptResult" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--primary-indigo);min-height:36px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Call</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Call" — watch factorial(5) build and unwind the call stack</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.12);border:2px solid var(--primary-indigo)"></div>Calling down</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.1);border:2px solid var(--primary-orange)"></div>Base case (stop!)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.1);border:2px solid var(--primary-green)"></div>Returning (unwinding)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Recursion is not just a textbook exercise — it's the natural way to express algorithms over self-similar data. From file systems to compilers to AI solvers, recursion appears wherever a problem contains a smaller copy of itself.</p>
+  <div class="app-grid">
+
+    <!-- 1. File System Traversal -->
+    <div class="app-card indigo">
+      <div class="card-header">
+        <div class="card-icon indigo">📁</div>
+        <div class="card-title-wrap">
+          <h3>File System Traversal — Recursive Directory Walk</h3>
+          <p>Every <code style="color:var(--primary-indigo);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">find</code> command, VS Code file search, and <code style="color:var(--primary-indigo);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">du -sh</code> utility is a <strong>recursive DFS on a directory tree</strong>. A folder contains files and more folders — that self-similar structure is exactly what recursion handles naturally. O(total files + dirs) time, O(max depth) stack space.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Recursive DFS through a project directory — enter → recurse → backtrack</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="fsStep()">▶ Visit Next</button>
+            <button class="d-btn reset" onclick="fsReset()">↺ Reset</button>
+          </div>
+          <div id="fsTree" style="min-height:110px;"></div>
+          <div class="status-line" id="fsStatus">DFS enters a dir → recurses into children → backtracks on return</div>
+          <div class="step-info" id="fsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Merge Sort -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🔀</div>
+        <div class="card-title-wrap">
+          <h3>Merge Sort — Divide and Conquer Sorting</h3>
+          <p>Merge Sort is <strong>pure recursion</strong>: split the array in half, recursively sort each half, then merge the two sorted halves. The recurrence T(n) = 2T(n/2) + O(n) solves to <strong>O(n log n)</strong> by Master Theorem. Used in Python's Timsort, Java's Arrays.sort for objects, and Git's diff algorithm.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch merge sort divide the array then merge sorted halves back up the call tree</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="msStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="msReset()">↺ Reset</button>
+          </div>
+          <div id="msViz" style="font-family:'JetBrains Mono',monospace;font-size:.71rem;line-height:1.85;min-height:96px;max-height:130px;overflow-y:auto;"></div>
+          <div class="status-line" id="msStatus">mergeSort([5,3,8,1,9,2]) — divide until single elements, merge back up</div>
+          <div class="step-info" id="msInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. BST Traversal -->
+    <div class="app-card blue">
+      <div class="card-header">
+        <div class="card-icon blue">🌳</div>
+        <div class="card-title-wrap">
+          <h3>BST Traversal — In-Order, Pre-Order, Post-Order</h3>
+          <p>Binary trees are <strong>self-similar by definition</strong> — a tree is a node with a left subtree and a right subtree. All three traversals are naturally recursive: in-order gives sorted output from a BST, pre-order is used by compilers to serialize ASTs, post-order evaluates expression trees bottom-up. O(n) time, O(h) stack depth.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 In-order traversal of a BST — Left → Root → Right produces sorted output</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="bstStep()">▶ Visit Node</button>
+            <button class="d-btn reset" onclick="bstReset()">↺ Reset</button>
+          </div>
+          <div id="bstViz" style="margin-bottom:.5rem;"></div>
+          <div class="status-line" id="bstStatus">In-order traversal produces the BST values in sorted order</div>
+          <div class="step-info" id="bstInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. N-Queens Backtracking -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">♟️</div>
+        <div class="card-title-wrap">
+          <h3>Backtracking — N-Queens Constraint Solver</h3>
+          <p>Backtracking is <strong>recursion with pruning</strong>: place a queen in each row, recurse to the next row trying all valid columns. If a conflict is found — <em>backtrack</em> (undo placement) and try the next option. Powers Sudoku solvers, chess engines, SAT solvers, and all AI constraint-satisfaction problems. The call stack IS the decision trail.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 4-Queens backtracking — place queens row by row, undo on conflict</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="queensStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="queensReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center;margin-bottom:.5rem;"><div class="q-grid" id="queensViz"></div></div>
+          <div class="status-line" id="queensStatus">Recurse row by row — backtrack when no safe column found</div>
+          <div class="step-info" id="queensInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Tower of Hanoi -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗼</div>
+        <div class="card-title-wrap">
+          <h3>Tower of Hanoi — Recursive Decomposition</h3>
+          <p>Hanoi elegantly demonstrates recursive thinking: to move n disks A→C, move n−1 disks A→B (using C as spare), move the largest disk A→C, then move n−1 disks B→C (using A as spare). This O(2ⁿ) solution is <em>provably optimal</em>. Used to teach recursive decomposition and in OS snapshot/backup scheduling logic.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Tower of Hanoi with 3 disks — every single move is one recursive call</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="hanoiStep()">▶ Next Move</button>
+            <button class="d-btn reset" onclick="hanoiReset()">↺ Reset</button>
+          </div>
+          <div class="peg-area" id="hanoiViz"></div>
+          <div class="status-line" id="hanoiStatus">3 disks → 2³ − 1 = 7 moves total to transfer peg A → peg C</div>
+          <div class="step-info" id="hanoiInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Memoized Fibonacci -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🐇</div>
+        <div class="card-title-wrap">
+          <h3>Memoized Recursion — Top-Down Dynamic Programming</h3>
+          <p>Naive recursive Fibonacci is O(2ⁿ) — it recomputes fib(3) dozens of times. Add a <strong>memo cache</strong> and each subproblem is solved exactly once: O(n) time, O(n) space. This pattern (recursion + caching = memoization) is top-down DP. It underlies Python's <code style="color:var(--primary-green);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">@lru_cache</code> and React's useMemo.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 fib(6) with memo cache — red = computed fresh, cyan = returned from cache</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="memoStep()">▶ Next Call</button>
+            <button class="d-btn reset" onclick="memoReset()">↺ Reset</button>
+          </div>
+          <div id="memoViz" style="font-family:'JetBrains Mono',monospace;font-size:.71rem;line-height:1.85;min-height:96px;max-height:130px;overflow-y:auto;"></div>
+          <div class="status-line" id="memoStatus">fib(6): each unique subproblem computed once, rest from cache</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Computed: <b id="memoComputed" style="color:var(--primary-indigo)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Cache hits: <b id="memoCached" style="color:var(--primary-cyan)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Recursion's complexity depends on both the total number of calls AND how deep the call stack grows. Stack depth = space. Total calls × work per call = time.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Algorithm / Pattern</th><th>Time</th><th>Space (Stack)</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Factorial / linear recursion</td><td class="ok">O(n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">One call per level — stack grows linearly with n</td></tr>
+        <tr><td class="op">Binary search (recursive)</td><td class="good">O(log n)</td><td class="good">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Halves input each call — only log n frames on stack</td></tr>
+        <tr><td class="op">Tree traversal (DFS)</td><td class="ok">O(n)</td><td class="ok">O(h)</td><td style="color:var(--text-secondary);font-size:.82rem">Visits each node once; stack depth = tree height h</td></tr>
+        <tr><td class="op">Merge Sort</td><td class="ok">O(n log n)</td><td class="ok">O(n + log n)</td><td style="color:var(--text-secondary);font-size:.82rem">O(log n) stack frames + O(n) merge buffer; stable sort</td></tr>
+        <tr><td class="op">Fibonacci (naive)</td><td class="bad">O(2ⁿ)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Exponential calls; only n frames live on stack at once</td></tr>
+        <tr><td class="op">Fibonacci (memoized)</td><td class="ok">O(n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Each subproblem solved once; O(n) memo + O(n) stack</td></tr>
+        <tr><td class="op">Tower of Hanoi</td><td class="bad">O(2ⁿ)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">2ⁿ−1 moves are required; call stack only n frames deep</td></tr>
+        <tr><td class="op">Backtracking — N-Queens</td><td class="bad">O(n!)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Worst case explores n! paths; stack depth = n (one per row)</td></tr>
+        <tr><td class="op">Tail recursion (with TCO)</td><td class="ok">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Tail call optimization reuses single frame — iterative speed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Stack depth is your <strong style="color:var(--primary-indigo)">space complexity</strong> — not total call count. Naive Fibonacci makes O(2ⁿ) total calls but only keeps O(n) frames alive at once (it explores depth-first). Stack overflow typically occurs at ~10,000–50,000 frames — so O(n) recursion on large inputs requires iterative conversion, memoization, or tail-call optimization.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Recursion writes complex algorithms in elegant, readable code — but comes with real runtime costs. Know both sides before choosing it in production.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Mirrors self-similar problem structure exactly</h4><p>Tree traversal, file walks, divide-and-conquer, backtracking — these problems ARE recursive by nature. Code that matches the mathematical definition is easier to write, verify, and explain. The recursive structure of the code mirrors the recursive structure of the data.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Dramatically shorter and more readable code</h4><p>A recursive in-order BST traversal is 3 lines. The equivalent iterative version with an explicit stack is 15+ lines. For tree and graph problems the reduction is typically 3–5×. Less code means fewer bugs and faster development.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Call stack manages traversal state automatically</h4><p>Each call gets its own local variables — the runtime stack is a free implicit state machine. You don't need to manually push/pop a data structure or track "where am I in the traversal." The language runtime handles all bookkeeping.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Enables backtracking with clean undo semantics</h4><p>When a recursive call returns, all its local changes are automatically discarded. Backtracking solvers (N-Queens, Sudoku, combinatorial search) get undo for free — just "try, recurse, and the unwind IS the undo." Iterative backtracking requires an explicit undo stack.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Memoization converts to top-down DP trivially</h4><p>Add a cache dictionary to any recursive function and you get memoized top-down DP. Easier to derive than bottom-up iteration when the fill order is unclear. Python's @lru_cache makes this one line. The natural recursive solution becomes the DP solution.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural fit for variable-depth data structures</h4><p>File systems, nested JSON, org charts, XML — when depth is unknown ahead of time, recursion handles any depth cleanly. An iterative version would need a dynamic stack that approximates what recursion gives you for free through the language runtime.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Stack overflow for deep recursion (n &gt; ~10,000)</h4><p>Each function call consumes stack memory (1–8 KB per frame). Python raises RecursionError at depth ~1,000 by default; Java/C throw StackOverflowError around 5,000–20,000 depending on JVM settings. Any O(n) recursion on large n must be converted to iteration for safety.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Function call overhead is significant</h4><p>Each recursive call pushes a stack frame, saves registers, jumps to function entry, then reverses all that on return. For tight inner loops this overhead is 5–20× slower than an equivalent iterative loop. Hot computational paths should always be iterative.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Naive recursion causes exponential redundant work</h4><p>Naive fib(40) makes 331 million calls, recomputing fib(2) 165 million times. Without memoization, overlapping subproblems explode recursion from O(n) to O(2ⁿ). Always ask: "Does this recurse on overlapping subproblems?" before writing naked recursion.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Debugging is painful — stack traces are thousands deep</h4><p>When a bug occurs at recursion depth 500, the stack trace is 500 lines long. Local variable interactions at each depth are non-obvious. Print-debugging recursive code is notoriously difficult. Add depth-limited logging or use a visualizer when debugging.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Most languages don't support tail call optimization (TCO)</h4><p>Tail-recursive functions CAN be compiled to O(1) space loops via TCO. But Python, Java, and JavaScript explicitly do not implement TCO. Only some Scheme, Haskell, and Scala compilers guarantee it. Never rely on TCO unless you control the compiler and runtime.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Base case errors cause infinite recursion or wrong answers</h4><p>An off-by-one in the base case causes either infinite recursion (stack overflow crash) or a silent wrong answer for small inputs. Always test n=0, n=1, and n=2 explicitly. Getting the base case right is the single most common source of bugs in recursive implementations.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Recursion — and When to Avoid It
+  </div>
+  <p class="section-sub">Recursion is the right tool when your problem has self-similar structure. Know when the overhead costs more than the elegance gains.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Recursion When...</div>
+      <div class="when-item"><div class="when-icon">🌳</div><div class="when-text"><h4>The problem is tree or graph structured</h4><p>Tree traversal, DFS in graphs, XML/JSON parsing, AST evaluation — any problem with branching recursive subproblems fits naturally. The recursive code structure mirrors the recursive data structure, making correctness obvious and easy to reason about.</p></div></div>
+      <div class="when-item"><div class="when-icon">✂️</div><div class="when-text"><h4>You can divide into identical smaller subproblems</h4><p>Merge sort (halves), binary search (half), quicksort (partitions), FFT (even/odd halves) — whenever the divide step is clean, recursion expresses the algorithm directly and enables Master Theorem complexity analysis without manual reasoning.</p></div></div>
+      <div class="when-item"><div class="when-icon">♟️</div><div class="when-text"><h4>Backtracking with automatic undo</h4><p>N-Queens, Sudoku, permutations, word search, maze solving — whenever you try an option, recurse, and need to undo on failure. The stack unwind IS the undo. Writing this iteratively requires an explicit undo stack of the same complexity.</p></div></div>
+      <div class="when-item"><div class="when-icon">📁</div><div class="when-text"><h4>Data has variable or unknown depth</h4><p>File systems, nested JSON, category hierarchies — when depth is not known at write time, recursion adapts to any depth. Iterative traversal of variable-depth structures requires a dynamic stack that approximates what the call stack provides automatically.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Top-down memoized DP is easier to derive</h4><p>When the bottom-up fill order is not immediately obvious (interval DP, tree DP, digit DP), write the recursive solution first and add <span class="when-code">@lru_cache</span>. You get correct memoized DP without reasoning about table ordering upfront.</p></div></div>
+      <div class="when-item"><div class="when-icon">📐</div><div class="when-text"><h4>Code clarity matters more than micro-performance</h4><p>In interviews, library code, and educational contexts, the 3-line recursive traversal communicates intent better than a 20-line iterative equivalent. Prefer recursion when correctness and clarity are the primary goals and n is bounded.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Recursion When...</div>
+      <div class="when-item"><div class="when-icon">📏</div><div class="when-text"><h4>Input size n &gt; ~10,000 (stack overflow risk)</h4><p>Python's default recursion limit is 1,000. Java typically allows ~5,000–20,000 frames. For large n, any O(n) recursion depth risks crash. Convert to iteration with an explicit stack, use sys.setrecursionlimit carefully in Python, or convert to bottom-up DP.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Hot inner loops with performance requirements</h4><p>If your function runs millions of times per second (physics engine, renderer, game loop), function call overhead matters. Recursive Fibonacci is ~100× slower than iterative for large n. Convert to iteration or trampolining when performance is critical.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Simple linear iteration with no branching</h4><p>Summing an array, computing a running max, reversing a string — these are O(n) loops with no recursive substructure. Writing them recursively adds overhead and obscures intent. Use a <span class="when-code">for</span> loop. Recursion should not replace iteration for flat sequences.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Overlapping subproblems without memoization</h4><p>Never write recursive Fibonacci, coin change, or LCS without a cache. Naked overlapping recursion is always wrong — exponential when it should be polynomial. Add <span class="when-code">@lru_cache</span> or rewrite as bottom-up DP. There is no excuse for uncached overlapping recursion.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory-constrained environments</h4><p>In embedded systems, microcontrollers, and OS kernels with fixed small stacks, recursion is banned or heavily restricted. Each frame uses memory for locals, saved registers, and return address. Use explicit stacks stored in heap memory instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">🐛</div><div class="when-text"><h4>When you can't clearly identify the base case</h4><p>If defining when recursion should stop is unclear, the problem may not have recursive structure — or you're modeling it wrong. A missing or wrong base case causes infinite recursion. Step back and try an iterative, greedy, or mathematical approach instead.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Recursion problems</span></div>
+    <p class="cta-sub">You've seen how recursion powers file system traversal, merge sort, BST operations, backtracking solvers, Tower of Hanoi, and memoized DP.<br>Now prove you can apply these patterns to classic recursive interview and competitive programming problems.</p>
+    <div style="display:flex;justify-content:center">
+      <div class="rec-cta-viz">
+        <div class="rcta-frame" style="background:rgba(244,63,94,.15);border-color:rgba(244,63,94,.4);color:var(--primary-indigo)">factorial(5) → 5 × factorial(4)</div>
+        <div class="rcta-frame" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-violet)">&nbsp;&nbsp;factorial(4) → 4 × factorial(3)</div>
+        <div class="rcta-frame" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)">&nbsp;&nbsp;&nbsp;&nbsp;factorial(3) → 3 × factorial(2)</div>
+        <div class="rcta-frame" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factorial(2) → 2 × factorial(1)</div>
+        <div class="rcta-frame" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.35);color:var(--primary-green)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factorial(1) = 1  ← base case</div>
+      </div>
+    </div>
+    <a href="practice.html?topic=recursion" class="cta-btn">
+      <span>🔁 Solve Recursion Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ── THEME ── */
+const themes=['dark','light','blue'];
+const themeIcons={dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=themeIcons[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ══════════════════════════════════════════════
+   CONCEPT: factorial(5) call stack step-through
+══════════════════════════════════════════════ */
+const FACT_VALS=[1,1,2,6,24,120]; // factorial 0..5
+let cPhase=0, cFrames=[];
+
+function renderConceptStack(){
+  const el=document.getElementById('conceptStack');
+  el.innerHTML='';
+  // Display newest (top of stack) first
+  [...cFrames].reverse().forEach(f=>{
+    const d=document.createElement('div');
+    d.className='stack-frame '+f.state;
+    d.innerHTML=`<span>${f.label}</span><span class="frame-tag">${f.tag}</span>`;
+    el.appendChild(d);
+  });
+}
+
+function conceptStep(){
+  const TOTAL_PHASES = (5+1)*2; // 6 calling + 6 returning
+  if(cPhase <= 5){
+    // Calling down
+    const n = 5 - cPhase;
+    if(cFrames.length > 0) cFrames[cFrames.length-1].state = 'done';
+    const isBase = n <= 1;
+    cFrames.push({label: `factorial(${n})`, state: isBase ? 'base' : 'calling', tag: isBase ? 'BASE' : `depth ${cPhase}`});
+    renderConceptStack();
+    document.getElementById('conceptFormula').textContent = isBase ? `return 1` : `return ${n} × factorial(${n-1})`;
+    document.getElementById('conceptResult').textContent = isBase ? '→ 1' : '';
+    document.getElementById('conceptStatus').textContent = isBase
+      ? `Base case reached — factorial(${n}) = 1, start unwinding`
+      : `Calling factorial(${n}) — pushing frame onto stack`;
+    cPhase++;
+  } else {
+    // Returning / unwinding
+    const unwindStep = cPhase - 6;
+    const n = 1 + unwindStep; // n=1 returns first, then 2, 3, 4, 5
+    if(unwindStep >= cFrames.length){ conceptReset(); return; }
+    // mark top frame as returning
+    const frameIdx = cFrames.length - 1 - unwindStep;
+    if(frameIdx < 0){ conceptReset(); return; }
+    cFrames[frameIdx].state = 'returning';
+    cFrames[frameIdx].tag = `= ${FACT_VALS[n]}`;
+    if(frameIdx + 1 < cFrames.length) cFrames[frameIdx+1].state = 'done';
+    renderConceptStack();
+    document.getElementById('conceptFormula').textContent = n <= 1 ? `return 1` : `${n} × ${FACT_VALS[n-1]} = ${FACT_VALS[n]}`;
+    document.getElementById('conceptResult').textContent = `→ ${FACT_VALS[n]}`;
+    document.getElementById('conceptStatus').textContent = frameIdx === 0
+      ? `✅ factorial(5) = ${FACT_VALS[5]} — all frames returned!`
+      : `factorial(${n}) returns ${FACT_VALS[n]} to its caller above`;
+    cPhase++;
+  }
+}
+
+function conceptReset(){
+  cPhase=0; cFrames=[];
+  renderConceptStack();
+  document.getElementById('conceptFormula').textContent='';
+  document.getElementById('conceptResult').textContent='';
+  document.getElementById('conceptStatus').textContent='Click "Next Call" — watch factorial(5) build and unwind the call stack';
+}
+conceptReset();
+
+/* ══════════════════════════════════════════════
+   1. FILE SYSTEM TRAVERSAL
+══════════════════════════════════════════════ */
+const FS_NODES = [
+  {label:'project/',     type:'dir', depth:0},
+  {label:'src/',         type:'dir', depth:1},
+  {label:'main.cpp',     type:'file',depth:2},
+  {label:'utils/',       type:'dir', depth:2},
+  {label:'helper.cpp',   type:'file',depth:3},
+  {label:'config.h',     type:'file',depth:3},
+  {label:'tests/',       type:'dir', depth:1},
+  {label:'test_main.cpp',type:'file',depth:2},
+  {label:'README.md',    type:'file',depth:0}
+];
+let fsIdx=0, fsVisited=new Set();
+
+function fsRenderTree(){
+  const el=document.getElementById('fsTree');
+  el.innerHTML='';
+  FS_NODES.forEach((n,i)=>{
+    const indent = '  '.repeat(n.depth);
+    const icon = n.type==='dir' ? '📁' : (n.label.endsWith('.md') ? '📄' : '📝');
+    const isCur = i === fsIdx-1 && fsIdx > 0;
+    const isVis = fsVisited.has(i) && !isCur;
+    const cls = isCur ? 'ft-active' : isVis ? 'ft-visited' : 'ft-idle';
+    const prefix = isCur ? '► ' : isVis ? '✓ ' : '  ';
+    const d=document.createElement('div');
+    d.className='ftree-line '+cls;
+    d.textContent=indent+prefix+icon+' '+n.label;
+    el.appendChild(d);
+  });
+}
+
+function fsReset(){
+  fsIdx=0; fsVisited=new Set(); fsRenderTree();
+  document.getElementById('fsStatus').textContent='DFS enters a dir → recurses into children → backtracks on return';
+  document.getElementById('fsInfo').textContent='';
+}
+
+function fsStep(){
+  if(fsIdx >= FS_NODES.length){ fsReset(); return; }
+  fsVisited.add(fsIdx);
+  const n = FS_NODES[fsIdx]; fsIdx++;
+  fsRenderTree();
+  document.getElementById('fsStatus').innerHTML = n.type==='dir'
+    ? `📁 Enter dir <span>"${n.label}"</span> — depth ${n.depth}, recurse into children`
+    : `📝 Found file <span>"${n.label}"</span> — depth ${n.depth}, base case, return`;
+  document.getElementById('fsInfo').textContent=`Visited ${fsVisited.size} / ${FS_NODES.length} nodes total`;
+}
+fsReset();
+
+/* ══════════════════════════════════════════════
+   2. MERGE SORT
+══════════════════════════════════════════════ */
+const MS_ARR = [5,3,8,1,9,2];
+let msLog=[], msLogIdx=0;
+
+function buildMsLog(arr, depth, log){
+  if(arr.length <= 1){
+    log.push({type:'base', arr:[...arr], depth, msg:`base [${arr}] — length 1, return as-is`});
+    return arr;
+  }
+  const mid = Math.floor(arr.length/2);
+  const L=arr.slice(0,mid), R=arr.slice(mid);
+  log.push({type:'split', arr:[...arr], L:[...L], R:[...R], depth, msg:`split [${arr.join(',')}] → [${L.join(',')}] | [${R.join(',')}]`});
+  const sL = buildMsLog(L, depth+1, log);
+  const sR = buildMsLog(R, depth+1, log);
+  const merged=[]; let i=0,j=0;
+  while(i<sL.length&&j<sR.length){ if(sL[i]<=sR[j]) merged.push(sL[i++]); else merged.push(sR[j++]); }
+  while(i<sL.length) merged.push(sL[i++]);
+  while(j<sR.length) merged.push(sR[j++]);
+  log.push({type:'merge', L:sL, R:sR, merged:[...merged], depth, msg:`merge [${sL.join(',')}] + [${sR.join(',')}] → [${merged.join(',')}]`});
+  return merged;
+}
+
+function msReset(){
+  msLog=[]; msLogIdx=0;
+  buildMsLog([...MS_ARR], 0, msLog);
+  const el=document.getElementById('msViz');
+  el.innerHTML='<span style="color:var(--text-secondary)">Click ▶ to trace merge sort step by step...</span>';
+  document.getElementById('msStatus').textContent='mergeSort([5,3,8,1,9,2]) — divide until single elements, merge back up';
+  document.getElementById('msInfo').textContent='';
+}
+
+function msStep(){
+  if(msLogIdx >= msLog.length){ msReset(); return; }
+  const s = msLog[msLogIdx];
+  const el = document.getElementById('msViz');
+  if(msLogIdx === 0) el.innerHTML = '';
+  const depthColors = ['var(--primary-indigo)','var(--primary-violet)','var(--primary-blue)','var(--primary-cyan)'];
+  const color = depthColors[Math.min(s.depth, depthColors.length-1)];
+  const indent = '  '.repeat(s.depth);
+  const icons = {split:'↓',base:'○',merge:'↑'};
+  const line = document.createElement('div');
+  line.style.cssText = `color:${s.type==='merge'?'var(--primary-green)':s.type==='base'?'var(--primary-orange)':color};white-space:pre;`;
+  line.textContent = `${indent}${icons[s.type]} ${s.msg}`;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+  document.getElementById('msStatus').innerHTML=`<span>Step ${msLogIdx+1}/${msLog.length}</span>: ${s.type} at depth ${s.depth}`;
+  document.getElementById('msInfo').innerHTML=`<b>${s.type==='merge'?'↑ returning (merge)':s.type==='base'?'○ base case':'↓ recursing (split)'}</b> — subarray size ${s.arr?s.arr.length:s.merged.length}`;
+  msLogIdx++;
+}
+msReset();
+
+/* ══════════════════════════════════════════════
+   3. BST IN-ORDER TRAVERSAL
+   Tree layout:
+         8
+        / \
+       3  10
+      / \    \
+     1   6   14
+        / \
+       4   7
+   In-order: 1 3 4 6 7 8 10 14
+══════════════════════════════════════════════ */
+const BST_LAYOUT = [
+  [{v:8}],
+  [{v:3},{v:null},{v:10}],
+  [{v:1},{v:6},{v:null},{v:14}],
+  [{v:null},{v:4},{v:7},{v:null},{v:null},{v:null}]
+];
+const IN_ORDER = [1,3,4,6,7,8,10,14];
+let bstIdx=0, bstVisited=new Set();
+
+function renderBST(){
+  const el=document.getElementById('bstViz'); el.innerHTML='';
+  BST_LAYOUT.forEach(row=>{
+    const rowDiv=document.createElement('div'); rowDiv.className='t-row';
+    row.forEach(({v})=>{
+      const cell=document.createElement('div');
+      if(v===null){cell.className='t-node empty'; rowDiv.appendChild(cell); return;}
+      const isCur = v===IN_ORDER[bstIdx-1] && bstIdx>0;
+      const isDone = bstVisited.has(v) && !isCur;
+      cell.className='t-node '+(isCur?'active':isDone?'done':'def');
+      cell.textContent=v;
+      rowDiv.appendChild(cell);
+    });
+    el.appendChild(rowDiv);
+  });
+}
+
+function bstReset(){
+  bstIdx=0; bstVisited=new Set(); renderBST();
+  document.getElementById('bstStatus').textContent='In-order traversal produces the BST values in sorted order';
+  document.getElementById('bstInfo').textContent='';
+}
+
+function bstStep(){
+  if(bstIdx >= IN_ORDER.length){ bstReset(); return; }
+  bstVisited.add(IN_ORDER[bstIdx]); bstIdx++;
+  renderBST();
+  document.getElementById('bstStatus').innerHTML=`Visit node <span>${IN_ORDER[bstIdx-1]}</span> — in-order position ${bstIdx}/${IN_ORDER.length}`;
+  document.getElementById('bstInfo').innerHTML=`Sorted output so far: <b>[${IN_ORDER.slice(0,bstIdx).join(', ')}]</b>`;
+}
+bstReset();
+
+/* ══════════════════════════════════════════════
+   4. N-QUEENS BACKTRACKING (4x4)
+══════════════════════════════════════════════ */
+const QN=4;
+let qSteps=[], qStepIdx=0;
+
+function qIsSafe(board, row, col){
+  for(let i=0;i<row;i++) if(board[i]===col) return false;
+  for(let i=row-1,j=col-1;i>=0&&j>=0;i--,j--) if(board[i]===j) return false;
+  for(let i=row-1,j=col+1;i>=0&&j<QN;i--,j++) if(board[i]===j) return false;
+  return true;
+}
+
+function buildQSteps(board, row, steps){
+  if(row===QN){ steps.push({board:[...board], msg:`✅ Solution found! Queens at cols [${board.join(',')}]`, type:'sol'}); return true; }
+  for(let col=0;col<QN;col++){
+    if(qIsSafe(board,row,col)){
+      board[row]=col;
+      steps.push({board:[...board], msg:`Row ${row}: place queen at col ${col} — safe ✓`, type:'place'});
+      if(buildQSteps(board,row+1,steps)) return true;
+      board[row]=-1;
+      steps.push({board:[...board], msg:`Backtrack! Remove from row ${row} col ${col} — no solution down this path`, type:'bt'});
+    }
+  }
+  return false;
+}
+
+function queensReset(){
+  qSteps=[]; qStepIdx=0;
+  buildQSteps(Array(QN).fill(-1), 0, qSteps);
+  renderQueens(Array(QN).fill(-1));
+  document.getElementById('queensStatus').textContent='Recurse row by row — backtrack when no safe column found';
+  document.getElementById('queensInfo').textContent='';
+}
+
+function renderQueens(board){
+  const el=document.getElementById('queensViz'); el.innerHTML='';
+  for(let r=0;r<QN;r++){
+    const row=document.createElement('div'); row.className='q-row';
+    for(let c=0;c<QN;c++){
+      const cell=document.createElement('div');
+      const hasQ = board[r]===c;
+      cell.className='q-cell '+(hasQ?'queen':(r+c)%2===0?'light':'dark2');
+      cell.textContent=hasQ?'♛':'';
+      row.appendChild(cell);
+    }
+    el.appendChild(row);
+  }
+}
+
+function queensStep(){
+  if(qStepIdx >= qSteps.length){ queensReset(); return; }
+  const s=qSteps[qStepIdx];
+  renderQueens(s.board);
+  const colors={place:'var(--primary-green)',bt:'var(--primary-red)',sol:'var(--primary-orange)'};
+  document.getElementById('queensStatus').innerHTML=`<span style="color:${colors[s.type]}">${s.msg}</span>`;
+  document.getElementById('queensInfo').innerHTML=`Step ${qStepIdx+1}/${qSteps.length} — <b>${s.type==='bt'?'backtrack':s.type==='sol'?'solution':s.type}</b>`;
+  qStepIdx++;
+}
+queensReset();
+
+/* ══════════════════════════════════════════════
+   5. TOWER OF HANOI (3 disks)
+══════════════════════════════════════════════ */
+const HN=3;
+let hMoves=[], hMoveIdx=0;
+let hPegs=[[],[],[]]; // A=0, B=1, C=2; array = disk stack (top = last element)
+const DISK_COLORS=['#f43f5e','#8b5cf6','#06b6d4'];
+const PEG_NAMES=['A','B','C'];
+
+function buildHanoi(n, from, to, via, moves){
+  if(n===0) return;
+  buildHanoi(n-1, from, via, to, moves);
+  moves.push([from, to, n]);
+  buildHanoi(n-1, via, to, from, moves);
+}
+
+function renderHanoi(){
+  const el=document.getElementById('hanoiViz'); el.innerHTML='';
+  hPegs.forEach((peg,pi)=>{
+    const col=document.createElement('div'); col.className='peg-col';
+    // Fill empty slots from top
+    const slots=Array(HN).fill(null);
+    peg.forEach((disk,i)=>{ slots[HN-1-i]=disk; }); // bottom disk at index HN-1
+    slots.forEach(disk=>{
+      if(disk){
+        const w=20+disk*14;
+        const d=document.createElement('div');
+        d.className='disk';
+        d.style.cssText=`width:${w}px;background:${DISK_COLORS[disk-1]};`;
+        d.textContent=disk;
+        col.appendChild(d);
+      } else {
+        const rod=document.createElement('div'); rod.className='peg-rod'; col.appendChild(rod);
+      }
+    });
+    const lbl=document.createElement('div'); lbl.className='peg-label'; lbl.textContent=PEG_NAMES[pi];
+    col.appendChild(lbl);
+    el.appendChild(col);
+  });
+}
+
+function hanoiReset(){
+  hMoves=[]; hMoveIdx=0;
+  buildHanoi(HN, 0, 2, 1, hMoves);
+  hPegs=[[3,2,1],[],[]]; // peg A: disk 3 (bottom) to 1 (top)
+  renderHanoi();
+  document.getElementById('hanoiStatus').textContent='3 disks → 2³ − 1 = 7 moves total to transfer peg A → peg C';
+  document.getElementById('hanoiInfo').textContent='';
+}
+
+function hanoiStep(){
+  if(hMoveIdx >= hMoves.length){ hanoiReset(); return; }
+  const [from, to, disk] = hMoves[hMoveIdx];
+  hPegs[to].push(hPegs[from].pop());
+  renderHanoi();
+  document.getElementById('hanoiStatus').innerHTML=`Move disk <span>${disk}</span>: peg <span>${PEG_NAMES[from]}</span> → peg <span>${PEG_NAMES[to]}</span>`;
+  document.getElementById('hanoiInfo').innerHTML=`Move ${hMoveIdx+1} of ${hMoves.length} — recursive decomposition depth: <b>${HN}</b>`;
+  hMoveIdx++;
+}
+hanoiReset();
+
+/* ══════════════════════════════════════════════
+   6. MEMOIZED FIBONACCI fib(6)
+══════════════════════════════════════════════ */
+const MEMO_N=6;
+let memoSteps=[], memoStepIdx=0, memoComputedCount=0, memoCachedCount=0;
+
+function buildMemoSteps(n, cache, steps){
+  if(n<=1){
+    steps.push({n, type:'base', result:n, msg:`fib(${n}) = ${n}  [base case]`});
+    cache[n]=n; return n;
+  }
+  if(cache[n]!==undefined){
+    steps.push({n, type:'cache', result:cache[n], msg:`fib(${n}) = ${cache[n]}  [cache hit ✓ — saved recomputation]`});
+    return cache[n];
+  }
+  steps.push({n, type:'call', result:null, msg:`fib(${n}): need fib(${n-1}) + fib(${n-2}) — call both`});
+  const l=buildMemoSteps(n-1, cache, steps);
+  const r=buildMemoSteps(n-2, cache, steps);
+  const res=l+r; cache[n]=res;
+  steps.push({n, type:'return', result:res, msg:`fib(${n}) = ${l}+${r} = ${res}  [computed & stored in cache]`});
+  return res;
+}
+
+function memoReset(){
+  memoSteps=[]; memoStepIdx=0; memoComputedCount=0; memoCachedCount=0;
+  buildMemoSteps(MEMO_N, {}, memoSteps);
+  const el=document.getElementById('memoViz');
+  el.innerHTML='<span style="color:var(--text-secondary)">Click ▶ to trace fib(6) with memoization...</span>';
+  document.getElementById('memoStatus').textContent='fib(6): each unique subproblem computed once, rest from cache';
+  document.getElementById('memoComputed').textContent='0';
+  document.getElementById('memoCached').textContent='0';
+}
+
+function memoStep(){
+  if(memoStepIdx >= memoSteps.length){ memoReset(); return; }
+  const s=memoSteps[memoStepIdx];
+  const el=document.getElementById('memoViz');
+  if(memoStepIdx===0) el.innerHTML='';
+  const colors={call:'var(--primary-indigo)',base:'var(--primary-orange)',return:'var(--primary-green)',cache:'var(--primary-cyan)'};
+  const icons={call:'→',base:'○',return:'←',cache:'✓'};
+  const line=document.createElement('div');
+  line.style.cssText=`color:${colors[s.type]};white-space:pre;`;
+  line.textContent=`${icons[s.type]} ${s.msg}`;
+  el.appendChild(line);
+  el.scrollTop=el.scrollHeight;
+  if(s.type==='return'||s.type==='base') memoComputedCount++;
+  if(s.type==='cache') memoCachedCount++;
+  document.getElementById('memoStatus').innerHTML=`<span>${s.msg}</span>`;
+  document.getElementById('memoComputed').textContent=memoComputedCount;
+  document.getElementById('memoCached').textContent=memoCachedCount;
+  memoStepIdx++;
+}
+memoReset();
+</script>
+</body>
+</html>

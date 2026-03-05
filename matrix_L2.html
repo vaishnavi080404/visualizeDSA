@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix - Level 2 | DSA Visualizer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-green:  #10b981;
+      --primary-cyan:   #06b6d4;
+      --primary-purple: #8b5cf6;
+      --primary-orange: #f59e0b;
+      --primary-red:    #ef4444;
+      --primary-blue:   #3b82f6;
+      --primary-pink:   #ec4899;
+      --dark-bg:    #0a0a0a;
+      --card-bg:    #1a1a1a;
+      --text-primary:   #ffffff;
+      --text-secondary: #a0a0a0;
+      --border-color:   #2a2a2a;
+      --nav-bg:     rgba(10,10,10,0.85);
+      --code-bg:    #0d1117;
+      --terminal-bg:#0d1117;
+    }
+    [data-theme="light"] {
+      --dark-bg:#f8fafc; --card-bg:#ffffff; --text-primary:#0f172a;
+      --text-secondary:#475569; --border-color:#e2e8f0;
+      --nav-bg:rgba(248,250,252,0.85); --code-bg:#f1f5f9; --terminal-bg:#f1f5f9;
+      --primary-cyan:#0891b2; --primary-green:#059669;
+    }
+    [data-theme="blue"] {
+      --dark-bg:#011425; --card-bg:#1e293b; --text-primary:#ffffff;
+      --text-secondary:#94a3b8; --border-color:#1e3a5f;
+      --nav-bg:rgba(1,20,37,0.85); --code-bg:#011425; --terminal-bg:#011425;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+
+    /* ── NAV ── */
+    nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);}
+    .nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+    .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+    .logo-icon{width:35px;height:35px;background:linear-gradient(135deg,var(--primary-green),var(--primary-cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+    .nav-links{display:flex;gap:2.5rem;list-style:none;}
+    .nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+    .nav-links a:hover{color:var(--primary-green);}
+    .theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+    .theme-toggle:hover{border-color:var(--primary-cyan);background:rgba(6,182,212,.1);}
+    .theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+
+    /* ── LAYOUT ── */
+    .container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+    .breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+    .breadcrumb a{color:var(--text-secondary);text-decoration:none;transition:.3s;}
+    .breadcrumb a:hover{color:var(--primary-cyan);}
+    .breadcrumb span.sep{opacity:.5;}
+    .page-header{margin-bottom:3rem;}
+    .page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem;}
+    .level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+    .level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+    .level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+
+    /* ── OPERATION SELECTOR ── */
+    .op-selector{display:flex;gap:1rem;margin:2rem 0;padding:1.2rem;background:var(--card-bg);border-radius:20px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+    .op-option{padding:1rem 1.8rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:14px;cursor:pointer;transition:all .3s;text-align:center;min-width:155px;}
+    .op-option:hover{border-color:var(--primary-cyan);transform:translateY(-3px);box-shadow:0 8px 20px rgba(6,182,212,.15);}
+    .op-option.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 6px 20px rgba(6,182,212,.3);}
+    .op-icon{font-size:2rem;margin-bottom:.5rem;}
+    .op-title{font-weight:700;font-size:1rem;margin-bottom:.25rem;}
+    .op-desc{font-size:.8rem;color:var(--text-secondary);}
+    .op-option.active .op-desc{color:rgba(255,255,255,.8);}
+
+    /* ── SECTION CARD ── */
+    .section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+    .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+    .section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;flex-shrink:0;}
+    .section-title{font-size:1.8rem;font-weight:700;}
+    .content-title{font-size:1.2rem;font-weight:600;margin-bottom:1rem;color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;}
+    .content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1rem;}
+
+    /* ── VISUALIZER GRID ── */
+    .visualizer-grid{display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;}
+    @media(max-width:900px){.visualizer-grid{grid-template-columns:1fr;}}
+
+    /* ── PSEUDO CODE ── */
+    .pseudo-code-container{background:var(--card-bg);border-radius:16px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);position:sticky;top:90px;max-height:620px;overflow-y:auto;}
+    .pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:18px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:16px;letter-spacing:1px;}
+    .pseudo-step{background:var(--code-bg);padding:11px 14px;margin:8px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;}
+    .pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00aabb);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+    .pseudo-step strong{color:var(--primary-cyan);}
+    .pseudo-step.active strong{color:#000;font-weight:800;}
+
+    /* ── VISUALIZATION CARD ── */
+    .viz-card{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);overflow:hidden;}
+    .viz-card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:18px 24px;border-bottom:2px solid var(--border-color);}
+    .viz-card-header h5{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:#fff;margin:0;}
+    .viz-card-body{background:var(--code-bg);padding:28px;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+    .viz-card-footer{background:var(--card-bg);padding:18px 24px;border-top:2px solid var(--border-color);}
+
+    /* ── MATRIX GRID ── */
+    .matrix-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+    .matrix-row-labels{display:flex;flex-direction:column;gap:4px;}
+    .matrix-with-col-labels{display:flex;gap:8px;align-items:center;}
+    .col-labels{display:flex;gap:4px;margin-left:34px;margin-bottom:4px;}
+    .col-label,.row-label{width:54px;height:22px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-secondary);font-weight:600;}
+    .row-label{width:30px;height:54px;writing-mode:horizontal-lr;}
+    .matrix-grid-container{display:flex;flex-direction:column;gap:4px;}
+    .matrix-row{display:flex;gap:4px;}
+    .m-cell{
+      width:54px;height:54px;display:flex;align-items:center;justify-content:center;
+      font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;
+      border:2px solid var(--border-color);border-radius:10px;
+      background:var(--terminal-bg);color:var(--text-primary);
+      transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;cursor:default;
+    }
+    .m-cell.hl-access  {background:linear-gradient(135deg,var(--primary-cyan),#00aacc);color:#000;border-color:var(--primary-cyan);box-shadow:0 0 18px rgba(6,182,212,.6);transform:scale(1.15);}
+    .m-cell.hl-traverse{background:linear-gradient(135deg,var(--primary-purple),#a78bfa);color:#fff;border-color:var(--primary-purple);box-shadow:0 0 14px rgba(139,92,246,.5);}
+    .m-cell.hl-visited {background:rgba(139,92,246,.15);color:var(--primary-purple);border-color:rgba(139,92,246,.4);}
+    .m-cell.hl-sort-cmp{background:linear-gradient(135deg,var(--primary-orange),#fb923c);color:#000;border-color:var(--primary-orange);box-shadow:0 0 14px rgba(245,158,11,.5);}
+    .m-cell.hl-sort-done{background:linear-gradient(135deg,var(--primary-green),#059669);color:#fff;border-color:var(--primary-green);box-shadow:0 0 12px rgba(16,185,129,.4);}
+    .m-cell.hl-sort-row{background:rgba(16,185,129,.12);color:var(--primary-green);border-color:rgba(16,185,129,.35);}
+    .m-cell.hl-found   {background:linear-gradient(135deg,var(--primary-green),#059669);color:#fff;border-color:var(--primary-green);box-shadow:0 0 20px rgba(16,185,129,.7);transform:scale(1.18);}
+    .m-cell.hl-search  {background:linear-gradient(135deg,var(--primary-orange),#fb923c);color:#000;border-color:var(--primary-orange);box-shadow:0 0 14px rgba(245,158,11,.5);}
+    .m-cell.hl-miss    {background:rgba(239,68,68,.1);color:var(--primary-red);border-color:rgba(239,68,68,.3);}
+    .m-cell.hl-swap    {background:linear-gradient(135deg,var(--primary-pink),#f472b6);color:#fff;border-color:var(--primary-pink);box-shadow:0 0 14px rgba(236,72,153,.5);animation:swapPop .35s ease;}
+    @keyframes swapPop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+
+    /* ── CAPTION ── */
+    .caption-box{background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.2);border-radius:12px;padding:12px 18px;font-size:.88rem;color:var(--text-secondary);min-height:46px;font-family:'JetBrains Mono',monospace;line-height:1.6;transition:all .3s;width:100%;max-width:600px;text-align:center;}
+    .caption-box span{color:var(--primary-cyan);font-weight:700;}
+    .caption-box .g{color:var(--primary-green);font-weight:700;}
+    .caption-box .o{color:var(--primary-orange);font-weight:700;}
+    .caption-box .r{color:var(--primary-red);font-weight:700;}
+
+    /* ── CONTROLS ── */
+    .form-ctrl{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:9px 12px;outline:none;font-family:'JetBrains Mono',monospace;transition:border-color .2s;}
+    .form-ctrl:focus{border-color:var(--primary-cyan);}
+    .btn{border:none;font-weight:700;padding:10px 22px;border-radius:10px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;font-size:.9rem;}
+    .btn-success{background:linear-gradient(135deg,var(--primary-green),#059669);color:#fff;}
+    .btn-danger {background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+    .btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+    .btn-warning{background:linear-gradient(135deg,var(--primary-orange),#d97706);color:#fff;}
+    .btn-purple {background:linear-gradient(135deg,var(--primary-purple),#7c3aed);color:#fff;}
+    .btn-info   {background:linear-gradient(135deg,var(--primary-blue),#2563eb);color:#fff;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(6,182,212,.25);}
+
+    /* ── SCENARIO TABS ── */
+    .scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+    .scenario-tab{display:flex;align-items:center;gap:.5rem;padding:.55rem 1.25rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.9rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+    .scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .scenario-tab.active-best  {background:var(--primary-green); border-color:var(--primary-green); color:#fff;}
+    .scenario-tab.active-avg   {background:var(--primary-cyan);  border-color:var(--primary-cyan);  color:#fff;}
+    .scenario-tab.active-worst {background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+    .scenario-tab.active-custom{background:var(--primary-purple);border-color:var(--primary-purple);color:#fff;}
+
+    .scenario-panels{position:relative;}
+    .scenario-panel{display:none;}
+    .scenario-panel.active{display:block;}
+    .scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+    .scenario-inner h4{font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-bottom:.4rem;}
+    .scenario-inner p{color:var(--text-secondary);font-size:.95rem;margin-bottom:1.4rem;}
+    .scenario-divider{border:none;border-top:1px solid var(--border-color);margin:1rem 0 1.4rem;}
+
+    /* ── STAGE (two-col: matrix + log) ── */
+    .matrix-stage{display:grid;grid-template-columns:1fr 260px;gap:2rem;align-items:start;margin-top:1rem;}
+    @media(max-width:780px){.matrix-stage{grid-template-columns:1fr;}}
+
+    /* ── LOG PANEL ── */
+    .log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;min-height:180px;max-height:280px;overflow-y:auto;}
+    .log-panel .log-title{color:var(--primary-cyan);font-size:.76rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem;font-weight:700;}
+    .log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:fadeLog .3s ease both;}
+    @keyframes fadeLog{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+    .log-entry.l-access  {color:var(--primary-cyan);}
+    .log-entry.l-traverse{color:var(--primary-purple);}
+    .log-entry.l-sort    {color:var(--primary-orange);}
+    .log-entry.l-search  {color:var(--primary-blue);}
+    .log-entry.l-found   {color:var(--primary-green);font-weight:700;}
+    .log-entry.l-info    {color:var(--text-secondary);}
+    .log-entry.l-warn    {color:var(--primary-orange);}
+    .log-entry.l-result  {color:var(--primary-green);font-weight:700;}
+
+    /* ── CTL ROW ── */
+    .ctl-row{display:flex;align-items:center;gap:.7rem;margin-top:1.2rem;flex-wrap:wrap;}
+    .ctl-btn{padding:8px 16px;border-radius:9px;border:none;font-weight:700;font-size:.84rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .ctl-btn:hover{transform:translateY(-1px);}
+    .ctl-btn-green {background:var(--primary-green); color:#fff;} .ctl-btn-green:hover {box-shadow:0 4px 14px rgba(16,185,129,.4);}
+    .ctl-btn-red   {background:var(--primary-red);   color:#fff;} .ctl-btn-red:hover   {box-shadow:0 4px 14px rgba(239,68,68,.4);}
+    .ctl-btn-cyan  {background:var(--primary-cyan);  color:#000;} .ctl-btn-cyan:hover  {box-shadow:0 4px 14px rgba(6,182,212,.4);}
+    .ctl-btn-orange{background:var(--primary-orange);color:#000;} .ctl-btn-orange:hover{box-shadow:0 4px 14px rgba(245,158,11,.4);}
+    .ctl-btn-purple{background:var(--primary-purple);color:#fff;} .ctl-btn-purple:hover{box-shadow:0 4px 14px rgba(139,92,246,.4);}
+    .ctl-btn-blue  {background:var(--primary-blue);  color:#fff;} .ctl-btn-blue:hover  {box-shadow:0 4px 14px rgba(59,130,246,.4);}
+    .ctl-btn-ghost {background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+    .ctl-btn-ghost:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+    .ctl-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+    .num-input{width:68px;padding:7px 10px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s;}
+    .num-input:focus{border-color:var(--primary-cyan);}
+    .input-label-sm{font-size:.75rem;color:var(--text-secondary);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+    /* ── COMPLEXITY CARDS (custom tab) ── */
+    .cc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:.9rem;}
+    @media(max-width:700px){.cc-grid{grid-template-columns:repeat(2,1fr);}}
+    .cc-card{background:rgba(0,0,0,.35);border:1.5px solid rgba(0,255,255,.1);border-radius:10px;padding:.8rem 1rem;transition:all .25s;}
+    .cc-card.cc-active-access  {border-color:var(--primary-cyan);  box-shadow:0 0 16px rgba(6,182,212,.3);  transform:translateY(-2px);}
+    .cc-card.cc-active-traverse{border-color:var(--primary-purple);box-shadow:0 0 16px rgba(139,92,246,.3);transform:translateY(-2px);}
+    .cc-card.cc-active-sort    {border-color:var(--primary-orange);box-shadow:0 0 16px rgba(245,158,11,.3);  transform:translateY(-2px);}
+    .cc-card.cc-active-search  {border-color:var(--primary-blue);  box-shadow:0 0 16px rgba(59,130,246,.3);  transform:translateY(-2px);}
+    .cc-op{font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.5rem;}
+    .cc-time,.cc-space{font-size:.76rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;line-height:1.7;}
+    .cc-val{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.8rem;}
+    .cc-green{color:var(--primary-green);} .cc-orange{color:var(--primary-orange);} .cc-red{color:var(--primary-red);}
+    .cc-reason{margin-top:.45rem;font-size:.7rem;color:rgba(153,161,179,.7);font-style:italic;line-height:1.4;border-top:1px solid rgba(255,255,255,.05);padding-top:.4rem;}
+    .cc-toast{display:none;align-items:center;gap:.6rem;padding:.55rem 1rem;border-radius:8px;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.5rem;animation:toastIn .3s ease both;border:1.5px solid;}
+    .cc-toast.show{display:flex;}
+    .cc-toast.t-access  {background:rgba(6,182,212,.08);  border-color:var(--primary-cyan);  color:var(--primary-cyan);}
+    .cc-toast.t-traverse{background:rgba(139,92,246,.08); border-color:var(--primary-purple);color:var(--primary-purple);}
+    .cc-toast.t-sort    {background:rgba(245,158,11,.08);  border-color:var(--primary-orange);color:var(--primary-orange);}
+    .cc-toast.t-search  {background:rgba(59,130,246,.08);  border-color:var(--primary-blue);  color:var(--primary-blue);}
+    .cc-toast.t-warn    {background:rgba(245,158,11,.08);  border-color:var(--primary-orange);color:var(--primary-orange);}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+
+    /* ── CODE EDITOR ── */
+    .lang-tabs{display:flex;gap:.7rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+    .lang-tab{padding:7px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+    .lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+    .editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+    .editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+    .lang-display{font-weight:600;color:var(--primary-cyan);}
+    .code-copy{width:50px;height:38px;background:var(--primary-purple);border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-size:13px;}
+    .code-copy:hover{background:var(--primary-cyan);}
+    .run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:10px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;font-size:.95rem;}
+    .run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.35);}
+    .output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:150px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:13.5px;line-height:1.65;}
+    .output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+    .input-prompt{background:var(--card-bg);padding:14px;border-radius:8px;margin-top:10px;border:1px solid var(--border-color);}
+    .input-prompt input{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:8px 12px;margin-right:10px;font-family:'JetBrains Mono',monospace;}
+    .input-prompt button{background:var(--primary-cyan);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;}
+    .CodeMirror{height:400px!important;font-size:13.5px;border-radius:0 0 12px 12px;}
+
+    /* ── LEVEL NAV ── */
+    .level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+    .level-wrapper button{position:relative;z-index:20;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+    #l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan)!important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+    #l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green)!important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+    .slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+    #slider1{left:22%;} #slider2{left:58%;}
+    .slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+    .level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+    .level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+    #startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;border:none;cursor:pointer;font-weight:700;}
+    #startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+    #cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;border:none;cursor:pointer;font-weight:700;}
+
+    /* Sort type sub-tabs */
+    .sort-sub-tabs{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;}
+    .sort-sub-btn{padding:6px 16px;border-radius:8px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.83rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .sort-sub-btn.active{background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+    .sort-sub-btn:hover{border-color:var(--primary-orange);color:var(--primary-orange);}
+
+    .code-op-tabs{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+    .code-op-btn{padding:7px 16px;border-radius:9px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.83rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+    .code-op-btn.active{border-color:var(--primary-cyan);background:rgba(6,182,212,.1);color:var(--primary-cyan);}
+    .code-op-btn:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+  </style>
+</head>
+<body data-theme="dark">
+
+<nav>
+  <div class="nav-container">
+    <div class="logo"><img src="dsa.gif" alt="Logo" class="logo-icon"><span>DSA Visualizer</span></div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="#editor">Code Editor</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep"> › </span>
+    <a href="matrix_basics.html">Matrix</a><span class="sep"> › </span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Matrix — Interactive Visualizer</h1>
+    <p class="page-subtitle">Visualize Accessing, Traversal, Sorting, and Searching on 2D arrays with step-by-step animation.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- OPERATION SELECTOR -->
+  <div class="op-selector">
+    <div class="op-option active" data-op="access"   onclick="switchOp('access')">
+      <div class="op-icon">🎯</div><div class="op-title">Accessing</div><div class="op-desc">Read mat[i][j]</div>
+    </div>
+    <div class="op-option" data-op="traverse" onclick="switchOp('traverse')">
+      <div class="op-icon">🔄</div><div class="op-title">Traversal</div><div class="op-desc">Row-by-row scan</div>
+    </div>
+    <div class="op-option" data-op="sort"     onclick="switchOp('sort')">
+      <div class="op-icon">🔢</div><div class="op-title">Sorting</div><div class="op-desc">Row / Column wise</div>
+    </div>
+    <div class="op-option" data-op="search"   onclick="switchOp('search')">
+      <div class="op-icon">🔍</div><div class="op-title">Searching</div><div class="op-desc">Linear 2D scan</div>
+    </div>
+  </div>
+
+  <!-- VISUALIZER GRID -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code Panel -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div id="pseudo-steps"></div>
+    </div>
+
+    <!-- Main Viz Card -->
+    <div>
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <h5 id="viz-title">Matrix Visualizer — Accessing</h5>
+        </div>
+        <div class="viz-card-body" id="main-viz-body">
+          <!-- matrix rendered here -->
+          <div id="main-matrix-wrap" class="matrix-wrap"></div>
+          <div class="caption-box" id="main-caption">Choose a row and column, then click Access Cell.</div>
+        </div>
+        <div class="viz-card-footer" id="main-controls"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS SECTION -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST CASE -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — O(1)</h4>
+          <p>Accessing any element by index is always constant time — <strong style="color:var(--primary-green)">O(1)</strong>. No loops required; we directly compute the memory address using row and column indices.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="best-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="best-caption" style="margin-top:14px;">Click "Access [1][2]" to see direct element access.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="bestAccess()">⚡ Access [1][2]</button>
+                <button class="ctl-btn ctl-btn-green"  onclick="bestAccessCorner()">🎯 Access [0][0]</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE CASE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — O(R × C / 2)</h4>
+          <p>Linear search finds the target somewhere in the <strong style="color:var(--primary-cyan)">middle</strong> of the matrix. Watch it scan row by row until the element is found.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="avg-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="avg-caption" style="margin-top:14px;">Press Next Step to search for <span style="color:var(--primary-cyan);font-weight:700;">25</span> row by row.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()"  id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()"  id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST CASE -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — O(R × C)</h4>
+          <p>Target element is <strong style="color:var(--primary-orange)">not present</strong> in the matrix. Every single cell must be compared before concluding it's absent.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="worst-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="worst-caption" style="margin-top:14px;">Searching for <span style="color:var(--primary-red);font-weight:700;">99</span> — not in matrix. Must check ALL cells.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Cell</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM INPUT -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Edit the matrix, choose any row/column, or search for a value. All four operations available.</p>
+          <hr class="scenario-divider">
+
+          <div class="cc-grid">
+            <div class="cc-card" id="ccc-access">
+              <div class="cc-op">🎯 Access</div>
+              <div class="cc-time">Time: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Direct index → address formula</div>
+            </div>
+            <div class="cc-card" id="ccc-traverse">
+              <div class="cc-op">🔄 Traverse</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R×C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Visit every cell exactly once</div>
+            </div>
+            <div class="cc-card" id="ccc-sort">
+              <div class="cc-op">🔢 Sort</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R·C·log C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Sort each row / column individually</div>
+            </div>
+            <div class="cc-card" id="ccc-search">
+              <div class="cc-op">🔍 Search</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R×C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Linear scan until found or exhausted</div>
+            </div>
+          </div>
+          <div class="cc-toast" id="cc-toast"><span id="cc-ti"></span><span id="cc-tt"></span></div>
+
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:1rem;align-items:flex-end;">
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Row</div>
+              <input type="number" class="num-input" id="c-row" value="0" min="0" max="3"></div>
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Col</div>
+              <input type="number" class="num-input" id="c-col" value="0" min="0" max="3"></div>
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Search Val</div>
+              <input type="number" class="num-input" id="c-sval" value="17" style="width:80px;"></div>
+          </div>
+          <div class="ctl-row" style="margin-bottom:1.2rem;">
+            <button class="ctl-btn ctl-btn-cyan"   onclick="cAccess()">🎯 Access</button>
+            <button class="ctl-btn ctl-btn-purple"  onclick="cTraverse()">🔄 Traverse</button>
+            <button class="ctl-btn ctl-btn-orange"  onclick="cSortRow()">🔢 Sort Row</button>
+            <button class="ctl-btn ctl-btn-green"   onclick="cSortCol()">🔢 Sort Col</button>
+            <button class="ctl-btn ctl-btn-blue"    onclick="cSearch()">🔍 Search</button>
+            <button class="ctl-btn ctl-btn-ghost"   onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div class="matrix-stage">
+            <div>
+              <div id="custom-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="custom-caption" style="margin-top:14px;">Choose an operation above to experiment!</div>
+            </div>
+            <div><div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scenario-panels -->
+  </div><!-- /section-card -->
+
+  <!-- CODE EDITOR -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="code-op-tabs">
+      <button class="code-op-btn active" id="cop-access"   onclick="switchCodeOp('access')">🎯 Accessing</button>
+      <button class="code-op-btn"        id="cop-traverse" onclick="switchCodeOp('traverse')">🔄 Traversal</button>
+      <button class="code-op-btn"        id="cop-sort"     onclick="switchCodeOp('sort')">🔢 Sorting</button>
+      <button class="code-op-btn"        id="cop-search"   onclick="switchCodeOp('search')">🔍 Searching</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp">C++</button>
+      <button class="lang-tab" data-lang="python">Python</button>
+      <button class="lang-tab" data-lang="java">Java</button>
+      <button class="lang-tab" data-lang="c">C</button>
+      <button class="lang-tab" data-lang="javascript">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display" id="lang-display">C++</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p id="modal-msg" style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   CONSTANTS & STATE
+═══════════════════════════════════════════ */
+const ROWS = 4, COLS = 4;
+const BASE_MAT = [
+  [3,  17,  8, 42],
+  [25, 11, 36,  7],
+  [19,  5, 28, 14],
+  [33,  2, 45, 21]
+];
+
+let currentOp    = 'access';
+let currentLang  = 'cpp';
+let currentCodeOp = 'access';
+let mainAnimating = false;
+let mainMat = deepCopy(BASE_MAT);
+let codeEditor, outputDiv;
+let currentInputResolver = null;
+
+function deepCopy(m){ return m.map(r=>[...r]); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ═══════════════════════════════════════════
+   PSEUDO CODE DEFINITIONS
+═══════════════════════════════════════════ */
+const PSEUDOS = {
+  access: [
+    {id:'a1', label:'ACCESS(mat, r, c)', text:'return mat[r][c]'},
+    {id:'a2', label:'',                  text:'// O(1) — direct address'},
+    {id:'a3', label:'',                  text:'addr = base + (r*C + c)*size'}
+  ],
+  traverse: [
+    {id:'t1', label:'TRAVERSE(mat)',  text:'for r = 0 to R-1'},
+    {id:'t2', label:'',               text:'&nbsp;&nbsp;for c = 0 to C-1'},
+    {id:'t3', label:'',               text:'&nbsp;&nbsp;&nbsp;&nbsp;visit mat[r][c]'},
+    {id:'t4', label:'',               text:'end for'}
+  ],
+  sort: [
+    {id:'s1', label:'SORT_ROW(mat, r)', text:'sort(mat[r][0..C-1])'},
+    {id:'s2', label:'',                 text:'// using any O(C logC) sort'},
+    {id:'s3', label:'SORT_COL(mat, c)', text:'extract col c into tmp[]'},
+    {id:'s4', label:'',                 text:'sort(tmp)  →  put back'}
+  ],
+  search: [
+    {id:'f1', label:'SEARCH(mat, key)', text:'for r = 0 to R-1'},
+    {id:'f2', label:'',                 text:'&nbsp;&nbsp;for c = 0 to C-1'},
+    {id:'f3', label:'',                 text:'&nbsp;&nbsp;&nbsp;&nbsp;if mat[r][c] == key'},
+    {id:'f4', label:'',                 text:'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (r, c)'},
+    {id:'f5', label:'',                 text:'return NOT FOUND'}
+  ]
+};
+
+/* ═══════════════════════════════════════════
+   MATRIX RENDER HELPERS
+═══════════════════════════════════════════ */
+function renderMatrix(wrapId, mat, options={}){
+  const wrap = document.getElementById(wrapId);
+  if(!wrap) return;
+  const R = mat.length, C = mat[0].length;
+  // col labels
+  let colHTML = '<div class="col-labels">';
+  for(let c=0;c<C;c++) colHTML += `<div class="col-label">[${c}]</div>`;
+  colHTML += '</div>';
+
+  let html = colHTML + '<div class="matrix-with-col-labels"><div class="matrix-row-labels">';
+  for(let r=0;r<R;r++) html += `<div class="row-label">[${r}]</div>`;
+  html += '</div><div class="matrix-grid-container">';
+  for(let r=0;r<R;r++){
+    html += '<div class="matrix-row">';
+    for(let c=0;c<C;c++){
+      const id = `cell-${wrapId}-${r}-${c}`;
+      html += `<div class="m-cell" id="${id}">${mat[r][c]}</div>`;
+    }
+    html += '</div>';
+  }
+  html += '</div></div>';
+  wrap.innerHTML = html;
+}
+
+function getCell(wrapId,r,c){ return document.getElementById(`cell-${wrapId}-${r}-${c}`); }
+
+function hlCell(wrapId,r,c,cls){
+  const el = getCell(wrapId,r,c);
+  if(el){ el.className = 'm-cell ' + cls; }
+}
+
+function clearHL(wrapId, mat){
+  const R=mat.length, C=mat[0].length;
+  for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+    const el=getCell(wrapId,r,c);
+    if(el) el.className='m-cell';
+  }
+}
+
+function updateCellVal(wrapId,r,c,val){
+  const el = getCell(wrapId,r,c);
+  if(el) el.textContent=val;
+}
+
+function setCaption(id,html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
+
+function addLog(logId, text, cls='l-info'){
+  const log=document.getElementById(logId); if(!log) return;
+  const e=document.createElement('div');
+  e.className='log-entry '+cls;
+  e.textContent='> '+text;
+  log.appendChild(e);
+  log.scrollTop=log.scrollHeight;
+}
+
+function highlightPseudo(stepId){
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById('pseudo-'+stepId);
+  if(el) el.classList.add('active');
+}
+
+/* ═══════════════════════════════════════════
+   OPERATION SWITCHER
+═══════════════════════════════════════════ */
+function switchOp(op){
+  currentOp = op;
+  mainMat = deepCopy(BASE_MAT);
+  mainAnimating = false;
+  document.querySelectorAll('.op-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector(`[data-op="${op}"]`).classList.add('active');
+  const titles={access:'Matrix Visualizer — Accessing',traverse:'Matrix Visualizer — Traversal',sort:'Matrix Visualizer — Sorting',search:'Matrix Visualizer — Searching'};
+  document.getElementById('viz-title').textContent = titles[op];
+  buildPseudo(op);
+  buildMainControls(op);
+  renderMatrix('main-matrix-wrap', mainMat);
+  setCaption('main-caption','Select an operation below to begin.');
+}
+
+function buildPseudo(op){
+  const container = document.getElementById('pseudo-steps');
+  container.innerHTML = '';
+  PSEUDOS[op].forEach(step=>{
+    const d=document.createElement('div');
+    d.className='pseudo-step';
+    d.id='pseudo-'+step.id;
+    d.innerHTML=(step.label?`<strong>${step.label}:</strong><br>`:'')+step.text;
+    container.appendChild(d);
+  });
+}
+
+function buildMainControls(op){
+  const footer = document.getElementById('main-controls');
+  const ctrls = {
+    access: `<div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+      <div><div class="input-label-sm" style="margin-bottom:4px;">Row</div><input type="number" class="form-ctrl" id="m-row" value="1" min="0" max="3" style="width:80px;"></div>
+      <div><div class="input-label-sm" style="margin-bottom:4px;">Col</div><input type="number" class="form-ctrl" id="m-col" value="2" min="0" max="3" style="width:80px;"></div>
+      <button class="btn btn-primary" onclick="mainAccess()">🎯 Access Cell</button>
+      <button class="btn btn-info" onclick="resetMainViz()">↺ Reset</button>
+    </div>`,
+    traverse: `<div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="mainTraverse()">▶ Traverse Row-by-Row</button>
+      <button class="btn btn-info" onclick="resetMainViz()">↺ Reset</button>
+    </div>`,
+    sort: `<div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+      <button class="btn btn-warning" onclick="mainSortRows()">🔢 Sort All Rows</button>
+      <button class="btn btn-success" onclick="mainSortCols()">🔢 Sort All Cols</button>
+      <button class="btn btn-info"    onclick="resetMainViz()">↺ Reset</button>
+    </div>`,
+    search: `<div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+      <div><div class="input-label-sm" style="margin-bottom:4px;">Search Value</div>
+        <input type="number" class="form-ctrl" id="m-sval" value="28" style="width:100px;"></div>
+      <button class="btn btn-warning" onclick="mainSearch()">🔍 Search</button>
+      <button class="btn btn-info"    onclick="resetMainViz()">↺ Reset</button>
+    </div>`
+  };
+  footer.innerHTML = ctrls[op];
+}
+
+function resetMainViz(){ mainAnimating=false; mainMat=deepCopy(BASE_MAT); renderMatrix('main-matrix-wrap',mainMat); setCaption('main-caption','Select an operation below to begin.'); }
+
+/* MAIN: ACCESS */
+async function mainAccess(){
+  if(mainAnimating) return;
+  const r=parseInt(document.getElementById('m-row').value);
+  const c=parseInt(document.getElementById('m-col').value);
+  if(r<0||r>=ROWS||c<0||c>=COLS){setCaption('main-caption','⚠ Invalid row/col! Range: 0-3');return;}
+  mainAnimating=true;
+  clearHL('main-matrix-wrap',mainMat);
+  highlightPseudo('a1');
+  setCaption('main-caption',`Computing address for <span>mat[${r}][${c}]</span>...`);
+  await sleep(600);
+  highlightPseudo('a3');
+  setCaption('main-caption',`Address = base + (${r}×${COLS} + ${c}) × size = base + ${r*COLS+c} × size`);
+  await sleep(800);
+  hlCell('main-matrix-wrap',r,c,'m-cell hl-access');
+  highlightPseudo('a2');
+  setCaption('main-caption',`✅ <span>mat[${r}][${c}] = ${mainMat[r][c]}</span> — Direct access! Time: <span>O(1)</span>`);
+  mainAnimating=false;
+}
+
+/* MAIN: TRAVERSE */
+async function mainTraverse(){
+  if(mainAnimating) return;
+  mainAnimating=true;
+  clearHL('main-matrix-wrap',mainMat);
+  setCaption('main-caption','Starting row-by-row traversal...');
+  highlightPseudo('t1');
+  await sleep(500);
+  let count=0;
+  for(let r=0;r<ROWS;r++){
+    highlightPseudo('t2');
+    for(let c=0;c<COLS;c++){
+      if(!mainAnimating) return;
+      highlightPseudo('t3');
+      hlCell('main-matrix-wrap',r,c,'m-cell hl-traverse');
+      setCaption('main-caption',`Visiting <span>mat[${r}][${c}] = ${mainMat[r][c]}</span> — step ${++count} of ${ROWS*COLS}`);
+      await sleep(300);
+      hlCell('main-matrix-wrap',r,c,'m-cell hl-visited');
+    }
+  }
+  highlightPseudo('t4');
+  setCaption('main-caption',`✅ Traversal complete! Visited <span>${ROWS*COLS}</span> cells. Time: <span>O(R×C)</span>`);
+  mainAnimating=false;
+}
+
+/* MAIN: SORT ROWS */
+async function mainSortRows(){
+  if(mainAnimating) return;
+  mainAnimating=true;
+  highlightPseudo('s1');
+  setCaption('main-caption','Sorting each row individually using insertion sort...');
+  for(let r=0;r<ROWS;r++){
+    if(!mainAnimating) return;
+    // mark row
+    for(let c=0;c<COLS;c++) hlCell('main-matrix-wrap',r,c,'m-cell hl-sort-row');
+    setCaption('main-caption',`<span>Sorting row ${r}:</span> [${mainMat[r].join(', ')}]`);
+    await sleep(500);
+    // insertion sort with animation
+    for(let i=1;i<COLS;i++){
+      let key=mainMat[r][i], j=i-1;
+      hlCell('main-matrix-wrap',r,i,'m-cell hl-sort-cmp');
+      await sleep(280);
+      while(j>=0 && mainMat[r][j]>key){
+        mainMat[r][j+1]=mainMat[r][j];
+        hlCell('main-matrix-wrap',r,j,'m-cell hl-swap');
+        updateCellVal('main-matrix-wrap',r,j+1,mainMat[r][j+1]);
+        await sleep(220);
+        hlCell('main-matrix-wrap',r,j,'m-cell hl-sort-row');
+        hlCell('main-matrix-wrap',r,j+1,'m-cell hl-sort-row');
+        j--;
+      }
+      mainMat[r][j+1]=key;
+      updateCellVal('main-matrix-wrap',r,j+1,key);
+      await sleep(150);
+    }
+    for(let c=0;c<COLS;c++) hlCell('main-matrix-wrap',r,c,'m-cell hl-sort-done');
+    await sleep(300);
+  }
+  setCaption('main-caption',`✅ All rows sorted! Each row sorted independently. Time: <span>O(R × C log C)</span>`);
+  mainAnimating=false;
+}
+
+/* MAIN: SORT COLS */
+async function mainSortCols(){
+  if(mainAnimating) return;
+  mainAnimating=true;
+  highlightPseudo('s3');
+  setCaption('main-caption','Sorting each column individually...');
+  for(let c=0;c<COLS;c++){
+    if(!mainAnimating) return;
+    for(let r=0;r<ROWS;r++) hlCell('main-matrix-wrap',r,c,'m-cell hl-sort-row');
+    let col=mainMat.map(row=>row[c]);
+    setCaption('main-caption',`<span>Sorting col ${c}:</span> [${col.join(', ')}]`);
+    await sleep(500);
+    highlightPseudo('s4');
+    // insertion sort on column
+    for(let i=1;i<ROWS;i++){
+      let key=col[i], j=i-1;
+      hlCell('main-matrix-wrap',i,c,'m-cell hl-sort-cmp');
+      await sleep(280);
+      while(j>=0 && col[j]>key){
+        col[j+1]=col[j];
+        mainMat[j+1][c]=col[j+1];
+        hlCell('main-matrix-wrap',j,c,'m-cell hl-swap');
+        updateCellVal('main-matrix-wrap',j+1,c,col[j+1]);
+        await sleep(220);
+        hlCell('main-matrix-wrap',j,c,'m-cell hl-sort-row');
+        hlCell('main-matrix-wrap',j+1,c,'m-cell hl-sort-row');
+        j--;
+      }
+      col[j+1]=key;
+      mainMat[j+1][c]=key;
+      updateCellVal('main-matrix-wrap',j+1,c,key);
+      await sleep(150);
+    }
+    for(let r=0;r<ROWS;r++) hlCell('main-matrix-wrap',r,c,'m-cell hl-sort-done');
+    await sleep(300);
+  }
+  setCaption('main-caption',`✅ All columns sorted! Time: <span>O(C × R log R)</span>`);
+  mainAnimating=false;
+}
+
+/* MAIN: SEARCH */
+async function mainSearch(){
+  if(mainAnimating) return;
+  const target=parseInt(document.getElementById('m-sval').value);
+  if(isNaN(target)){setCaption('main-caption','⚠ Enter a valid search value');return;}
+  mainAnimating=true;
+  clearHL('main-matrix-wrap',mainMat);
+  setCaption('main-caption',`Searching for <span>${target}</span>...`);
+  highlightPseudo('f1');
+  await sleep(400);
+  let found=false;
+  for(let r=0;r<ROWS&&!found;r++){
+    highlightPseudo('f2');
+    for(let c=0;c<COLS;c++){
+      if(!mainAnimating) return;
+      highlightPseudo('f3');
+      hlCell('main-matrix-wrap',r,c,'m-cell hl-search');
+      setCaption('main-caption',`Checking <span>mat[${r}][${c}] = ${mainMat[r][c]}</span> vs ${target}...`);
+      await sleep(350);
+      if(mainMat[r][c]===target){
+        highlightPseudo('f4');
+        hlCell('main-matrix-wrap',r,c,'m-cell hl-found');
+        setCaption('main-caption',`✅ Found <span>${target}</span> at <span>mat[${r}][${c}]</span>! Time: <span>O(R×C)</span>`);
+        found=true; break;
+      }
+      hlCell('main-matrix-wrap',r,c,'m-cell hl-miss');
+      await sleep(100);
+    }
+  }
+  if(!found){highlightPseudo('f5'); setCaption('main-caption',`❌ <span>${target}</span> not found. Checked all <span>${ROWS*COLS}</span> cells. Worst case: <span>O(R×C)</span>`);}
+  mainAnimating=false;
+}
+
+/* ═══════════════════════════════════════════
+   SCENARIO: BEST CASE
+═══════════════════════════════════════════ */
+const BEST_MAT = [[7,14,21,28],[35,42,49,56],[63,70,77,84],[91,98,105,112]];
+function initBest(){
+  renderMatrix('best-matrix',BEST_MAT);
+  setCaption('best-caption','Click a button to see O(1) direct access.');
+  document.getElementById('log-best').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-best',`Matrix: ${ROWS}×${COLS}  (${ROWS*COLS} cells)`,'l-info');
+  addLog('log-best','Best Case: O(1) — index directly','l-info');
+}
+function bestAccess(){
+  clearHL('best-matrix',BEST_MAT);
+  hlCell('best-matrix',1,2,'m-cell hl-access');
+  setCaption('best-caption',`<span>mat[1][2] = ${BEST_MAT[1][2]}</span> — Accessed in <span class="g">O(1)</span>. No loops, direct memory jump.`);
+  addLog('log-best',`mat[1][2] = ${BEST_MAT[1][2]}  →  O(1)  direct access`,'l-access');
+  addLog('log-best','✓ Best Case confirmed: constant time','l-result');
+}
+function bestAccessCorner(){
+  clearHL('best-matrix',BEST_MAT);
+  hlCell('best-matrix',0,0,'m-cell hl-access');
+  setCaption('best-caption',`<span>mat[0][0] = ${BEST_MAT[0][0]}</span> — First element. Always <span class="g">O(1)</span>.`);
+  addLog('log-best',`mat[0][0] = ${BEST_MAT[0][0]}  →  O(1)  first element`,'l-access');
+  addLog('log-best','✓ O(1): regardless of matrix size','l-result');
+}
+function resetBest(){ initBest(); addLog('log-best','↺ Reset.','l-info'); }
+
+/* ═══════════════════════════════════════════
+   SCENARIO: AVERAGE CASE (search, target in middle)
+═══════════════════════════════════════════ */
+const AVG_MAT  = [[3,8,12,17],[20,25,30,35],[40,45,50,55],[60,65,70,75]];
+const AVG_TARGET = 25; // at [1][1] — roughly middle
+let avgR=0,avgC=0,avgDone=false,avgAutoTimer=null;
+
+function initAvg(){
+  avgR=0;avgC=0;avgDone=false;clearTimeout(avgAutoTimer);
+  renderMatrix('avg-matrix',AVG_MAT);
+  setCaption('avg-caption',`Press Next Step to search for <span style="color:var(--primary-cyan);font-weight:700;">${AVG_TARGET}</span> row by row.`);
+  document.getElementById('log-avg').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-avg',`Target: ${AVG_TARGET}  (at mat[1][1] — near middle)`,'l-info');
+  addLog('log-avg',`Cells before finding: ~${ROWS*COLS/2}  (average case)`,'l-info');
+  document.getElementById('avg-step-btn').disabled=false;
+  document.getElementById('avg-auto-btn').disabled=false;
+}
+
+function avgStep(){
+  if(avgDone||avgR>=ROWS) return;
+  const r=avgR,c=avgC,val=AVG_MAT[r][c];
+  clearHL('avg-matrix',AVG_MAT);
+  // re-shade visited
+  let pr=0,pc=0;
+  while(pr<r||(pr===r&&pc<c)){hlCell('avg-matrix',pr,pc,'m-cell hl-miss');pc++;if(pc>=COLS){pc=0;pr++;}}
+  hlCell('avg-matrix',r,c,'m-cell hl-search');
+  setCaption('avg-caption',`Checking <span>mat[${r}][${c}] = ${val}</span> vs <span>${AVG_TARGET}</span>...`);
+  if(val===AVG_TARGET){
+    hlCell('avg-matrix',r,c,'m-cell hl-found');
+    const steps=r*COLS+c+1;
+    setCaption('avg-caption',`✅ Found <span>${AVG_TARGET}</span> at <span>mat[${r}][${c}]</span>! Steps: ${steps} ≈ R×C/2.`);
+    addLog('log-avg',`mat[${r}][${c}] = ${val}  ← FOUND! 🎉`,'l-found');
+    addLog('log-avg',`Steps: ${steps} ≈ R×C/2 = ${Math.floor(ROWS*COLS/2)}  (Average Case)`,'l-result');
+    avgDone=true;
+    document.getElementById('avg-step-btn').disabled=true;
+    document.getElementById('avg-auto-btn').disabled=true;
+    clearTimeout(avgAutoTimer);
+    return;
+  }
+  addLog('log-avg',`mat[${r}][${c}] = ${val}  ≠  ${AVG_TARGET}`,'l-search');
+  avgC++;if(avgC>=COLS){avgC=0;avgR++;}
+  if(avgR>=ROWS&&!avgDone){ avgDone=true; setCaption('avg-caption','Not found after full scan.'); }
+}
+
+function avgAuto(){
+  if(avgDone||avgR>=ROWS) return;
+  document.getElementById('avg-auto-btn').disabled=true;
+  function step(){ if(avgDone||avgR>=ROWS) return; avgStep(); avgAutoTimer=setTimeout(step,700); }
+  step();
+}
+function resetAvg(){ clearTimeout(avgAutoTimer); initAvg(); }
+
+/* ═══════════════════════════════════════════
+   SCENARIO: WORST CASE (not present)
+═══════════════════════════════════════════ */
+const WORST_MAT = [[5,10,15,20],[25,30,35,40],[45,50,55,60],[65,70,75,80]];
+const WORST_TARGET = 99;
+let wR=0,wC=0,wDone=false,wAutoTimer=null;
+
+function initWorst(){
+  wR=0;wC=0;wDone=false;clearTimeout(wAutoTimer);
+  renderMatrix('worst-matrix',WORST_MAT);
+  setCaption('worst-caption',`Searching for <span class="r">${WORST_TARGET}</span> — NOT in matrix. Must scan all ${ROWS*COLS} cells.`);
+  document.getElementById('log-worst').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-worst',`Target: ${WORST_TARGET}  (absent from matrix)`,'l-warn');
+  addLog('log-worst',`Must check ALL ${ROWS*COLS} cells → O(R×C)`,'l-warn');
+  document.getElementById('worst-step-btn').disabled=false;
+  document.getElementById('worst-auto-btn').disabled=false;
+}
+
+function worstStep(){
+  if(wDone||wR>=ROWS) return;
+  const r=wR,c=wC,val=WORST_MAT[r][c];
+  hlCell('worst-matrix',r,c,'m-cell hl-miss');
+  setCaption('worst-caption',`<span>mat[${r}][${c}] = ${val}</span> ≠ ${WORST_TARGET} — Not here...`);
+  addLog('log-worst',`mat[${r}][${c}] = ${val}  ≠  ${WORST_TARGET}`,'l-search');
+  wC++;if(wC>=COLS){wC=0;wR++;}
+  if(wR>=ROWS){
+    wDone=true;
+    setTimeout(()=>{
+      setCaption('worst-caption',`❌ <span class="r">${WORST_TARGET}</span> not found. Checked <span>${ROWS*COLS}</span> cells. Worst Case: <span class="o">O(R×C)</span>.`);
+      addLog('log-worst',`All ${ROWS*COLS} cells checked — not found ❌`,'l-warn');
+      addLog('log-worst',`✓ Worst Case: O(R×C) = O(${ROWS*COLS})`,'l-result');
+    },300);
+    document.getElementById('worst-step-btn').disabled=true;
+    document.getElementById('worst-auto-btn').disabled=true;
+    clearTimeout(wAutoTimer);
+  }
+}
+
+function worstAuto(){
+  if(wDone||wR>=ROWS) return;
+  document.getElementById('worst-auto-btn').disabled=true;
+  function step(){ if(wDone||wR>=ROWS) return; worstStep(); wAutoTimer=setTimeout(step,400); }
+  step();
+}
+function resetWorst(){ clearTimeout(wAutoTimer); initWorst(); }
+
+/* ═══════════════════════════════════════════
+   SCENARIO: CUSTOM
+═══════════════════════════════════════════ */
+let customMat = deepCopy(BASE_MAT);
+let customAnimating = false;
+
+function initCustom(){
+  customMat = deepCopy(BASE_MAT);
+  renderMatrix('custom-matrix',customMat);
+  setCaption('custom-caption','Choose any operation to experiment!');
+  document.getElementById('log-custom').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog('log-custom',`Matrix initialized: ${ROWS}×${COLS}`,'l-info');
+}
+
+let ccTimer=null;
+function hlCC(type){
+  ['access','traverse','sort','search'].forEach(t=>{ const c=document.getElementById('ccc-'+t); if(c) c.classList.remove(`cc-active-access`,'cc-active-traverse','cc-active-sort','cc-active-search'); });
+  clearTimeout(ccTimer);
+  const card=document.getElementById('ccc-'+type);
+  if(card){card.classList.add('cc-active-'+type); ccTimer=setTimeout(()=>card.classList.remove('cc-active-'+type),2000);}
+}
+function showToast(type,msg){
+  const t=document.getElementById('cc-toast');
+  t.className='cc-toast show t-'+type;
+  document.getElementById('cc-ti').textContent={access:'🎯',traverse:'🔄',sort:'🔢',search:'🔍',warn:'⚠'}[type]||'⚡';
+  document.getElementById('cc-tt').textContent=msg;
+  clearTimeout(t._timer); t._timer=setTimeout(()=>t.className='cc-toast',2500);
+}
+
+function getInputs(){ return { r:parseInt(document.getElementById('c-row').value)||0, c:parseInt(document.getElementById('c-col').value)||0, sv:parseInt(document.getElementById('c-sval').value)||0 }; }
+
+async function cAccess(){
+  if(customAnimating) return;
+  const {r,c}=getInputs();
+  if(r<0||r>=ROWS||c<0||c>=COLS){showToast('warn','Row/Col out of range! (0-3)');return;}
+  customAnimating=true;
+  clearHL('custom-matrix',customMat);
+  await sleep(200);
+  hlCell('custom-matrix',r,c,'m-cell hl-access');
+  setCaption('custom-caption',`<span>mat[${r}][${c}] = ${customMat[r][c]}</span> — Accessed in <span class="g">O(1)</span>.`);
+  hlCC('access'); showToast('access',`access(${r},${c}) = ${customMat[r][c]}  →  O(1)`);
+  addLog('log-custom',`access(${r},${c}) = ${customMat[r][c]}  →  O(1)`,'l-access');
+  addLog('log-custom','✓ Time: O(1)  |  Space: O(1)','l-result');
+  customAnimating=false;
+}
+
+async function cTraverse(){
+  if(customAnimating) return;
+  customAnimating=true;
+  clearHL('custom-matrix',customMat);
+  let count=0;
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      if(!customAnimating) return;
+      hlCell('custom-matrix',r,c,'m-cell hl-traverse');
+      setCaption('custom-caption',`Visiting <span>mat[${r}][${c}] = ${customMat[r][c]}</span> — cell ${++count}/${ROWS*COLS}`);
+      await sleep(280);
+      hlCell('custom-matrix',r,c,'m-cell hl-visited');
+    }
+  }
+  setCaption('custom-caption',`✅ Traversal done! Visited <span>${ROWS*COLS}</span> cells. Time: <span class="o">O(R×C)</span>`);
+  hlCC('traverse'); showToast('traverse',`traverse()  →  O(R×C) = O(${ROWS*COLS})`);
+  addLog('log-custom',`traverse(): visited ${ROWS*COLS} cells`,'l-traverse');
+  addLog('log-custom','✓ Time: O(R×C)  |  Space: O(1)','l-result');
+  customAnimating=false;
+}
+
+async function cSortRow(){
+  if(customAnimating) return;
+  const {r}=getInputs();
+  if(r<0||r>=ROWS){showToast('warn','Row out of range! (0-3)');return;}
+  customAnimating=true;
+  clearHL('custom-matrix',customMat);
+  for(let c=0;c<COLS;c++) hlCell('custom-matrix',r,c,'m-cell hl-sort-row');
+  setCaption('custom-caption',`Sorting <span>row ${r}</span>: [${customMat[r].join(', ')}]...`);
+  await sleep(400);
+  for(let i=1;i<COLS;i++){
+    let key=customMat[r][i],j=i-1;
+    hlCell('custom-matrix',r,i,'m-cell hl-sort-cmp'); await sleep(250);
+    while(j>=0&&customMat[r][j]>key){
+      customMat[r][j+1]=customMat[r][j];
+      hlCell('custom-matrix',r,j,'m-cell hl-swap');
+      updateCellVal('custom-matrix',r,j+1,customMat[r][j+1]);
+      await sleep(220);
+      hlCell('custom-matrix',r,j,'m-cell hl-sort-row');
+      hlCell('custom-matrix',r,j+1,'m-cell hl-sort-row');
+      j--;
+    }
+    customMat[r][j+1]=key;
+    updateCellVal('custom-matrix',r,j+1,key);
+  }
+  for(let c=0;c<COLS;c++) hlCell('custom-matrix',r,c,'m-cell hl-sort-done');
+  setCaption('custom-caption',`✅ Row ${r} sorted: [${customMat[r].join(', ')}]. Time: <span class="o">O(C log C)</span>`);
+  hlCC('sort'); showToast('sort',`sortRow(${r})  →  O(C log C)`);
+  addLog('log-custom',`sortRow(${r}): [${customMat[r].join(', ')}]`,'l-sort');
+  addLog('log-custom','✓ Time: O(C log C)  |  Space: O(1)','l-result');
+  customAnimating=false;
+}
+
+async function cSortCol(){
+  if(customAnimating) return;
+  const {c}=getInputs();
+  if(c<0||c>=COLS){showToast('warn','Col out of range! (0-3)');return;}
+  customAnimating=true;
+  clearHL('custom-matrix',customMat);
+  let col=customMat.map(row=>row[c]);
+  for(let r=0;r<ROWS;r++) hlCell('custom-matrix',r,c,'m-cell hl-sort-row');
+  setCaption('custom-caption',`Sorting <span>column ${c}</span>: [${col.join(', ')}]...`);
+  await sleep(400);
+  for(let i=1;i<ROWS;i++){
+    let key=col[i],j=i-1;
+    hlCell('custom-matrix',i,c,'m-cell hl-sort-cmp'); await sleep(250);
+    while(j>=0&&col[j]>key){
+      col[j+1]=col[j]; customMat[j+1][c]=col[j+1];
+      hlCell('custom-matrix',j,c,'m-cell hl-swap');
+      updateCellVal('custom-matrix',j+1,c,col[j+1]);
+      await sleep(220);
+      hlCell('custom-matrix',j,c,'m-cell hl-sort-row');
+      hlCell('custom-matrix',j+1,c,'m-cell hl-sort-row');
+      j--;
+    }
+    col[j+1]=key; customMat[j+1][c]=key;
+    updateCellVal('custom-matrix',j+1,c,key);
+  }
+  for(let r=0;r<ROWS;r++) hlCell('custom-matrix',r,c,'m-cell hl-sort-done');
+  const colVals=customMat.map(row=>row[c]);
+  setCaption('custom-caption',`✅ Column ${c} sorted: [${colVals.join(', ')}]. Time: <span class="o">O(R log R)</span>`);
+  hlCC('sort'); showToast('sort',`sortCol(${c})  →  O(R log R)`);
+  addLog('log-custom',`sortCol(${c}): [${colVals.join(', ')}]`,'l-sort');
+  addLog('log-custom','✓ Time: O(R log R)  |  Space: O(1)','l-result');
+  customAnimating=false;
+}
+
+async function cSearch(){
+  if(customAnimating) return;
+  const target=getInputs().sv;
+  if(isNaN(target)){showToast('warn','Enter a search value!');return;}
+  customAnimating=true;
+  clearHL('custom-matrix',customMat);
+  setCaption('custom-caption',`Searching for <span>${target}</span>...`);
+  let found=false;
+  for(let r=0;r<ROWS&&!found;r++){
+    for(let c=0;c<COLS;c++){
+      if(!customAnimating) return;
+      hlCell('custom-matrix',r,c,'m-cell hl-search');
+      setCaption('custom-caption',`Checking <span>mat[${r}][${c}] = ${customMat[r][c]}</span> vs <span>${target}</span>...`);
+      await sleep(300);
+      if(customMat[r][c]===target){
+        hlCell('custom-matrix',r,c,'m-cell hl-found');
+        setCaption('custom-caption',`✅ Found <span>${target}</span> at <span>mat[${r}][${c}]</span>!`);
+        hlCC('search'); showToast('search',`search(${target}) found at [${r}][${c}]`);
+        addLog('log-custom',`search(${target}) → mat[${r}][${c}]  FOUND!`,'l-found');
+        addLog('log-custom','✓ Time: O(R×C)  |  Space: O(1)','l-result');
+        found=true; break;
+      }
+      hlCell('custom-matrix',r,c,'m-cell hl-miss');
+      await sleep(80);
+    }
+  }
+  if(!found){
+    setCaption('custom-caption',`❌ <span>${target}</span> not found in matrix.`);
+    showToast('warn',`${target} not found`);
+    addLog('log-custom',`search(${target}) → not found`,'l-warn');
+  }
+  customAnimating=false;
+}
+
+function resetCustom(){
+  customAnimating=false; customMat=deepCopy(BASE_MAT);
+  ['access','traverse','sort','search'].forEach(t=>{ const c=document.getElementById('ccc-'+t); if(c) c.classList.remove('cc-active-access','cc-active-traverse','cc-active-sort','cc-active-search'); });
+  const toast=document.getElementById('cc-toast'); if(toast) toast.className='cc-toast';
+  initCustom();
+  addLog('log-custom','↺ Reset to base matrix.','l-info');
+}
+
+/* ═══════════════════════════════════════════
+   SCENARIO TABS
+═══════════════════════════════════════════ */
+const TAB_CLS={best:'active-best',avg:'active-avg',worst:'active-worst',custom:'active-custom'};
+function switchScenario(name){
+  document.querySelectorAll('.scenario-tab').forEach(t=>t.className='scenario-tab');
+  document.getElementById('stab-'+name).classList.add(TAB_CLS[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('spanel-'+name).classList.add('active');
+}
+
+/* ═══════════════════════════════════════════
+   CODE TEMPLATES
+═══════════════════════════════════════════ */
+const CODE = {
+  access: {
+    cpp:`#include <iostream>
+using namespace std;
+
+int main() {
+    int rows, cols;
+    cout << "Enter rows and cols: ";
+    cin >> rows >> cols;
+
+    int mat[10][10];
+    cout << "Enter matrix elements:\\n";
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < cols; j++) {
+            cout << "mat[" << i << "][" << j << "]: ";
+            cin >> mat[i][j];
+        }
+
+    int r, c;
+    cout << "Enter row and column to access: ";
+    cin >> r >> c;
+
+    if(r >= 0 && r < rows && c >= 0 && c < cols)
+        cout << "mat[" << r << "][" << c << "] = " << mat[r][c] << "\\n";
+    else
+        cout << "Invalid index!\\n";
+
+    cout << "Time: O(1) — direct address calculation\\n";
+    return 0;
+}`,
+    python:`def access_element(mat, r, c):
+    rows, cols = len(mat), len(mat[0])
+    if 0 <= r < rows and 0 <= c < cols:
+        return mat[r][c]
+    return None
+
+rows = int(input("Enter rows: "))
+cols = int(input("Enter cols: "))
+
+mat = []
+for i in range(rows):
+    row = []
+    for j in range(cols):
+        val = int(input(f"mat[{i}][{j}]: "))
+        row.append(val)
+    mat.append(row)
+
+r = int(input("Enter row to access: "))
+c = int(input("Enter col to access: "))
+
+val = access_element(mat, r, c)
+if val is not None:
+    print(f"mat[{r}][{c}] = {val}")
+else:
+    print("Invalid index!")
+print("Time: O(1) — direct address calculation")`,
+    java:`import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter rows: "); int rows = sc.nextInt();
+        System.out.print("Enter cols: "); int cols = sc.nextInt();
+        int[][] mat = new int[rows][cols];
+        System.out.println("Enter matrix elements:");
+        for(int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++) {
+                System.out.print("mat["+i+"]["+j+"]: ");
+                mat[i][j] = sc.nextInt();
+            }
+        System.out.print("Row to access: "); int r = sc.nextInt();
+        System.out.print("Col to access: "); int c = sc.nextInt();
+        if(r >= 0 && r < rows && c >= 0 && c < cols)
+            System.out.println("mat["+r+"]["+c+"] = "+mat[r][c]);
+        else System.out.println("Invalid index!");
+        System.out.println("Time: O(1)");
+    }
+}`,
+    c:`#include <stdio.h>
+
+int main() {
+    int rows, cols;
+    printf("Enter rows and cols: ");
+    scanf("%d %d", &rows, &cols);
+
+    int mat[10][10];
+    printf("Enter matrix elements:\\n");
+    for(int i = 0; i < rows; i++)
+        for(int j = 0; j < cols; j++) {
+            printf("mat[%d][%d]: ", i, j);
+            scanf("%d", &mat[i][j]);
+        }
+
+    int r, c;
+    printf("Enter row and col to access: ");
+    scanf("%d %d", &r, &c);
+
+    if(r >= 0 && r < rows && c >= 0 && c < cols)
+        printf("mat[%d][%d] = %d\\n", r, c, mat[r][c]);
+    else printf("Invalid index!\\n");
+
+    printf("Time: O(1)\\n");
+    return 0;
+}`,
+    javascript:`function accessElement(mat, r, c) {
+    const rows = mat.length, cols = mat[0].length;
+    if(r >= 0 && r < rows && c >= 0 && c < cols)
+        return mat[r][c];
+    return null;
+}
+
+// Demo matrix
+const mat = [
+    [3,  17,  8, 42],
+    [25, 11, 36,  7],
+    [19,  5, 28, 14],
+    [33,  2, 45, 21]
+];
+
+console.log("Matrix:");
+mat.forEach((row, i) => console.log(\`  [\${row.join(', ')}]\`));
+
+const r = 1, c = 2;
+const val = accessElement(mat, r, c);
+console.log(\`\\nmat[\${r}][\${c}] = \${val}\`);
+console.log("Time: O(1) — direct access");`
+  },
+  traverse: {
+    cpp:`#include <iostream>
+using namespace std;
+
+void traverseMatrix(int mat[][10], int rows, int cols) {
+    cout << "Row-by-row traversal:\\n";
+    for(int i = 0; i < rows; i++) {
+        cout << "Row " << i << ": ";
+        for(int j = 0; j < cols; j++) {
+            cout << "mat[" << i << "][" << j << "]=" << mat[i][j];
+            if(j < cols-1) cout << "  ";
+        }
+        cout << "\\n";
+    }
+    cout << "\\nTotal cells visited: " << rows*cols << "\\n";
+    cout << "Time: O(R×C)  |  Space: O(1)\\n";
+}
+
+int main() {
+    int rows, cols;
+    cout << "Enter rows and cols: ";
+    cin >> rows >> cols;
+    int mat[10][10];
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<cols;j++) {
+            cout << "mat[" << i << "][" << j << "]: ";
+            cin >> mat[i][j];
+        }
+    traverseMatrix(mat, rows, cols);
+    return 0;
+}`,
+    python:`def traverse_matrix(mat):
+    rows, cols = len(mat), len(mat[0])
+    print("Row-by-row traversal:")
+    for i in range(rows):
+        print(f"  Row {i}:", end=" ")
+        for j in range(cols):
+            print(f"mat[{i}][{j}]={mat[i][j]}", end="  ")
+        print()
+    print(f"\\nTotal cells: {rows * cols}")
+    print(f"Time: O(R×C)  |  Space: O(1)")
+
+rows = int(input("Enter rows: "))
+cols = int(input("Enter cols: "))
+mat = []
+for i in range(rows):
+    row = [int(input(f"mat[{i}][{j}]: ")) for j in range(cols)]
+    mat.append(row)
+traverse_matrix(mat)`,
+    java:`import java.util.Scanner;
+
+public class Main {
+    static void traverse(int[][] mat) {
+        int rows = mat.length, cols = mat[0].length;
+        System.out.println("Row-by-row traversal:");
+        for(int i = 0; i < rows; i++) {
+            System.out.print("  Row "+i+": ");
+            for(int j = 0; j < cols; j++)
+                System.out.print("mat["+i+"]["+j+"]="+mat[i][j]+"  ");
+            System.out.println();
+        }
+        System.out.println("Total: "+rows*cols+" cells. Time: O(R×C)");
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Rows: "); int r = sc.nextInt();
+        System.out.print("Cols: "); int c = sc.nextInt();
+        int[][] mat = new int[r][c];
+        for(int i=0;i<r;i++) for(int j=0;j<c;j++) {
+            System.out.print("mat["+i+"]["+j+"]: "); mat[i][j]=sc.nextInt();
+        }
+        traverse(mat);
+    }
+}`,
+    c:`#include <stdio.h>
+
+void traverseMatrix(int mat[10][10], int rows, int cols) {
+    printf("Row-by-row traversal:\\n");
+    for(int i = 0; i < rows; i++) {
+        printf("  Row %d: ", i);
+        for(int j = 0; j < cols; j++)
+            printf("mat[%d][%d]=%d  ", i, j, mat[i][j]);
+        printf("\\n");
+    }
+    printf("Total: %d cells. Time: O(R×C)\\n", rows*cols);
+}
+
+int main() {
+    int rows, cols, mat[10][10];
+    printf("Enter rows and cols: ");
+    scanf("%d %d", &rows, &cols);
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<cols;j++) {
+            printf("mat[%d][%d]: ", i, j);
+            scanf("%d", &mat[i][j]);
+        }
+    traverseMatrix(mat, rows, cols);
+    return 0;
+}`,
+    javascript:`function traverseMatrix(mat) {
+    const rows = mat.length, cols = mat[0].length;
+    console.log("Row-by-row traversal:");
+    for(let i = 0; i < rows; i++) {
+        let rowStr = \`  Row \${i}: \`;
+        for(let j = 0; j < cols; j++)
+            rowStr += \`mat[\${i}][\${j}]=\${mat[i][j]}  \`;
+        console.log(rowStr);
+    }
+    console.log(\`\\nTotal: \${rows*cols} cells. Time: O(R×C)\`);
+}
+
+const mat = [
+    [3,  17,  8, 42],
+    [25, 11, 36,  7],
+    [19,  5, 28, 14],
+    [33,  2, 45, 21]
+];
+traverseMatrix(mat);`
+  },
+  sort: {
+    cpp:`#include <iostream>
+#include <algorithm>
+using namespace std;
+
+void sortRows(int mat[][10], int rows, int cols) {
+    cout << "Sorting each row:\\n";
+    for(int i = 0; i < rows; i++) {
+        sort(mat[i], mat[i] + cols);
+        cout << "Row " << i << ": ";
+        for(int j = 0; j < cols; j++) cout << mat[i][j] << " ";
+        cout << "\\n";
+    }
+    cout << "Time: O(R × C log C)\\n";
+}
+
+void sortCols(int mat[][10], int rows, int cols) {
+    cout << "Sorting each column:\\n";
+    for(int j = 0; j < cols; j++) {
+        int col[10];
+        for(int i = 0; i < rows; i++) col[i] = mat[i][j];
+        sort(col, col + rows);
+        for(int i = 0; i < rows; i++) mat[i][j] = col[i];
+        cout << "Col " << j << ": ";
+        for(int i = 0; i < rows; i++) cout << mat[i][j] << " ";
+        cout << "\\n";
+    }
+    cout << "Time: O(C × R log R)\\n";
+}
+
+int main() {
+    int rows, cols, mat[10][10];
+    cout << "Enter rows and cols: ";
+    cin >> rows >> cols;
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<cols;j++) {
+            cout << "mat[" << i << "][" << j << "]: ";
+            cin >> mat[i][j];
+        }
+    int choice;
+    cout << "Sort (1=rows, 2=cols): ";
+    cin >> choice;
+    if(choice == 1) sortRows(mat, rows, cols);
+    else sortCols(mat, rows, cols);
+    return 0;
+}`,
+    python:`def sort_rows(mat):
+    print("Sorting each row:")
+    for i, row in enumerate(mat):
+        mat[i] = sorted(row)
+        print(f"  Row {i}: {mat[i]}")
+    print("Time: O(R × C log C)")
+
+def sort_cols(mat):
+    rows, cols = len(mat), len(mat[0])
+    print("Sorting each column:")
+    for j in range(cols):
+        col = sorted(mat[i][j] for i in range(rows))
+        for i in range(rows):
+            mat[i][j] = col[i]
+        print(f"  Col {j}: {[mat[i][j] for i in range(rows)]}")
+    print("Time: O(C × R log R)")
+
+rows = int(input("Rows: "))
+cols = int(input("Cols: "))
+mat = []
+for i in range(rows):
+    row = [int(input(f"mat[{i}][{j}]: ")) for j in range(cols)]
+    mat.append(row)
+
+choice = int(input("Sort (1=rows, 2=cols): "))
+if choice == 1: sort_rows(mat)
+else: sort_cols(mat)`,
+    java:`import java.util.*;
+
+public class Main {
+    static void sortRows(int[][] mat) {
+        int rows=mat.length, cols=mat[0].length;
+        for(int i=0;i<rows;i++) {
+            Arrays.sort(mat[i]);
+            System.out.print("Row "+i+": ");
+            for(int v:mat[i]) System.out.print(v+" ");
+            System.out.println();
+        }
+        System.out.println("Time: O(R × C log C)");
+    }
+    static void sortCols(int[][] mat) {
+        int rows=mat.length, cols=mat[0].length;
+        for(int j=0;j<cols;j++) {
+            int[] col=new int[rows];
+            for(int i=0;i<rows;i++) col[i]=mat[i][j];
+            Arrays.sort(col);
+            for(int i=0;i<rows;i++) mat[i][j]=col[i];
+            System.out.print("Col "+j+": ");
+            for(int i=0;i<rows;i++) System.out.print(mat[i][j]+" ");
+            System.out.println();
+        }
+        System.out.println("Time: O(C × R log R)");
+    }
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int r=sc.nextInt(), c=sc.nextInt();
+        int[][] mat=new int[r][c];
+        for(int i=0;i<r;i++) for(int j=0;j<c;j++) mat[i][j]=sc.nextInt();
+        System.out.print("Sort (1=rows,2=cols): ");
+        if(sc.nextInt()==1) sortRows(mat); else sortCols(mat);
+    }
+}`,
+    c:`#include <stdio.h>
+#include <stdlib.h>
+
+int cmp(const void *a,const void *b){return *(int*)a - *(int*)b;}
+
+void sortRows(int mat[10][10], int rows, int cols) {
+    for(int i=0;i<rows;i++){
+        qsort(mat[i], cols, sizeof(int), cmp);
+        printf("Row %d: ", i);
+        for(int j=0;j<cols;j++) printf("%d ", mat[i][j]);
+        printf("\\n");
+    }
+    printf("Time: O(R x C log C)\\n");
+}
+
+void sortCols(int mat[10][10], int rows, int cols) {
+    for(int j=0;j<cols;j++){
+        int col[10];
+        for(int i=0;i<rows;i++) col[i]=mat[i][j];
+        qsort(col, rows, sizeof(int), cmp);
+        for(int i=0;i<rows;i++) mat[i][j]=col[i];
+        printf("Col %d: ", j);
+        for(int i=0;i<rows;i++) printf("%d ", mat[i][j]);
+        printf("\\n");
+    }
+    printf("Time: O(C x R log R)\\n");
+}
+
+int main(){
+    int rows,cols,mat[10][10];
+    printf("Rows cols: "); scanf("%d %d",&rows,&cols);
+    for(int i=0;i<rows;i++) for(int j=0;j<cols;j++){
+        printf("mat[%d][%d]: ",i,j); scanf("%d",&mat[i][j]);
+    }
+    int ch; printf("Sort (1=rows,2=cols): "); scanf("%d",&ch);
+    if(ch==1) sortRows(mat,rows,cols); else sortCols(mat,rows,cols);
+}`,
+    javascript:`function sortRows(mat) {
+    console.log("Sorting each row:");
+    mat.forEach((row, i) => {
+        row.sort((a, b) => a - b);
+        console.log(\`  Row \${i}: [\${row.join(', ')}]\`);
+    });
+    console.log("Time: O(R × C log C)");
+}
+
+function sortCols(mat) {
+    const rows = mat.length, cols = mat[0].length;
+    console.log("Sorting each column:");
+    for(let j = 0; j < cols; j++) {
+        const col = mat.map(row => row[j]).sort((a,b) => a-b);
+        col.forEach((val, i) => mat[i][j] = val);
+        console.log(\`  Col \${j}: [\${col.join(', ')}]\`);
+    }
+    console.log("Time: O(C × R log R)");
+}
+
+const mat = [[3,17,8,42],[25,11,36,7],[19,5,28,14],[33,2,45,21]];
+console.log("Original:", JSON.stringify(mat));
+sortRows(mat);
+console.log("After sorting rows:", JSON.stringify(mat));`
+  },
+  search: {
+    cpp:`#include <iostream>
+using namespace std;
+
+pair<int,int> linearSearch(int mat[][10], int rows, int cols, int target) {
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            cout << "Checking mat[" << i << "][" << j << "] = " << mat[i][j];
+            if(mat[i][j] == target) {
+                cout << "  <- FOUND!\\n";
+                return {i, j};
+            }
+            cout << "  != " << target << "\\n";
+        }
+    }
+    return {-1, -1};
+}
+
+int main() {
+    int rows, cols;
+    cout << "Enter rows and cols: ";
+    cin >> rows >> cols;
+    int mat[10][10];
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<cols;j++) {
+            cout << "mat[" << i << "][" << j << "]: ";
+            cin >> mat[i][j];
+        }
+    int target;
+    cout << "Enter search target: ";
+    cin >> target;
+    auto [r, c] = linearSearch(mat, rows, cols, target);
+    if(r != -1)
+        cout << "\\nFound " << target << " at mat[" << r << "][" << c << "]\\n";
+    else
+        cout << "\\n" << target << " not found! Time: O(R×C)\\n";
+    return 0;
+}`,
+    python:`def linear_search(mat, target):
+    rows, cols = len(mat), len(mat[0])
+    for i in range(rows):
+        for j in range(cols):
+            print(f"  mat[{i}][{j}] = {mat[i][j]}", end="")
+            if mat[i][j] == target:
+                print(f"  <- FOUND!")
+                return (i, j)
+            print(f"  != {target}")
+    return (-1, -1)
+
+rows = int(input("Rows: "))
+cols = int(input("Cols: "))
+mat = []
+for i in range(rows):
+    row = [int(input(f"mat[{i}][{j}]: ")) for j in range(cols)]
+    mat.append(row)
+target = int(input("Search target: "))
+r, c = linear_search(mat, target)
+if r != -1:
+    print(f"\\nFound {target} at mat[{r}][{c}]. Time: O(R×C)")
+else:
+    print(f"\\n{target} not found! Time: O(R×C)")`,
+    java:`import java.util.*;
+
+public class Main {
+    static int[] linearSearch(int[][] mat, int target) {
+        for(int i=0;i<mat.length;i++)
+            for(int j=0;j<mat[0].length;j++) {
+                System.out.print("  mat["+i+"]["+j+"] = "+mat[i][j]);
+                if(mat[i][j]==target){System.out.println("  <- FOUND!"); return new int[]{i,j};}
+                System.out.println("  != "+target);
+            }
+        return new int[]{-1,-1};
+    }
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int r=sc.nextInt(), c=sc.nextInt();
+        int[][] mat=new int[r][c];
+        for(int i=0;i<r;i++) for(int j=0;j<c;j++) mat[i][j]=sc.nextInt();
+        int target=sc.nextInt();
+        int[] res=linearSearch(mat,target);
+        if(res[0]!=-1) System.out.println("Found at ["+res[0]+"]["+res[1]+"]");
+        else System.out.println(target+" not found. Time: O(R×C)");
+    }
+}`,
+    c:`#include <stdio.h>
+
+void linearSearch(int mat[10][10], int rows, int cols, int target) {
+    for(int i=0;i<rows;i++)
+        for(int j=0;j<cols;j++){
+            printf("  mat[%d][%d]=%d", i, j, mat[i][j]);
+            if(mat[i][j]==target){
+                printf("  <- FOUND!\\n");
+                printf("Found %d at [%d][%d]. Time: O(R*C)\\n", target,i,j);
+                return;
+            }
+            printf("  != %d\\n", target);
+        }
+    printf("%d not found! Time: O(R*C)\\n", target);
+}
+
+int main(){
+    int rows,cols,mat[10][10],target;
+    printf("Rows cols: "); scanf("%d %d",&rows,&cols);
+    for(int i=0;i<rows;i++) for(int j=0;j<cols;j++){
+        printf("mat[%d][%d]: ",i,j); scanf("%d",&mat[i][j]);
+    }
+    printf("Target: "); scanf("%d",&target);
+    linearSearch(mat,rows,cols,target);
+}`,
+    javascript:`function linearSearch(mat, target) {
+    const rows = mat.length, cols = mat[0].length;
+    for(let i = 0; i < rows; i++) {
+        for(let j = 0; j < cols; j++) {
+            process.stdout && process.stdout.write(\`  mat[\${i}][\${j}] = \${mat[i][j]}\`);
+            if(mat[i][j] === target) {
+                console.log(\`  <- FOUND!\`);
+                return [i, j];
+            }
+            console.log(\`  != \${target}\`);
+        }
+    }
+    return [-1, -1];
+}
+
+const mat = [[3,17,8,42],[25,11,36,7],[19,5,28,14],[33,2,45,21]];
+const target = 28;
+console.log(\`Searching for \${target} in matrix:\`);
+const [r, c] = linearSearch(mat, target);
+if(r !== -1) console.log(\`\\nFound at mat[\${r}][\${c}]\`);
+else console.log(\`\\n\${target} not found. Time: O(R×C)\`);`
+  }
+};
+
+/* ═══════════════════════════════════════════
+   CODE EDITOR
+═══════════════════════════════════════════ */
+function getCMTheme(t){ return t==='light'?'eclipse':t==='blue'?'nord':'material-ocean'; }
+
+function initEditor(){
+  const theme = document.body.getAttribute('data-theme')||'dark';
+  codeEditor = CodeMirror.fromTextArea(document.getElementById('code-editor'),{
+    mode:'text/x-c++src', theme:getCMTheme(theme),
+    lineNumbers:true, indentUnit:4, lineWrapping:true
+  });
+  codeEditor.setValue(CODE.access.cpp);
+}
+
+function switchLang(lang, btn){
+  document.querySelectorAll('.lang-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  currentLang=lang;
+  const modeMap={cpp:'text/x-c++src',python:'text/x-python',java:'text/x-java',c:'text/x-csrc',javascript:'text/javascript'};
+  const names={cpp:'C++',python:'Python',java:'Java',c:'C',javascript:'JavaScript'};
+  document.getElementById('lang-display').textContent=names[lang];
+  codeEditor.setOption('mode',modeMap[lang]);
+  codeEditor.setValue(CODE[currentCodeOp][lang]||`// ${names[lang]} code for ${currentCodeOp}`);
+}
+
+document.querySelectorAll('.lang-tab').forEach(btn=>{ btn.onclick=()=>switchLang(btn.dataset.lang,btn); });
+
+function switchCodeOp(op){
+  currentCodeOp=op;
+  document.querySelectorAll('.code-op-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('cop-'+op).classList.add('active');
+  codeEditor.setValue(CODE[op][currentLang]||`// Code for ${op}`);
+}
+
+function copyCode(){
+  navigator.clipboard.writeText(codeEditor.getValue()).then(()=>{
+    const btn=document.querySelector('.code-copy');
+    btn.textContent='✓'; btn.style.background='var(--primary-green)';
+    setTimeout(()=>{btn.textContent='Copy';btn.style.background='var(--primary-purple)';},2000);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE CODE RUNNER
+═══════════════════════════════════════════ */
+async function getInput(prompt){
+  return new Promise(resolve=>{
+    const pd=document.getElementById('inputPrompt');
+    document.getElementById('promptText').textContent=prompt;
+    document.getElementById('userInput').value='';
+    pd.style.display='block';
+    document.getElementById('userInput').focus();
+    currentInputResolver=resolve;
+  });
+}
+
+function submitInput(){
+  const val=document.getElementById('userInput').value.trim();
+  if(val&&currentInputResolver){
+    document.getElementById('inputPrompt').style.display='none';
+    currentInputResolver(val);
+    currentInputResolver=null;
+  }
+}
+
+document.getElementById('userInput').addEventListener('keypress',e=>{ if(e.key==='Enter') submitInput(); });
+
+async function runCode(){
+  outputDiv=document.getElementById('codeOutput');
+  outputDiv.innerHTML='<span style="color:#fbbf24;">🔄 Executing...</span><br><br>';
+  const opNames={access:'Accessing',traverse:'Traversal',sort:'Sorting',search:'Searching'};
+  outputDiv.innerHTML+=`<span style="color:#06b6d4;">Matrix ${opNames[currentCodeOp]} — ${currentLang.toUpperCase()}</span><br><br>`;
+  try{ await runOpSim(currentCodeOp); }
+  catch(e){ outputDiv.innerHTML+=`<br><span style="color:#ef4444;">Error: ${e.message}</span>`; }
+}
+
+function out(txt,color='#a0a0a0'){ outputDiv.innerHTML+=`<span style="color:${color}">${txt}</span><br>`; }
+
+async function getMatrix(){
+  const r=parseInt(await getInput('Enter rows (e.g. 3): '));
+  const c=parseInt(await getInput('Enter cols (e.g. 3): '));
+  out(`Rows: ${r}, Cols: ${c}`,'#06b6d4');
+  const mat=[];
+  for(let i=0;i<r;i++){
+    const row=[];
+    for(let j=0;j<c;j++){
+      const v=parseInt(await getInput(`mat[${i}][${j}]: `));
+      row.push(v); out(`mat[${i}][${j}] = ${v}`,'#8b8b8b');
+    }
+    mat.push(row);
+  }
+  return mat;
+}
+
+async function runOpSim(op){
+  const mat=await getMatrix();
+  const R=mat.length,C=mat[0].length;
+  out('');
+
+  if(op==='access'){
+    const r=parseInt(await getInput(`Row to access (0-${R-1}): `));
+    const c=parseInt(await getInput(`Col to access (0-${C-1}): `));
+    if(r>=0&&r<R&&c>=0&&c<C){
+      out(`mat[${r}][${c}] = ${mat[r][c]}`,'#10b981');
+      out(`✓ Direct access — Time: O(1)`,'#10b981');
+    } else out('Invalid index!','#ef4444');
+
+  }else if(op==='traverse'){
+    out('Row-by-row traversal:','#06b6d4');
+    for(let i=0;i<R;i++){
+      let s=`  Row ${i}: `;
+      for(let j=0;j<C;j++) s+=`mat[${i}][${j}]=${mat[i][j]}  `;
+      out(s,'#8b5cf6'); await sleep(300);
+    }
+    out(`✓ Visited ${R*C} cells. Time: O(R×C)`,'#10b981');
+
+  }else if(op==='sort'){
+    const choice=await getInput('Sort rows or cols? (r/c): ');
+    if(choice.toLowerCase()==='r'){
+      out('Sorting each row:','#f59e0b');
+      for(let i=0;i<R;i++){
+        mat[i].sort((a,b)=>a-b);
+        out(`  Row ${i}: [${mat[i].join(', ')}]`,'#f59e0b'); await sleep(200);
+      }
+      out(`✓ All rows sorted. Time: O(R × C log C)`,'#10b981');
+    }else{
+      out('Sorting each column:','#f59e0b');
+      for(let j=0;j<C;j++){
+        const col=mat.map(row=>row[j]).sort((a,b)=>a-b);
+        col.forEach((v,i)=>mat[i][j]=v);
+        out(`  Col ${j}: [${col.join(', ')}]`,'#f59e0b'); await sleep(200);
+      }
+      out(`✓ All columns sorted. Time: O(C × R log R)`,'#10b981');
+    }
+
+  }else if(op==='search'){
+    const target=parseInt(await getInput('Search target: '));
+    out(`Searching for ${target}...`,'#f59e0b');
+    let found=false;
+    for(let i=0;i<R&&!found;i++)
+      for(let j=0;j<C;j++){
+        await sleep(150);
+        if(mat[i][j]===target){
+          out(`  mat[${i}][${j}] = ${mat[i][j]}  <- FOUND! 🎉`,'#10b981');
+          out(`✓ Found at [${i}][${j}]. Time: O(R×C)`,'#10b981');
+          found=true; break;
+        }
+        out(`  mat[${i}][${j}] = ${mat[i][j]}  != ${target}`,'#555');
+      }
+    if(!found) out(`${target} not found! Time: O(R×C) worst case.`,'#ef4444');
+  }
+}
+
+/* ═══════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════ */
+document.getElementById('themeToggle').onclick=()=>{
+  const themes=['dark','light','blue'];
+  const cur=document.body.getAttribute('data-theme')||'dark';
+  const next=themes[(themes.indexOf(cur)+1)%3];
+  document.body.setAttribute('data-theme',next);
+  localStorage.setItem('dsa-theme',next);
+  codeEditor.setOption('theme',getCMTheme(next));
+};
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = document.title.split(' - ')[0].trim().toLowerCase().replace(/\s+/g, '_');
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
+
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+window.onload=()=>{
+  const saved=localStorage.getItem('dsa-theme')||'dark';
+  document.body.setAttribute('data-theme',saved);
+  initEditor();
+  switchOp('access');
+  initBest(); initAvg(); initWorst(); initCustom();
+  switchCodeOp('access');
+};
+</script>
+</body>
+</html>

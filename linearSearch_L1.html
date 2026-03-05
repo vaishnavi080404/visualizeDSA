@@ -3,1478 +3,945 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linear Search - DSA Visualizer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Linear Search - Basics | DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CodeMirror CSS -->
+     <!-- CodeMirror Core CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    
+    <!-- CodeMirror Themes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Copy all CSS from binary search document here - keeping it exactly the same */
-        /* I'll include just the essential override for content differences */
-    </style>
-    <link rel="stylesheet" href="binary-search-styles.css">
-     <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-dark: #10121A;
-            --bg-medium: #1A1E29;
-            --card-bg: #212531;
-            --navbar-bg-main: #2B3242;
-            --navbar-bg-right: #3C4456;
-            --accent-blue: #00FFFF;
-            --accent-orange: #FF8C00;
-            --text-light: #E0E0E0;
-            --text-white: #FFFFFF;
-            --text-subtle: #99A1B3;
-            --shadow-glow-blue: rgba(0, 255, 255, 0.3);
-            --shadow-glow-orange: rgba(255, 140, 0, 0.3);
-            --shadow-dark: rgba(0, 0, 0, 0.6);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
-            color: var(--text-light);
-            min-height: 100vh;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--navbar-bg-main);
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 2px solid var(--accent-blue);
-        }
-
-        .navbar-left {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--text-white);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .navbar-subtitle {
-            font-size: 11px;
-            color: var(--text-subtle);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-top: -2px;
-        }
-
-        .hamburger-menu {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 30px;
-            height: 25px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .hamburger-line {
-            width: 100%;
-            height: 3px;
-            background: var(--accent-orange);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px var(--shadow-glow-orange);
-        }
-
-        .hamburger-menu:hover .hamburger-line {
-            background: var(--accent-blue);
-            box-shadow: 0 0 10px var(--shadow-glow-blue);
-        }
-
-        .hamburger-menu.active .hamburger-line:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .hamburger-menu.active .hamburger-line:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger-menu.active .hamburger-line:nth-child(3) {
-            transform: rotate(-45deg) translate(8px, -8px);
-        }
-
-        /* Sidebar Menu */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -350px;
-            width: 350px;
-            height: 100%;
-            background: var(--card-bg);
-            border-left: 2px solid var(--accent-blue);
-            box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
-            z-index: 2500;
-            transition: right 0.4s ease;
-            overflow-y: auto;
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            padding: 30px 25px;
-            background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
-            border-bottom: 2px solid var(--accent-blue);
-        }
-
-        .sidebar-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--accent-blue);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 5px;
-        }
-
-        .sidebar-subtitle {
-            font-size: 11px;
-            color: var(--text-subtle);
-            letter-spacing: 1px;
-        }
-
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-
-        .menu-category {
-            padding: 15px 25px 10px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            color: var(--accent-orange);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .menu-item {
-            padding: 15px 25px;
-            color: var(--text-light);
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .menu-item:hover {
-            background: rgba(0, 255, 255, 0.1);
-            border-left-color: var(--accent-blue);
-            color: var(--accent-blue);
-            padding-left: 30px;
-        }
-
-        .menu-item.active {
-            background: rgba(0, 255, 255, 0.15);
-            border-left-color: var(--accent-orange);
-            color: var(--accent-orange);
-        }
-
-        .menu-item i {
-            font-size: 16px;
-            width: 20px;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            backdrop-filter: blur(3px);
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 30px;
-        }
-
-        /* Header with Prerequisites */
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .main-title {
-            background: linear-gradient(135deg, var(--card-bg), var(--navbar-bg-main));
-            padding: 20px 50px;
-            border-radius: 50px;
-            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 36px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-white);
-            border: 2px solid var(--accent-blue);
-        }
-
-        .prerequisites-box {
-            background: var(--card-bg);
-            padding: 20px 25px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px var(--shadow-dark), 0 0 15px var(--shadow-glow-orange);
-            min-width: 200px;
-            border: 2px solid var(--accent-orange);
-        }
-
-        .prerequisites-box h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--accent-orange);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .prerequisites-box ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .prerequisites-box li {
-            font-size: 13px;
-            color: var(--text-light);
-            margin: 6px 0;
-            padding-left: 18px;
-            position: relative;
-        }
-
-        .prerequisites-box li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--accent-orange);
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        /* Top Cards Row */
-        .top-cards {
-            display: grid;
-            grid-template-columns: 1fr 1.8fr;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-
-        /* Card Styles */
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px var(--shadow-dark), 0 0 25px var(--shadow-glow-blue);
-        }
-
-        .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--accent-blue);
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        .card-text {
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-light);
-        }
-
-        .glossary-term-chip {
-            background-color: transparent;
-            border-bottom: 1px dashed var(--accent-blue);
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--accent-blue);
-            position: relative;
-            padding: 2px 0;
-            display: inline-block;
-            line-height: 1.2;
-        }
-
-        .glossary-term-chip:hover {
-            border-bottom-style: solid;
-        }
-
-        .glossary-definition-popup {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            width: 250px;
-            background-color: var(--bg-dark);
-            border: 1px solid var(--accent-orange);
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 12px;
-            color: var(--text-subtle);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 0 15px var(--shadow-glow-orange);
-            pointer-events: none;
-        }
-
-        .glossary-term-chip:hover .glossary-definition-popup {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .glossary-definition-popup strong {
-            color: var(--accent-orange);
-        }
-
-        .inner-definition-box {
-            background-color: rgba(0, 255, 255, 0.08);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: var(--text-subtle);
-            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.1);
-        }
-
-        .inner-definition-box strong {
-            color: var(--accent-blue);
-        }
-
-        /* Algorithm Card */
-        .algorithm-card {
-            background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%);
-            border: 3px solid var(--accent-orange);
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .algorithm-card .card-title {
-            color: var(--text-white);
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .info-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 32px;
-            height: 32px;
-            background: var(--accent-orange);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 0 15px var(--shadow-glow-orange);
-        }
-
-        .algorithm-steps {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-
-        .algorithm-steps p {
-            color: var(--text-white);
-            font-size: 13px;
-            margin: 6px 0;
-            line-height: 1.6;
-        }
-
-        .algorithm-steps strong {
-            color: var(--accent-orange);
-        }
-
-        .method-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            position: absolute;
-            right: 20px;
-            top: 70px;
-        }
-
-        .method-btn {
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid var(--accent-blue);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #000;
-        }
-
-        .method-btn:hover {
-            background: var(--accent-blue);
-            color: #000;
-            transform: translateX(-5px);
-            box-shadow: 0 0 15px var(--shadow-glow-blue);
-        }
-
-        /* Modal Popup */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border: 2px solid var(--accent-blue);
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px var(--shadow-dark), 0 0 30px var(--shadow-glow-blue);
-            position: relative;
-            animation: modalSlideIn 0.3s ease;
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 35px;
-            height: 35px;
-            background: var(--accent-orange);
-            border: none;
-            border-radius: 50%;
-            color: #000;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            transform: rotate(90deg);
-            box-shadow: 0 0 15px var(--shadow-glow-orange);
-        }
-
-        .modal-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            color: var(--accent-blue);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent-blue);
-        }
-
-        .modal-code {
-            background: rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 15px 0;
-            border-left: 4px solid var(--accent-orange);
-        }
-
-        .modal-code pre {
-            color: var(--text-light);
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.8;
-            margin: 0;
-            white-space: pre-wrap;
-        }
-
-        .modal-code .keyword {
-            color: #ff79c6;
-        }
-
-        .modal-code .function {
-            color: #50fa7b;
-        }
-
-        .modal-code .comment {
-            color: #6272a4;
-            font-style: italic;
-        }
-
-        /* Manual Run-Through */
-        .manual-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-        }
-
-        .manual-card .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--accent-blue);
-        }
-
-        .array-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .nav-arrow {
-            width: 35px;
-            height: 35px;
-            background: var(--navbar-bg-main);
-            border: 2px solid var(--accent-orange);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--accent-orange);
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .nav-arrow:hover {
-            background: var(--accent-orange);
-            color: #000;
-        }
-
-        .array-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .array-item {
-            width: 45px;
-            height: 45px;
-            background: var(--navbar-bg-main);
-            border: 2px solid var(--accent-blue);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 15px;
-            color: var(--text-white);
-        }
-
-        .array-item.highlight {
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            border-color: #22c55e;
-            color: #000;
-            transform: scale(1.15);
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
-        }
-
-        .array-item.checking {
-            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
-            border-color: var(--accent-orange);
-            color: #000;
-        }
-
-        .target-circle {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            border: 4px solid var(--accent-blue);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            color: #000;
-            box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
-        }
-
-        .step-info {
-            text-align: left;
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.8;
-        }
-
-        .step-info strong {
-            color: var(--accent-orange);
-        }
-
-        .result-badge {
-            background: linear-gradient(135deg, #4ade80, #22c55e);
-            color: #000;
-            padding: 12px 25px;
-            border-radius: 25px;
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 14px;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
-        }
-
-        /* Bottom Cards */
-        .bottom-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-
-        .how-works-card {
-            background: var(--card-bg);
-        }
-
-        .icon-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .icon-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin: 12px 0;
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        .icon-list .icon {
-            width: 35px;
-            height: 35px;
-            min-width: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .icon.search { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .icon.check { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .icon.iterate { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
-        .icon.compare { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
-        .icon.error { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-        /* Complexity Card */
-        .complexity-card {
-            background: linear-gradient(135deg, #6b8dd8 0%, #5a73d4 100%);
-            border: 2px solid var(--accent-orange);
-            position: relative;
-        }
-
-        .complexity-card .card-title {
-            color: var(--text-white);
-            margin-bottom: 15px;
-        }
-
-        /* Carousel Styles */
-        .carousel-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .carousel-slide {
-            min-width: 100%;
-            padding: 10px;
-        }
-
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid var(--accent-orange);
-            border-radius: 50%;
-            color: var(--accent-orange);
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-nav:hover {
-            background: var(--accent-orange);
-            color: #000;
-        }
-
-        .carousel-nav.prev {
-            left: 10px;
-        }
-
-        .carousel-nav.next {
-            right: 10px;
-        }
-
-        .carousel-indicators {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .carousel-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .carousel-dot.active {
-            background: var(--accent-orange);
-            width: 30px;
-            border-radius: 5px;
-        }
-
-        .case-card {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 10px;
-        }
-
-        .case-card h4 {
-            color: var(--accent-orange);
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .case-card p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 13px;
-            line-height: 1.6;
-            margin: 8px 0;
-        }
-
-        .case-card .example {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 10px;
-            border-left: 3px solid var(--accent-blue);
-        }
-
-        .case-card .example strong {
-            color: var(--accent-blue);
-        }
-
-        .graph-container {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            height: 200px;
-        }
-
-        .graph-title {
-            color: var(--text-white);
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .graph-svg {
-            width: 100%;
-            height: 150px;
-        }
-
-        .graph-curve {
-            stroke: var(--accent-orange);
-            stroke-width: 4;
-            fill: none;
-            filter: drop-shadow(0 0 8px var(--accent-orange));
-        }
-
-        .graph-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 11px;
-            text-align: center;
-            margin-top: 10px;
-            line-height: 1.4;
-        }
-
-        /* Videos Section */
-        .videos-section {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .videos-button {
-            background: linear-gradient(135deg, var(--accent-orange), #ff6b00);
-            color: var(--text-white);
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px var(--shadow-glow-orange);
-            transition: all 0.3s ease;
-        }
-
-        .videos-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px var(--shadow-glow-orange);
-        }
-
-        /* Level Progress */
-        .level-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 30px;
-            padding: 20px;
-        }
-
-        .level-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            position: relative;
-        }
-
-        .level-wrapper button {
-            background: var(--shadow-glow-blue);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .slider {
-            width: 100px;
-            height: 5px;
-            background: #ccc;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-
-      
-        /* Inline all CSS from binary search for completeness */
-        .slider{width:100px;height:5px;background:#ccc;position:relative;overflow:hidden;border-radius:10px}
-        .slider::before{content:"";position:absolute;height:100%;width:0;background:#FF8C00;transition:width 1s ease}
-        .slider.active::before{width:100%}
-        .modal{display:none;position:fixed;z-index:100;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center}
+      :root {
+        /* Global Accents */
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        
+        /* Dark Theme (Default) */
+        --dark-bg: #0a0a0a;
+        --card-bg: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a2a;
+        --nav-bg: rgba(10, 10, 10, 0.8);
+        --code-bg: #0d1117;           /* Background for inner boxes */
+        --terminal-bg: #0d1117;       /* Background for SVGs/Terminals */
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+        --dark-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border-color: #e2e8f0;
+        --nav-bg: rgba(248, 250, 252, 0.8);
+        --code-bg: #f1f5f9;           /* Light grey for inner boxes */
+        --terminal-bg: #f1f5f9;
+        --primary-cyan: #0891b2;      /* Darker cyan for light mode readability */
+        --primary-green: #059669;
+    }
+
+    /* Professional Blue Theme (Oceanic Eclipse) */
+    [data-theme="blue"] {
+        --dark-bg: #011425;
+        --card-bg: #1e293b;           /* Dark Teal from your image */
+        --text-primary: #ffffff;
+        --text-secondary: #94a3b8;    /* Slate Blue from your image */
+        --border-color: #242424;
+        --nav-bg: rgba(1, 20, 37, 0.8);
+        --code-bg: #011425;           /* Navy for inner boxes */
+        --terminal-bg: #011425;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Navbar & UI Transitions */
+    nav {
+        position: fixed; top: 0; width: 100%; z-index: 1000;
+        background: var(--nav-bg); backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+      .nav-container {
+            max-width: 1400px; margin: 0 auto; padding: 1.2rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+
+  .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 700; text-decoration: none; color: inherit; }
+        .logo-icon { width: 35px; height: 35px; background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; z-index: 2; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; position: relative; }
+        .nav-links a:hover { color: var(--primary-green); }
+
+        .theme-toggle {
+            background: var(--border-color); border: 1px solid var(--border-color); color: var(--text-primary);
+            cursor: pointer; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; z-index: 2; transition: all 0.3s ease;
+        }
+        .theme-toggle:hover { border-color: var(--primary-green); background: rgba(16, 185, 129, 0.1); }
+        .theme-toggle svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 100px 2rem 3rem; }
+    
+    /* Breadcrumb */
+    .breadcrumb { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; font-size: 0.9rem; color: var(--text-secondary); }
+    .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+    .breadcrumb span.sep { opacity: 0.5; }
+
+    /* Header */
+    .page-header { margin-bottom: 3rem; }
+    .page-title { font-family: 'Space Grotesk', sans-serif; font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .level-tabs { display: flex; gap: 1rem; margin-top: 1.5rem; }
+    .level-tab { padding: 0.6rem 1.5rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 50px; color: var(--text-secondary); font-weight: 600; cursor: default; }
+    .level-tab.active { background: var(--primary-cyan); color: white; border-color: var(--primary-cyan); }
+
+    /* Cards */
+    .section-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px; padding: 2.5rem; margin-bottom: 2.5rem; }
+    .section-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .section-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+    .section-title { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+
+    .content-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary-cyan); display: flex; align-items: center; gap: 0.5rem; }
+    .content-text { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 1.05rem; }
+
+    /* Complexity Grid */
+    .complexity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .complexity-box { background: var(--code-bg); border: 1px solid var(--border-color); padding: 1.5rem; text-align: center; border-radius: 16px; }
+    .complexity-label { font-size: 0.85rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .complexity-value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--primary-green); }
+
+     .search-visual-img { border-radius: 16px; padding: 3rem; margin: 2rem 0; text-align: center; }
+    .searchdiagram { max-width: 800px; margin: 0 auto; border-radius: 12px; padding: 2rem; border: 2px solid var(--border-color); }
+    /* Manual Run Through Styling */
+    .step-box { background: var(--code-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; border-left: 5px solid var(--primary-cyan); }
+    .step-label { font-weight: 800; color: var(--primary-cyan); margin-bottom: 10px; display: block; }
+    .array-row { display: flex; gap: 12px; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+    .array-cell { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 10px; font-weight: 700; font-family: 'JetBrains Mono'; transition: 0.3s; font-size: 1.2rem; }
+    .array-cell.scanning { border-color: var(--primary-orange); background: rgba(245, 158, 11, 0.15); color: var(--primary-orange); transform: translateY(-5px); }
+    .array-cell.found { border-color: var(--primary-green); background: rgba(16, 185, 129, 0.15); color: var(--primary-green); transform: scale(1.1); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+
+    /* Dropdowns */
+    .op-dropdown { margin-bottom: 1rem; }
+    .op-header { background: var(--code-bg); padding: 1.2rem 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-radius: 12px; border: 1px solid var(--border-color); transition: 0.3s; }
+    .op-header:hover { border-color: var(--primary-cyan); background: rgba(6, 182, 212, 0.05); }
+    .op-number { width: 32px; height: 32px; background: var(--primary-cyan); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin-right: 15px; color: white; font-size: 0.9rem; }
+    .op-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; background: var(--card-bg); }
+    .op-content.show { max-height: 2000px; padding: 1.5rem; border: 1px solid var(--border-color); border-top: none; border-radius: 0 0 12px 12px; }
+.styled-list { list-style: none; margin: 1rem 0; }
+    .styled-list li { padding: 0.6rem 0 0.6rem 1.5rem; position: relative; color: var(--text-secondary); }
+    .styled-list li:before { content: "→"; position: absolute; left: 0; color: var(--primary-green); font-weight: bold; }
+     .example-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .example-card { padding: 1.5rem; background:var(--code-bg); border:#1e293b 1px solid; border-radius: 16px; }
+    .example-number { width: 35px; height: 35px; background: var(--primary-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; margin-bottom: 1rem; }
+    .example-desc{
+        color: var(--text-secondary);
+        transition: color 0.3s ease;
+    }
+    /* Tabs */
+     .lang-tabs { display: flex; gap: 0.8rem; margin: 1.5rem 0; flex-wrap: wrap; background: var(--border-color); padding: 6px; border-radius: 12px; width: fit-content; }
+    .lang-tab { padding: 8px 16px; background: transparent; border: 1px solid transparent; border-radius: 8px; color: var(--text-secondary); cursor: pointer; font-weight: 600; transition: all 0.2s; }
+    .lang-tab.active { background: var(--primary-cyan); color: white; border-color: var(--primary-cyan); }
+    /* Editor */
+    .editor-wrapper  { background: var(--code-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; margin: 1.5rem 0; }
+    .editor-header { background: rgba(6, 182, 212, 0.1); padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+     .code-copy {
+        width: 50px; height: 40px; background: var(--primary-purple); border: 1px solid var(--border-color); border-radius: 8px;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    /* Slider */
+    /* Video Section Styling */
+/* --- Video Section Styling --- */
+.video-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally in flex */
+    margin: 4rem 0;
+}
+
+.video-info {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centers text and icon */
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.video-info i {
+    color: var(--primary-green);
+    font-size: 1.5rem;
+}
+
+.video-info span {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.video-container {
+    width: 100%;
+    max-width: 900px; /* Limits width so centering is visible */
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    margin: 0 auto; /* Centers the block itself */
+    transition: all 0.3s ease;
+}
+
+.video-container:hover {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+}
+
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* --- Level Slider Styling --- */
+.level-container {
+    max-width: 800px;
+    margin: 5rem auto;
+    padding: 3rem 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    text-align: center;
+}
+
+.level-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 20px;
+    height: 100px; /* Give it defined height */
+}
+
+.level-wrapper button {
+    position: relative;
+    z-index: 20 !important; /* Ensure buttons are above everything else */
+    width: 140px;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 2px solid var(--border-color);
+    background: var(--dark-bg);
+    color: var(--text-primary);
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Fix visibility for Level 1 Text */
+#l1 {
+    border-color: var(--primary-cyan);
+    background: rgba(6, 182, 212, 0.15);
+    color: var(--primary-cyan) !important;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.slider {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    background: var(--border-color);
+    width: 20%;
+    z-index: 1;
+    pointer-events: none; /* Allows clicks to pass through to buttons */
+}
+
+#slider1 { left: 22%; }
+#slider2 { left: 58%; }
+
+.slider.active {
+    background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple));
+    box-shadow: 0 0 20px var(--primary-cyan);
+}
+
+/* --- Modal Styling --- */
+.level-modal {
+    display: none; /* JS will change this to flex */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(15px);
+    z-index: 100000; /* Must be higher than Navbar */
+    justify-content: center;
+    align-items: center;
+}
+
+.level-modal-content {
+    background: var(--card-bg);
+    border: 2px solid var(--primary-purple);
+    padding: 3rem;
+    border-radius: 30px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);
+}
+#startQuiz { background: var(--primary-cyan);
+     color: white;
+     width: 80px;
+     height: 40px;
+     border-radius: 20px;
+     box-shadow: none;
+     
+ }
+
+ #startQuiz:hover { background: var(--primary-cyan); box-shadow: 0 0 15px var(--primary-cyan); }
+#cancelBtn { background: var(--border-color); color: var(--text-primary);
+ width: 80px;
+     height: 40px;
+     border-radius: 20px;
+     box-shadow: none; }
+
+#cancelBtn:hover { background: var(--border-color); box-shadow: 0 0 15px var(--border-color); }
+
+    .theme-toggle { background: var(--border-color); border: none; color: var(--text-primary); cursor: pointer; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    
+    .CodeMirror { height: 300px !important; font-size: 14px; }
     </style>
 </head>
-<body>
-    <!-- Same Navbar as Binary Search -->
-    <nav class="navbar">
-        <div class="navbar-left">
-            <div class="navbar-title">DSA VISUALIZER</div>
-            <div class="navbar-subtitle">Data Structures & Algorithms</div>
+<body data-theme="dark">
+
+ <nav>
+        <div class="nav-container">
+            
+            <div class="logo">
+                 <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>DSA Visualizer</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="#about">Code Editor</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
         </div>
-        <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-        </button>
     </nav>
 
-    <!-- Same Sidebar - but Linear Search is active -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-title">Menu</div>
-            <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
-        </div>
-        <div class="sidebar-menu">
-            <div class="menu-category">🔍 Searching Algorithms</div>
-            <div class="menu-item active" onclick="selectAlgorithm('linear-search')">
-                <i class="fas fa-search"></i>
-                <span>Linear Search</span>
-            </div>
-            <div class="menu-item" onclick="selectAlgorithm('binary-search')">
-                <i class="fas fa-chart-line"></i>
-                <span>Binary Search</span>
-            </div>
-            <div class="menu-category">📊 Data Structures</div>
-            <div class="menu-item" onclick="selectAlgorithm('stack')">
-                <i class="fas fa-layer-group"></i>
-                <span>Stack</span>
-            </div>
-            <div class="menu-item" onclick="selectAlgorithm('queue')">
-                <i class="fas fa-stream"></i>
-                <span>Queue</span>
-            </div>
-            <div class="menu-category">🔄 Sorting Algorithms</div>
-            <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
-                <i class="fas fa-code-branch"></i>
-                <span>Merge Sort</span>
-            </div>
-            <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
-                <i class="fas fa-circle"></i>
-                <span>Bubble Sort</span>
-            </div>
-            <div class="menu-item" onclick="selectAlgorithm('selection-sort')">
-                <i class="fas fa-hand-pointer"></i>
-                <span>Selection Sort</span>
-            </div>
-            <div class="menu-item" onclick="selectAlgorithm('quick-sort')">
-                <i class="fas fa-bolt"></i>
-                <span>Quick Sort</span>
-            </div>
+<div class="container">
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span class="sep">&#8250;</span> 
+        <a href="algorithms.html">Algorithms</a> <span class="sep">&#8250;</span> 
+        <span>Linear Search</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Linear Search - Basics</h1>
+        <p class="content-text">The most fundamental searching algorithm for checking sequential data.</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3 | Basics</div>
         </div>
     </div>
 
-    <!-- Main Content - LINEAR SEARCH CONTENT -->
-    <div class="container">
-        <div class="header-section">
-            <div class="main-title">MASTERING LINEAR SEARCH</div>
-            <div class="prerequisites-box">
-                <h3>Prerequisites</h3>
-                <ul>
-                    <li>Arrays</li>
-                    <li>Basic Loops</li>
-                    <li>Time Complexity</li>
-                </ul>
-            </div>
+    <!-- Section 1: Intro -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔎</div>
+            <h2 class="section-title">Understanding Linear Search</h2>
         </div>
-
-        <div class="top-cards">
-            <div class="card">
-                <h3 class="card-title">What is a Linear Search?</h3>
-                <div class="main-topic-text">
-                    <p>
-                        <span class="glossary-term-chip">Linear Search
-                            <span class="glossary-definition-popup">
-                                <strong>Linear Search:</strong> A simple searching algorithm that checks every element in the array sequentially until the target is found or the end is reached.
-                            </span>
-                        </span>
-                        is the simplest searching algorithm. It works by <strong>sequentially checking each element</strong> in the array from start to finish until the target element is found or the array ends. This algorithm works on both <strong>sorted and unsorted arrays</strong>.
-                    </p>
-
-                    <div class="inner-definition-box">
-                        💡 <strong>Real-World Analogy:</strong> Imagine searching for a specific book on a shelf 📚 — you check each book one by one from left to right until you find the one you're looking for.
-                    </div>
-
-                    <h3 style="margin-top:25px;">Sequential Search Approach</h3>
-                    <ul>
-                        <li>Start from the <strong>first element</strong> of the array.</li>
-                        <li>Compare each element with the target value.</li>
-                        <li>If a match is found, return the <strong>index</strong> of that element.</li>
-                        <li>If the end of the array is reached without finding the target, return <strong>-1</strong>.</li>
-                        <li>Continue until the element is found or array ends.</li>
-                    </ul>
-
-                    <div class="inner-definition-box">
-                        🧩 <strong>Key Principle:</strong>
-                        <ul style="margin: 8px 0 0 18px;">
-                            <li>Works on both sorted and unsorted arrays.</li>
-                            <li>Checks every element one by one.</li>
-                            <li>Simple but can be slow for large datasets: O(n).</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card algorithm-card">
-                <div class="info-icon">i</div>
-                <h3 class="card-title">Algorithm: Linear Search (Array A, Value x)</h3>
-                <div class="algorithm-steps">
-                    <p><strong>Step 1:</strong> Start from index i = 0</p>
-                    <p><strong>Step 2:</strong> While i < n, repeat the following steps:</p>
-                    <p><strong>Step 3:</strong> If A[i] == x, return i</p>
-                    <p><strong>Step 4:</strong> Increment i by 1</p>
-                    <p><strong>Step 5:</strong> If i >= n, return -1 (element not found)</p>
-                    <p><strong>Step 6:</strong> Exit</p>
-                </div>
-                <div class="method-buttons">
-                    <button class="method-btn" onclick="openModal('iteration')">Iteration Method</button>
-                    <button class="method-btn" onclick="openModal('recursive')">Recursive Method</button>
-                </div>
-
-                 <div class="stack-image" style="text-align:center; margin-top:20px;">
-                        <img src="./image/linearSearch.png" 
-                             alt="Stack illustration showing LIFO concept" 
-                             style="max-width:50%; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.2);">
-                    </div>
-            </div>
-
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Linear Search?</h3>
+            <p class="content-text">
+                Linear search is a searching algorithm where the data set is traversed from one end to the other until the desired value is found. 
+                It is also known as <b>Sequential Search</b> because it checks every element in sequence.
+            </p>
             
+            <h3 class="content-title">🤔 Why Use Linear Search?</h3>
+            <ul style="list-style: none; color: var(--text-secondary); margin-left: 10px;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>No Sorting Required:</b> Unlike Binary Search, it works on unsorted lists.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Simple Implementation:</b> Very easy to write and understand for beginners.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Small Datasets:</b> Efficient enough for lists with a few hundred elements.</li>
+            </ul>
         </div>
-
-        <div class="manual-card">
-            <h3 class="card-title">Manual Run-Through: Search for 11</h3>
-            <p class="card-text" style="margin-bottom: 15px;">We will search for value 11 in the array: [5, 9, 3, 11, 7, 2, 15, 1]</p>
-            <div class="array-container">
-                <div class="nav-arrow">◄</div>
-                <div class="array-row">
-                    <div class="array-item">5</div>
-                    <div class="array-item">9</div>
-                    <div class="array-item">3</div>
-                    <div class="array-item highlight">11</div>
-                    <div class="array-item">7</div>
-                    <div class="array-item">2</div>
-                    <div class="array-item">15</div>
-                    <div class="array-item">1</div>
-                </div>
-                <div class="nav-arrow">►</div>
-            </div>
-            <div style="display: flex; justify-content: center; gap: 30px; align-items: center; margin-top: 25px; flex-wrap: wrap;">
-                <div class="target-circle">11</div>
-                <div class="step-info">
-                    <p><strong>Step 1:</strong> Check arr[0] = 5 ≠ 11</p>
-                    <p><strong>Step 2:</strong> Check arr[1] = 9 ≠ 11</p>
-                    <p><strong>Step 3:</strong> Check arr[2] = 3 ≠ 11</p>
-                    <p><strong>Step 4:</strong> Check arr[3] = 11 ✅ Found!</p>
-                </div>
-            </div>
-            <div style="text-align: center;">
-                <span class="result-badge"><i class="fas fa-check-circle"></i> Result: Value 11 is found at index 3</span>
-            </div>
-        </div>
-
-        <div class="bottom-cards">
-            <div class="card how-works-card">
-                <h3 class="card-title">How Linear Search Works</h3>
-                <ul class="icon-list">
-                    <li>
-                        <span class="icon search"><i class="fas fa-arrow-right"></i></span>
-                        <span>Start from the first element and move sequentially through the array</span>
-                    </li>
-                    <li>
-                        <span class="icon compare"><i class="fas fa-equals"></i></span>
-                        <span>Compare each element with the target value</span>
-                    </li>
-                    <li>
-                        <span class="icon check"><i class="fas fa-check-circle"></i></span>
-                        <span>If a match is found, return the index immediately</span>
-                    </li>
-                    <li>
-                        <span class="icon iterate"><i class="fas fa-redo"></i></span>
-                        <span>Continue checking until the target is found or array ends</span>
-                    </li>
-                    <li>
-                        <span class="icon error"><i class="fas fa-times-circle"></i></span>
-                        <span>If no match is found after checking all elements, return -1</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card complexity-card">
-                <h3 class="card-title">Linear Search Time Complexity</h3>
-                <div class="carousel-container">
-                    <button class="carousel-nav prev" onclick="changeSlide(-1)">◄</button>
-                    <button class="carousel-nav next" onclick="changeSlide(1)">►</button>
-                    
-                    <div class="carousel-track" id="carouselTrack">
-                        <div class="carousel-slide">
-                            <p style="color: rgba(255, 255, 255, 0.9); font-size: 13px; line-height: 1.6; margin-bottom: 15px;">
-                                Linear Search has a time complexity of <strong style="color: var(--accent-orange); font-size: 15px;">O(n)</strong> where n is the number of elements in the array.
-                            </p>
-                            <div class="graph-container">
-                                <div class="graph-title">Time Complexity Graph</div>
-                                <svg class="graph-svg" viewBox="0 0 300 150" preserveAspectRatio="none">
-                                    <defs>
-                                        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" style="stop-color:var(--accent-orange);stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#ffb84d;stop-opacity:1" />
-                                        </linearGradient>
-                                    </defs>
-                                    <path class="graph-curve" d="M 0,140 L 300,10" stroke="url(#grad)"/>
-                                </svg>
-                                <div class="graph-label">Time increases linearly as number of values increases</div>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide">
-                            <div class="case-card">
-                                <h4>⭐ Best Case Scenario: O(1)</h4>
-                                <p>The best case occurs when the target element is the first element in the array.</p>
-                                <p><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(1) - Constant time</p>
-                                <div class="example">
-                                    <p><strong>Example:</strong></p>
-                                    <p>Array: [11, 3, 5, 7, 9, 13, 15, 1]</p>
-                                    <p>Target: 11</p>
-                                    <p style="margin-top: 8px;">Step 1: Check arr[0] = 11 ✅</p>
-                                    <p style="margin-top: 8px; color: #4ade80;"><strong>Result:</strong> Only 1 comparison needed</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide">
-                            <div class="case-card">
-                                <h4>⚠️ Worst Case Scenario: O(n)</h4>
-                                <p>The worst case occurs when the target element is the last element or not present in the array.</p>
-                                <p><strong style="color: var(--accent-orange);">Time Complexity:</strong> O(n) - Linear time</p>
-                                <div class="example">
-                                    <p><strong>Example:</strong></p>
-                                    <p>Array: [3, 5, 7, 9, 11, 13, 15, 1]</p>
-                                    <p>Target: 1 (last element)</p>
-                                    <p style="margin-top: 8px;">Must check all 8 elements</p>
-                                    <p>arr[0]=3, arr[1]=5, arr[2]=7...arr[7]=1 ✅</p>
-                                    <p style="margin-top: 8px; color: #f87171;"><strong>Result:</strong> 8 comparisons needed (n comparisons)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="carousel-indicators">
-                    <div class="carousel-dot active" onclick="goToSlide(0)"></div>
-                    <div class="carousel-dot" onclick="goToSlide(1)"></div>
-                    <div class="carousel-dot" onclick="goToSlide(2)"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="videos-section">
-            <button class="videos-button"><i class="fas fa-play-circle"></i> LEARN MORE WITH VIDEOS</button>
-        </div>
-
-        <div class="level-container">
-            <div class="level-wrapper">
-                <button id="l1">Level 1</button>
-                <div class="slider" id="slider1"></div>
-                <button id="l2">Level 2</button>
-                <div class="slider" id="slider2"></div>
-                <button id="l3">Level 3</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Method Modal -->
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeModal()">×</button>
-            <h3 class="modal-title" id="modalTitle">Iteration Method</h3>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
-    <!-- Quiz Modal -->
-    <div id="quizModal" class="modal" style="display:none;position:fixed;z-index:3000;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;">
-        <div class="modal-content" style="background:var(--card-bg);border:2px solid #00aaff;padding:20px 30px;border-radius:15px;text-align:center;width:300px;">
-            <h3>Level 2 Quiz</h3>
-            <p>Attempt the quiz to unlock Level 2 and move forward.</p>
-            <div class="modal-buttons" style="display:flex;justify-content:center;margin-top:15px;gap:10px;">
-                <button id="startQuiz" style="background:#FF8C00;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;">Start Quiz</button>
-                <button id="cancelBtn" style="background:#FF8C00;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Copy all JavaScript from binary search document
-        // Modal, Carousel, Sidebar functions - exactly the same
         
-        function openModal(method) {
-            const modal = document.getElementById('modalOverlay');
-            const title = document.getElementById('modalTitle');
-            const body = document.getElementById('modalBody');
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Worst)</div>
+                <div class="complexity-value">O(N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space Complexity</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+        </div>
+    </div>
 
-            if (method === 'iteration') {
-                title.textContent = 'Iteration Method';
-                body.innerHTML = `
-                    <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 20px;">
-                        The iterative approach uses a loop to check each element sequentially until the target is found.
-                    </p>
-                    <div class="modal-code">
-                        <pre><span class="keyword" style="color:#ff79c6">function</span> <span class="function" style="color:#50fa7b">linearSearchIterative</span>(arr, x) {
-    <span class="keyword" style="color:#ff79c6">for</span> (<span class="keyword" style="color:#ff79c6">let</span> i = 0; i < arr.length; i++) {
-        <span class="comment" style="color:#6272a4;font-style:italic">// Check if current element matches target</span>
-        <span class="keyword" style="color:#ff79c6">if</span> (arr[i] == x)
-            <span class="keyword" style="color:#ff79c6">return</span> i;
-    }
-    
-    <span class="comment" style="color:#6272a4;font-style:italic">// Element not found</span>
-    <span class="keyword" style="color:#ff79c6">return</span> -1;
-}</pre>
+      <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">🎨</div>
+                <h2 class="section-title">Visual Representation</h2>
+            </div>
+
+            <div class="search-visual-img">
+                <h3 style="color: var(--primary-cyan); margin-bottom: 2rem; font-size: 1.3rem;">Stack Structure and Operations</h3>
+                <div class="search-diagram">
+                    <svg viewBox="0 0 900 260" width="100%" style="background:#0a0a0a; border-radius:12px;">
+
+    <!-- Title -->
+    <text x="450" y="30" fill="#22d3ee" font-size="20" font-weight="bold" text-anchor="middle">
+        Linear Search (Searching for 40)
+    </text>
+
+    <!-- Array boxes -->
+    <!-- Box 10 -->
+    <rect x="80" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="120" y="140" fill="white" font-size="16" text-anchor="middle">10</text>
+
+    <!-- Box 20 -->
+    <rect x="180" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="220" y="140" fill="white" font-size="16" text-anchor="middle">20</text>
+
+    <!-- Box 30 -->
+    <rect x="280" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="320" y="140" fill="white" font-size="16" text-anchor="middle">30</text>
+
+    <!-- Box 40 (Found) -->
+    <rect x="380" y="110" width="80" height="50" rx="8" fill="#22c55e"/>
+    <text x="420" y="140" fill="white" font-size="16" text-anchor="middle">40</text>
+
+    <!-- Box 50 -->
+    <rect x="480" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="520" y="140" fill="white" font-size="16" text-anchor="middle">50</text>
+
+    <!-- Index labels -->
+    <text x="120" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">0</text>
+    <text x="220" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">1</text>
+    <text x="320" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">2</text>
+    <text x="420" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">3</text>
+    <text x="520" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">4</text>
+
+    <!-- Arrow pointer -->
+    <path d="M 420 80 L 420 105" stroke="#22c55e" stroke-width="3"/>
+    <polygon points="415,105 425,105 420,115" fill="#22c55e"/>
+
+    <!-- Pointer text -->
+    <text x="420" y="70" fill="#22c55e" font-size="14" text-anchor="middle">
+        Match Found
+    </text>
+
+    <!-- Description -->
+    <text x="450" y="220" fill="#e5e7eb" font-size="14" text-anchor="middle">
+        Elements are checked sequentially until the target value is found
+    </text>
+
+</svg>
+
+                </div>
+                <p class="content-text" style="margin-top: 2rem; text-align: center;">
+                    Stack follows LIFO (Last In First Out) - Elements are added and removed from the same end (TOP)
+                </p>
+            </div>
+        </div>
+
+        <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <h2 class="section-title">Real-World Analogy</h2>
+    </div>
+
+    <p class="content-text" style="margin-bottom: 2rem;">
+        Think of linear search as scanning through a list one item at a time until you find what you're looking for — just like these everyday situations:
+    </p>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Finding a Name in a Phone Book (Unsorted)</div>
+            <div class="example-desc">If names aren't alphabetical, you must read every entry from top to bottom until you find the right one.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Searching a Drawer for Keys</div>
+            <div class="example-desc">You dig through a messy drawer item by item — no order, no shortcut, just check each one until the keys appear.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Watching a Movie for a Scene</div>
+            <div class="example-desc">Without timestamps, you scrub through the video from the start, second by second, until you spot the scene you want.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Checking Roll Call in Class</div>
+            <div class="example-desc">A teacher reads every student's name from the top of the list until the absent student's name is found.</div>
+        </div>
+    </div>
+</div>
+    <!-- Section 2: How it works & Terminology -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2 class="section-title">How it Works & Key Concepts</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">🔄 The Mechanism</h3>
+            <p class="content-text">
+                Linear search works by sequentially checking each element in the list until the desired value is found or the end of the list is reached. 
+                If the element is found, the algorithm returns its <b>index</b>. If the loop finishes without a match, it returns <b>-1</b>.
+            </p>
+
+            <h3 class="content-title">📚 Basic Terminology</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Target:</b> The specific value you are searching for.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Traversal:</b> The process of visiting each element in order.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Sentinel:</b> A special value (like -1) used to signal "Not Found".
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Manual Run Through -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚶</div>
+            <h2 class="section-title">Manual Run Through</h2>
+        </div>
+        <p class="content-text">Let's try to do the searching manually to understand the logic before coding. We will search for the value <b>11</b>.</p>
+        
+        <div class="step-box">
+            <div class="step-header"><span>Step 1:</span> Initialize Array</div>
+            <p class="content-text">We start with an array of random values.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 2:</span> Index 0</div>
+            <p class="content-text">Is 12 equal to 11? <b>No</b>. Move to the next.</p>
+            <div class="array-row">
+                <div class="array-cell scanning">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 3:</span> Index 1 & 2</div>
+            <p class="content-text">Compare 8 and 9 to 11. Both are <b>No</b>. Keep moving.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell scanning">8</div><div class="array-cell scanning">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 4:</span> Index 3 (Found!)</div>
+            <p class="content-text">Is 11 equal to 11? <b>Yes!</b> The search stops here.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell found">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-green);">
+            <h4 style="color: var(--primary-green); margin-bottom: 10px;">What Happened?</h4>
+            <p class="content-text" style="margin-bottom: 0;">Every value was checked from the start. When 11 was found, the index <b>3</b> was returned. If we had searched for 100, the algorithm would finish the whole array and return <b>-1</b>.</p>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon"><i class="fas fa-code"></i></div>
+        <h2 class="section-title">Implementation</h2>
+    </div>
+
+    <!-- Iterative Method -->
+    <div class="op-dropdown">
+        <div class="op-header" onclick="toggleDropdown('iter-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">1</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Iterative Method (Standard Loop)</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-iter-drop"></i>
+        </div>
+        <div class="op-content" id="iter-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The iterative approach uses a simple loop to traverse the array from index 0 to N-1. In each iteration, it compares the current element with the target value.
+                </p>
+
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(N)</div>
                     </div>
-                    <p style="color: var(--text-light); line-height: 1.8; margin-top: 15px;">
-                        <strong style="color: var(--accent-orange);">Key Points:</strong><br>
-                        • Uses a simple for loop<br>
-                        • Checks elements sequentially<br>
-                        • Very easy to understand and implement<br>
-                        • Works on sorted and unsorted arrays
-                    </p>
-                `;
-            } else if (method === 'recursive') {
-                title.textContent = 'Recursive Method';
-                body.innerHTML = `
-                    <p style="color: var(--text-light); line-height: 1.8; margin-bottom: 20px;">
-                        The recursive approach checks one element at a time and calls itself with the next index.
-                    </p>
-                    <div class="modal-code">
-                        <pre><span class="keyword" style="color:#ff79c6">function</span> <span class="function" style="color:#50fa7b">linearSearchRecursive</span>(arr, x, index = 0) {
-    <span class="comment" style="color:#6272a4;font-style:italic">// Base case: reached end of array</span>
-    <span class="keyword" style="color:#ff79c6">if</span> (index >= arr.length)
-        <span class="keyword" style="color:#ff79c6">return</span> -1;
-    
-    <span class="comment" style="color:#6272a4;font-style:italic">// Check if current element matches</span>
-    <span class="keyword" style="color:#ff79c6">if</span> (arr[index] == x)
-        <span class="keyword" style="color:#ff79c6">return</span> index;
-    
-    <span class="comment" style="color:#6272a4;font-style:italic">// Recursively check next element</span>
-    <span class="keyword" style="color:#ff79c6">return</span> linearSearchRecursive(arr, x, index + 1);
-}</pre>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(1)</div>
                     </div>
-                    <p style="color: var(--text-light); line-height: 1.8; margin-top: 15px;">
-                        <strong style="color: var(--accent-orange);">Key Points:</strong><br>
-                        • Uses recursive function calls<br>
-                        • Checks one element per recursion<br>
-                        • Less efficient due to call stack<br>
-                        • Demonstrates recursion concept
-                    </p>
-                `;
-            }
+                </div>
 
-            modal.classList.add('active');
-        }
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li>Start from the first element (index 0).</li>
+                    <li>Compare the target value with the current element of the array.</li>
+                    <li>If the target matches, return the current index.</li>
+                    <li>If the target does not match, move to the next element.</li>
+                    <li>Repeat until the element is found or the end of the array is reached.</li>
+                    <li>If the end is reached without a match, return -1.</li>
+                </ul>
 
-        function closeModal() {
-            document.getElementById('modalOverlay').classList.remove('active');
-        }
+                <!-- Language Tabs -->
+                <div class="lang-tabs" data-group="iterative">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
 
-        function closeModalOnOverlay(event) {
-            if (event.target.id === 'modalOverlay') {
-                closeModal();
-            }
-        }
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-iter"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        let currentSlide = 0;
-        const totalSlides = 3;
+    <!-- Recursive Method -->
+    <div class="op-dropdown" style="margin-top: 2rem;">
+        <div class="op-header" onclick="toggleDropdown('recur-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">2</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Recursive Method</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-recur-drop"></i>
+        </div>
+        <div class="op-content" id="recur-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The recursive approach breaks the problem into smaller sub-problems. It checks the current element and then calls itself to check the rest of the array.
+                </p>
 
-        function changeSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide < 0) currentSlide = totalSlides - 1;
-            if (currentSlide >= totalSlides) currentSlide = 0;
-            updateCarousel();
-        }
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(N)</div>
+                    </div>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(N)</div>
+                    </div>
+                </div>
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-        }
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li><b>Base Case 1:</b> If index is out of bounds, return -1 (Not Found).</li>
+                    <li><b>Base Case 2:</b> If element at current index == target, return index (Found).</li>
+                    <li><b>Recursive Step:</b> Return the result of the search function called with index + 1.</li>
+                </ul>
 
-        function updateCarousel() {
-            const track = document.getElementById('carouselTrack');
-            const dots = document.querySelectorAll('.carousel-dot');
+                <div class="lang-tabs" data-group="recursive">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-recur"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Video Section -->
+        <div class="video-section">
+            <div class="video-info">
+                <span>📺</span>
+                <span>Linear Search Explained</span>
+            </div>
             
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            dots.forEach((dot, index) => {
-                if (index === currentSlide) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
+            <div class="video-container">
+                <div class="video-wrapper">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/C46QfTjVCNU?si=xcrqBqgp9Ns0cJdc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+
+
+
+<!-- Level Slider Section -->
+
+    <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+    </div>
+
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="color: var(--primary-purple); font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 10px;">Level Locked</h3>
+        <p style="color: var(--text-secondary);">Pass the Level 1 Quiz to unlock Level 2 and continue your Stack journey.</p>
+        
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<!-- LANGUAGE MODES (REQUIRED FOR SYNTAX HIGHLIGHTING) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+    const codeData = {
+        iterative: {
+            cpp: `int search(int arr[], int n, int x) {\n    for (int i = 0; i < n; i++)\n        if (arr[i] == x) return i;\n    return -1;\n}`,
+            python: `def search(arr, x):\n    for i in range(len(arr)):\n        if arr[i] == x:\n            return i\n    return -1`,
+            java: `static int search(int[] arr, int x) {\n    for (int i = 0; i < arr.length; i++)\n        if (arr[i] == x) return i;\n    return -1;\n}`,
+            c: `int search(int arr[], int n, int x) {\n    for (int i = 0; i < n; i++)\n        if (arr[i] == x) return i;\n    return -1;\n}`,
+            javascript: `function search(arr, x) {\n    for (let i = 0; i < arr.length; i++)\n        if (arr[i] === x) return i;\n    return -1;\n}`
+        },
+        recursive: {
+            cpp: `int search(int arr[], int n, int x, int i = 0) {\n    if (i >= n) return -1;\n    if (arr[i] == x) return i;\n    return search(arr, n, x, i + 1);\n}`,
+            python: `def search(arr, n, x, i=0):\n    if i >= n: return -1\n    if arr[i] == x: return i\n    return search(arr, n, x, i + 1)`,
+            java: `static int search(int[] arr, int n, int x, int i) {\n    if (i >= n) return -1;\n    if (arr[i] == x) return i;\n    return search(arr, n, x, i + 1);\n}`,
+            c: `int search(int arr[], int n, int x, int i) {\n    if (i >= n) return -1;\n    if (arr[i] == x) return i;\n    return search(arr, n, x, i + 1);\n}`,
+            javascript: `function search(arr, n, x, i = 0) {\n    if (i >= n) return -1;\n    if (arr[i] === x) return i;\n    return search(arr, n, x, i + 1);\n}`
         }
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeModal();
-                if (document.getElementById('sidebar').classList.contains('active')) {
-                    toggleSidebar();
-                }
-            }
-        });
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const hamburger = document.getElementById('hamburger');
-            
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        }
-
-
- function selectAlgorithm(algorithm) {
-    // Mapping IDs to filenames
-    const routes = {
-        'linear-search': 'linearSearch_L1.html',
-        'binary-search': 'binarySearch_L1.html',
-        'quick-sort': 'quickSort_L1.html',
-        'merge-sort': 'mergeSort_L1.html',
-        'bubble-sort': 'bubbleSort_L1.html',
-        'stack': 'stack_L1.html',
-        'queue': 'queue.html'
     };
 
-    const targetPage = routes[algorithm];
+    let editorIter, editorRecur;
 
-    if (targetPage) {
-        // Redirect to the new page
-        window.location.href = targetPage;
-    } else {
-        console.error("Route not found for:", algorithm);
-        toggleSidebar();
+    // Helper to get CM theme based on website theme
+    function getCMTheme(webTheme) {
+        if (webTheme === 'light') return 'eclipse';
+        if (webTheme === 'blue') return 'nord';
+        return 'material-ocean'; // Default dark
+    }
+
+    function initEditors() {
+        const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+        const cmTheme = getCMTheme(currentTheme);
+
+        editorIter = CodeMirror.fromTextArea(document.getElementById('editor-iter'), {
+            mode: 'text/x-c++src', 
+            theme: cmTheme, 
+            lineNumbers: true, 
+            indentUnit: 4
+        });
+        editorRecur = CodeMirror.fromTextArea(document.getElementById('editor-recur'), {
+            mode: 'text/x-c++src', 
+            theme: cmTheme, 
+            lineNumbers: true, 
+            indentUnit: 4
+        });
+        
+        editorIter.setValue(codeData.iterative.cpp);
+        editorRecur.setValue(codeData.recursive.cpp);
+    }
+
+    function toggleDropdown(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        content.classList.toggle('show');
+        if(icon) icon.classList.toggle('fa-chevron-up');
+        // Refresh needed for CodeMirror to render correctly inside hidden divs
+        setTimeout(() => { 
+            editorIter.refresh(); 
+            editorRecur.refresh(); 
+        }, 10);
+    }
+
+    function switchLang(group, lang, tabBtn) {
+        const parent = tabBtn.parentElement;
+        parent.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+        tabBtn.classList.add('active');
+
+        const editor = group === 'iterative' ? editorIter : editorRecur;
+        const modeMap = { cpp: 'text/x-c++src', python: 'text/x-python', java: 'text/x-java', c: 'text/x-csrc', javascript: 'text/javascript' };
+        const langNames = { cpp: 'C++', python: 'Python', java: 'Java', c: 'C', javascript: 'JS' };
+
+        // Update Header Label
+        const headerSpan = tabBtn.closest('.op-content').querySelector('.lang-display');
+        if(headerSpan) headerSpan.textContent = langNames[lang];
+
+        editor.setOption('mode', modeMap[lang]);
+        editor.setValue(codeData[group][lang]);
+    }
+
+    document.querySelectorAll('.lang-tab').forEach(btn => {
+        btn.onclick = (e) => switchLang(btn.parentElement.dataset.group, btn.dataset.lang, btn);
+    });
+
+    function copyCode(button) {
+        const isIterative = button.closest('#iter-drop') !== null;
+        const editor = isIterative ? editorIter : editorRecur;
+        const code = editor.getValue();
+
+        navigator.clipboard.writeText(code).then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.style.background = 'var(--primary-green)';
+            setTimeout(() => {
+                button.textContent = 'Copy';
+                button.style.background = 'var(--primary-purple)';
+            }, 2000);
+        });
+    }
+
+    // THEME TOGGLE LOGIC WITH EDITOR SYNC
+    document.getElementById('themeToggle').onclick = () => {
+        const themes = ['dark', 'light', 'blue'];
+        const current = document.body.getAttribute('data-theme') || 'dark';
+        const next = themes[(themes.indexOf(current) + 1) % 3];
+        
+        // 1. Update Website Theme
+        document.body.setAttribute('data-theme', next);
+        localStorage.setItem('dsa-theme', next);
+
+        // 2. Sync Code Editors Theme
+        const newCMTheme = getCMTheme(next);
+        editorIter.setOption('theme', newCMTheme);
+        editorRecur.setOption('theme', newCMTheme);
+    };
+
+    // Level Slider & Modal Logic
+    // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'linearsearch';
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
     }
 }
-document.addEventListener("DOMContentLoaded", () => {
-    // Get the current filename (e.g., "quick_sort.html")
-    const currentPage = window.location.pathname.split("/").pop();
-    
-    // Map of filenames back to IDs
-    const pageToId = {
-        'quickSort_L1.html': 'quick-sort',
-        'binarySearch_L1.html': 'binary-search',
-        'linearSearch_L1.html': 'linear-search',
-        'mergeSort_L1.html': 'merge-sort',
-        'bubbleSort_L1.html': 'bubble-sort',
-        'stack_L1.html': 'stack',
-        'queue_L1.html': 'queue'
 
-    };
-
-    const activeId = pageToId[currentPage];
-    if (activeId) {
-        // Find the menu item with the matching onclick and add 'active'
-        const menuItems = document.querySelectorAll('.menu-item');
-        menuItems.forEach(item => {
-            if (item.getAttribute('onclick').includes(activeId)) {
-                item.classList.add('active');
-            }
-        });
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
     }
-});
+};
 
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
 
-        const l1 = document.getElementById("l1");
-        const l2 = document.getElementById("l2");
-        const l3 = document.getElementById("l3");
-        const slider1 = document.getElementById("slider1");
-        const slider2 = document.getElementById("slider2");
-        const modal = document.getElementById("quizModal");
-        const startQuiz = document.getElementById("startQuiz");
-        const cancelBtn = document.getElementById("cancelBtn");
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
 
-        let level2Unlocked = false;
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
+    window.onload = () => {
+        // Load saved theme if exists
+        const savedTheme = localStorage.getItem('dsa-theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        initEditors();
+        updateLevelButtons();
+    };
+</script>
 
-        l1.addEventListener("click", () => {
-            slider1.classList.add("active");
-        });
-
-        l2.addEventListener("click", () => {
-            if (!level2Unlocked) {
-                modal.style.display = "flex";
-            }
-        });
-
-        l3.addEventListener("click", () => {
-            if (!level2Unlocked) {
-                modal.style.display = "flex";
-            }
-        });
-
-        startQuiz.addEventListener("click", () => {
-            window.location.href = "linearSearch_L1_Quiz.html";
-        });
-
-        cancelBtn.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-    </script>
-
-   
 </body>
 </html>

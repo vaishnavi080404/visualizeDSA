@@ -1,804 +1,1779 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bubble Sort Visualizer - DSA Mastering</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    /* ========================================
-       RESET & ROOT VARIABLES
-       ======================================== */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort - Level 2 | DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        --dark-bg: #0a0a0a;
+        --card-bg: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a2a;
+        --nav-bg: rgba(10,10,10,0.8);
+        --code-bg: #0d1117;
+        --terminal-bg: #0d1117;
+      }
+      [data-theme="light"] {
+        --dark-bg:#f8fafc;--card-bg:#ffffff;--text-primary:#0f172a;
+        --text-secondary:#475569;--border-color:#e2e8f0;
+        --nav-bg:rgba(248,250,252,0.8);--code-bg:#f1f5f9;--terminal-bg:#f1f5f9;
+        --primary-cyan:#0891b2;--primary-green:#059669;
+      }
+      [data-theme="blue"] {
+        --dark-bg:#011425;--card-bg:#1e293b;--text-primary:#ffffff;
+        --text-secondary:#94a3b8;--border-color:#242424;
+        --nav-bg:rgba(1,20,37,0.8);--code-bg:#011425;--terminal-bg:#011425;
+      }
+      *{margin:0;padding:0;box-sizing:border-box;}
+      body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+      nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);}
+      .nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+      .logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+      .logo-icon{width:35px;height:35px;background:linear-gradient(135deg,var(--primary-green),var(--primary-cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+      .nav-links{display:flex;gap:2.5rem;list-style:none;}
+      .nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+      .nav-links a:hover{color:var(--primary-green);}
+      .theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+      .theme-toggle:hover{border-color:var(--primary-green);background:rgba(16,185,129,.1);}
+      .theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+      .container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+      .breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+      .breadcrumb a{color:var(--text-secondary);text-decoration:none;}
+      .breadcrumb span.sep{opacity:.5;}
+      .page-header{margin-bottom:3rem;}
+      .page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;}
+      .level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+      .level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+      .level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
 
-    :root {
-      --bg-dark: #10121A;
-      --bg-medium: #1A1E29;
-      --card-bg: #212531;
-      --navbar-bg-main: #2B3242;
-      --navbar-bg-right: #3C4456;
-      --accent-blue: #00FFFF;
-      --accent-orange: #FF8C00;
-      --text-light: #E0E0E0;
-      --text-white: #FFFFFF;
-      --text-subtle: #99A1B3;
-      --shadow-glow-blue: rgba(0, 255, 255, 0.3);
-      --shadow-glow-orange: rgba(255, 140, 0, 0.3);
-      --shadow-dark: rgba(0, 0, 0, 0.6);
-    }
+      .implementation-selector{display:flex;gap:1rem;margin:2rem 0;padding:1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+      .impl-option{padding:1rem 2rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center;min-width:220px;}
+      .impl-option:hover{border-color:var(--primary-cyan);transform:translateY(-2px);}
+      .impl-option.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 4px 15px rgba(6,182,212,.3);}
+      .impl-option-icon{font-size:2rem;margin-bottom:.5rem;}
+      .impl-option-title{font-weight:700;font-size:1.1rem;margin-bottom:.3rem;}
+      .impl-option-desc{font-size:.85rem;color:var(--text-secondary);}
+      .impl-option.active .impl-option-desc{color:rgba(255,255,255,.8);}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
-      color: var(--text-light);
-      min-height: 100vh;
-    }
+      .section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+      .section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+      .section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;}
+      .section-title{font-size:1.8rem;font-weight:700;}
+      .content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1.05rem;}
+      .content-title{font-size:1.25rem;font-weight:600;margin-bottom:1rem;color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;}
 
-    /* Navbar */
-    .navbar {
-      background: var(--navbar-bg-main);
-      height: 70px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      box-shadow: 0 4px 20px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 2px solid var(--accent-blue);
-    }
+      .visualizer-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;}
 
-    .navbar-left {
-      display: flex;
-      flex-direction: column;
-    }
+      .pseudo-code-container{background:var(--card-bg);border-radius:15px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);max-height:660px;overflow-y:auto;position:sticky;top:90px;}
+      .pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:20px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:1px;}
+      .pseudo-step{background:var(--code-bg);padding:12px 15px;margin:10px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;}
+      .pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00a8a8);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+      .pseudo-step strong{color:var(--primary-cyan);}
+      .pseudo-step.active strong{color:#000;font-weight:800;}
 
-    .navbar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text-white);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+      .visualization-card{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.3);border:1px solid var(--border-color);overflow:hidden;}
+      .card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:20px;border-bottom:2px solid var(--border-color);}
+      .card-header h5{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0;}
+      .card-body{background:var(--code-bg);padding:30px;min-height:360px;}
+      .card-footer{background:var(--card-bg);padding:20px;border-top:2px solid var(--border-color);}
 
-    .navbar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-top: -2px;
-    }
+      /* Bar chart */
+      .sort-display{display:flex;flex-direction:column;align-items:center;gap:12px;}
+      .bars-area{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:200px;padding:0 10px;}
+      .bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+      .bar{width:44px;border-radius:6px 6px 0 0;transition:all .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.78rem;color:#fff;}
+      .bar.bar-default   {background:linear-gradient(180deg,var(--primary-cyan),#0284c7);}
+      .bar.bar-sorted    {background:linear-gradient(180deg,var(--primary-green),#059669);box-shadow:0 0 12px rgba(16,185,129,.45);}
+      .bar.bar-comparing {background:linear-gradient(180deg,var(--primary-orange),#d97706);box-shadow:0 0 14px rgba(245,158,11,.5);transform:scaleY(1.05);}
+      .bar.bar-swapping  {background:linear-gradient(180deg,#ec4899,#db2777);box-shadow:0 0 16px rgba(236,72,153,.55);animation:swapBounce .4s ease;}
+      .bar.bar-pass-boundary{background:linear-gradient(180deg,var(--primary-purple),#7c3aed);box-shadow:0 0 12px rgba(139,92,246,.4);}
+      .bar.bar-early-exit{background:linear-gradient(180deg,var(--primary-green),#059669);box-shadow:0 0 16px rgba(16,185,129,.6);animation:earlyGlow .6s ease;}
+      @keyframes swapBounce{0%,100%{transform:scaleY(1.05)}50%{transform:scaleY(1.15)}}
+      @keyframes earlyGlow{0%,100%{box-shadow:0 0 12px rgba(16,185,129,.4)}50%{box-shadow:0 0 28px rgba(16,185,129,.8)}}
+      .bar-idx{font-size:.62rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
 
-    .hamburger-menu {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 30px;
-      height: 25px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
+      /* bubble animation overlay */
+      .bubble-float{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--primary-orange);font-weight:700;animation:floatUp .6s ease forwards;pointer-events:none;}
+      @keyframes floatUp{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(-20px)}}
 
-    .hamburger-line {
-      width: 100%;
-      height: 3px;
-      background: var(--accent-orange);
-      border-radius: 2px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 10px var(--shadow-glow-orange);
-    }
+      .legend{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+      .leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+      .leg-dot{width:10px;height:10px;border-radius:3px;}
 
-    .hamburger-menu:hover .hamburger-line {
-      background: var(--accent-blue);
-      box-shadow: 0 0 10px var(--shadow-glow-blue);
-    }
+      .caption-box{background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:10px;padding:10px 16px;font-size:.88rem;color:var(--primary-cyan);text-align:center;font-family:'JetBrains Mono',monospace;min-height:38px;transition:all .3s;margin-top:4px;width:100%;}
+      .caption-box.caption-swap  {background:rgba(236,72,153,.1);border-color:#ec4899;color:#ec4899;}
+      .caption-box.caption-done  {background:rgba(16,185,129,.1);border-color:var(--primary-green);color:var(--primary-green);}
+      .caption-box.caption-early {background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
 
-    .hamburger-menu.active .hamburger-line:nth-child(1) {
-      transform: rotate(45deg) translate(8px, 8px);
-    }
+      .stat-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:2px;}
+      .stat-badge{display:inline-flex;align-items:center;gap:.4rem;padding:4px 14px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'JetBrains Mono',monospace;}
+      .sb-purple{background:rgba(139,92,246,.15);border:1px solid var(--primary-purple);color:var(--primary-purple);}
+      .sb-pink  {background:rgba(236,72,153,.15);border:1px solid #ec4899;color:#ec4899;}
+      .sb-green {background:rgba(16,185,129,.15);border:1px solid var(--primary-green);color:var(--primary-green);}
+      .sb-orange{background:rgba(245,158,11,.15);border:1px solid var(--primary-orange);color:var(--primary-orange);}
+      .sb-cyan  {background:rgba(6,182,212,.15);border:1px solid var(--primary-cyan);color:var(--primary-cyan);}
 
-    .hamburger-menu.active .hamburger-line:nth-child(2) {
-      opacity: 0;
-    }
+      /* swapped flag indicator */
+      .flag-indicator{display:flex;align-items:center;gap:.5rem;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.82rem;padding:5px 0;}
+      .flag-dot{width:12px;height:12px;border-radius:50%;transition:all .3s;}
+      .flag-dot.flag-true {background:var(--primary-green);box-shadow:0 0 8px rgba(16,185,129,.6);}
+      .flag-dot.flag-false{background:var(--primary-red);box-shadow:0 0 8px rgba(239,68,68,.4);}
 
-    .hamburger-menu.active .hamburger-line:nth-child(3) {
-      transform: rotate(-45deg) translate(8px, -8px);
-    }
+      #msg_show{color:var(--text-primary);text-align:center;margin-top:14px;font-size:16px;padding:12px;border-radius:10px;min-height:40px;display:none;}
+      .alert-success{background:rgba(16,185,129,.2);border:2px solid var(--primary-green);color:var(--primary-green);}
+      .alert-danger {background:rgba(239,68,68,.2);border:2px solid var(--primary-red);color:var(--primary-red);}
+      .alert-info   {background:rgba(6,182,212,.2);border:2px solid var(--primary-cyan);color:var(--primary-cyan);}
 
-    /* Sidebar */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      right: -350px;
-      width: 350px;
-      height: 100%;
-      background: var(--card-bg);
-      border-left: 2px solid var(--accent-blue);
-      box-shadow: -10px 0 30px var(--shadow-dark), 0 0 20px var(--shadow-glow-blue);
-      z-index: 2500;
-      transition: right 0.4s ease;
-      overflow-y: auto;
-    }
+      .form-control{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:10px;width:100%;}
+      .form-control:focus{background:var(--dark-bg);border-color:var(--primary-cyan);color:var(--text-primary);box-shadow:0 0 10px rgba(6,182,212,.3);outline:none;}
+      .btn{border:none;font-weight:700;padding:10px 20px;border-radius:8px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;}
+      .btn-success{background:linear-gradient(135deg,var(--primary-green),#059669);color:#fff;}
+      .btn-danger {background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+      .btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+      .btn-info   {background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;}
+      .btn-warning{background:linear-gradient(135deg,var(--primary-orange),#ff6b00);color:#fff;}
+      .btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(6,182,212,.3);}
 
-    .sidebar.active {
-      right: 0;
-    }
+      .scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+      .scenario-tab{display:flex;align-items:center;gap:.45rem;padding:.55rem 1.25rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.92rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+      .scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);background:rgba(6,182,212,.07);}
+      .scenario-tab.active-best  {background:var(--primary-green); border-color:var(--primary-green); color:#fff;}
+      .scenario-tab.active-avg   {background:var(--primary-cyan);  border-color:var(--primary-cyan);  color:#fff;}
+      .scenario-tab.active-worst {background:var(--primary-orange);border-color:var(--primary-orange);color:#fff;}
+      .scenario-tab.active-custom{background:var(--primary-purple);border-color:var(--primary-purple);color:#fff;}
+      .scenario-panels{position:relative;}
+      .scenario-panel{display:none;}
+      .scenario-panel.active{display:block;}
+      .scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+      .scenario-inner h4{font-size:1.15rem;font-weight:700;color:var(--text-primary);margin-bottom:.4rem;}
+      .scenario-inner p{color:var(--text-secondary);font-size:.95rem;margin-bottom:1.4rem;}
+      .scenario-divider{border:none;border-top:1px solid var(--border-color);margin:1rem 0 1.4rem;}
+      .input-label{display:flex;align-items:center;gap:.5rem;color:var(--text-secondary);font-size:.88rem;font-weight:600;margin-bottom:.9rem;text-transform:uppercase;letter-spacing:.5px;}
 
-    .sidebar-header {
-      padding: 30px 25px;
-      background: linear-gradient(135deg, var(--navbar-bg-main), var(--navbar-bg-right));
-      border-bottom: 2px solid var(--accent-blue);
-    }
+      .mini-sort-stage{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;}
+      .mini-bars-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;}
+      .mini-bars{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:120px;}
+      .mbar-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;}
+      .mbar{width:38px;border-radius:5px 5px 0 0;transition:all .32s ease;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.72rem;color:#fff;}
+      .mbar.mb-default  {background:linear-gradient(180deg,var(--primary-cyan),#0284c7);}
+      .mbar.mb-sorted   {background:linear-gradient(180deg,var(--primary-green),#059669);box-shadow:0 0 10px rgba(16,185,129,.4);}
+      .mbar.mb-comparing{background:linear-gradient(180deg,var(--primary-orange),#d97706);box-shadow:0 0 12px rgba(245,158,11,.4);transform:scaleY(1.06);}
+      .mbar.mb-swapping {background:linear-gradient(180deg,#ec4899,#db2777);animation:swapBounce .4s ease;}
+      .mbar.mb-boundary {background:linear-gradient(180deg,var(--primary-purple),#7c3aed);}
+      .mbar-idx{font-size:.58rem;color:rgba(160,160,160,.6);font-family:'JetBrains Mono',monospace;}
 
-    .sidebar-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 5px;
-    }
+      .log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;min-height:170px;max-height:240px;overflow-y:auto;}
+      .log-panel .log-title{color:var(--primary-cyan);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.7rem;font-weight:700;}
+      .log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:fadeLog .3s ease both;}
+      @keyframes fadeLog{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+      .log-entry.log-pass   {color:var(--primary-cyan);}
+      .log-entry.log-compare{color:var(--primary-orange);}
+      .log-entry.log-swap   {color:#ec4899;}
+      .log-entry.log-noswap {color:var(--text-secondary);}
+      .log-entry.log-sorted {color:var(--primary-green);}
+      .log-entry.log-info   {color:var(--text-secondary);}
+      .log-entry.log-warn   {color:var(--primary-orange);}
+      .log-entry.log-early  {color:var(--primary-green);font-weight:700;}
+      .log-entry.log-result {color:var(--primary-purple);font-weight:700;}
 
-    .sidebar-subtitle {
-      font-size: 11px;
-      color: var(--text-subtle);
-      letter-spacing: 1px;
-    }
+      .ctl-row{display:flex;align-items:center;gap:.75rem;margin-top:1.2rem;flex-wrap:wrap;}
+      .ctl-btn{padding:8px 18px;border-radius:8px;border:none;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+      .ctl-btn:hover{transform:translateY(-1px);}
+      .ctl-btn-green {background:var(--primary-green);color:#fff;}
+      .ctl-btn-green:hover {box-shadow:0 4px 14px rgba(16,185,129,.4);}
+      .ctl-btn-red   {background:var(--primary-red);color:#fff;}
+      .ctl-btn-red:hover   {box-shadow:0 4px 14px rgba(239,68,68,.4);}
+      .ctl-btn-cyan  {background:var(--primary-cyan);color:#000;}
+      .ctl-btn-cyan:hover  {box-shadow:0 4px 14px rgba(6,182,212,.4);}
+      .ctl-btn-orange{background:var(--primary-orange);color:#000;}
+      .ctl-btn-orange:hover{box-shadow:0 4px 14px rgba(245,158,11,.4);}
+      .ctl-btn-purple{background:var(--primary-purple);color:#fff;}
+      .ctl-btn-purple:hover{box-shadow:0 4px 14px rgba(139,92,246,.4);}
+      .ctl-btn-pink  {background:#ec4899;color:#fff;}
+      .ctl-btn-pink:hover  {box-shadow:0 4px 14px rgba(236,72,153,.4);}
+      .ctl-btn-ghost {background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+      .ctl-btn-ghost:hover {border-color:var(--primary-cyan);color:var(--primary-cyan);}
+      .ctl-btn:disabled{opacity:.45;cursor:not-allowed;transform:none !important;box-shadow:none !important;}
 
-    .sidebar-menu {
-      padding: 20px 0;
-    }
+      .custom-val-input,.custom-wide-input{padding:8px 12px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.9rem;outline:none;transition:border-color .2s;}
+      .custom-val-input:focus,.custom-wide-input:focus{border-color:var(--primary-cyan);}
+      .custom-input-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
 
-    .menu-category {
-      padding: 15px 25px 10px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12px;
-      color: var(--accent-orange);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
-    }
+      .custom-complexity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:.9rem;}
+      .custom-complexity-card{background:rgba(0,0,0,.35);border:1.5px solid rgba(0,255,255,.14);border-radius:10px;padding:.85rem 1rem;transition:all .25s;cursor:default;}
+      .custom-complexity-card.cc-active-best {border-color:#00ff64;box-shadow:0 0 18px rgba(0,255,100,.3);transform:translateY(-2px);}
+      .custom-complexity-card.cc-active-avg  {border-color:var(--primary-cyan);box-shadow:0 0 18px rgba(0,255,255,.3);transform:translateY(-2px);}
+      .custom-complexity-card.cc-active-worst{border-color:#ff5555;box-shadow:0 0 18px rgba(255,85,85,.3);transform:translateY(-2px);}
+      .cc-op{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.55rem;font-family:'Space Grotesk',sans-serif;}
+      .cc-time,.cc-space{font-size:.78rem;color:var(--text-secondary);font-family:'Courier New',monospace;line-height:1.7;}
+      .cc-val{font-weight:700;font-size:.82rem;}
+      .cc-green{color:#00ff64;}.cc-orange{color:var(--primary-orange);}.cc-red{color:#ff5555;}
+      .cc-reason{margin-top:.5rem;font-size:.71rem;color:rgba(153,161,179,.7);font-style:italic;line-height:1.45;border-top:1px solid rgba(255,255,255,.05);padding-top:.45rem;}
 
-    .menu-item {
-      padding: 15px 25px;
-      color: var(--text-light);
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+      .cc-toast{display:none;align-items:center;gap:.6rem;padding:.6rem 1rem;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.4rem;animation:toastIn .3s ease both;border:1.5px solid;}
+      .cc-toast.show{display:flex;}
+      .cc-toast.toast-best {background:rgba(0,255,100,.08);border-color:#00ff64;color:#00ff64;}
+      .cc-toast.toast-avg  {background:rgba(0,255,255,.08);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+      .cc-toast.toast-worst{background:rgba(255,85,85,.08);border-color:#ff5555;color:#ff5555;}
+      .cc-toast.toast-warn {background:rgba(255,140,0,.08);border-color:var(--primary-orange);color:var(--primary-orange);}
+      @keyframes toastIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
-    .menu-item:hover {
-      background: rgba(0, 255, 255, 0.1);
-      border-left-color: var(--accent-blue);
-      color: var(--accent-blue);
-      padding-left: 30px;
-    }
+      .impl-tabs{display:flex;gap:.8rem;margin:0 0 1rem;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+      .impl-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+      .impl-tab.active{background:var(--primary-purple);color:white;border-color:var(--primary-purple);}
+      .lang-tabs{display:flex;gap:.8rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+      .lang-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+      .lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+      .editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+      .editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+      .code-copy{width:50px;height:40px;background:var(--primary-purple);border:1px solid var(--border-color);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-size:14px;}
+      .run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;}
+      .run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+      .output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:150px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:14px;line-height:1.6;}
+      .output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+      .input-prompt{background:var(--card-bg);padding:15px;border-radius:8px;margin-top:10px;border:1px solid var(--border-color);}
+      .input-prompt input{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:6px;padding:8px 12px;margin-right:10px;font-family:'JetBrains Mono',monospace;}
+      .input-prompt button{background:var(--primary-cyan);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;}
+      .CodeMirror{height:430px !important;font-size:14px;border-radius:0 0 12px 12px;}
 
-    .menu-item.active {
-      background: rgba(0, 255, 255, 0.15);
-      border-left-color: var(--accent-orange);
-      color: var(--accent-orange);
-    }
+      .level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+      .level-wrapper button{position:relative;z-index:20 !important;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+      #l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan) !important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+      #l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green) !important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+      .slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+      #slider1{left:22%;}#slider2{left:58%;}
+      .slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+      .level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+      .level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+      #startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;box-shadow:none;}
+      #startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+      #cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;box-shadow:none;}
 
-    .menu-item i {
-      font-size: 16px;
-      width: 20px;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 2000;
-      backdrop-filter: blur(3px);
-    }
-
-    .sidebar-overlay.active {
-      display: block;
-    }
-
-    /* Main Container */
-    .container { max-width: 1400px; margin: 40px auto; padding: 0 30px; }
-
-    /* Pseudo Code Panel */
-    .pseudo-code-container {
-      background: var(--card-bg);
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      max-height: 600px;
-      position: sticky;
-      top: 90px;
-    }
-
-    .pseudo-code-container h5 { color: var(--accent-orange); font-weight: 700; margin-bottom: 20px; text-align: center; font-family: 'Orbitron'; }
-    .pseudo-step { background: rgba(0, 255, 255, 0.05); padding: 12px 15px; margin: 10px 0; border-radius: 8px; color: var(--text-light); border-left: 3px solid transparent; transition: 0.3s; font-family: 'Courier New'; font-size: 13px; line-height: 1.6; }
-    .pseudo-step.active { background: linear-gradient(90deg, var(--accent-orange), #ff6b00); color: #000; border-left-color: var(--accent-blue); transform: translateX(10px); box-shadow: 0 4px 15px var(--shadow-glow-orange); font-weight: 600; }
-
-    /* Visualizer Area */
-    .visualization-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark), 0 0 15px var(--shadow-glow-blue);
-      border: 1px solid rgba(0, 255, 255, 0.2);
-      overflow: hidden;
-    }
-
-    .card-header { background: linear-gradient(135deg, #5a73d4 0%, #4a5fb8 100%); padding: 20px; border-bottom: 2px solid var(--accent-blue); }
-    .card-header h5 { font-family: 'Orbitron'; font-size: 20px; color: var(--text-white); margin: 0; }
-    .card-body { background: linear-gradient(135deg, #1e2a3f, #2a3f5f); padding: 30px; min-height: 500px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-    .bars-container {
-      width: 100%; height: 400px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 20px;
-      border: 2px solid var(--accent-blue); border-radius: 10px; background: rgba(0, 0, 0, 0.2);
-    }
-
-    .bar {
-      flex: 1;
-      background: linear-gradient(to top, #2C5282, #4299E1);
-      border-radius: 4px 4px 0 0;
-      position: relative;
-      transition: height 0.3s ease;
-    }
-
-    .bar.comparing { background: linear-gradient(180deg, #fbbf24, #f59e0b); box-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
-    .bar.swapping { background: linear-gradient(180deg, #ef4444, #dc2626); box-shadow: 0 0 15px rgba(239, 68, 68, 0.6); }
-    .bar.sorted { background: linear-gradient(180deg, #22c55e, #16a34a); box-shadow: 0 0 15px rgba(34, 197, 94, 0.6); }
-
-    .bar-value { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--text-light); font-weight: 600; font-family: 'Orbitron'; }
-
-    #msg-show { margin-top: 20px; padding: 15px; border-radius: 10px; min-height: 55px; width: 100%; text-align: center; display: none; }
-    .alert-success { background: rgba(74, 222, 128, 0.2); border: 2px solid #22c55e; color: #22c55e; }
-    .alert-info { background: rgba(59, 130, 246, 0.2); border: 2px solid #3b82f6; color: #3b82f6; }
-
-    /* Footer Controls */
-    .card-footer { background: var(--navbar-bg-main); padding: 20px; border-top: 2px solid var(--accent-blue); }
-    .form-control { background: var(--bg-dark); border: 2px solid var(--accent-blue); color: var(--text-white); border-radius: 8px; padding: 10px; width: 100%; }
-    .form-label { color: var(--text-light); font-weight: 600; margin-bottom: 8px; display: block; }
-    
-    .btn { border: none; font-weight: 700; padding: 10px 20px; border-radius: 8px; transition: 0.3s; cursor: pointer; font-family: 'Inter'; }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-blue), #00d4d4); color: #000; }
-    .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: #000; }
-    .btn-warning { background: linear-gradient(135deg, var(--accent-orange), #ff6b00); color: #000; }
-
-    /* Code Section */
-    .code-section {
-      background: var(--card-bg); margin: 30px 0; padding: 30px; border-radius: 20px;
-      box-shadow: 0 10px 40px var(--shadow-dark); border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-    .code-section h3 { color: var(--accent-orange); margin-bottom: 20px; font-family: 'Orbitron'; font-size: 28px; }
-    .menu-btns { display: flex; gap: 10px; margin-bottom: 20px; }
-    .menu-btns button { background: rgba(0, 255, 255, 0.1); border: 2px solid var(--accent-blue); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: white; }
-    .menu-btns button.active { background: var(--accent-blue); color: #000; transform: translateY(-2px); box-shadow: 0 4px 15px var(--shadow-glow-blue); }
-
-    .code-container { display: none; }
-    .code-container.active { display: block; }
-    .code-container pre { background: rgba(0, 0, 0, 0.4); padding: 20px; border-radius: 12px; border-left: 4px solid var(--accent-orange); overflow-x: auto; color: #fff; font-size: 14px; line-height: 1.7; }
-
-    .run-code-btn { background: linear-gradient(90deg, #10b981, #059669); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 15px; font-family: 'Orbitron'; transition: 0.3s; }
-    .run-code-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-
-    .output-container { background: rgba(0, 0, 0, 0.4); color: #10b981; padding: 20px; border-radius: 12px; margin-top: 15px; min-height: 100px; border: 2px solid rgba(0, 255, 255, 0.2); font-family: 'Courier New'; }
-    .output-container h6 { color: var(--accent-orange); margin-bottom: 10px; font-family: 'Orbitron'; }
-    #interactive-input-area { display: none; gap: 10px; align-items: center; margin-top: 10px; }
-    #terminal-input { background: transparent; border: none; border-bottom: 1px solid #444; color: white; outline: none; flex-grow: 1; padding: 5px; }
-
-    .hljs-comment { color: #6b7280; font-style: italic; }
-    .hljs-keyword { color: #c084fc; }
-          .level-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 100px;
-  padding: 20px;
-}
-
-.level-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-}
-
-button {
-  background: var(--shadow-glow-blue);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.slider {
-  width: 100px;
-  height: 5px;
-  background: #ccc;
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  height: 100%;
-  width: 0;
-  background: #FF8C00;
-  transition: width 1s ease;
-}
-
-.active::before {
-  width: 100%;
-}
-
-/* Modal */
-.level-modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-}
-
-.level-modal-content {
-  background: var(--card-bg);
-    border: 2px solid #00aaff;
-  padding: 20px 30px;
-  border-radius: 15px;
-  text-align: center;
-  width: 300px;
-}
-
-.level-modal-buttons {
-  display: flex;
-  justify-content: center;
-  margin-top: 15px;
-  gap: 10px;
-}
-
-.level-modal-buttons button {
-  background: #FF8C00;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-
-
-    @media (max-width: 768px) {
-      .main-grid { grid-template-columns: 1fr !important; }
-      .pseudo-code-container { position: relative; top: 0; }
-    }
-  </style>
+      @media(max-width:768px){
+        .visualizer-grid{grid-template-columns:1fr;}
+        .pseudo-code-container{position:relative;top:0;max-height:420px;}
+        .implementation-selector{flex-direction:column;}
+        .impl-option{min-width:100%;}
+        .custom-complexity-grid{grid-template-columns:1fr;}
+        .mini-sort-stage{grid-template-columns:1fr;}
+      }
+    </style>
 </head>
-<body>
+<body data-theme="dark">
 
-<nav class="navbar">
-  <div class="navbar-left">
-    <div class="navbar-title">DSA VISUALIZER</div>
-    <div class="navbar-subtitle">Data Structures & Algorithms</div>
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+       <img src="dsa.gif" alt="Logo" class="logo-icon">
+      <span>DSA Visualizer</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="#about">Code Editor</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+      <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+    </button>
   </div>
-  <button class="hamburger-menu" onclick="toggleSidebar()" id="hamburger">
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-    <div class="hamburger-line"></div>
-  </button>
 </nav>
 
-<!-- Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">Menu</div>
-    <div class="sidebar-subtitle">Select Algorithm or Data Structure</div>
-  </div>
-  <div class="sidebar-menu">
-    <div class="menu-category">🔍 Searching Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('linear-search')">
-      <i class="fas fa-search"></i>
-      <span>Linear Search</span>
-    </div>
-    <div class="menu-item active" onclick="selectAlgorithm('binary-search')">
-      <i class="fas fa-chart-line"></i>
-      <span>Binary Search</span>
-    </div>
-    <div class="menu-category">📊 Data Structures</div>
-    <div class="menu-item" onclick="selectAlgorithm('stack')">
-      <i class="fas fa-layer-group"></i>
-      <span>Stack</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('queue')">
-      <i class="fas fa-stream"></i>
-      <span>Queue</span>
-    </div>
-    <div class="menu-category">🔄 Sorting Algorithms</div>
-    <div class="menu-item" onclick="selectAlgorithm('merge-sort')">
-      <i class="fas fa-code-branch"></i>
-      <span>Merge Sort</span>
-    </div>
-    <div class="menu-item" onclick="selectAlgorithm('bubble-sort')">
-      <i class="fas fa-circle"></i>
-      <span>Bubble Sort</span>
-    </div>
-  </div>
-</div>
-
 <div class="container">
-  <div class="main-grid" style="display: grid; grid-template-columns: 300px 1fr; gap: 30px; align-items: start; margin-top: 30px;">
-    
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="bubble_sort_basics.html">Bubble Sort</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Bubble Sort — Interactive Visualizer</h1>
+    <p class="content-text">Watch adjacent elements bubble up to their correct position. The <strong style="color:var(--primary-green)">optimized version</strong> uses a <strong style="color:var(--primary-cyan)">swapped flag</strong> to detect an already-sorted array and exit early in <strong style="color:var(--primary-green)">O(N)</strong> best case.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="optimized" onclick="switchImplementation('optimized')">
+      <div class="impl-option-icon">⚡</div>
+      <div class="impl-option-title">Optimized (Swapped Flag)</div>
+      <div class="impl-option-desc">Early exit if no swaps — O(N) best case</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔃</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">One pass per call, reduces size</div>
+    </div>
+  </div>
+
+  <!-- ── VISUALIZER GRID ── -->
+  <div class="visualizer-grid">
+
     <!-- Pseudo Code -->
     <div class="pseudo-code-container">
       <h5>📋 PSEUDO CODE</h5>
-      <div class="pseudo-step" data-step="loop">
-        <strong>1. OUTER LOOP:</strong><br>
-        Iterate from i = 0 to n-1.
+
+      <div id="pseudo-optimized">
+        <div class="pseudo-step" data-step="op-outer">
+          <strong>OUTER LOOP:</strong> N−1 passes<br>
+          <span>for i = 0 to n−2</span>
+        </div>
+        <div class="pseudo-step" data-step="op-flag">
+          <strong>SWAPPED FLAG:</strong> Reset each pass<br>
+          <span>swapped = false</span>
+        </div>
+        <div class="pseudo-step" data-step="op-inner">
+          <strong>INNER LOOP:</strong> Compare adjacent<br>
+          <span>for j = 0 to n−i−2</span>
+        </div>
+        <div class="pseudo-step" data-step="op-compare">
+          <strong>COMPARE:</strong> Check neighbours<br>
+          <span>if arr[j] &gt; arr[j+1]</span>
+        </div>
+        <div class="pseudo-step" data-step="op-swap">
+          <strong>SWAP:</strong> Bubble larger up<br>
+          <span>swap(arr[j], arr[j+1])<br>swapped = true</span>
+        </div>
+        <div class="pseudo-step" data-step="op-flagcheck">
+          <strong>EARLY EXIT:</strong> Already sorted?<br>
+          <span>if swapped == false: break</span>
+        </div>
+        <div class="pseudo-step" data-step="op-done">
+          <strong>SORTED:</strong> Array fully sorted ✓<br>
+          <span>all n elements in place</span>
+        </div>
       </div>
-      <div class="pseudo-step" data-step="compare">
-        <strong>2. INNER LOOP:</strong><br>
-        Compare adjacent elements:<br>
-        if arr[j] > arr[j+1]
-      </div>
-      <div class="pseudo-step" data-step="swap">
-        <strong>3. SWAP:</strong><br>
-        Swap elements if they are in wrong order.
-      </div>
-      <div class="pseudo-step" data-step="bubble">
-        <strong>4. BUBBLE:</strong><br>
-        Largest element moves to the end.
-      </div>
-      <div class="pseudo-step" data-step="complexity">
-        <strong>COMPLEXITY:</strong><br>
-        Worst/Avg: O(n²)<br>
-        Best (Sorted): O(n)
+
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="re-base">
+          <strong>BASE CASE:</strong> Nothing left to sort<br>
+          <span>if n == 1: return</span>
+        </div>
+        <div class="pseudo-step" data-step="re-pass">
+          <strong>ONE PASS:</strong> Bubble largest to end<br>
+          <span>for j = 0 to n−2</span>
+        </div>
+        <div class="pseudo-step" data-step="re-compare">
+          <strong>COMPARE:</strong> Check neighbours<br>
+          <span>if arr[j] &gt; arr[j+1]</span>
+        </div>
+        <div class="pseudo-step" data-step="re-swap">
+          <strong>SWAP:</strong> Bubble larger up<br>
+          <span>swap(arr[j], arr[j+1])</span>
+        </div>
+        <div class="pseudo-step" data-step="re-recurse">
+          <strong>RECURSE:</strong> Sort first n−1 elements<br>
+          <span>bubbleSort(arr, n−1)</span>
+        </div>
+        <div class="pseudo-step" data-step="re-done">
+          <strong>SORTED:</strong> All calls returned ✓<br>
+          <span>array fully sorted</span>
+        </div>
       </div>
     </div>
 
-    <!-- Visualizer -->
+    <!-- Visualization Card -->
     <div>
       <div class="visualization-card">
-        <div class="card-header"><h5>Bubble Sort Visualizer (Comparison Based)</h5></div>
+        <div class="card-header">
+          <h5 id="visualizer-title">Bubble Sort Visualizer — Optimized (Swapped Flag)</h5>
+        </div>
         <div class="card-body">
-          <div class="bars-container" id="bars-container"></div>
-          <div id="msg-show"></div>
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-purple" id="badge-pass">Pass: 0 / 0</div>
+              <div class="stat-badge sb-orange" id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-pink"   id="badge-swaps">Swaps: 0</div>
+              <div class="stat-badge sb-green"  id="badge-sorted">Sorted: 0</div>
+              <div class="stat-badge sb-cyan"   id="badge-flag" style="display:none;">
+                <div class="flag-dot flag-false" id="flagDot"></div>
+                swapped: <span id="flagVal">false</span>
+              </div>
+            </div>
+            <div class="bars-area" id="barsArea"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-cyan),#0284c7)"></div>Unsorted</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#f59e0b,#d97706)"></div>Comparing j &amp; j+1</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#ec4899,#db2777)"></div>Swapping</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-purple),#7c3aed)"></div>Pass boundary</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-green),#059669)"></div>Sorted / Early exit</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
         </div>
         <div class="card-footer">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div><label class="form-label">Animation Speed</label><input type="range" class="form-control" id="speed-slider" min="1" max="100" value="50"></div>
-            <div><label class="form-label">Array Size</label><input type="range" class="form-control" id="size-slider" min="5" max="30" value="12"></div>
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g.  64, 34, 25, 12, 22, 11, 90">
+            <button class="btn btn-warning" onclick="startSort()" id="sortBtn">Sort</button>
           </div>
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
-            <input type="text" id="array-input" class="form-control" placeholder="e.g., 5, 2, 8, 1, 9">
-            <button class="btn btn-warning" onclick="generateRandomArray()">Randomize</button>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="createArray()">Generate Array</button>
-            <button class="btn btn-success" id="sort-btn" onclick="startSort()">Start Sorting</button>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSort()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSort()" id="resetBtn">Reset ↺</button>
           </div>
         </div>
+      </div>
+    </div>
+
+  </div><!-- /visualizer-grid -->
+
+  <!-- ─── SCENARIOS ─── -->
+  <div class="section-card" id="scenarioSection">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — Already Sorted</h4>
+          <p>Array is <strong style="color:var(--primary-green)">already sorted</strong>. The optimized version does just <strong style="color:var(--primary-green)">one pass</strong>, finds <strong style="color:var(--primary-green)">0 swaps</strong>, and the <strong style="color:var(--primary-cyan)">swapped flag stays false</strong> → early exit in <strong style="color:var(--primary-green)">O(N)</strong>.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [5, 11, 19, 25, 36, 42] — sorted, 1 pass only</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap"><div class="mini-bars" id="mbars-best"></div></div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — Random Order</h4>
+          <p>Random array — multiple passes with <strong style="color:var(--primary-cyan)">some swaps per pass</strong>. The flag triggers on every pass. Watch each largest element bubble to the end.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [64, 34, 25, 12, 22, 11] — random order</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap"><div class="mini-bars" id="mbars-avg"></div></div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — Reverse Sorted</h4>
+          <p>Array is <strong style="color:var(--primary-red)">reverse sorted</strong>. Every comparison results in a swap. All N−1 passes are needed. <strong style="color:var(--primary-orange)">O(N²)</strong> comparisons and swaps — swapped flag never helps.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [90, 70, 50, 30, 10] — reverse sorted, max swaps</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap"><div class="mini-bars" id="mbars-worst"></div></div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own array and watch Bubble Sort work. The complexity cards highlight based on passes used vs. maximum possible — detecting if the <strong style="color:var(--primary-green)">swapped flag triggered early exit</strong>.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-green">O(N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Already sorted — 1 pass, swapped=false → early exit (optimized only)</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Random input — multiple passes, flag set true each time</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Reverse sorted — all N(N−1)/2 swaps, flag never saves passes</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 38, 27, 43, 3, 9, 82" style="width:230px;">
+            <button class="ctl-btn ctl-btn-green"  onclick="customLoad()">▶ Load &amp; Sort</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"    id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap"><div class="mini-bars" id="mbars-custom"></div></div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── CODE EDITOR ─── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-tabs">
+      <button class="impl-tab active" data-impl="optimized"  onclick="switchEditorImpl('optimized', this)">⚡ Optimized (Swapped Flag)</button>
+      <button class="impl-tab"        data-impl="recursive"  onclick="switchEditorImpl('recursive',  this)">🔃 Recursive</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Optimized (Swapped Flag)</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
       </div>
     </div>
   </div>
 
-  <!-- Implementation -->
-  <div class="code-section">
-    <h3>💻 IMPLEMENTATIONS</h3>
-    <div class="menu-btns">
-      <button id="cpp-btn" class="active" onclick="changeCode('cpp')"><img src="https://sortvisualizer.com/static/images/cpp_icon.png" width="32" alt="C++"></button>
-      <button id="python-btn" onclick="changeCode('python')"><img src="https://sortvisualizer.com/static/images/python_icon.png" width="32" alt="Python"></button>
-    </div>
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
 
-    <div class="code-container active" id="cpp-content">
-      <pre><code><span class="hljs-comment">// Complete Bubble Sort Implementation in C++</span>
-<span class="hljs-keyword">void</span> <span class="hljs-function">bubbleSort</span>(<span class="hljs-keyword">int</span> arr[], <span class="hljs-keyword">int</span> n) {
-    <span class="hljs-comment">// Traverse through all array elements</span>
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i < n - <span class="hljs-number">1</span>; i++) {
-        <span class="hljs-comment">// Last i elements are already in place</span>
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j < n - i - <span class="hljs-number">1</span>; j++) {
-            <span class="hljs-comment">// Compare adjacent elements</span>
-            <span class="hljs-keyword">if</span> (arr[j] > arr[j + <span class="hljs-number">1</span>]) {
-                <span class="hljs-comment">// Swap if they are in the wrong order</span>
-                <span class="hljs-keyword">int</span> temp = arr[j];
-                arr[j] = arr[j + <span class="hljs-number">1</span>];
-                arr[j + <span class="hljs-number">1</span>] = temp;
-            }
-        }
-    }
-}</code></pre>
-      <button class="run-code-btn" onclick="runInteractive('cpp')">▶ Run Interactive Code</button>
-    </div>
-
-    <div class="code-container" id="python-content">
-      <pre><code><span class="hljs-comment"># Complete Bubble Sort Implementation in Python</span>
-<span class="hljs-keyword">def</span> <span class="hljs-function">bubble_sort</span>(arr):
-    n = <span class="hljs-built_in">len</span>(arr)
-    <span class="hljs-comment"># Traverse through all array elements</span>
-    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
-        <span class="hljs-comment"># Last i elements are already sorted</span>
-        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, n - i - <span class="hljs-number">1</span>):
-            <span class="hljs-comment"># Swap if the element found is greater than next</span>
-            <span class="hljs-keyword">if</span> arr[j] > arr[j + <span class="hljs-number">1</span>]:
-                arr[j], arr[j + <span class="hljs-number">1</span>] = arr[j + <span class="hljs-number">1</span>], arr[j]</code></pre>
-      <button class="run-code-btn" onclick="runInteractive('python')">▶ Run Interactive Code</button>
-    </div>
-
-    <div class="output-container">
-      <h6>📤 Interactive Terminal:</h6>
-      <div id="code-output">Initialize the environment by clicking "Run Interactive Code"...</div>
-      <div id="interactive-input-area">
-        <span style="color: #10b981;">&gt;</span>
-        <input type="text" id="terminal-input" placeholder="Type array (e.g. 5,2,9) or 'sort'...">
-        <button onclick="processTerminal()" style="padding:5px 15px; border-radius:4px; border:none; background:#10b981; color:white;">Send</button>
-      </div>
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Bubble Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
     </div>
   </div>
 </div>
-       <div class="level-container">
-        <div class="level-wrapper">
-            <button id="l1">Level 1</button>
-            <div class="slider" id="slider1"></div>
-            <button id="l2">Level 2</button>
-            <div class="slider" id="slider2"></div>
-            <button id="l3">Level 3</button>
-        </div>
-    </div>
 
-    <!-- Modal for Level 2 Quiz -->
-    <div id="quizModal" class="level-modal">
-        <div class="level-modal-content">
-            <h3>Level 3 Quiz</h3>
-            <p>Attempt the quiz to unlock Level 3 and move forward.</p>
-            
-            <div class="level-modal-buttons">
-                <button id="startQuiz">Start Quiz</button>
-                <button id="cancelBtn">Cancel</button>
-            </div>
-        </div>
-    </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
 <script>
-let array = [];
-let speed = 50;
-let isSorting = false;
-let inputMode = 'initial';
-let virtualArr = [];
+/* ══════════════════════════════════════════════════════════
+   CODE TEMPLATES
+══════════════════════════════════════════════════════════ */
+const codeTemplates = {
+  optimized: {
+    cpp:`#include <iostream>
+using namespace std;
 
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const hamburger = document.getElementById('hamburger');
-  
-  sidebar.classList.toggle('active');
-  overlay.classList.toggle('active');
-  hamburger.classList.toggle('active');
+void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        bool swapped = false;           // swapped flag reset each pass
+
+        // Inner loop shrinks by i each pass
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(arr[j], arr[j + 1]);
+                swapped = true;         // a swap occurred
+            }
+        }
+
+        // If no swap in this pass → already sorted
+        if (!swapped) {
+            cout << "Early exit after pass " << i + 1 << "\\n";
+            break;
+        }
+    }
 }
 
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
-function getDelay() { return 1000 / speed; }
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    bubbleSort(arr, n);
+
+    cout << "After:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+    return 0;
+}`,
+    python:`def bubble_sort(arr):
+    n = len(arr)
+    total_swaps = 0
+    passes = 0
+
+    for i in range(n - 1):
+        swapped = False                 # reset flag each pass
+        passes += 1
+
+        for j in range(n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+                total_swaps += 1
+
+        if not swapped:                 # early exit
+            print(f"  Early exit after pass {passes} — already sorted!")
+            break
+
+    return passes, total_swaps
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+print(f"\\nBefore: {arr}")
+
+passes, swaps = bubble_sort(arr)
+
+print(f"After:  {arr}")
+print(f"Passes: {passes}  |  Swaps: {swaps}")
+print(f"Best case O(N) early exit used: {passes == 1 and swaps == 0}")`,
+    java:`import java.util.Arrays;
+import java.util.Scanner;
+
+public class BubbleSort {
+
+    static int[] bubbleSort(int[] arr) {
+        int n = arr.length, totalSwaps = 0, passes = 0;
+
+        for (int i = 0; i < n - 1; i++) {
+            boolean swapped = false;    // reset flag each pass
+            passes++;
+
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int tmp = arr[j]; arr[j] = arr[j+1]; arr[j+1] = tmp;
+                    swapped = true;
+                    totalSwaps++;
+                }
+            }
+
+            if (!swapped) {             // early exit
+                System.out.println("  Early exit after pass " + passes);
+                break;
+            }
+        }
+        return new int[]{passes, totalSwaps};
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        int[] stats = bubbleSort(arr);
+        System.out.println("After:  " + Arrays.toString(arr));
+        System.out.println("Passes: " + stats[0] + "  |  Swaps: " + stats[1]);
+    }
+}`,
+    c:`#include <stdio.h>
+
+void swap(int *a, int *b){ int t=*a; *a=*b; *b=t; }
+
+void bubbleSort(int arr[], int n, int *passes, int *swaps) {
+    for (int i = 0; i < n - 1; i++) {
+        int swapped = 0;
+        (*passes)++;
+
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                swap(&arr[j], &arr[j + 1]);
+                swapped = 1;
+                (*swaps)++;
+            }
+        }
+
+        if (!swapped) {
+            printf("  Early exit after pass %d\\n", *passes);
+            break;
+        }
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i); scanf("%d", &arr[i]);
+    }
+
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+
+    int passes=0, swaps=0;
+    bubbleSort(arr, n, &passes, &swaps);
+
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\nPasses: %d  |  Swaps: %d\\n", passes, swaps);
+    return 0;
+}`,
+    javascript:`function bubbleSort(arr) {
+    const n = arr.length;
+    let totalSwaps = 0, passes = 0;
+
+    for (let i = 0; i < n - 1; i++) {
+        let swapped = false;            // reset flag each pass
+        passes++;
+
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+                totalSwaps++;
+            }
+        }
+
+        if (!swapped) {                 // early exit
+            console.log(\`  Early exit after pass \${passes}!\`);
+            break;
+        }
+    }
+    return { passes, totalSwaps };
+}
+
+// --- Demo ---
+const arr = [64, 34, 25, 12, 22, 11, 90];
+console.log("Before:", arr.join(", "));
+
+const { passes, totalSwaps } = bubbleSort(arr);
+
+console.log("After: ", arr.join(", "));
+console.log("Passes:", passes, " | Swaps:", totalSwaps);`
+  },
+
+  recursive: {
+    cpp:`#include <iostream>
+using namespace std;
+
+void bubbleSortRec(int arr[], int n, int &swaps) {
+    // Base case: one element — nothing to sort
+    if (n == 1) return;
+
+    bool swapped = false;
+    // One full pass: bubble largest to arr[n-1]
+    for (int j = 0; j < n - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+            swap(arr[j], arr[j + 1]);
+            swapped = true;
+            swaps++;
+        }
+    }
+
+    // If no swap → already sorted, stop recursion
+    if (!swapped) return;
+
+    // Recurse on first n-1 elements
+    bubbleSortRec(arr, n - 1, swaps);
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    cout << "\\nBefore: ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << endl;
+
+    int swaps = 0;
+    bubbleSortRec(arr, n, swaps);
+
+    cout << "After:  ";
+    for (int i = 0; i < n; i++) cout << arr[i] << " ";
+    cout << "\\nRecursive depth: " << n - 1
+         << "  |  Swaps: " << swaps << endl;
+    return 0;
+}`,
+    python:`def bubble_sort_rec(arr, n=None, depth=0, swaps_ref=None):
+    if n is None: n = len(arr)
+    if swaps_ref is None: swaps_ref = [0]
+
+    # Base case
+    if n == 1:
+        return depth, swaps_ref[0]
+
+    swapped = False
+    # One pass: bubble largest to arr[n-1]
+    for j in range(n - 1):
+        if arr[j] > arr[j + 1]:
+            arr[j], arr[j + 1] = arr[j + 1], arr[j]
+            swapped = True
+            swaps_ref[0] += 1
+
+    if not swapped:
+        return depth + 1, swaps_ref[0]
+
+    # Recurse on first n-1 elements
+    return bubble_sort_rec(arr, n - 1, depth + 1, swaps_ref)
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+print(f"\\nBefore: {arr}")
+
+depth, swaps = bubble_sort_rec(arr)
+
+print(f"After:  {arr}")
+print(f"Recursive depth: {depth}  |  Swaps: {swaps}")`,
+    java:`import java.util.Arrays;
+import java.util.Scanner;
+
+public class BubbleSortRecursive {
+
+    static int swaps = 0;
+
+    static int bubbleSortRec(int[] arr, int n) {
+        if (n == 1) return 0;
+
+        boolean swapped = false;
+        for (int j = 0; j < n - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int tmp = arr[j]; arr[j] = arr[j+1]; arr[j+1] = tmp;
+                swapped = true;
+                swaps++;
+            }
+        }
+
+        if (!swapped) return 1;         // early base case
+
+        return 1 + bubbleSortRec(arr, n - 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.println("\\nBefore: " + Arrays.toString(arr));
+        int depth = bubbleSortRec(arr, n);
+        System.out.println("After:  " + Arrays.toString(arr));
+        System.out.println("Recursive depth: " + depth + "  |  Swaps: " + swaps);
+    }
+}`,
+    c:`#include <stdio.h>
+
+void swap(int *a, int *b){ int t=*a; *a=*b; *b=t; }
+int totalSwaps = 0;
+
+int bubbleSortRec(int arr[], int n) {
+    if (n == 1) return 0;
+
+    int swapped = 0;
+    for (int j = 0; j < n - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+            swap(&arr[j], &arr[j + 1]);
+            swapped = 1;
+            totalSwaps++;
+        }
+    }
+
+    if (!swapped) return 1;
+
+    return 1 + bubbleSortRec(arr, n - 1);
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i); scanf("%d", &arr[i]);
+    }
+
+    printf("\\nBefore: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+
+    int depth = bubbleSortRec(arr, n);
+
+    printf("\\nAfter:  ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\\nRecursive depth: %d  |  Swaps: %d\\n", depth, totalSwaps);
+    return 0;
+}`,
+    javascript:`function bubbleSortRec(arr, n = arr.length, swaps = { count: 0 }, depth = 0) {
+    // Base case
+    if (n === 1) return { depth, swaps: swaps.count };
+
+    let swapped = false;
+    // One pass: bubble largest element to arr[n-1]
+    for (let j = 0; j < n - 1; j++) {
+        if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            swapped = true;
+            swaps.count++;
+        }
+    }
+
+    if (!swapped) return { depth: depth + 1, swaps: swaps.count };
+
+    // Recurse on first n-1 elements
+    return bubbleSortRec(arr, n - 1, swaps, depth + 1);
+}
+
+// --- Demo ---
+const arr = [64, 34, 25, 12, 22, 11];
+console.log("Before:", arr.join(", "));
+
+const { depth, swaps } = bubbleSortRec(arr);
+
+console.log("After: ", arr.join(", "));
+console.log("Recursive depth:", depth, " | Swaps:", swaps);`
+  }
+};
+
+/* ══════════════════════════════════════════════════════════
+   GLOBALS
+══════════════════════════════════════════════════════════ */
+let codeEditor;
+let currentLang  = 'cpp';
+let editorImpl   = 'optimized';
+let currentImpl  = 'optimized';
+
+let mainArr      = [];
+let mainSteps    = [];
+let mainStepIdx  = 0;
+let mainDone     = false;
+let mainTimer    = null;
+let mainComps    = 0;
+let mainSwaps    = 0;
+let mainSorted   = 0;
+let mainPasses   = 0;
+
+let inputResolver = null;
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* ══════════════════════════════════════════════════════════
+   STEP PRE-COMPUTATION
+   Step types: outer, flag-reset, compare, swap, noswap,
+               flag-check-early, flag-check-continue,
+               pass-end, done
+══════════════════════════════════════════════════════════ */
+function computeSteps(input) {
+  const arr = [...input], n = arr.length;
+  const steps = [];
+
+  if (currentImpl === 'optimized') {
+    for (let i = 0; i < n - 1; i++) {
+      // Outer pass start
+      steps.push({ type:'outer', i, j:-1, sortedFrom:n-i, arr:[...arr], swapped:false,
+        caption:`Pass ${i+1}: outer loop i=${i}. Bubble largest unsorted to position ${n-i-1}.`,
+        pseudo:'op-outer' });
+      steps.push({ type:'flag-reset', i, j:-1, sortedFrom:n-i, arr:[...arr], swapped:false,
+        caption:`Pass ${i+1}: swapped = false — reset flag before scanning.`,
+        pseudo:'op-flag' });
+
+      let swappedThisPass = false;
+      for (let j = 0; j < n - i - 1; j++) {
+        steps.push({ type:'compare', i, j, sortedFrom:n-i, arr:[...arr], swapped:swappedThisPass,
+          caption:`Compare arr[${j}]=${arr[j]} and arr[${j+1}]=${arr[j+1]} — ${arr[j]>arr[j+1]?'arr[j] > arr[j+1] → SWAP':'arr[j] ≤ arr[j+1] → no swap'}.`,
+          pseudo:'op-compare' });
+        if (arr[j] > arr[j+1]) {
+          [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+          swappedThisPass = true;
+          steps.push({ type:'swap', i, j, sortedFrom:n-i, arr:[...arr], swapped:true,
+            caption:`Swapped arr[${j}] ↔ arr[${j+1}] — larger element bubbles right. swapped=true.`,
+            pseudo:'op-swap' });
+        }
+      }
+
+      // After inner loop
+      if (!swappedThisPass) {
+        steps.push({ type:'early-exit', i, j:-1, sortedFrom:n, arr:[...arr], swapped:false,
+          caption:`⚡ swapped=false after pass ${i+1} — no swaps occurred → array already sorted! Early exit O(N).`,
+          pseudo:'op-flagcheck' });
+        break;
+      } else {
+        steps.push({ type:'pass-end', i, j:-1, sortedFrom:n-i, arr:[...arr], swapped:true,
+          caption:`End of pass ${i+1}: arr[${n-i-1}]=${arr[n-i-1]} is now in its final position (sorted).`,
+          pseudo:'op-flagcheck' });
+      }
+    }
+  } else {
+    // Recursive
+    let depth = 0;
+    let size = n;
+    while (size > 1) {
+      steps.push({ type:'outer', i:n-size, j:-1, sortedFrom:n-size+1, arr:[...arr], swapped:false,
+        caption:`Call(n=${size}): bubble pass — largest of first ${size} elements bubbles to index ${size-1}.`,
+        pseudo:'re-pass' });
+
+      let swappedPass = false;
+      for (let j = 0; j < size - 1; j++) {
+        steps.push({ type:'compare', i:n-size, j, sortedFrom:n-size+1, arr:[...arr], swapped:swappedPass,
+          caption:`Compare arr[${j}]=${arr[j]} and arr[${j+1}]=${arr[j+1]} — ${arr[j]>arr[j+1]?'SWAP':'no swap'}.`,
+          pseudo:'re-compare' });
+        if (arr[j] > arr[j+1]) {
+          [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+          swappedPass = true;
+          steps.push({ type:'swap', i:n-size, j, sortedFrom:n-size+1, arr:[...arr], swapped:true,
+            caption:`Swapped arr[${j}] ↔ arr[${j+1}]. Larger element bubbles right.`,
+            pseudo:'re-swap' });
+        }
+      }
+
+      if (!swappedPass) {
+        steps.push({ type:'early-exit', i:n-size, j:-1, sortedFrom:n, arr:[...arr], swapped:false,
+          caption:`No swaps in this pass → already sorted! Recursion stops early.`,
+          pseudo:'re-base' });
+        break;
+      }
+
+      steps.push({ type:'recurse', i:n-size, j:-1, sortedFrom:n-size+1, arr:[...arr], swapped:true,
+        caption:`arr[${size-1}]=${arr[size-1]} placed. Now recurse: bubbleSort(arr, n=${size-1}).`,
+        pseudo:'re-recurse' });
+      depth++; size--;
+    }
+  }
+
+  // Done step
+  steps.push({ type:'done', i:-1, j:-1, sortedFrom:arr.length, arr:[...arr], swapped:false,
+    caption:`✅ Array fully sorted: [${arr.join(', ')}]`,
+    pseudo: currentImpl==='optimized'?'op-done':'re-done' });
+  return steps;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MAIN VISUALIZER — RENDER BARS
+══════════════════════════════════════════════════════════ */
+function renderBars(arr, state) {
+  const area = document.getElementById('barsArea');
+  area.innerHTML = '';
+  const maxV = Math.max(...arr);
+  arr.forEach((v, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'bar-wrap';
+    wrap.style.position = 'relative';
+
+    const bar  = document.createElement('div');
+    bar.className = 'bar ' + getBarClass(i, state, arr.length);
+    bar.style.height = Math.max(18, Math.round((v/maxV)*180)) + 'px';
+    bar.textContent = v;
+
+    const idx = document.createElement('div');
+    idx.className = 'bar-idx';
+    idx.textContent = i;
+
+    wrap.appendChild(bar);
+    wrap.appendChild(idx);
+    area.appendChild(wrap);
+  });
+
+  // Update swapped flag badge
+  if (state && currentImpl === 'optimized') {
+    const badge = document.getElementById('badge-flag');
+    badge.style.display = 'inline-flex';
+    const dot = document.getElementById('flagDot');
+    const val = document.getElementById('flagVal');
+    const sw  = state.swapped;
+    dot.className = 'flag-dot ' + (sw ? 'flag-true' : 'flag-false');
+    val.textContent = sw ? 'true' : 'false';
+    val.style.color = sw ? 'var(--primary-green)' : 'var(--primary-red)';
+  } else {
+    document.getElementById('badge-flag').style.display = 'none';
+  }
+}
+
+function getBarClass(idx, state, n) {
+  if (!state) return 'bar-default';
+  if (idx >= state.sortedFrom) return 'bar-sorted';
+  if (state.type === 'done' || state.type === 'early-exit') return 'bar-sorted';
+  if (state.type === 'swap' && (idx === state.j || idx === state.j+1)) return 'bar-swapping';
+  if (state.type === 'compare' && (idx === state.j || idx === state.j+1)) return 'bar-comparing';
+  if (state.type === 'pass-end' && idx === state.sortedFrom - 1) return 'bar-pass-boundary';
+  return 'bar-default';
+}
+
+function updateBadges(state) {
+  document.getElementById('badge-pass').textContent   = `Pass: ${mainPasses} / ${mainArr.length-1}`;
+  document.getElementById('badge-comps').textContent  = `Comparisons: ${mainComps}`;
+  document.getElementById('badge-swaps').textContent  = `Swaps: ${mainSwaps}`;
+  document.getElementById('badge-sorted').textContent = `Sorted: ${mainSorted}`;
+}
+
+function setCaption(text, type='') {
+  const box = document.getElementById('captionBox');
+  box.className = 'caption-box' + (type?' caption-'+type:'');
+  box.innerHTML = text;
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg_show');
+  el.style.display='block'; el.className='alert alert-'+type; el.innerHTML=text;
+}
 
 function highlightStep(step) {
-  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
   const el = document.querySelector(`.pseudo-step[data-step="${step}"]`);
   if (el) el.classList.add('active');
 }
 
-function renderBars() {
-  const container = document.getElementById('bars-container');
-  container.innerHTML = '';
-  const maxValue = Math.max(...array);
-  array.forEach((val, idx) => {
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = `${(val / maxValue) * 350}px`;
-    bar.id = `bar-${idx}`;
-    const lbl = document.createElement('div');
-    lbl.className = 'bar-value';
-    lbl.textContent = val;
-    bar.appendChild(lbl);
-    container.appendChild(bar);
+/* ══════════════════════════════════════════════════════════
+   MAIN SORT CONTROLS
+══════════════════════════════════════════════════════════ */
+function startSort() {
+  clearTimeout(mainTimer);
+  const raw = document.getElementById('arrayInput').value.trim();
+  if (!raw) { showMsg('Please enter an array to sort.','danger'); return; }
+  mainArr = raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if (mainArr.length < 2) { showMsg('Enter at least 2 numbers.','danger'); return; }
+  mainSteps = computeSteps(mainArr);
+  mainStepIdx=0; mainDone=false; mainComps=0; mainSwaps=0; mainSorted=0; mainPasses=0;
+  renderBars(mainArr, null);
+  updateBadges(null);
+  setCaption(`Ready to sort [${mainArr.join(', ')}]. Click Step ▶ or Auto ▶▶`);
+  document.getElementById('stepBtn').disabled=false;
+  document.getElementById('autoBtn').disabled=false;
+  document.getElementById('msg_show').style.display='none';
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+function applyMainStep() {
+  if (mainDone || mainStepIdx>=mainSteps.length) return false;
+  const step = mainSteps[mainStepIdx++];
+
+  if (step.type==='compare')  mainComps++;
+  if (step.type==='swap')     mainSwaps++;
+  if (step.type==='outer')    mainPasses++;
+  mainSorted = step.sortedFrom;
+
+  renderBars(step.arr, step);
+  setCaption(step.caption,
+    step.type==='swap'?'swap':
+    step.type==='early-exit'?'early':
+    step.type==='done'?'done':'');
+  highlightStep(step.pseudo);
+  updateBadges(step);
+
+  if (step.type==='done'||step.type==='early-exit') {
+    if (step.type==='done') {
+      mainDone=true;
+      showMsg(`<i class="fas fa-check"></i> Sorted! Passes: ${mainPasses} | Comparisons: ${mainComps} | Swaps: ${mainSwaps}`,'success');
+      document.getElementById('stepBtn').disabled=true;
+      document.getElementById('autoBtn').disabled=true;
+    }
+    if (step.type==='early-exit') {
+      // let done step follow
+    }
+    return step.type!=='early-exit';
+  }
+  return true;
+}
+
+function stepSort()  { applyMainStep(); }
+function autoSort()  {
+  if (mainDone) return;
+  document.getElementById('autoBtn').disabled=true;
+  function tick(){ const cont=applyMainStep(); if(cont&&!mainDone) mainTimer=setTimeout(tick,480); }
+  tick();
+}
+function resetSort() {
+  clearTimeout(mainTimer);
+  mainArr=[]; mainSteps=[]; mainStepIdx=0; mainDone=false;
+  mainComps=0; mainSwaps=0; mainSorted=0; mainPasses=0;
+  document.getElementById('barsArea').innerHTML='';
+  setCaption('Enter an array and click Sort to begin.');
+  document.getElementById('msg_show').style.display='none';
+  document.getElementById('stepBtn').disabled=true;
+  document.getElementById('autoBtn').disabled=true;
+  document.getElementById('badge-flag').style.display='none';
+  updateBadges(null);
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+}
+
+/* ══════════════════════════════════════════════════════════
+   IMPLEMENTATION SWITCH
+══════════════════════════════════════════════════════════ */
+function switchImplementation(type) {
+  currentImpl=type;
+  document.querySelectorAll('.impl-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('active');
+  document.getElementById('visualizer-title').textContent =
+    'Bubble Sort Visualizer — '+(type==='optimized'?'Optimized (Swapped Flag)':'Recursive');
+  document.getElementById('pseudo-optimized').style.display=type==='optimized'?'block':'none';
+  document.getElementById('pseudo-recursive').style.display=type==='recursive' ?'block':'none';
+  resetSort();
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCENARIO HELPERS — mini bars
+══════════════════════════════════════════════════════════ */
+function buildMiniBars(cid, data) {
+  const area=document.getElementById(cid); area.innerHTML='';
+  const mx=Math.max(...data);
+  data.forEach((v,i)=>{
+    const w=document.createElement('div'); w.className='mbar-wrap';
+    const b=document.createElement('div'); b.className='mbar mb-default';
+    b.id=cid+'-b'+i; b.style.height=Math.max(12,Math.round((v/mx)*100))+'px'; b.textContent=v;
+    const l=document.createElement('div'); l.className='mbar-idx'; l.textContent=i;
+    w.appendChild(b); w.appendChild(l); area.appendChild(w);
   });
 }
 
-async function startSort() {
-  if (isSorting || array.length === 0) return;
-  isSorting = true;
-  document.getElementById('sort-btn').disabled = true;
-  
-  // Get your existing message element
-  const msgBox = document.getElementById('msg-show');
-  msgBox.style.display = 'block'; // Make sure it's visible
-  
-  let n = array.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    highlightStep('loop');
-    // CAPTION: Explaining the pass
-    msgBox.innerHTML = `<div class="alert alert-info"><i class="fas fa-sync-alt fa-spin"></i> <strong>Pass ${i + 1}:</strong> Moving the largest unsorted element to the end.</div>`;
-    
-    for (let j = 0; j < n - i - 1; j++) {
-      highlightStep('compare');
-      
-      const b1 = document.getElementById(`bar-${j}`);
-      const b2 = document.getElementById(`bar-${j+1}`);
-      b1.classList.add('comparing');
-      b2.classList.add('comparing');
-      
-      // CAPTION: Comparison logic
-      msgBox.innerHTML = `<div class="alert alert-info">Comparing <strong>${array[j]}</strong> and <strong>${array[j+1]}</strong>.</div>`;
-      
-      await sleep(getDelay());
+function renderMiniScene(cid, data, j, sortedFrom, type) {
+  data.forEach((_,i)=>{
+    const b=document.getElementById(cid+'-b'+i); if(!b) return;
+    if(i>=sortedFrom){ b.className='mbar mb-sorted'; return; }
+    if(type==='swap'&&(i===j||i===j+1)){ b.className='mbar mb-swapping'; return; }
+    if(type==='compare'&&(i===j||i===j+1)){ b.className='mbar mb-comparing'; return; }
+    if(type==='pass-end'&&i===sortedFrom-1){ b.className='mbar mb-boundary'; return; }
+    b.className='mbar mb-default';
+  });
+}
 
-      if (array[j] > array[j + 1]) {
-        highlightStep('swap');
-        
-        // CAPTION: Highlighting the swap reason
-        msgBox.innerHTML = `<div class="alert alert-warning"><i class="fas fa-exchange-alt"></i> ${array[j]} > ${array[j+1]}! <strong>Swapping</strong> them.</div>`;
-        
-        b1.classList.replace('comparing', 'swapping');
-        b2.classList.replace('comparing', 'swapping');
-        
-        let temp = array[j];
-        array[j] = array[j + 1];
-        array[j + 1] = temp;
-        
-        await sleep(getDelay());
-        renderBars();
-        
-        // Restore swap highlight after re-rendering the bars
-        document.getElementById(`bar-${j}`).classList.add('swapping');
-        document.getElementById(`bar-${j+1}`).classList.add('swapping');
-      } else {
-        msgBox.innerHTML = `<div class="alert alert-info"><i class="fas fa-check"></i> ${array[j]} <= ${array[j+1]}. No swap needed.</div>`;
-      }
-      
-      await sleep(getDelay());
-      renderBars();
-      
-      // Keep previously sorted bars colored green
-      for(let k = n-1; k >= n-i; k--) {
-          const bar = document.getElementById(`bar-${k}`);
-          if(bar) bar.classList.add('sorted');
-      }
+function addLog(logEl,text,cls='log-info'){
+  const e=document.createElement('div'); e.className='log-entry '+cls; e.textContent='> '+text;
+  logEl.appendChild(e); logEl.scrollTop=logEl.scrollHeight;
+}
+
+function switchScenario(name) {
+  const map={best:'active-best',avg:'active-avg',worst:'active-worst',custom:'active-custom'};
+  document.querySelectorAll('.scenario-tab').forEach(t=>t.className='scenario-tab');
+  document.getElementById('stab-'+name).classList.add(map[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('spanel-'+name).classList.add('active');
+}
+
+/* Shared scenario state machine */
+function makeScenState(data) {
+  return { arr:[...data], n:data.length, i:0, j:0, sortedFrom:data.length,
+           comps:0, swaps:0, passes:0, swappedFlag:false, phase:'outer', done:false };
+}
+
+function scenStep(st) {
+  if(st.done) return null;
+  const {arr,n}=st;
+
+  if(st.phase==='outer'){
+    if(st.i>=n-1){ st.done=true;
+      return {type:'done',j:-1,sortedFrom:n,arr:[...arr],
+        log:{text:`✓ Sorted! Passes:${st.passes} Comps:${st.comps} Swaps:${st.swaps}`,cls:'log-sorted'}}; }
+    st.swappedFlag=false; st.j=0; st.passes++; st.phase='inner';
+    return {type:'outer',j:-1,sortedFrom:n-st.i,arr:[...arr],
+      log:{text:`Pass ${st.passes}: i=${st.i}, swapped=false, scan 0…${n-st.i-2}`,cls:'log-pass'}};
+  }
+  if(st.phase==='inner'){
+    if(st.j < n-st.i-1){
+      st.comps++;
+      const isSwap=arr[st.j]>arr[st.j+1];
+      const jj=st.j;
+      if(isSwap){ [arr[st.j],arr[st.j+1]]=[arr[st.j+1],arr[st.j]]; st.swaps++; st.swappedFlag=true; }
+      const r={type:isSwap?'swap':'compare',j:jj,sortedFrom:n-st.i,arr:[...arr],
+        log:{text:`  arr[${jj}]=${arr[jj+isSwap?-1:0]}→arr[${jj+1}]=${arr[jj+isSwap?0:1]} ${isSwap?'↔ swap':'no swap'}`,
+             cls:isSwap?'log-swap':'log-compare'}};
+      // repair log text
+      if(isSwap) r.log.text=`  arr[${jj}]↔arr[${jj+1}] swapped → [${arr.slice(0,n-st.i).join(',')}]`;
+      else       r.log.text=`  arr[${jj}]=${arr[jj]} ≤ arr[${jj+1}]=${arr[jj+1]} — no swap`;
+      st.j++; return r;
     }
-    
-    highlightStep('bubble');
-    // CAPTION: Confirming the bubble-up
-    msgBox.innerHTML = `<div class="alert alert-success"><i class="fas fa-arrow-up"></i> <strong>Bubbled!</strong> ${array[n-i-1]} is now in its final position.</div>`;
-    document.getElementById(`bar-${n-i-1}`).classList.add('sorted');
-    await sleep(getDelay() * 2);
+    // end of inner
+    st.phase='outer';
+    if(!st.swappedFlag){
+      st.done=true;
+      return {type:'early-exit',j:-1,sortedFrom:n,arr:[...arr],
+        log:{text:`⚡ swapped=false → early exit! Comps:${st.comps} Swaps:${st.swaps}`,cls:'log-early'}};
+    }
+    const ef=st.i; st.i++;
+    return {type:'pass-end',j:-1,sortedFrom:n-ef,arr:[...arr],
+      log:{text:`  arr[${n-ef-1}]=${arr[n-ef-1]} placed. End of pass ${st.passes}.`,cls:'log-sorted'}};
   }
-  
-  // Final completion state
-  for(let i=0; i<n; i++) document.getElementById(`bar-${i}`).className = 'bar sorted';
-  msgBox.innerHTML = `<div class="alert alert-success"><i class="fas fa-star"></i> <strong>Fully Sorted!</strong> The largest elements have all "bubbled" to the top.</div>`;
-  highlightStep('complexity');
-  
-  isSorting = false;
-  document.getElementById('sort-btn').disabled = false;
 }
 
-function generateRandomArray() {
-  const size = parseInt(document.getElementById('size-slider').value);
-  array = Array.from({length: size}, () => Math.floor(Math.random() * 95) + 5);
-  renderBars();
+/* ── BEST ── */
+const BEST_DATA=[5,11,19,25,36,42];
+let bestSt=null,bestTimer=null;
+function initBest(){
+  bestSt=makeScenState(BEST_DATA);
+  buildMiniBars('mbars-best',BEST_DATA);
+  document.getElementById('log-best').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  const log=document.getElementById('log-best');
+  addLog(log,`Array: [${BEST_DATA.join(', ')}] — already sorted`,'log-info');
+  addLog(log,`Expect: 1 pass, 0 swaps → early exit O(N)`,'log-info');
+  document.getElementById('best-step-btn').disabled=false;
+  document.getElementById('best-auto-btn').disabled=false;
 }
-
-function createArray() {
-  const raw = document.getElementById('array-input').value;
-  if(raw) array = raw.split(',').map(v => parseInt(v)).filter(v => !isNaN(v));
-  if(array.length > 0) renderBars();
-}
-
-function changeCode(lang) {
-  document.querySelectorAll('.code-container').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.menu-btns button').forEach(b => b.classList.remove('active'));
-  document.getElementById(`${lang}-content`).classList.add('active');
-  document.getElementById(`${lang}-btn`).classList.add('active');
-}
-
-function runInteractive(lang) {
-  inputMode = 'array';
-  document.getElementById('interactive-input-area').style.display = 'flex';
-  document.getElementById('code-output').innerHTML = `<div style="color:#fbbf24">[${lang.toUpperCase()} Env] Enter numbers separated by commas:</div>`;
-}
-
-function processTerminal() {
-  const input = document.getElementById('terminal-input').value.trim();
-  const output = document.getElementById('code-output');
-  if(!input) return;
-  if(inputMode === 'array') {
-    virtualArr = input.split(',').map(v => parseInt(v)).filter(v => !isNaN(v));
-    output.innerHTML += `<div>Array: [${virtualArr}]</div><div>Type 'sort' to run.</div>`;
-    inputMode = 'cmd';
-  } else if(input === 'sort') {
-    virtualArr.sort((a,b) => a-b);
-    output.innerHTML += `<div style="color:#10b981">Sorted Result: [${virtualArr}]</div>`;
+function bestStep(){
+  if(!bestSt||bestSt.done) return;
+  const r=scenStep(bestSt); if(!r) return;
+  addLog(document.getElementById('log-best'),r.log.text,r.log.cls);
+  renderMiniScene('mbars-best',r.arr,r.j,r.sortedFrom,r.type);
+  if(r.type==='early-exit'||r.type==='done'){
+    if(r.type==='early-exit') addLog(document.getElementById('log-best'),`✓ Best Case: O(N) — swapped flag triggered`,`log-result`);
+    document.getElementById('best-step-btn').disabled=true;
+    document.getElementById('best-auto-btn').disabled=true;
+    r.arr.forEach((_,i)=>{ const b=document.getElementById('mbars-best-b'+i); if(b) b.className='mbar mb-sorted'; });
   }
-  document.getElementById('terminal-input').value = '';
+}
+function bestAuto(){ document.getElementById('best-auto-btn').disabled=true;
+  function tick(){ if(!bestSt.done){ bestStep(); if(!bestSt.done) bestTimer=setTimeout(tick,600); } } tick(); }
+function resetBest(){ clearTimeout(bestTimer); initBest(); }
+
+/* ── AVERAGE ── */
+const AVG_DATA=[64,34,25,12,22,11];
+let avgSt=null,avgTimer=null;
+function initAvg(){
+  avgSt=makeScenState(AVG_DATA);
+  buildMiniBars('mbars-avg',AVG_DATA);
+  document.getElementById('log-avg').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  const log=document.getElementById('log-avg');
+  addLog(log,`Array: [${AVG_DATA.join(', ')}] — random order`,'log-info');
+  addLog(log,`Expect: multiple passes with swaps — O(N²)`,'log-info');
+  document.getElementById('avg-step-btn').disabled=false;
+  document.getElementById('avg-auto-btn').disabled=false;
+}
+function avgStep(){
+  if(!avgSt||avgSt.done) return;
+  const r=scenStep(avgSt); if(!r) return;
+  addLog(document.getElementById('log-avg'),r.log.text,r.log.cls);
+  renderMiniScene('mbars-avg',r.arr,r.j,r.sortedFrom,r.type);
+  if(r.type==='early-exit'||r.type==='done'){
+    addLog(document.getElementById('log-avg'),`✓ Avg O(N²) — ${avgSt.passes} passes, ${avgSt.swaps} swaps`,'log-result');
+    document.getElementById('avg-step-btn').disabled=true;
+    document.getElementById('avg-auto-btn').disabled=true;
+    r.arr.forEach((_,i)=>{ const b=document.getElementById('mbars-avg-b'+i); if(b) b.className='mbar mb-sorted'; });
+  }
+}
+function avgAuto(){ document.getElementById('avg-auto-btn').disabled=true;
+  function tick(){ if(!avgSt.done){ avgStep(); if(!avgSt.done) avgTimer=setTimeout(tick,540); } } tick(); }
+function resetAvg(){ clearTimeout(avgTimer); initAvg(); }
+
+/* ── WORST ── */
+const WORST_DATA=[90,70,50,30,10];
+let worstSt=null,worstTimer=null;
+function initWorst(){
+  worstSt=makeScenState(WORST_DATA);
+  buildMiniBars('mbars-worst',WORST_DATA);
+  document.getElementById('log-worst').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  const log=document.getElementById('log-worst');
+  addLog(log,`Array: [${WORST_DATA.join(', ')}] — reverse sorted`,'log-warn');
+  addLog(log,`Expect: ${WORST_DATA.length-1} passes, max swaps — O(N²)`,'log-warn');
+  document.getElementById('worst-step-btn').disabled=false;
+  document.getElementById('worst-auto-btn').disabled=false;
+}
+function worstStep(){
+  if(!worstSt||worstSt.done) return;
+  const r=scenStep(worstSt); if(!r) return;
+  addLog(document.getElementById('log-worst'),r.log.text,r.log.cls);
+  renderMiniScene('mbars-worst',r.arr,r.j,r.sortedFrom,r.type);
+  if(r.type==='early-exit'||r.type==='done'){
+    addLog(document.getElementById('log-worst'),`⚠ Worst O(N²) — ${worstSt.passes} passes, ${worstSt.swaps} swaps (max)`,'log-result');
+    document.getElementById('worst-step-btn').disabled=true;
+    document.getElementById('worst-auto-btn').disabled=true;
+    r.arr.forEach((_,i)=>{ const b=document.getElementById('mbars-worst-b'+i); if(b) b.className='mbar mb-sorted'; });
+  }
+}
+function worstAuto(){ document.getElementById('worst-auto-btn').disabled=true;
+  function tick(){ if(!worstSt.done){ worstStep(); if(!worstSt.done) worstTimer=setTimeout(tick,520); } } tick(); }
+function resetWorst(){ clearTimeout(worstTimer); initWorst(); }
+
+/* ── CUSTOM ── */
+let custSt=null,custTimer=null,ccTimerId=null;
+function initCustom(){
+  document.getElementById('mbars-custom').innerHTML='';
+  document.getElementById('log-custom').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'),'Enter an array and click ▶ Load & Sort.','log-info');
+  custSt=null;
+  document.getElementById('custom-step-btn').disabled=true;
+  document.getElementById('custom-auto-btn').disabled=true;
+  ['best','avg','worst'].forEach(t=>{ const c=document.getElementById('cc-'+t);
+    if(c) c.classList.remove('cc-active-best','cc-active-avg','cc-active-worst'); });
+  document.getElementById('cc-toast').className='cc-toast';
+}
+function customLoad(){
+  clearTimeout(custTimer);
+  const raw=document.getElementById('custom-arr').value.trim();
+  if(!raw){ addLog(document.getElementById('log-custom'),'Enter an array first!','log-warn'); return; }
+  const data=raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+  if(data.length<2){ addLog(document.getElementById('log-custom'),'Need at least 2 numbers.','log-warn'); return; }
+  custSt=makeScenState(data);
+  buildMiniBars('mbars-custom',data);
+  document.getElementById('log-custom').innerHTML='<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'),`Array: [${data.join(', ')}]  N=${data.length}`,'log-info');
+  document.getElementById('custom-step-btn').disabled=false;
+  document.getElementById('custom-auto-btn').disabled=false;
+}
+function highlightCC(type){
+  ['best','avg','worst'].forEach(t=>document.getElementById('cc-'+t).classList.remove('cc-active-best','cc-active-avg','cc-active-worst'));
+  clearTimeout(ccTimerId);
+  const card=document.getElementById('cc-'+type);
+  if(card){ card.classList.add('cc-active-'+type);
+    ccTimerId=setTimeout(()=>card.classList.remove('cc-active-'+type),2200); }
+}
+function showCCToast(type,msg){
+  const toast=document.getElementById('cc-toast');
+  document.getElementById('cc-toast-icon').textContent={best:'⚡',avg:'〜',worst:'⚠',warn:'⚠'}[type]||'📊';
+  document.getElementById('cc-toast-text').textContent=msg;
+  toast.className='cc-toast show toast-'+type;
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>{ toast.className='cc-toast'; },2800);
+}
+function customStep(){
+  if(!custSt||custSt.done) return;
+  const r=scenStep(custSt); if(!r) return;
+  addLog(document.getElementById('log-custom'),r.log.text,r.log.cls);
+  renderMiniScene('mbars-custom',r.arr,r.j,r.sortedFrom,r.type);
+  if(r.type==='early-exit'||r.type==='done'){
+    const sw=custSt.swaps, p=custSt.passes, n=custSt.n;
+    let type='avg';
+    if(p===1&&sw===0) type='best';
+    else if(sw===n*(n-1)/2) type='worst';
+    const labels={best:`Best O(N) — early exit after 1 pass!`,avg:`Average O(N²) — ${p} passes, ${sw} swaps`,worst:`Worst O(N²) — ${p} passes, ${sw} swaps (max)`};
+    addLog(document.getElementById('log-custom'),labels[type],'log-result');
+    highlightCC(type); showCCToast(type,labels[type]);
+    document.getElementById('custom-step-btn').disabled=true;
+    document.getElementById('custom-auto-btn').disabled=true;
+    r.arr.forEach((_,i)=>{ const b=document.getElementById('mbars-custom-b'+i); if(b) b.className='mbar mb-sorted'; });
+  }
+}
+function customAutoPlay(){ document.getElementById('custom-auto-btn').disabled=true;
+  function tick(){ if(!custSt.done){ customStep(); if(!custSt.done) custTimer=setTimeout(tick,510); } } tick(); }
+function resetCustom(){ clearTimeout(custTimer); document.getElementById('custom-arr').value=''; initCustom(); }
+
+/* ══════════════════════════════════════════════════════════
+   CODE EDITOR
+══════════════════════════════════════════════════════════ */
+function getCMTheme(t){ return t==='light'?'eclipse':t==='blue'?'nord':'material-ocean'; }
+function initEditor(){
+  const theme=document.body.getAttribute('data-theme')||'dark';
+  codeEditor=CodeMirror.fromTextArea(document.getElementById('code-editor'),{
+    mode:'text/x-c++src',theme:getCMTheme(theme),lineNumbers:true,indentUnit:4,lineWrapping:true
+  });
+  codeEditor.setValue(codeTemplates.optimized.cpp);
+}
+function switchEditorImpl(impl,btn){
+  editorImpl=impl;
+  document.querySelectorAll('.impl-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+function switchLang(lang,btn){
+  currentLang=lang;
+  document.querySelectorAll('.lang-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+function updateEditorDisplay(){
+  const modeMap={cpp:'text/x-c++src',python:'text/x-python',java:'text/x-java',c:'text/x-csrc',javascript:'text/javascript'};
+  const nameMap={cpp:'C++',python:'Python',java:'Java',c:'C',javascript:'JavaScript'};
+  const implLabel=editorImpl==='optimized'?'Optimized (Swapped Flag)':'Recursive';
+  codeEditor.setOption('mode',modeMap[currentLang]);
+  codeEditor.setValue(codeTemplates[editorImpl][currentLang]);
+  document.querySelector('.lang-display').textContent=nameMap[currentLang]+' — '+implLabel;
+}
+function copyCode(){
+  navigator.clipboard.writeText(codeEditor.getValue()).then(()=>{
+    const btn=document.querySelector('.code-copy');
+    btn.textContent='✓'; btn.style.background='var(--primary-green)';
+    setTimeout(()=>{ btn.textContent='Copy'; btn.style.background='var(--primary-purple)'; },2000);
+  });
 }
 
-const l1 = document.getElementById("l1");
-const l2 = document.getElementById("l2");
-const l3 = document.getElementById("l3");
+/* Interactive Runner */
+async function getInput(prompt){
+  return new Promise(resolve=>{
+    document.getElementById('promptText').textContent=prompt;
+    document.getElementById('inputPrompt').style.display='block';
+    document.getElementById('userInput').value='';
+    document.getElementById('userInput').focus();
+    inputResolver=resolve;
+  });
+}
+function submitInput(){
+  const val=document.getElementById('userInput').value.trim();
+  if(val&&inputResolver){ document.getElementById('inputPrompt').style.display='none'; inputResolver(val); inputResolver=null; }
+}
+document.getElementById('userInput').addEventListener('keypress',e=>{ if(e.key==='Enter') submitInput(); });
 
-const slider1 = document.getElementById("slider1");
-const slider2 = document.getElementById("slider2");
+async function runInteractiveCode(){
+  const out=document.getElementById('codeOutput');
+  out.innerHTML='<span style="color:#fbbf24">🔄 Executing...</span><br><br>';
+  const langN={cpp:'C++',python:'Python',java:'Java',c:'C',javascript:'JavaScript'};
+  const implL=editorImpl==='optimized'?'Optimized (Swapped Flag)':'Recursive';
+  out.innerHTML+=`<span style="color:var(--primary-cyan)">Bubble Sort (${implL}) — ${langN[currentLang]}</span><br><br>`;
 
-const modal = document.getElementById("quizModal");
-const startQuiz = document.getElementById("startQuiz");
-const cancelBtn = document.getElementById("cancelBtn");
+  const n=parseInt(await getInput('Enter number of elements: '));
+  out.innerHTML+=`<span style="color:#a0a0a0">Enter number of elements: </span>${n}<br>`;
+  const arr=[];
+  for(let i=0;i<n;i++){
+    const v=parseInt(await getInput(`arr[${i}] = `));
+    arr.push(v); out.innerHTML+=`<span style="color:#a0a0a0">arr[${i}] = </span>${v}<br>`;
+  }
+  out.innerHTML+=`<br><span style="color:var(--primary-cyan)">Before: [${arr.join(', ')}]</span><br><br>`;
 
-// Level 2 is now unlocked by default
-let level2Unlocked = true; 
-let level3Unlocked = false;
+  let totalSwaps=0, totalComps=0, passes=0;
 
-// Level 1: Always works
-l1.addEventListener("click", () => {
-  slider1.classList.add("active");
-});
-
-// Level 2: Now unlocked, so it just activates the slider without a modal
-l2.addEventListener("click", () => {
-  slider1.classList.add("active");
-  // Optional: you can add logic here to show Level 2 content
-});
-
-// Level 3: This is the only one that triggers the modal now
-l3.addEventListener("click", () => {
-  if (!level3Unlocked) {
-    // Show modal because Level 3 is still locked
-    modal.style.display = "flex";
+  if(editorImpl==='optimized'){
+    for(let i=0;i<n-1;i++){
+      let swapped=false; passes++;
+      out.innerHTML+=`<span style="color:#8b5cf6">Pass ${passes}:</span>  swapped=false<br>`;
+      for(let j=0;j<n-i-1;j++){
+        totalComps++;
+        if(arr[j]>arr[j+1]){
+          out.innerHTML+=`  <span style="color:var(--primary-orange)">arr[${j}]=${arr[j]} > arr[${j+1}]=${arr[j+1]}</span> <span style="color:#ec4899">↔ swap → [${[...arr.slice(0,j),arr[j+1],arr[j],...arr.slice(j+2)].join(',')}]</span><br>`;
+          [arr[j],arr[j+1]]=[arr[j+1],arr[j]]; swapped=true; totalSwaps++;
+        } else {
+          out.innerHTML+=`  <span style="color:var(--text-secondary)">arr[${j}]=${arr[j]} ≤ arr[${j+1}]=${arr[j+1]}  no swap</span><br>`;
+        }
+        await sleep(60);
+      }
+      if(!swapped){
+        out.innerHTML+=`  <span style="color:var(--primary-green)">⚡ swapped=false → early exit!</span><br>`;
+        break;
+      }
+      out.innerHTML+=`  <span style="color:var(--primary-green)">arr[${n-i-1}]=${arr[n-i-1]} placed. Array: [${arr.join(', ')}]</span><br>`;
+    }
   } else {
-    // If Level 3 were already unlocked, just activate the slider
-    slider1.classList.add("active");
-    slider2.classList.add("active");
-  }
-});
-
-// ✅ Start Quiz → goes to the quiz page to unlock Level 3
-startQuiz.addEventListener("click", () => {
-  window.location.href = "bubbleSort_L2Quiz.html";
-});
-
-// Cancel modal
-cancelBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
-document.getElementById('speed-slider').addEventListener('input', (e) => speed = e.target.value);
-generateRandomArray();
-
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'Escape') {
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar.classList.contains('active')) {
-      toggleSidebar();
+    // Recursive simulation
+    async function recSim(size, depth){
+      if(size===1) return;
+      const indent='  '.repeat(depth);
+      out.innerHTML+=`${indent}<span style="color:#8b5cf6">Call(n=${size}):</span><br>`;
+      passes++;
+      let swapped=false;
+      for(let j=0;j<size-1;j++){
+        totalComps++;
+        if(arr[j]>arr[j+1]){
+          out.innerHTML+=`${indent}  <span style="color:var(--primary-orange)">arr[${j}]=${arr[j]} > arr[${j+1}]=${arr[j+1]}</span> <span style="color:#ec4899">↔ swap</span><br>`;
+          [arr[j],arr[j+1]]=[arr[j+1],arr[j]]; swapped=true; totalSwaps++;
+        }
+        await sleep(60);
+      }
+      out.innerHTML+=`${indent}  <span style="color:var(--primary-green)">arr[${size-1}]=${arr[size-1]} placed. [${arr.slice(0,size).join(',')}]</span><br>`;
+      if(!swapped){ out.innerHTML+=`${indent}  <span style="color:var(--primary-green)">No swaps → early stop</span><br>`; return; }
+      out.innerHTML+=`${indent}  <span style="color:var(--text-secondary)">→ recurse(n=${size-1})</span><br>`;
+      await recSim(size-1, depth+1);
     }
+    await recSim(n, 0);
   }
-});
+
+  out.innerHTML+=`<br><span style="color:var(--primary-green)">✅ After:  [${arr.join(', ')}]</span><br>`;
+  out.innerHTML+=`<span style="color:var(--primary-cyan)">Passes: ${passes}  |  Comparisons: ${totalComps}  |  Swaps: ${totalSwaps}  |  Space: O(1)</span>`;
+}
+
+/* ══════════════════════════════════════════════════════════
+   THEME / LEVELS / INIT
+══════════════════════════════════════════════════════════ */
+document.getElementById('themeToggle').onclick=()=>{
+  const themes=['dark','light','blue'];
+  const cur=document.body.getAttribute('data-theme')||'dark';
+  const next=themes[(themes.indexOf(cur)+1)%3];
+  document.body.setAttribute('data-theme',next);
+  localStorage.setItem('dsa-theme',next);
+  codeEditor.setOption('theme',getCMTheme(next));
+};
+document.getElementById('l1').addEventListener('click',()=>window.location.href='bubble_sort_L1.html');
+document.getElementById('l2').addEventListener('click',()=>document.getElementById('slider1').classList.add('active'));
+document.getElementById('l3').addEventListener('click',()=>document.getElementById('quizModal').style.display='flex');
+document.getElementById('startQuiz').addEventListener('click',()=>window.location.href='bubble_sort_L2_Quiz.html');
+document.getElementById('cancelBtn').addEventListener('click',()=>document.getElementById('quizModal').style.display='none');
+window.onclick=e=>{ if(e.target===document.getElementById('quizModal')) document.getElementById('quizModal').style.display='none'; };
+
+window.onload=()=>{
+  const savedTheme=localStorage.getItem('dsa-theme')||'dark';
+  document.body.setAttribute('data-theme',savedTheme);
+  initEditor();
+  initBest(); initAvg(); initWorst(); initCustom();
+};
+
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'bubblesort'; // This should match the base name of your HTML files (e.g., bubble_sort_L1.html)
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
 </script>
 </body>
 </html>
