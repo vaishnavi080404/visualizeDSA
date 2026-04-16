@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Search - Level 2 | CODEANIME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        --dark-bg: #0a0a0a;
+        --card-bg: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a2a;
+        --nav-bg: rgba(10, 10, 10, 0.8);
+        --code-bg: #0d1117;
+        --terminal-bg: #0d1117;
+      }
+      [data-theme="light"] {
+        --dark-bg: #f8fafc; --card-bg: #ffffff; --text-primary: #0f172a;
+        --text-secondary: #475569; --border-color: #e2e8f0;
+        --nav-bg: rgba(248,250,252,0.8); --code-bg: #f1f5f9;
+        --terminal-bg: #f1f5f9; --primary-cyan: #0891b2; --primary-green: #059669;
+      }
+      [data-theme="blue"] {
+        --dark-bg: #011425; --card-bg: #1e293b; --text-primary: #ffffff;
+        --text-secondary: #94a3b8; --border-color: #242424;
+        --nav-bg: rgba(1,20,37,0.8); --code-bg: #011425; --terminal-bg: #011425;
+      }
+      * { margin:0; padding:0; box-sizing:border-box; }
+      body { font-family:'Inter',sans-serif; background:var(--dark-bg); color:var(--text-primary); line-height:1.6; transition:background 0.3s ease,color 0.3s ease; }
+      nav { position:fixed; top:0; width:100%; z-index:1000; background:var(--nav-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--border-color); transition:background 0.3s ease,border-color 0.3s ease; }
+      .nav-container { max-width:1400px; margin:0 auto; padding:1.2rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+      .logo { display:flex; align-items:center; gap:0.5rem; font-size:1.3rem; font-weight:700; text-decoration:none; color:inherit; }
+      .logo-icon { width:35px; height:35px; background:transparent; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:0.9rem; color:#fff; }
+      .nav-links { display:flex; gap:2.5rem; list-style:none; z-index:2; }
+      .nav-links a { color:var(--text-primary); text-decoration:none; font-size:0.95rem; font-weight:500; transition:color 0.3s; }
+      .nav-links a:hover { color:var(--primary-green); }
+      .theme-toggle { background:var(--border-color); border:1px solid var(--border-color); color:var(--text-primary); cursor:pointer; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; z-index:2; transition:all 0.3s ease; }
+      .theme-toggle:hover { border-color:var(--primary-green); background:rgba(16,185,129,0.1); }
+      .theme-toggle svg { width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:2; }
+      .container { max-width:1400px; margin:0 auto; padding:100px 2rem 3rem; }
+      .breadcrumb { display:flex; align-items:center; gap:0.5rem; margin-bottom:2rem; font-size:0.9rem; color:var(--text-secondary); }
+      .breadcrumb a { color:var(--text-secondary); text-decoration:none; }
+      .breadcrumb span.sep { opacity:0.5; }
+      .page-header { margin-bottom:3rem; }
+      .page-title { font-family:'Space Grotesk',sans-serif; font-size:3.5rem; font-weight:800; margin-bottom:0.5rem; }
+      .level-tabs { display:flex; gap:1rem; margin-top:1.5rem; }
+      .level-tab { padding:0.6rem 1.5rem; background:var(--card-bg); border:1px solid var(--border-color); border-radius:50px; color:var(--text-secondary); font-weight:600; cursor:default; }
+      .level-tab.active { background:var(--primary-cyan); color:white; border-color:var(--primary-cyan); }
+
+      /* Implementation Selector */
+      .implementation-selector { display:flex; gap:1rem; margin:2rem 0; padding:1rem; background:var(--card-bg); border-radius:16px; border:1px solid var(--border-color); justify-content:center; flex-wrap:wrap; }
+      .impl-option { padding:1rem 2rem; background:var(--code-bg); border:2px solid var(--border-color); border-radius:12px; cursor:pointer; transition:all 0.3s ease; text-align:center; min-width:200px; }
+      .impl-option:hover { border-color:var(--primary-cyan); transform:translateY(-2px); }
+      .impl-option.active { background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple)); border-color:var(--primary-cyan); color:white; box-shadow:0 4px 15px rgba(6,182,212,0.3); }
+      .impl-option-icon { font-size:2rem; margin-bottom:0.5rem; }
+      .impl-option-title { font-weight:700; font-size:1.1rem; margin-bottom:0.3rem; }
+      .impl-option-desc { font-size:0.85rem; color:var(--text-secondary); }
+      .impl-option.active .impl-option-desc { color:rgba(255,255,255,0.8); }
+
+      .section-card { background:var(--card-bg); border:1px solid var(--border-color); border-radius:24px; padding:2.5rem; margin-bottom:2.5rem; }
+      .section-header { display:flex; align-items:center; gap:1rem; margin-bottom:2rem; }
+      .section-icon { width:50px; height:50px; background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple)); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:white; }
+      .section-title { font-size:1.8rem; font-weight:700; color:var(--text-primary); }
+      .content-title { font-size:1.25rem; font-weight:600; margin-bottom:1rem; color:var(--primary-cyan); display:flex; align-items:center; gap:0.5rem; }
+      .content-text { color:var(--text-secondary); margin-bottom:1.5rem; font-size:1.05rem; }
+
+      .visualizer-grid { display:grid; grid-template-columns:300px 1fr; gap:30px; align-items:start; }
+
+      .pseudo-code-container { background:var(--card-bg); border-radius:15px; padding:20px; box-shadow:0 10px 40px rgba(0,0,0,0.3); border:1px solid var(--border-color); max-height:600px; overflow-y:auto; position:sticky; top:90px; }
+      .pseudo-code-container h5 { color:var(--primary-orange); font-weight:700; margin-bottom:20px; text-align:center; font-family:'Space Grotesk',sans-serif; font-size:18px; letter-spacing:1px; }
+      .pseudo-step { background:var(--code-bg); padding:12px 15px; margin:10px 0; border-radius:8px; color:var(--text-secondary); border-left:3px solid transparent; transition:all 0.3s ease; font-family:'JetBrains Mono',monospace; font-size:13px; line-height:1.6; }
+      .pseudo-step.active { background:linear-gradient(90deg,var(--primary-cyan),#00a8a8); color:#000; border-left-color:var(--primary-orange); transform:translateX(5px); box-shadow:0 4px 15px rgba(6,182,212,0.3); font-weight:600; }
+      .pseudo-step strong { color:var(--primary-cyan); }
+      .pseudo-step.active strong { color:#000; font-weight:800; }
+
+      .visualization-card { background:var(--card-bg); border-radius:20px; box-shadow:0 10px 40px rgba(0,0,0,0.3); border:1px solid var(--border-color); overflow:hidden; }
+      .card-header { background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple)); padding:20px; border-bottom:2px solid var(--border-color); }
+      .card-header h5 { font-family:'Space Grotesk',sans-serif; font-size:20px; font-weight:700; color:#fff; margin:0; }
+      .card-body { background:var(--code-bg); padding:30px; min-height:320px; }
+
+      /* Array visualizer */
+      .array-display { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:220px; gap:16px; }
+      .array-row { display:flex; align-items:center; gap:0; }
+      .arr-cell { width:58px; height:58px; border:2px solid var(--border-color); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:1.1rem; color:var(--text-secondary); background:rgba(255,255,255,0.03); transition:all 0.35s ease; position:relative; }
+      .arr-cell:first-child { border-radius:8px 0 0 8px; }
+      .arr-cell:last-child  { border-radius:0 8px 8px 0; }
+      .arr-cell.current { background:linear-gradient(135deg,var(--primary-orange),#ff6b00); color:#000; border-color:var(--primary-orange); transform:translateY(-6px); box-shadow:0 8px 20px rgba(245,158,11,0.4); z-index:2; }
+      .arr-cell.found { background:linear-gradient(135deg,var(--primary-green),#059669); color:#fff; border-color:var(--primary-green); transform:translateY(-6px); box-shadow:0 8px 20px rgba(16,185,129,0.4); z-index:2; }
+      .arr-cell.visited { background:rgba(6,182,212,0.12); border-color:var(--primary-cyan); color:var(--primary-cyan); }
+      .arr-cell.not-found { background:rgba(239,68,68,0.15); border-color:var(--primary-red); color:var(--primary-red); }
+      .index-row { display:flex; gap:0; }
+      .idx-cell { width:58px; text-align:center; font-size:0.72rem; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; }
+      .pointer-row { display:flex; gap:0; min-height:22px; }
+      .ptr-cell { width:58px; text-align:center; font-size:0.72rem; color:var(--primary-orange); font-family:'JetBrains Mono',monospace; font-weight:700; }
+      .ptr-cell.found-ptr { color:var(--primary-green); }
+
+      .caption-box { background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.25); border-radius:10px; padding:10px 16px; font-size:0.88rem; color:var(--primary-cyan); text-align:center; font-family:'JetBrains Mono',monospace; min-height:38px; transition:all 0.3s; }
+      .caption-box.caption-found { background:rgba(16,185,129,0.1); border-color:var(--primary-green); color:var(--primary-green); }
+      .caption-box.caption-notfound { background:rgba(239,68,68,0.1); border-color:var(--primary-red); color:var(--primary-red); }
+
+      #msg_show { color:var(--text-primary); text-align:center; margin-top:20px; font-size:16px; padding:15px; border-radius:10px; min-height:50px; display:none; }
+      .alert-success { background:rgba(16,185,129,0.2); border:2px solid var(--primary-green); color:var(--primary-green); }
+      .alert-danger  { background:rgba(239,68,68,0.2);  border:2px solid var(--primary-red);   color:var(--primary-red); }
+      .alert-info    { background:rgba(6,182,212,0.2);  border:2px solid var(--primary-cyan);  color:var(--primary-cyan); }
+
+      .card-footer { background:var(--card-bg); padding:20px; border-top:2px solid var(--border-color); }
+      .form-control { background:var(--dark-bg); border:2px solid var(--border-color); color:var(--text-primary); border-radius:8px; padding:10px; width:100%; }
+      .form-control:focus { background:var(--dark-bg); border-color:var(--primary-cyan); color:var(--text-primary); box-shadow:0 0 10px rgba(6,182,212,0.3); outline:none; }
+      .btn { border:none; font-weight:700; padding:10px 20px; border-radius:8px; transition:all 0.3s ease; cursor:pointer; font-family:'Inter',sans-serif; }
+      .btn-success { background:linear-gradient(135deg,var(--primary-green),#059669); color:#fff; }
+      .btn-danger  { background:linear-gradient(135deg,var(--primary-red),#dc2626);   color:#fff; }
+      .btn-primary { background:linear-gradient(135deg,var(--primary-cyan),#0891b2);  color:#fff; }
+      .btn-info    { background:linear-gradient(135deg,#3b82f6,#2563eb);              color:#fff; }
+      .btn-warning { background:linear-gradient(135deg,var(--primary-orange),#ff6b00);color:#fff; }
+      .btn:hover   { transform:translateY(-2px); box-shadow:0 6px 20px rgba(6,182,212,0.3); }
+
+      /* Scenario Tabs */
+      .scenario-tabs { display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.8rem; }
+      .scenario-tab { display:flex; align-items:center; gap:0.45rem; padding:0.55rem 1.25rem; border-radius:50px; border:1.5px solid var(--border-color); background:var(--code-bg); color:var(--text-secondary); font-weight:600; font-size:0.92rem; cursor:pointer; transition:all 0.25s ease; font-family:'Inter',sans-serif; }
+      .scenario-tab:hover { border-color:var(--primary-cyan); color:var(--primary-cyan); background:rgba(6,182,212,0.07); }
+      .scenario-tab.active-best   { background:var(--primary-green);  border-color:var(--primary-green);  color:#fff; }
+      .scenario-tab.active-avg    { background:var(--primary-cyan);   border-color:var(--primary-cyan);   color:#fff; }
+      .scenario-tab.active-worst  { background:var(--primary-orange); border-color:var(--primary-orange); color:#fff; }
+      .scenario-tab.active-custom { background:var(--primary-purple); border-color:var(--primary-purple); color:#fff; }
+      .scenario-panels { position:relative; }
+      .scenario-panel { display:none; }
+      .scenario-panel.active { display:block; }
+      .scenario-inner { background:var(--code-bg); border:1px solid var(--border-color); border-radius:16px; padding:1.8rem 2rem; }
+      .scenario-inner h4 { font-size:1.15rem; font-weight:700; color:var(--text-primary); margin-bottom:0.4rem; }
+      .scenario-inner p { color:var(--text-secondary); font-size:0.95rem; margin-bottom:1.4rem; }
+      .scenario-divider { border:none; border-top:1px solid var(--border-color); margin:1rem 0 1.4rem; }
+      .input-label { display:flex; align-items:center; gap:0.5rem; color:var(--text-secondary); font-size:0.88rem; font-weight:600; margin-bottom:0.9rem; text-transform:uppercase; letter-spacing:0.5px; }
+
+      /* Scenario array stage */
+      .search-stage { display:grid; grid-template-columns:1fr; gap:2rem; align-items:start; margin-top:1rem; }
+      .scenario-array-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+      .s-arr-row { display:flex; align-items:center; gap:0; }
+      .s-cell { width:52px; height:50px; border:2px solid var(--border-color); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:0.95rem; color:var(--text-secondary); background:rgba(255,255,255,0.03); transition:all 0.35s ease; }
+      .s-cell:first-child { border-radius:8px 0 0 8px; }
+      .s-cell:last-child  { border-radius:0 8px 8px 0; }
+      .s-cell.s-current  { background:linear-gradient(135deg,var(--primary-orange),#ff6b00); color:#000; border-color:var(--primary-orange); transform:translateY(-6px); box-shadow:0 8px 18px rgba(245,158,11,0.4); z-index:2; }
+      .s-cell.s-found    { background:linear-gradient(135deg,var(--primary-green),#059669); color:#fff; border-color:var(--primary-green); transform:translateY(-6px); box-shadow:0 8px 18px rgba(16,185,129,0.4); z-index:2; animation:foundPulse 0.6s ease; }
+      .s-cell.s-visited  { background:rgba(6,182,212,0.13); border-color:var(--primary-cyan); color:var(--primary-cyan); }
+      .s-cell.s-notfound { background:rgba(239,68,68,0.13); border-color:var(--primary-red); color:var(--primary-red); animation:shakeCells 0.4s ease; }
+      @keyframes foundPulse { 0%,100%{transform:translateY(-6px) scale(1)} 50%{transform:translateY(-10px) scale(1.12)} }
+      @keyframes shakeCells { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+      .s-idx-row { display:flex; gap:0; }
+      .s-idx { width:52px; text-align:center; font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; }
+      .s-ptr-row { display:flex; gap:0; min-height:20px; }
+      .s-ptr { width:52px; text-align:center; font-size:0.7rem; color:var(--primary-orange); font-family:'JetBrains Mono',monospace; font-weight:700; }
+      .s-ptr.fp { color:var(--primary-green); }
+
+      .log-panel { background:var(--terminal-bg); border:1px solid var(--border-color); border-radius:12px; padding:1rem 1.2rem; font-family:'JetBrains Mono',monospace; font-size:0.82rem; min-height:160px; max-height:220px; overflow-y:auto; }
+      .log-panel .log-title { color:var(--primary-cyan); font-size:0.78rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.7rem; font-weight:700; }
+      .log-entry { padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.04); animation:fadeLog 0.3s ease both; }
+      @keyframes fadeLog { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+      .log-entry.log-check  { color:var(--primary-orange); }
+      .log-entry.log-found  { color:var(--primary-green); }
+      .log-entry.log-miss   { color:var(--primary-red); }
+      .log-entry.log-info   { color:var(--text-secondary); }
+      .log-entry.log-warn   { color:var(--primary-orange); }
+      .log-entry.log-result { color:var(--primary-purple); font-weight:700; }
+
+      .ctl-row { display:flex; align-items:center; gap:0.75rem; margin-top:1.2rem; flex-wrap:wrap; }
+      .ctl-btn { padding:8px 18px; border-radius:8px; border:none; font-weight:700; font-size:0.85rem; cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif; }
+      .ctl-btn:hover { transform:translateY(-1px); }
+      .ctl-btn-green  { background:var(--primary-green);  color:#fff; }
+      .ctl-btn-green:hover  { box-shadow:0 4px 14px rgba(16,185,129,0.4); }
+      .ctl-btn-red    { background:var(--primary-red);    color:#fff; }
+      .ctl-btn-red:hover    { box-shadow:0 4px 14px rgba(239,68,68,0.4); }
+      .ctl-btn-cyan   { background:var(--primary-cyan);   color:#000; }
+      .ctl-btn-cyan:hover   { box-shadow:0 4px 14px rgba(6,182,212,0.4); }
+      .ctl-btn-orange { background:var(--primary-orange); color:#000; }
+      .ctl-btn-orange:hover { box-shadow:0 4px 14px rgba(245,158,11,0.4); }
+      .ctl-btn-purple { background:var(--primary-purple); color:#fff; }
+      .ctl-btn-purple:hover { box-shadow:0 4px 14px rgba(139,92,246,0.4); }
+      .ctl-btn-ghost  { background:var(--code-bg); color:var(--text-secondary); border:1.5px solid var(--border-color); }
+      .ctl-btn-ghost:hover  { border-color:var(--primary-cyan); color:var(--primary-cyan); }
+      .ctl-btn:disabled { opacity:0.45; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+
+      /* custom input row */
+      .custom-input-row { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; margin-bottom:1rem; }
+      .custom-val-input { width:90px; padding:8px 12px; background:var(--code-bg); border:2px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+      .custom-val-input:focus { border-color:var(--primary-cyan); }
+      .custom-wide-input { width:200px; padding:8px 12px; background:var(--code-bg); border:2px solid var(--border-color); border-radius:8px; color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-size:0.9rem; outline:none; transition:border-color 0.2s; }
+      .custom-wide-input:focus { border-color:var(--primary-cyan); }
+
+      /* Complexity cards */
+      .custom-complexity-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:0.9rem; }
+      .custom-complexity-card { background:rgba(0,0,0,0.35); border:1.5px solid rgba(0,255,255,0.14); border-radius:10px; padding:0.85rem 1rem; transition:border-color 0.25s ease,box-shadow 0.25s ease,transform 0.2s ease; cursor:default; }
+      .custom-complexity-card.cc-active-best  { border-color:#00ff64; box-shadow:0 0 18px rgba(0,255,100,0.3); transform:translateY(-2px); }
+      .custom-complexity-card.cc-active-avg   { border-color:var(--primary-cyan); box-shadow:0 0 18px rgba(0,255,255,0.3); transform:translateY(-2px); }
+      .custom-complexity-card.cc-active-worst { border-color:#ff5555; box-shadow:0 0 18px rgba(255,85,85,0.3); transform:translateY(-2px); }
+      .cc-op { font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:0.55rem; font-family:'Space Grotesk',sans-serif; }
+      .cc-time,.cc-space { font-size:0.78rem; color:var(--text-secondary); font-family:'Courier New',monospace; line-height:1.7; }
+      .cc-val { font-weight:700; font-size:0.82rem; }
+      .cc-green  { color:#00ff64; }
+      .cc-orange { color:var(--primary-orange); }
+      .cc-red    { color:#ff5555; }
+      .cc-reason { margin-top:0.5rem; font-size:0.71rem; color:rgba(153,161,179,0.7); font-style:italic; line-height:1.45; border-top:1px solid rgba(255,255,255,0.05); padding-top:0.45rem; }
+
+      .cc-toast { display:none; align-items:center; gap:0.6rem; padding:0.6rem 1rem; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:0.4rem; animation:toastIn 0.3s ease both; border:1.5px solid; }
+      .cc-toast.show { display:flex; }
+      .cc-toast.toast-best  { background:rgba(0,255,100,0.08);  border-color:#00ff64; color:#00ff64; }
+      .cc-toast.toast-avg   { background:rgba(0,255,255,0.08);  border-color:var(--primary-cyan); color:var(--primary-cyan); }
+      .cc-toast.toast-worst { background:rgba(255,85,85,0.08);  border-color:#ff5555; color:#ff5555; }
+      .cc-toast.toast-warn  { background:rgba(255,140,0,0.08);  border-color:var(--primary-orange); color:var(--primary-orange); }
+      @keyframes toastIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+
+      .result-badge { display:inline-flex; align-items:center; gap:0.4rem; padding:5px 14px; border-radius:20px; font-size:0.82rem; font-weight:700; font-family:'JetBrains Mono',monospace; }
+      .badge-green  { background:rgba(16,185,129,0.15); color:var(--primary-green);  border:1px solid var(--primary-green); }
+      .badge-red    { background:rgba(239,68,68,0.15);  color:var(--primary-red);    border:1px solid var(--primary-red); }
+      .badge-orange { background:rgba(245,158,11,0.15); color:var(--primary-orange); border:1px solid var(--primary-orange); }
+
+      /* Code editor */
+      .lang-tabs { display:flex; gap:0.8rem; margin:1.5rem 0; flex-wrap:wrap; background:var(--border-color); padding:6px; border-radius:12px; width:fit-content; }
+      .lang-tab { padding:8px 16px; background:transparent; border:1px solid transparent; border-radius:8px; color:var(--text-secondary); cursor:pointer; font-weight:600; transition:all 0.2s; }
+      .lang-tab.active { background:var(--primary-cyan); color:white; border-color:var(--primary-cyan); }
+      .impl-tabs { display:flex; gap:0.8rem; margin:0 0 1rem 0; flex-wrap:wrap; background:var(--border-color); padding:6px; border-radius:12px; width:fit-content; }
+      .impl-tab { padding:8px 16px; background:transparent; border:1px solid transparent; border-radius:8px; color:var(--text-secondary); cursor:pointer; font-weight:600; transition:all 0.2s; }
+      .impl-tab.active { background:var(--primary-purple); color:white; border-color:var(--primary-purple); }
+      .editor-wrapper { background:var(--code-bg); border:1px solid var(--border-color); border-radius:12px; overflow:hidden; margin:1.5rem 0; }
+      .editor-header { background:rgba(6,182,212,0.1); padding:1rem 1.5rem; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
+      .code-copy { width:50px; height:40px; background:var(--primary-purple); border:1px solid var(--border-color); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.3s; color:white; font-size:14px; }
+      .run-code-btn { background:linear-gradient(90deg,var(--primary-green),#059669); color:white; border:none; padding:12px 30px; border-radius:8px; font-weight:600; cursor:pointer; margin-top:15px; transition:all 0.3s ease; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; gap:8px; }
+      .run-code-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(16,185,129,0.3); }
+      .output-container { background:var(--code-bg); color:var(--primary-green); padding:20px; border-radius:12px; margin-top:15px; min-height:150px; font-family:'JetBrains Mono',monospace; border:2px solid var(--border-color); font-size:14px; line-height:1.6; }
+      .output-container h6 { color:var(--primary-cyan); margin-bottom:10px; font-family:'Space Grotesk',sans-serif; }
+      .input-prompt { background:var(--card-bg); padding:15px; border-radius:8px; margin-top:10px; border:1px solid var(--border-color); }
+      .input-prompt input { background:var(--dark-bg); border:2px solid var(--border-color); color:var(--text-primary); border-radius:6px; padding:8px 12px; margin-right:10px; font-family:'JetBrains Mono',monospace; }
+      .input-prompt button { background:var(--primary-cyan); color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; }
+      .CodeMirror { height:380px !important; font-size:14px; border-radius:0 0 12px 12px; }
+
+      /* Level section */
+      .level-wrapper { display:flex; align-items:center; justify-content:space-between; position:relative; padding:0 20px; height:100px; margin:4rem 0; }
+      .level-wrapper button { position:relative; z-index:20 !important; width:140px; padding:1rem; border-radius:14px; border:2px solid var(--border-color); background:var(--dark-bg); color:var(--text-primary); font-weight:800; cursor:pointer; transition:all 0.3s ease; }
+      #l1 { border-color:var(--primary-cyan); background:rgba(6,182,212,0.15); color:var(--primary-cyan) !important; box-shadow:0 0 15px rgba(6,182,212,0.2); }
+      #l2 { border-color:var(--primary-green); background:rgba(16,185,129,0.15); color:var(--primary-green) !important; box-shadow:0 0 15px rgba(16,185,129,0.2); }
+      .slider { position:absolute; top:50%; transform:translateY(-50%); height:4px; background:var(--border-color); width:20%; z-index:1; pointer-events:none; }
+      #slider1 { left:22%; }
+      #slider2 { left:58%; }
+      .slider.active { background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple)); box-shadow:0 0 20px var(--primary-cyan); }
+      .level-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); backdrop-filter:blur(15px); z-index:100000; justify-content:center; align-items:center; }
+      .level-modal-content { background:var(--card-bg); border:2px solid var(--primary-purple); padding:3rem; border-radius:30px; max-width:450px; width:90%; text-align:center; box-shadow:0 0 50px rgba(139,92,246,0.4); }
+      #startQuiz { background:var(--primary-cyan); color:white; width:80px; height:40px; border-radius:20px; box-shadow:none; }
+      #startQuiz:hover { background:var(--primary-cyan); box-shadow:0 0 15px var(--primary-cyan); }
+      #cancelBtn { background:var(--border-color); color:var(--text-primary); width:80px; height:40px; border-radius:20px; box-shadow:none; }
+      #cancelBtn:hover { background:var(--border-color); box-shadow:0 0 15px var(--border-color); }
+
+      @media(max-width:768px) {
+        .visualizer-grid { grid-template-columns:1fr; }
+        .pseudo-code-container { position:relative; top:0; max-height:400px; }
+        .implementation-selector { flex-direction:column; }
+        .impl-option { min-width:100%; }
+        .custom-complexity-grid { grid-template-columns:1fr; }
+      }
+    </style>
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a> <span class="sep">&#8250;</span>
+    <a href="linear_search_basics.html">Linear Search</a> <span class="sep">&#8250;</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Linear Search - Interactive Visualizer</h1>
+    <p class="content-text">Experience linear search step-by-step with iterative and recursive implementations.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="iterative" onclick="switchImplementation('iterative')">
+      <div class="impl-option-icon">🔁</div>
+      <div class="impl-option-title">Iterative</div>
+      <div class="impl-option-desc">Loop through each element</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔃</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">Call self with reduced range</div>
+    </div>
+  </div>
+
+  <div class="visualizer-grid">
+    <!-- Pseudo Code Panel -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div id="pseudo-iterative">
+        <div class="pseudo-step" data-step="init">
+          <strong>INIT:</strong> Start at index 0<br>
+          <span>i = 0</span>
+        </div>
+        <div class="pseudo-step" data-step="loop">
+          <strong>LOOP:</strong> Traverse the array<br>
+          <span>while i &lt; n</span>
+        </div>
+        <div class="pseudo-step" data-step="compare">
+          <strong>COMPARE:</strong> Check current element<br>
+          <span>if arr[i] == target</span>
+        </div>
+        <div class="pseudo-step" data-step="found">
+          <strong>FOUND:</strong> Return index<br>
+          <span>return i</span>
+        </div>
+        <div class="pseudo-step" data-step="increment">
+          <strong>NEXT:</strong> Move to next element<br>
+          <span>i = i + 1</span>
+        </div>
+        <div class="pseudo-step" data-step="notfound">
+          <strong>NOT FOUND:</strong> Return -1<br>
+          <span>return -1</span>
+        </div>
+      </div>
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="rec-base1">
+          <strong>BASE CASE 1:</strong> Array exhausted<br>
+          <span>if index == n: return -1</span>
+        </div>
+        <div class="pseudo-step" data-step="rec-compare">
+          <strong>COMPARE:</strong> Current element<br>
+          <span>if arr[index] == target</span>
+        </div>
+        <div class="pseudo-step" data-step="rec-found">
+          <strong>FOUND:</strong> Return index<br>
+          <span>return index</span>
+        </div>
+        <div class="pseudo-step" data-step="rec-recurse">
+          <strong>RECURSE:</strong> Check next<br>
+          <span>return search(arr, target,<br>&nbsp;&nbsp;&nbsp;index+1, n)</span>
+        </div>
+        <div class="pseudo-step" data-step="rec-notfound">
+          <strong>NOT FOUND:</strong> -1 bubbles up<br>
+          <span>return -1 ← all calls</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Linear Search Visualizer — Iterative</h5>
+        </div>
+        <div class="card-body">
+          <div class="array-display">
+            <div class="pointer-row" id="ptrRow"></div>
+            <div class="array-row"   id="arrRow"></div>
+            <div class="index-row"   id="idxRow"></div>
+            <div class="caption-box" id="captionBox">Enter an array and a target value, then click Search.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="Array e.g. 5,3,8,1,9,2">
+            <input type="text" id="targetInput" class="form-control" placeholder="Target e.g. 8">
+            <button class="btn btn-warning" onclick="startSearch()" id="searchBtn">Search</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSearch()" id="stepBtn" disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSearch()" id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSearch()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCENARIOS ─── -->
+  <div class="section-card" id="scenarioSection">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST CASE -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case</h4>
+          <p>Target is the <strong style="color:var(--primary-green)">first element</strong> — found immediately in <strong style="color:var(--primary-green)">O(1)</strong> comparisons. Only 1 step required.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [<span style="color:var(--primary-green);font-family:'JetBrains Mono',monospace;">10</span>, 20, 30, 40, 50] &nbsp;|&nbsp; Target: <span style="color:var(--primary-green);font-family:'JetBrains Mono',monospace;">10</span></div>
+          <div class="search-stage">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;">
+              <div class="scenario-array-wrap">
+                <div class="s-ptr-row" id="ptr-best"></div>
+                <div class="s-arr-row" id="arr-best"></div>
+                <div class="s-idx-row" id="idx-best"></div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+                <div class="ctl-row">
+                  <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                  <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                  <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE CASE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case</h4>
+          <p>Target is in the <strong style="color:var(--primary-cyan)">middle</strong> of the array — found after ~N/2 comparisons. Observe how roughly half the elements are checked.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [10, 20, 30, <span style="color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;">40</span>, 50, 60, 70] &nbsp;|&nbsp; Target: <span style="color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;">40</span></div>
+          <div class="search-stage">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;">
+              <div class="scenario-array-wrap">
+                <div class="s-ptr-row" id="ptr-avg"></div>
+                <div class="s-arr-row" id="arr-avg"></div>
+                <div class="s-idx-row" id="idx-avg"></div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+                <div class="ctl-row">
+                  <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                  <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                  <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST CASE -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case</h4>
+          <p>Target is either the <strong style="color:var(--primary-orange)">last element</strong> or <strong style="color:var(--primary-red)">not present</strong> — requires scanning all N elements. O(N) time.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [10, 20, 30, 40, 50, 60] &nbsp;|&nbsp; Target: <span style="color:var(--primary-red);font-family:'JetBrains Mono',monospace;">99</span> (not present)</div>
+          <div class="search-stage">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;">
+              <div class="scenario-array-wrap">
+                <div class="s-ptr-row" id="ptr-worst"></div>
+                <div class="s-arr-row" id="arr-worst"></div>
+                <div class="s-idx-row" id="idx-worst"></div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+                <div class="ctl-row">
+                  <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Pop</button>
+                  <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                  <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM INPUT -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Build your own array and search for any target value. Watch each comparison step-by-step.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Target found at index 0 — only one comparison needed</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(N/2)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Target found near the middle — roughly half elements checked</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-red">O(N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Target at end or absent — all N elements scanned</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array &amp; Target</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 4,7,2,9,5,1" style="width:180px;">
+            <input type="text" class="custom-val-input"  id="custom-target" placeholder="Target">
+            <button class="ctl-btn ctl-btn-green"  onclick="customSearch()">🔍 Search</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"   id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="scenario-array-wrap">
+              <div class="s-ptr-row" id="ptr-custom"></div>
+              <div class="s-arr-row" id="arr-custom"></div>
+              <div class="s-idx-row" id="idx-custom"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /scenarioSection -->
+
+  <!-- ─── CODE EDITOR ─── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <!-- Implementation toggle -->
+    <div class="impl-tabs" id="editorImplTabs">
+      <button class="impl-tab active" data-impl="iterative" onclick="switchEditorImpl('iterative', this)">🔁 Iterative</button>
+      <button class="impl-tab"        data-impl="recursive"  onclick="switchEditorImpl('recursive',  this)">🔃 Recursive</button>
+    </div>
+
+    <div class="lang-tabs" id="langTabGroup">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Iterative</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Linear Search journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+/* ══════════════════════════════════════════
+   GLOBALS
+══════════════════════════════════════════ */
+let codeEditor;
+let currentLang     = 'cpp';
+let currentImpl     = 'iterative';
+let editorImpl      = 'iterative';
+
+// Main visualizer state
+let mainArray   = [];
+let mainTarget  = null;
+let mainIdx     = 0;
+let mainRunning = false;
+let mainDone    = false;
+let mainAutoTimer = null;
+
+let waitingForInput    = false;
+let currentInputResolver = null;
+
+/* ══════════════════════════════════════════
+   CODE TEMPLATES — ITERATIVE
+══════════════════════════════════════════ */
+const codeTemplates = {
+  iterative: {
+    cpp: `#include <iostream>
+using namespace std;
+
+int linearSearch(int arr[], int n, int target) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == target)
+            return i;   // Found at index i
+    }
+    return -1;          // Not found
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    int target;
+    cout << "Enter target to search: ";
+    cin >> target;
+
+    int result = linearSearch(arr, n, target);
+
+    if (result != -1)
+        cout << "\\nFound at index: " << result << endl;
+    else
+        cout << "\\nElement not found in array." << endl;
+
+    return 0;
+}`,
+    python: `def linear_search(arr, target):
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i        # Found at index i
+    return -1               # Not found
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+target = int(input("Enter target to search: "))
+
+# --- Search ---
+result = linear_search(arr, target)
+
+if result != -1:
+    print(f"\\nFound at index: {result}")
+else:
+    print("\\nElement not found in array.")`,
+    java: `import java.util.Scanner;
+
+public class LinearSearch {
+
+    static int linearSearch(int[] arr, int target) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == target)
+                return i;       // Found
+        }
+        return -1;              // Not found
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.print("Enter target to search: ");
+        int target = sc.nextInt();
+
+        int result = linearSearch(arr, target);
+        if (result != -1)
+            System.out.println("\\nFound at index: " + result);
+        else
+            System.out.println("\\nElement not found in array.");
+    }
+}`,
+    c: `#include <stdio.h>
+
+int linearSearch(int arr[], int n, int target) {
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == target)
+            return i;
+    }
+    return -1;
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+
+    int target;
+    printf("Enter target to search: ");
+    scanf("%d", &target);
+
+    int result = linearSearch(arr, n, target);
+
+    if (result != -1)
+        printf("\\nFound at index: %d\\n", result);
+    else
+        printf("\\nElement not found in array.\\n");
+
+    return 0;
+}`,
+    javascript: `function linearSearch(arr, target) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === target)
+            return i;       // Found at index i
+    }
+    return -1;              // Not found
+}
+
+// --- Demo ---
+const arr    = [5, 3, 8, 1, 9, 2, 7];
+const target = 9;
+
+console.log("Array:", arr.join(", "));
+console.log("Target:", target);
+
+const result = linearSearch(arr, target);
+
+if (result !== -1)
+    console.log("\\nFound at index:", result);
+else
+    console.log("\\nElement not found in array.");`
+  },
+
+  recursive: {
+    cpp: `#include <iostream>
+using namespace std;
+
+// Recursive Linear Search
+int linearSearchRec(int arr[], int target, int index, int n) {
+    // Base case: reached end of array
+    if (index == n)
+        return -1;
+
+    // Found the target
+    if (arr[index] == target)
+        return index;
+
+    // Recurse to next index
+    return linearSearchRec(arr, target, index + 1, n);
+}
+
+int main() {
+    int n;
+    cout << "Enter number of elements: ";
+    cin >> n;
+
+    int arr[n];
+    cout << "Enter " << n << " elements:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "arr[" << i << "] = ";
+        cin >> arr[i];
+    }
+
+    int target;
+    cout << "Enter target to search: ";
+    cin >> target;
+
+    // Start search from index 0
+    int result = linearSearchRec(arr, target, 0, n);
+
+    if (result != -1)
+        cout << "\\nFound at index: " << result
+             << "  (after " << result + 1 << " call(s))" << endl;
+    else
+        cout << "\\nElement not found. (" << n << " recursive calls made)" << endl;
+
+    return 0;
+}`,
+    python: `def linear_search_rec(arr, target, index=0):
+    # Base case 1: index out of bounds — not found
+    if index == len(arr):
+        return -1
+
+    # Base case 2: found target
+    if arr[index] == target:
+        return index
+
+    # Recursive case: search next index
+    return linear_search_rec(arr, target, index + 1)
+
+# --- Input ---
+n = int(input("Enter number of elements: "))
+arr = []
+for i in range(n):
+    val = int(input(f"arr[{i}] = "))
+    arr.append(val)
+
+target = int(input("Enter target to search: "))
+
+# --- Search ---
+result = linear_search_rec(arr, target)
+
+if result != -1:
+    print(f"\\nFound at index: {result}  ({result+1} recursive call(s))")
+else:
+    print(f"\\nElement not found. ({len(arr)} recursive calls made)")`,
+    java: `import java.util.Scanner;
+
+public class LinearSearchRecursive {
+
+    static int linearSearchRec(int[] arr, int target, int index) {
+        // Base case: end of array
+        if (index == arr.length)
+            return -1;
+
+        // Found target
+        if (arr[index] == target)
+            return index;
+
+        // Recurse to next index
+        return linearSearchRec(arr, target, index + 1);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of elements: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("arr[" + i + "] = ");
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.print("Enter target to search: ");
+        int target = sc.nextInt();
+
+        int result = linearSearchRec(arr, target, 0);
+
+        if (result != -1)
+            System.out.println("\\nFound at index: " + result +
+                "  (" + (result + 1) + " call(s))");
+        else
+            System.out.println("\\nNot found. (" + n + " recursive calls made)");
+    }
+}`,
+    c: `#include <stdio.h>
+
+int linearSearchRec(int arr[], int target, int index, int n) {
+    if (index == n)
+        return -1;
+    if (arr[index] == target)
+        return index;
+    return linearSearchRec(arr, target, index + 1, n);
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements:\\n", n);
+    for (int i = 0; i < n; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+
+    int target;
+    printf("Enter target to search: ");
+    scanf("%d", &target);
+
+    int result = linearSearchRec(arr, target, 0, n);
+
+    if (result != -1)
+        printf("\\nFound at index: %d  (%d call(s))\\n", result, result + 1);
+    else
+        printf("\\nNot found. (%d recursive calls made)\\n", n);
+
+    return 0;
+}`,
+    javascript: `function linearSearchRec(arr, target, index = 0) {
+    // Base case 1: array exhausted
+    if (index === arr.length)
+        return -1;
+
+    // Base case 2: found target
+    if (arr[index] === target)
+        return index;
+
+    // Recursive case: search next position
+    return linearSearchRec(arr, target, index + 1);
+}
+
+// --- Demo ---
+const arr    = [5, 3, 8, 1, 9, 2, 7];
+const target = 9;
+
+console.log("Array:", arr.join(", "));
+console.log("Target:", target);
+
+const result = linearSearchRec(arr, target);
+
+if (result !== -1)
+    console.log("\\nFound at index:", result, "  (" + (result + 1) + " call(s))");
+else
+    console.log("\\nElement not found. (" + arr.length + " recursive calls made)");`
+  }
+};
+
+/* ══════════════════════════════════════════
+   PSEUDO-CODE STEP HIGHLIGHT
+══════════════════════════════════════════ */
+function highlightStep(step) {
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+  const el = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+  if (el) el.classList.add('active');
+}
+
+/* ══════════════════════════════════════════
+   IMPLEMENTATION SWITCH (top selector)
+══════════════════════════════════════════ */
+function switchImplementation(type) {
+  currentImpl = type;
+  document.querySelectorAll('.impl-option').forEach(o => o.classList.remove('active'));
+  document.querySelector(`[data-type="${type}"]`).classList.add('active');
+  document.getElementById('visualizer-title').textContent =
+    'Linear Search Visualizer — ' + (type === 'iterative' ? 'Iterative' : 'Recursive');
+
+  // show correct pseudo panel
+  document.getElementById('pseudo-iterative').style.display = type === 'iterative' ? 'block' : 'none';
+  document.getElementById('pseudo-recursive').style.display = type === 'recursive'  ? 'block' : 'none';
+
+  resetSearch();
+}
+
+/* ══════════════════════════════════════════
+   MAIN VISUALIZER
+══════════════════════════════════════════ */
+function buildMainVisual(arr) {
+  const arrRow = document.getElementById('arrRow');
+  const idxRow = document.getElementById('idxRow');
+  const ptrRow = document.getElementById('ptrRow');
+  arrRow.innerHTML = '';
+  idxRow.innerHTML = '';
+  ptrRow.innerHTML = '';
+  arr.forEach((v, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'arr-cell';
+    cell.id = 'mc-' + i;
+    cell.textContent = v;
+    arrRow.appendChild(cell);
+    const ic = document.createElement('div');
+    ic.className = 'idx-cell';
+    ic.textContent = i;
+    idxRow.appendChild(ic);
+    const pc = document.createElement('div');
+    pc.className = 'ptr-cell';
+    pc.id = 'mp-' + i;
+    ptrRow.appendChild(pc);
+  });
+}
+
+function setCaption(text, type = '') {
+  const box = document.getElementById('captionBox');
+  box.className = 'caption-box' + (type ? ' caption-' + type : '');
+  box.textContent = text;
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg_show');
+  el.style.display = 'block';
+  el.className = 'alert alert-' + type;
+  el.innerHTML = text;
+}
+
+function startSearch() {
+  clearTimeout(mainAutoTimer);
+  const rawArr    = document.getElementById('arrayInput').value.trim();
+  const rawTarget = document.getElementById('targetInput').value.trim();
+  if (!rawArr || rawTarget === '') { showMsg('Please enter an array and a target value.', 'danger'); return; }
+
+  mainArray  = rawArr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  mainTarget = parseInt(rawTarget);
+  if (!mainArray.length || isNaN(mainTarget)) { showMsg('Invalid input. Use comma-separated numbers.', 'danger'); return; }
+
+  mainIdx   = 0;
+  mainRunning = true;
+  mainDone    = false;
+
+  buildMainVisual(mainArray);
+  setCaption(`Searching for ${mainTarget} in [${mainArray.join(', ')}]…`);
+  document.getElementById('stepBtn').disabled = false;
+  document.getElementById('autoBtn').disabled = false;
+  document.getElementById('msg_show').style.display = 'none';
+  highlightStep(currentImpl === 'iterative' ? 'init' : 'rec-base1');
+}
+
+function doMainStep() {
+  if (mainDone || !mainRunning) return false;
+
+  // clear previous pointer
+  document.querySelectorAll('.ptr-cell').forEach(p => p.textContent = '');
+  // clear previous current (not visited)
+  for (let i = 0; i < mainIdx; i++) {
+    const c = document.getElementById('mc-' + i);
+    if (c) c.className = 'arr-cell visited';
+  }
+
+  if (mainIdx >= mainArray.length) {
+    // Not found
+    mainArray.forEach((_, i) => {
+      const c = document.getElementById('mc-' + i);
+      if (c) c.className = 'arr-cell not-found';
+    });
+    setCaption(`❌ ${mainTarget} not found after ${mainArray.length} comparisons.`, 'notfound');
+    showMsg(`<i class="fas fa-times"></i> Not Found — searched all ${mainArray.length} elements`, 'danger');
+    highlightStep(currentImpl === 'iterative' ? 'notfound' : 'rec-notfound');
+    mainDone = true;
+    document.getElementById('stepBtn').disabled = true;
+    document.getElementById('autoBtn').disabled = true;
+    return false;
+  }
+
+  const cell = document.getElementById('mc-' + mainIdx);
+  const ptr  = document.getElementById('mp-' + mainIdx);
+  cell.className = 'arr-cell current';
+  ptr.textContent = '↑ i=' + mainIdx;
+
+  if (currentImpl === 'iterative') {
+    highlightStep(mainIdx === 0 ? 'loop' : 'compare');
+  } else {
+    highlightStep(mainIdx === 0 ? 'rec-base1' : 'rec-compare');
+  }
+
+  if (mainArray[mainIdx] === mainTarget) {
+    cell.className = 'arr-cell found';
+    ptr.className = 'ptr-cell found-ptr';
+    ptr.textContent = '✓ FOUND';
+    setCaption(`✅ Found ${mainTarget} at index ${mainIdx}! (${mainIdx + 1} comparison${mainIdx !== 0 ? 's' : ''})`, 'found');
+    showMsg(`<i class="fas fa-check"></i> Found at index ${mainIdx} — ${mainIdx + 1} comparison(s)`, 'success');
+    highlightStep(currentImpl === 'iterative' ? 'found' : 'rec-found');
+    mainDone = true;
+    document.getElementById('stepBtn').disabled = true;
+    document.getElementById('autoBtn').disabled = true;
+    mainIdx++;
+    return false;
+  }
+
+  setCaption(`Checking index ${mainIdx}: arr[${mainIdx}]=${mainArray[mainIdx]} ≠ ${mainTarget} — moving on…`);
+  highlightStep(currentImpl === 'iterative' ? 'increment' : 'rec-recurse');
+  mainIdx++;
+  return true;
+}
+
+function stepSearch() { doMainStep(); }
+
+function autoSearch() {
+  if (mainDone) return;
+  document.getElementById('autoBtn').disabled = true;
+  function tick() {
+    const cont = doMainStep();
+    if (cont && !mainDone) mainAutoTimer = setTimeout(tick, 750);
+  }
+  tick();
+}
+
+function resetSearch() {
+  clearTimeout(mainAutoTimer);
+  mainArray   = [];
+  mainTarget  = null;
+  mainIdx     = 0;
+  mainRunning = false;
+  mainDone    = false;
+  document.getElementById('arrRow').innerHTML = '';
+  document.getElementById('idxRow').innerHTML = '';
+  document.getElementById('ptrRow').innerHTML = '';
+  setCaption('Enter an array and a target value, then click Search.');
+  document.getElementById('msg_show').style.display = 'none';
+  document.getElementById('stepBtn').disabled = true;
+  document.getElementById('autoBtn').disabled = true;
+  document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+}
+
+/* ══════════════════════════════════════════
+   SCENARIO HELPERS
+══════════════════════════════════════════ */
+const COLORS_S = ['#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#14b8a6'];
+
+function buildScenarioArray(arrId, idxId, ptrId, data) {
+  const arrEl = document.getElementById(arrId);
+  const idxEl = document.getElementById(idxId);
+  const ptrEl = document.getElementById(ptrId);
+  arrEl.innerHTML = idxEl.innerHTML = ptrEl.innerHTML = '';
+  data.forEach((v, i) => {
+    const c = document.createElement('div');
+    c.className = 's-cell';
+    c.id = arrId + '-c' + i;
+    c.textContent = v;
+    arrEl.appendChild(c);
+    const ix = document.createElement('div');
+    ix.className = 's-idx';
+    ix.textContent = i;
+    idxEl.appendChild(ix);
+    const p = document.createElement('div');
+    p.className = 's-ptr';
+    p.id = arrId + '-p' + i;
+    ptrEl.appendChild(p);
+  });
+}
+
+function sStep(arrId, data, target, idx, logId, onFound, onEnd) {
+  document.querySelectorAll(`#${arrId} .s-cell`).forEach((c, i) => {
+    if (i < idx) c.className = 's-cell s-visited';
+    else c.className = 's-cell';
+  });
+  document.querySelectorAll(`[id^="${arrId}-p"]`).forEach(p => p.textContent = '');
+  if (idx >= data.length) { onEnd(); return; }
+
+  const cell = document.getElementById(arrId + '-c' + idx);
+  const ptr  = document.getElementById(arrId + '-p' + idx);
+  cell.className = 's-cell s-current';
+  ptr.textContent = '↑';
+
+  if (data[idx] === target) {
+    cell.className = 's-cell s-found';
+    ptr.className = 's-ptr fp';
+    ptr.textContent = '✓';
+    onFound(idx);
+  } else {
+    addLog(document.getElementById(logId), `arr[${idx}] = ${data[idx]} ≠ ${target}`, 'log-miss');
+  }
+}
+
+function addLog(logEl, text, cls = 'log-info') {
+  const e = document.createElement('div');
+  e.className = 'log-entry ' + cls;
+  e.textContent = '> ' + text;
+  logEl.appendChild(e);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function switchScenario(name) {
+  const TAB_ACTIVE = { best:'active-best', avg:'active-avg', worst:'active-worst', custom:'active-custom' };
+  document.querySelectorAll('.scenario-tab').forEach(t => t.className = 'scenario-tab');
+  document.getElementById('stab-' + name).classList.add(TAB_ACTIVE[name]);
+  document.querySelectorAll('.scenario-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('spanel-' + name).classList.add('active');
+}
+
+/* ── BEST ── */
+const BEST_DATA = [10, 20, 30, 40, 50];
+const BEST_TARGET = 10;
+let bestIdx = 0, bestDone = false, bestTimer = null;
+
+function initBest() {
+  buildScenarioArray('arr-best','idx-best','ptr-best', BEST_DATA);
+  document.getElementById('log-best').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-best'), `Array: [${BEST_DATA.join(', ')}]`, 'log-info');
+  addLog(document.getElementById('log-best'), `Target: ${BEST_TARGET}  (at index 0 — Best Case)`, 'log-info');
+  bestIdx = 0; bestDone = false;
+  document.getElementById('best-step-btn').disabled = false;
+  document.getElementById('best-auto-btn').disabled = false;
+}
+function bestStep() {
+  if (bestDone) return;
+  const log = document.getElementById('log-best');
+  sStep('arr-best', BEST_DATA, BEST_TARGET, bestIdx, 'log-best',
+    idx => {
+      addLog(log, `arr[${idx}] = ${BEST_TARGET} ✓ FOUND!`, 'log-found');
+      addLog(log, `✓ Best Case: O(1) — found in 1 comparison`, 'log-result');
+      bestDone = true;
+      document.getElementById('best-step-btn').disabled = true;
+      document.getElementById('best-auto-btn').disabled = true;
+    },
+    () => {
+      addLog(log, 'Not found.', 'log-warn'); bestDone = true;
+    }
+  );
+  bestIdx++;
+}
+function bestAuto() {
+  document.getElementById('best-auto-btn').disabled = true;
+  function tick() { if (!bestDone) { bestStep(); if (!bestDone) bestTimer = setTimeout(tick, 800); } }
+  tick();
+}
+function resetBest() { clearTimeout(bestTimer); initBest(); }
+
+/* ── AVERAGE ── */
+const AVG_DATA = [10, 20, 30, 40, 50, 60, 70];
+const AVG_TARGET = 40;
+let avgIdx = 0, avgDone = false, avgTimer = null;
+
+function initAvg() {
+  buildScenarioArray('arr-avg','idx-avg','ptr-avg', AVG_DATA);
+  document.getElementById('log-avg').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-avg'), `Array: [${AVG_DATA.join(', ')}]`, 'log-info');
+  addLog(document.getElementById('log-avg'), `Target: ${AVG_TARGET}  (middle — Average Case)`, 'log-info');
+  addLog(document.getElementById('log-avg'), `Expect ~${Math.ceil(AVG_DATA.length / 2)} comparisons`, 'log-info');
+  avgIdx = 0; avgDone = false;
+  document.getElementById('avg-step-btn').disabled = false;
+  document.getElementById('avg-auto-btn').disabled = false;
+}
+function avgStep() {
+  if (avgDone) return;
+  const log = document.getElementById('log-avg');
+  sStep('arr-avg', AVG_DATA, AVG_TARGET, avgIdx, 'log-avg',
+    idx => {
+      addLog(log, `arr[${idx}] = ${AVG_TARGET} ✓ FOUND!`, 'log-found');
+      addLog(log, `Comparisons: ${idx + 1}  (~N/2 = ${Math.ceil(AVG_DATA.length / 2)})`, 'log-result');
+      addLog(log, `✓ Average Case: O(N/2) = O(N)`, 'log-result');
+      avgDone = true;
+      document.getElementById('avg-step-btn').disabled = true;
+      document.getElementById('avg-auto-btn').disabled = true;
+    },
+    () => { addLog(log, 'Not found.', 'log-warn'); avgDone = true; }
+  );
+  avgIdx++;
+}
+function avgAuto() {
+  document.getElementById('avg-auto-btn').disabled = true;
+  function tick() { if (!avgDone) { avgStep(); if (!avgDone) avgTimer = setTimeout(tick, 750); } }
+  tick();
+}
+function resetAvg() { clearTimeout(avgTimer); initAvg(); }
+
+/* ── WORST ── */
+const WORST_DATA = [10, 20, 30, 40, 50, 60];
+const WORST_TARGET = 99;
+let worstIdx = 0, worstDone = false, worstTimer = null;
+
+function initWorst() {
+  buildScenarioArray('arr-worst','idx-worst','ptr-worst', WORST_DATA);
+  document.getElementById('log-worst').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-worst'), `Array: [${WORST_DATA.join(', ')}]`, 'log-info');
+  addLog(document.getElementById('log-worst'), `Target: ${WORST_TARGET}  ← NOT IN ARRAY`, 'log-warn');
+  addLog(document.getElementById('log-worst'), `Must check ALL ${WORST_DATA.length} elements → O(N)`, 'log-warn');
+  worstIdx = 0; worstDone = false;
+  document.getElementById('worst-step-btn').disabled = false;
+  document.getElementById('worst-auto-btn').disabled = false;
+}
+function worstStep() {
+  if (worstDone) return;
+  const log = document.getElementById('log-worst');
+  if (worstIdx >= WORST_DATA.length) {
+    WORST_DATA.forEach((_, i) => {
+      const c = document.getElementById('arr-worst-c' + i);
+      if (c) c.className = 's-cell s-notfound';
+    });
+    addLog(log, `All ${WORST_DATA.length} elements checked — ${WORST_TARGET} NOT FOUND ❌`, 'log-miss');
+    addLog(log, `Worst Case: O(N) — ${WORST_DATA.length} comparisons`, 'log-result');
+    worstDone = true;
+    document.getElementById('worst-step-btn').disabled = true;
+    document.getElementById('worst-auto-btn').disabled = true;
+    return;
+  }
+  sStep('arr-worst', WORST_DATA, WORST_TARGET, worstIdx, 'log-worst',
+    idx => { /* won't happen */ },
+    () => {}
+  );
+  worstIdx++;
+  if (worstIdx >= WORST_DATA.length) {
+    setTimeout(() => {
+      WORST_DATA.forEach((_, i) => {
+        const c = document.getElementById('arr-worst-c' + i);
+        if (c && !c.classList.contains('s-found')) c.className = 's-cell s-notfound';
+      });
+      addLog(log, `All ${WORST_DATA.length} elements checked — NOT FOUND ❌`, 'log-miss');
+      addLog(log, `⚠ Worst Case: O(N) — ${WORST_DATA.length} comparisons`, 'log-result');
+      worstDone = true;
+      document.getElementById('worst-step-btn').disabled = true;
+      document.getElementById('worst-auto-btn').disabled = true;
+    }, 400);
+  }
+}
+function worstAuto() {
+  document.getElementById('worst-auto-btn').disabled = true;
+  function tick() { if (!worstDone) { worstStep(); if (!worstDone) worstTimer = setTimeout(tick, 650); } }
+  tick();
+}
+function resetWorst() { clearTimeout(worstTimer); initWorst(); }
+
+/* ── CUSTOM ── */
+let customData = [], customTarget = null, customIdx = 0, customDone = false, customTimer = null;
+
+function initCustom() {
+  document.getElementById('arr-custom').innerHTML = '';
+  document.getElementById('idx-custom').innerHTML = '';
+  document.getElementById('ptr-custom').innerHTML = '';
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'), 'Enter an array and target, then click 🔍 Search.', 'log-info');
+  customIdx = 0; customDone = false; customData = []; customTarget = null;
+  document.getElementById('custom-step-btn').disabled = true;
+  document.getElementById('custom-auto-btn').disabled = true;
+  ['best','avg','worst'].forEach(t => {
+    const card = document.getElementById('cc-' + t);
+    if (card) card.classList.remove('cc-active-best','cc-active-avg','cc-active-worst');
+  });
+  const toast = document.getElementById('cc-toast');
+  if (toast) toast.className = 'cc-toast';
+}
+
+function customSearch() {
+  clearTimeout(customTimer);
+  const raw = document.getElementById('custom-arr').value.trim();
+  const tgt = document.getElementById('custom-target').value.trim();
+  if (!raw || tgt === '') { addLog(document.getElementById('log-custom'), 'Enter array and target first!', 'log-warn'); return; }
+  customData   = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  customTarget = parseInt(tgt);
+  if (!customData.length || isNaN(customTarget)) { addLog(document.getElementById('log-custom'), 'Invalid input.', 'log-warn'); return; }
+  customIdx = 0; customDone = false;
+  buildScenarioArray('arr-custom','idx-custom','ptr-custom', customData);
+  document.getElementById('log-custom').innerHTML = '<div class="log-title">📋 Operation Log</div>';
+  addLog(document.getElementById('log-custom'), `Array: [${customData.join(', ')}]`, 'log-info');
+  addLog(document.getElementById('log-custom'), `Target: ${customTarget}`, 'log-info');
+  document.getElementById('custom-step-btn').disabled = false;
+  document.getElementById('custom-auto-btn').disabled = false;
+}
+
+let ccTimer = null;
+function highlightCC(type) {
+  ['best','avg','worst'].forEach(t => {
+    const c = document.getElementById('cc-' + t);
+    c.classList.remove('cc-active-best','cc-active-avg','cc-active-worst');
+  });
+  clearTimeout(ccTimer);
+  const card = document.getElementById('cc-' + type);
+  if (card) {
+    card.classList.add('cc-active-' + type);
+    ccTimer = setTimeout(() => card.classList.remove('cc-active-' + type), 2000);
+  }
+}
+function showCCToast(type, msg) {
+  const toast = document.getElementById('cc-toast');
+  const icon  = document.getElementById('cc-toast-icon');
+  const text  = document.getElementById('cc-toast-text');
+  const icons = { best:'⚡', avg:'〜', worst:'⚠', warn:'⚠' };
+  icon.textContent = icons[type] || '🔍';
+  text.textContent = msg;
+  toast.className = 'cc-toast show toast-' + type;
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.className = 'cc-toast'; }, 2600);
+}
+
+function customStep() {
+  if (customDone || !customData.length) return;
+  const log = document.getElementById('log-custom');
+  if (customIdx >= customData.length) {
+    customData.forEach((_, i) => {
+      const c = document.getElementById('arr-custom-c' + i);
+      if (c) c.className = 's-cell s-notfound';
+    });
+    addLog(log, `All ${customData.length} elements checked — NOT FOUND ❌`, 'log-miss');
+    const caseType = 'worst';
+    highlightCC(caseType);
+    showCCToast(caseType, `Worst Case: O(N) — ${customData.length} comparisons`);
+    customDone = true;
+    document.getElementById('custom-step-btn').disabled = true;
+    document.getElementById('custom-auto-btn').disabled = true;
+    return;
+  }
+  sStep('arr-custom', customData, customTarget, customIdx, 'log-custom',
+    idx => {
+      addLog(log, `arr[${idx}] = ${customTarget} ✓ FOUND!`, 'log-found');
+      const comparisons = idx + 1;
+      const ratio = comparisons / customData.length;
+      let caseType = ratio <= 0.15 ? 'best' : ratio <= 0.65 ? 'avg' : 'worst';
+      const caseLabel = caseType === 'best' ? 'Best O(1)' : caseType === 'avg' ? 'Avg O(N/2)' : 'Worst O(N)';
+      addLog(log, `Comparisons: ${comparisons} / ${customData.length}  →  ${caseLabel}`, 'log-result');
+      highlightCC(caseType);
+      showCCToast(caseType, `${caseLabel} — ${comparisons} comparison(s)`);
+      customDone = true;
+      document.getElementById('custom-step-btn').disabled = true;
+      document.getElementById('custom-auto-btn').disabled = true;
+    },
+    () => {}
+  );
+  customIdx++;
+}
+function customAutoPlay() {
+  document.getElementById('custom-auto-btn').disabled = true;
+  function tick() { if (!customDone) { customStep(); if (!customDone) customTimer = setTimeout(tick, 700); } }
+  tick();
+}
+function resetCustom() {
+  clearTimeout(customTimer);
+  document.getElementById('custom-arr').value = '';
+  document.getElementById('custom-target').value = '';
+  initCustom();
+}
+
+/* ══════════════════════════════════════════
+   CODE EDITOR
+══════════════════════════════════════════ */
+function getCMTheme(webTheme) {
+  if (webTheme === 'light') return 'eclipse';
+  if (webTheme === 'blue')  return 'nord';
+  return 'material-ocean';
+}
+
+function initEditor() {
+  const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+  codeEditor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+    mode: 'text/x-c++src',
+    theme: getCMTheme(currentTheme),
+    lineNumbers: true,
+    indentUnit: 4,
+    lineWrapping: true
+  });
+  codeEditor.setValue(codeTemplates.iterative.cpp);
+}
+
+function switchEditorImpl(impl, btn) {
+  editorImpl = impl;
+  document.querySelectorAll('.impl-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+
+function switchLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  updateEditorDisplay();
+}
+
+function updateEditorDisplay() {
+  const modeMap = { cpp:'text/x-c++src', python:'text/x-python', java:'text/x-java', c:'text/x-csrc', javascript:'text/javascript' };
+  const nameMap = { cpp:'C++', python:'Python', java:'Java', c:'C', javascript:'JavaScript' };
+  const implName = editorImpl === 'iterative' ? 'Iterative' : 'Recursive';
+  codeEditor.setOption('mode', modeMap[currentLang]);
+  codeEditor.setValue(codeTemplates[editorImpl][currentLang]);
+  document.querySelector('.lang-display').textContent = nameMap[currentLang] + ' — ' + implName;
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(codeEditor.getValue()).then(() => {
+    const btn = document.querySelector('.code-copy');
+    btn.textContent = '✓';
+    btn.style.background = 'var(--primary-green)';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.background = 'var(--primary-purple)'; }, 2000);
+  });
+}
+
+async function getInput(prompt) {
+  return new Promise(resolve => {
+    const promptDiv  = document.getElementById('inputPrompt');
+    const promptText = document.getElementById('promptText');
+    const inputField = document.getElementById('userInput');
+    promptText.textContent = prompt;
+    promptDiv.style.display = 'block';
+    inputField.value = '';
+    inputField.focus();
+    currentInputResolver = resolve;
+    waitingForInput = true;
+  });
+}
+
+function submitInput() {
+  const inputField = document.getElementById('userInput');
+  const value = inputField.value.trim();
+  if (value && currentInputResolver) {
+    document.getElementById('inputPrompt').style.display = 'none';
+    waitingForInput = false;
+    currentInputResolver(value);
+    currentInputResolver = null;
+  }
+}
+
+document.getElementById('userInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') submitInput();
+});
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function runInteractiveCode() {
+  const outputDiv = document.getElementById('codeOutput');
+  outputDiv.innerHTML = '<span style="color:#fbbf24">🔄 Executing code...</span><br><br>';
+
+  const implLabel = editorImpl === 'iterative' ? 'Iterative' : 'Recursive';
+  const langNames = { cpp:'C++', python:'Python', java:'Java', c:'C', javascript:'JavaScript' };
+  outputDiv.innerHTML += `<span style="color:var(--primary-cyan)">Linear Search (${implLabel}) — ${langNames[currentLang]}</span><br><br>`;
+
+  const n = await getInput('Enter number of elements: ');
+  outputDiv.innerHTML += `<span style="color:#a0a0a0">Enter number of elements: </span>${n}<br><br>`;
+
+  const arr = [];
+  for (let i = 0; i < parseInt(n); i++) {
+    const v = await getInput(`arr[${i}] = `);
+    arr.push(parseInt(v));
+    outputDiv.innerHTML += `<span style="color:#a0a0a0">arr[${i}] = </span>${v}<br>`;
+  }
+
+  const target = parseInt(await getInput('Enter target to search: '));
+  outputDiv.innerHTML += `<span style="color:#a0a0a0">Enter target to search: </span>${target}<br><br>`;
+
+  outputDiv.innerHTML += `<span style="color:var(--primary-cyan)">Searching for ${target} in [${arr.join(', ')}]...</span><br>`;
+
+  if (editorImpl === 'iterative') {
+    for (let i = 0; i < arr.length; i++) {
+      await sleep(300);
+      outputDiv.innerHTML += `<span style="color:var(--primary-orange)">  Checking arr[${i}] = ${arr[i]}... </span>`;
+      if (arr[i] === target) {
+        outputDiv.innerHTML += `<span style="color:var(--primary-green)">✓ MATCH!</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:var(--primary-green)">✅ Found at index: ${i}  (${i + 1} comparison(s))</span>`;
+        return;
+      }
+      outputDiv.innerHTML += `<span style="color:var(--primary-red)">✗ ${arr[i]} ≠ ${target}</span><br>`;
+    }
+    outputDiv.innerHTML += `<br><span style="color:var(--primary-red)">❌ Element ${target} not found. (${arr.length} comparisons made)</span>`;
+  } else {
+    // Recursive simulation
+    async function recSim(idx) {
+      await sleep(320);
+      outputDiv.innerHTML += `<span style="color:#8b5cf6">  Call(${idx}) → arr[${idx}] = ${arr[idx]} </span>`;
+      if (arr[idx] === target) {
+        outputDiv.innerHTML += `<span style="color:var(--primary-green)">✓ FOUND!</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:var(--primary-green)">✅ Found at index: ${idx}  (${idx + 1} call(s))</span>`;
+        return;
+      }
+      outputDiv.innerHTML += `<span style="color:var(--primary-red)">✗ recurse →</span><br>`;
+      if (idx + 1 < arr.length) await recSim(idx + 1);
+      else outputDiv.innerHTML += `<br><span style="color:var(--primary-red)">❌ Not found. (${arr.length} recursive calls made)</span>`;
+    }
+    await recSim(0);
+  }
+}
+
+/* ══════════════════════════════════════════
+   THEME TOGGLE
+══════════════════════════════════════════ */
+document.getElementById('themeToggle').onclick = () => {
+  const themes = ['dark','light','blue'];
+  const current = document.body.getAttribute('data-theme') || 'dark';
+  const next = themes[(themes.indexOf(current) + 1) % 3];
+  document.body.setAttribute('data-theme', next);
+  localStorage.setItem('dsa-theme', next);
+  codeEditor.setOption('theme', getCMTheme(next));
+};
+
+/* ══════════════════════════════════════════
+   LEVEL BUTTONS
+══════════════════════════════════════════ */
+document.getElementById('l1').addEventListener('click', () => { window.location.href = 'linear_search_L1.html'; });
+document.getElementById('l2').addEventListener('click', () => { document.getElementById('slider1').classList.add('active'); });
+document.getElementById('l3').addEventListener('click', () => { document.getElementById('quizModal').style.display = 'flex'; });
+document.getElementById('startQuiz').addEventListener('click', () => { window.location.href = 'linear_search_L2_Quiz.html'; });
+document.getElementById('cancelBtn').addEventListener('click', () => { document.getElementById('quizModal').style.display = 'none'; });
+window.onclick = e => { if (e.target === document.getElementById('quizModal')) document.getElementById('quizModal').style.display = 'none'; };
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.onload = () => {
+  const savedTheme = localStorage.getItem('dsa-theme') || 'dark';
+  document.body.setAttribute('data-theme', savedTheme);
+  initEditor();
+  initBest();
+  initAvg();
+  initWorst();
+  initCustom();
+};
+
+
+
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = 'linearsearch';
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
+</script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

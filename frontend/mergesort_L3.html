@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merge Sort — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-violet:#7c3aed;
+  --primary-indigo:#6366f1;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-purple);}
+.nav-right{display:flex;align-items:center;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-purple);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-purple),var(--primary-indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-purple);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-purple);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+/* Merge tree visualization */
+.merge-tree{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem;}
+.merge-row{display:flex;gap:.4rem;justify-content:center;align-items:center;flex-wrap:wrap;}
+.merge-chunk{display:flex;gap:3px;align-items:flex-end;}
+.mchunk-sep{width:14px;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:.65rem;font-weight:700;opacity:.5;}
+.mbar{border-radius:4px 4px 0 0;transition:all .35s;min-width:24px;border:1px solid transparent;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;}
+.mbar.def{background:rgba(255,255,255,.07);border-color:var(--border-color);color:var(--text-secondary);}
+.mbar.left{background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+.mbar.right{background:rgba(99,102,241,.15);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.mbar.merging{background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);}
+.mbar.done{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.row-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);min-width:70px;text-align:right;padding-right:.6rem;}
+
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.violet:hover{border-color:var(--primary-violet);box-shadow:0 8px 40px rgba(124,58,237,.12);}
+.app-card.indigo:hover{border-color:var(--primary-indigo);box-shadow:0 8px 40px rgba(99,102,241,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.violet{background:rgba(124,58,237,.15);}
+.card-icon.indigo{background:rgba(99,102,241,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-purple);color:var(--primary-purple);}
+.d-btn.go{background:rgba(139,92,246,.1);border-color:var(--primary-purple);color:var(--primary-purple);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.d-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.mini-bars{display:flex;gap:3px;align-items:flex-end;height:60px;margin-bottom:.6rem;}
+.smbar{border-radius:4px 4px 0 0;transition:all .3s;min-width:20px;border:1px solid transparent;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'JetBrains Mono',monospace;font-size:.56rem;font-weight:700;}
+.smbar.def{background:rgba(255,255,255,.07);border-color:var(--border-color);color:var(--text-secondary);}
+.smbar.L{background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+.smbar.R{background:rgba(99,102,241,.15);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.smbar.mrg{background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);}
+.smbar.done{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-purple);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-orange);}
+
+.list-item{display:flex;align-items:center;gap:.6rem;padding:.35rem .6rem;border-radius:6px;font-size:.78rem;border:1px solid transparent;margin-bottom:.22rem;transition:all .2s;}
+.list-item.left{background:rgba(139,92,246,.08);border-color:rgba(139,92,246,.25);color:var(--primary-purple);}
+.list-item.right{background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.25);color:var(--primary-indigo);}
+.list-item.merging{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.25);color:var(--primary-orange);}
+.list-item.done{background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.2);color:var(--primary-green);}
+.list-item.idle{color:var(--text-secondary);}
+
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-purple);}
+
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-purple);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-purple);text-shadow:0 0 40px rgba(139,92,246,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-violet),var(--primary-purple));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-purple),var(--primary-indigo));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(139,92,246,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+.merge-cta-viz{display:flex;gap:4px;align-items:flex-end;justify-content:center;height:70px;margin:2rem auto;max-width:300px;}
+.cvbar{border-radius:4px 4px 0 0;min-width:22px;border:1px solid;}
+.cvbar:nth-child(odd){animation:mergeRise 2s ease-in-out infinite;}
+.cvbar:nth-child(even){animation:mergeRise 2s ease-in-out infinite;animation-delay:.3s;}
+@keyframes mergeRise{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.12);}}
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="mergesort_L1.html">Merge Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Merge Sort in the <span class="highlight">Real World</span></h1>
+  <p>The divide-and-conquer workhorse behind databases, version control, and the sort algorithms built into Python, Java, and every major language.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Divide, Conquer, Merge</div>
+    <p class="concept-desc">Merge sort splits the array in half recursively until each piece has one element, then <strong>merges sorted halves back together</strong> by comparing front elements. Key property: the merge step always produces a <strong>sorted result</strong> from two sorted inputs in O(n) time. This gives guaranteed <strong>O(n log n) in all cases</strong> — no bad pivots, no worst-case spikes. The cost: O(n) auxiliary space for the merge buffer.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through the split → merge phases on [38, 12, 45, 7, 29, 51, 16, 3]</div>
+      <div id="conceptViz" style="margin-bottom:1rem"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Phase</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Phase" to step through merge sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.15);border:2px solid var(--primary-purple)"></div>Left half</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(99,102,241,.15);border:2px solid var(--primary-indigo)"></div>Right half</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.18);border:2px solid var(--primary-orange)"></div>Merging</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Sorted</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Merge sort's guaranteed O(n log n), stability, and parallelism make it the backbone of production sorting systems worldwide.</p>
+  <div class="app-grid">
+
+    <!-- 1. Database ORDER BY -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🗄️</div>
+        <div class="card-title-wrap">
+          <h3>Database External Sort (ORDER BY)</h3>
+          <p>When a SQL <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">ORDER BY</code> query sorts more rows than fit in RAM, databases use <strong>external merge sort</strong>: sort chunks that fit in memory, write sorted runs to disk, then merge the runs. PostgreSQL, MySQL, and SQLite all do this.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge two sorted database chunks into one sorted result</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbMergeStep()">▶ Merge Next Row</button>
+            <button class="d-btn reset" onclick="dbMergeReset()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+            <div>
+              <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-purple);margin-bottom:.3rem">Chunk A (sorted)</div>
+              <div id="dbChunkA" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+            <div>
+              <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-indigo);margin-bottom:.3rem">Chunk B (sorted)</div>
+              <div id="dbChunkB" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+          </div>
+          <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-green);margin-bottom:.3rem">Merged Output</div>
+          <div id="dbOutput" style="display:flex;gap:.25rem;flex-wrap:wrap;min-height:22px;margin-bottom:.5rem"></div>
+          <div class="status-line" id="dbStatus">Compare front of each chunk — take the smaller</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Git merge -->
+    <div class="app-card indigo">
+      <div class="card-header">
+        <div class="card-icon indigo">🌿</div>
+        <div class="card-title-wrap">
+          <h3>Git / Version Control Merge</h3>
+          <p>Git's 3-way merge is merge sort logic applied to text: split the file into lines, find the common ancestor (base), merge changes from both branches in order. Conflicts occur where both sides changed the same sorted region.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge two branches — pick non-conflicting lines in order</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="gitMergeStep()">▶ Merge Next Line</button>
+            <button class="d-btn reset" onclick="gitMergeReset()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.5rem">
+            <div>
+              <div style="font-size:.62rem;font-weight:700;color:var(--primary-purple);margin-bottom:.3rem">main branch</div>
+              <div id="gitBranchA" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+            <div>
+              <div style="font-size:.62rem;font-weight:700;color:var(--primary-indigo);margin-bottom:.3rem">feature branch</div>
+              <div id="gitBranchB" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+          </div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.3rem">Merged result</div>
+          <div id="gitOutput" style="display:flex;flex-direction:column;gap:.18rem;min-height:20px;margin-bottom:.4rem"></div>
+          <div class="step-info" id="gitInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Timsort (Python / Java) -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🐍</div>
+        <div class="card-title-wrap">
+          <h3>Timsort — Python & Java's Built-in Sort</h3>
+          <p>Python's <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">list.sort()</code> and Java's <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">Arrays.sort()</code> for objects use Timsort — a hybrid of <strong>merge sort + insertion sort</strong>. It detects natural runs in real data, then merges them. Merge sort provides the O(n log n) guaranteed merge phase.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Detect natural runs, then merge them like Timsort does</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="timsortStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="timsortReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="timsortBars"></div>
+          <div class="status-line" id="timsortStatus">Click to detect natural runs in data</div>
+          <div class="step-info" id="timsortInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Merge sorted files -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">📂</div>
+        <div class="card-title-wrap">
+          <h3>Merging Sorted Log Files</h3>
+          <p>Distributed systems produce multiple sorted log files (one per server). To see a unified timeline, you merge them by timestamp — exactly merge sort's merge step applied to k files. Tools like <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">sort -m</code> and Hadoop do this.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge 3 server logs into one unified timeline</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="logMergeStep()">▶ Take Next Event</button>
+            <button class="d-btn reset" onclick="logMergeReset()">↺ Reset</button>
+          </div>
+          <div id="logServers" style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.5rem"></div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.25rem">Unified Timeline</div>
+          <div id="logOutput" style="display:flex;gap:.3rem;flex-wrap:wrap;min-height:20px;margin-bottom:.4rem"></div>
+          <div class="step-info" id="logInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Counting inversions -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">📊</div>
+        <div class="card-title-wrap">
+          <h3>Counting Inversions (Similarity Score)</h3>
+          <p>Recommendation engines measure how "out of order" two preference lists are using <strong>inversion count</strong>. A modified merge sort counts inversions in O(n log n) during the merge phase — used in collaborative filtering, search result ranking, and A/B testing.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort while counting inversions — how different are preferences?</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="invStep()">▶ Merge + Count</button>
+            <button class="d-btn reset" onclick="invReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="invBars"></div>
+          <div class="status-line" id="invStatus">Array represents preference ranking</div>
+          <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace;margin-top:.4rem">Inversions found: <b id="invCount" style="color:var(--primary-purple)">0</b> <span style="color:var(--text-secondary);font-size:.65rem">— (0 = identical preferences)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Parallel merge sort -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">⚡</div>
+        <div class="card-title-wrap">
+          <h3>Parallel / Distributed Sorting</h3>
+          <p>MapReduce, Spark, and multi-core CPU sorting all use parallel merge sort: <strong>split data across cores/nodes</strong>, each sorts its chunk independently (map phase), then chunks are merged (reduce phase). The divide step maps perfectly to parallel execution.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 4 cores sort their chunks in parallel, then merge</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" id="parallelBtn" onclick="parallelStep()">▶ Next Phase</button>
+            <button class="d-btn reset" onclick="parallelReset()">↺ Reset</button>
+          </div>
+          <div id="parallelCores" style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.5rem"></div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.25rem">Final Merged Result</div>
+          <div id="parallelOutput" style="display:flex;gap:.25rem;flex-wrap:wrap;min-height:22px;margin-bottom:.4rem"></div>
+          <div class="status-line" id="parallelStatus">4 cores ready — each will sort its chunk</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Merge sort's defining property: O(n log n) in all cases, no exceptions. The cost is O(n) auxiliary space.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Comparisons</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Already sorted — still does all n log n comparisons (no early exit)</td></tr>
+        <tr><td class="op">Average Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Consistent regardless of input distribution</td></tr>
+        <tr><td class="op">Worst Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">No degenerate cases — guaranteed O(n log n) always</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="good">✅ Yes — stable</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Equal elements maintain original order during merge step</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Merge sort is the only simple sort with <strong style="color:var(--primary-purple)">guaranteed O(n log n)</strong> in the worst case. Quicksort is O(n²) on bad pivots. Heapsort is O(n log n) but not stable. Merge sort gives you both — <strong style="color:var(--primary-purple)">O(n log n) guaranteed AND stable</strong> — at the cost of O(n) extra memory.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Merge sort is the production-grade sort. Understanding its trade-offs explains why it powers databases, programming languages, and distributed systems.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Guaranteed O(n log n) — no worst case</h4><p>Quicksort degrades to O(n²) on sorted or reverse-sorted input without randomization. Merge sort always takes O(n log n) — critical for production systems that can't tolerate timing spikes.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Stable — preserves equal element order</h4><p>Merge step only takes from right when strictly less than left, preserving original order for equal elements. Essential for multi-key sorts (sort by name then by date) and database query plans.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Perfect for external sort (disk/distributed)</h4><p>Sequential access pattern — reads and writes data in long sequential chunks, not random jumps. Ideal for HDDs, tapes, and distributed file systems where sequential I/O is 100x faster than random.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Naturally parallelizable</h4><p>The divide phase creates independent subproblems. Give each half to a different CPU core or server node. Merge sort scales linearly with hardware — a rare property that makes it central to MapReduce.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Optimal for linked lists</h4><p>Merge sort on linked lists requires no extra space (just pointer reassignment) and runs in O(n log n). Quicksort on linked lists needs O(log n) stack or loses random access. Merge sort is the clear winner for linked structures.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Inversion counting as a bonus</h4><p>A modified merge sort counts the number of inversions in O(n log n) — a useful metric for measuring similarity between ranked lists, detecting nearly-sorted data, and collaborative filtering.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n) auxiliary space — not in-place</h4><p>Requires a temporary array of size n for merging. At 1 billion integers (4GB RAM), merge sort needs another 4GB working buffer. Heapsort and in-place quicksort avoid this entirely.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Slower than quicksort in practice</h4><p>Quicksort's in-place swaps have better cache locality and lower constant factors. On random data in memory, quicksort with good pivot selection is typically 2-3x faster than merge sort.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No early termination</h4><p>Even on nearly-sorted data, merge sort does all n log n operations. Insertion sort exits at O(n) on nearly-sorted input. Timsort (Python) detects natural runs to avoid this overhead.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Recursive stack overhead</h4><p>log n levels of recursion = O(log n) stack frames. For n = 1 billion, that's 30 stack frames — minimal but not zero. Iterative bottom-up merge sort avoids this entirely.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Overkill for small arrays</h4><p>For n ≤ 20, insertion sort's O(n²) is faster in practice due to zero overhead. Production merge sorts (Timsort) switch to insertion sort for small subarrays to avoid this inefficiency.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance during merge</h4><p>The merge step accesses two separate arrays alternately — causing cache misses when they don't fit in L1/L2 cache. Quicksort's in-place partitioning is more cache-friendly for typical problem sizes.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Merge Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Merge sort is the right default for production systems that need guarantees. Here's the precise breakdown.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Merge Sort When...</div>
+      <div class="when-item"><div class="when-icon">🛡️</div><div class="when-text"><h4>Worst-case guarantee is required</h4><p>Latency-sensitive production systems can't tolerate quicksort's O(n²) worst case. Merge sort's guaranteed O(n log n) means no timing spikes regardless of input distribution.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability matters</h4><p>Sorting records by multiple keys, preserving tie-break order, or database <span class="when-code">ORDER BY</span> semantics all require stable sort. Merge sort and Timsort are the production-grade stable O(n log n) options.</p></div></div>
+      <div class="when-item"><div class="when-icon">💿</div><div class="when-text"><h4>Data doesn't fit in memory (external sort)</h4><p>Sorting files larger than RAM: sort chunks in memory, write sorted runs to disk, merge them. The sequential disk I/O pattern of merge sort is optimal — random access sorts would be 100x slower.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔗</div><div class="when-text"><h4>Data is in a linked list</h4><p>Merge sort on a linked list runs in O(n log n) with O(1) auxiliary space (just pointer rewiring, no array copy). Quicksort on linked lists loses random access and performs poorly.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Parallel / distributed sorting needed</h4><p>MapReduce sort, multi-threaded sort, GPU sort — all use merge sort's split-then-merge pattern. Independent subproblems map directly to parallel workers with a final merge phase.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Need to count inversions</h4><p>Modified merge sort counts inversions in O(n log n) as a by-product of sorting — used for recommendation similarity, test answer comparison, and rank correlation metrics.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Merge Sort When...</div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory is severely constrained</h4><p>O(n) auxiliary space is non-negotiable for merge sort. On 256KB microcontrollers sorting large arrays, use heapsort (O(1) space, O(n log n)) or in-place quicksort instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Raw speed on random in-memory data</h4><p>Use std::sort (introsort) or pdqsort. Quicksort's cache-friendly in-place swaps make it 2-3x faster than merge sort in practice on random data that fits in RAM.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Small datasets (n ≤ 20)</h4><p>Insertion sort wins at this size — zero overhead, O(n) on nearly-sorted, and the O(n²) cost is negligible. Merge sort's divide and recurse overhead dominates at small n.</p></div></div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Nearly-sorted data with adaptive needs</h4><p>Timsort (Python/Java) handles this better by detecting natural runs. Pure merge sort does full O(n log n) even on nearly-sorted input — no adaptation built in.</p></div></div>
+      <div class="when-item"><div class="when-icon">💡</div><div class="when-text"><h4>Primitive (integer/float) arrays in memory</h4><p>Use radix sort O(n) or introsort. For primitives where stability doesn't matter, unstable sorts with better cache behavior outperform merge sort significantly.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Frequent insertions into sorted structure</h4><p>Use a balanced BST, skip list, or B-tree — O(log n) per insertion. Re-running merge sort after each insert is O(n log n) per change, far too expensive for dynamic data.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Merge Sort problems</span></div>
+    <p class="cta-sub">You've seen how merge sort powers databases, version control, Python's sort, and distributed systems.<br>Now prove you can implement it and apply it to classic divide-and-conquer problems.</p>
+    <div class="merge-cta-viz">
+      <div class="cvbar" style="height:20px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:38px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+      <div class="cvbar" style="height:28px;background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3)"></div>
+      <div class="cvbar" style="height:52px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:18px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+      <div class="cvbar" style="height:44px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="cvbar" style="height:32px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:48px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+    </div>
+    <a href="practice.html?topic=merge_sort" class="cta-btn">
+      <span>🔀 Solve Merge Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* THEME */
+const themes=['dark','light','blue'];
+const themeIcons={dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=themeIcons[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ── CONCEPT VISUALIZER ── */
+const cOrig=[38,12,45,7,29,51,16,3];
+// Pre-build phases: split levels then merge levels
+const cPhases=[
+  {label:'Original array',arr:[[38,12,45,7,29,51,16,3]],state:'def'},
+  {label:'Split → halves',arr:[[38,12,45,7],[29,51,16,3]],state:'split'},
+  {label:'Split → quarters',arr:[[38,12],[45,7],[29,51],[16,3]],state:'split'},
+  {label:'Split → singles',arr:[[38],[12],[45],[7],[29],[51],[16],[3]],state:'split'},
+  {label:'Merge pairs',arr:[[12,38],[7,45],[29,51],[3,16]],state:'merge'},
+  {label:'Merge quads',arr:[[7,12,38,45],[3,16,29,51]],state:'merge'},
+  {label:'Final merge → sorted',arr:[[3,7,12,16,29,38,45,51]],state:'done'},
+];
+let cPhaseIdx=0;
+function renderConceptPhase(ph){
+  const viz=document.getElementById('conceptViz');viz.innerHTML='';
+  const maxH=60;const allVals=[38,12,45,7,29,51,16,3];const mx=Math.max(...allVals);
+  const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;justify-content:center;align-items:flex-end;flex-wrap:wrap;';
+  ph.arr.forEach((chunk,ci)=>{
+    const group=document.createElement('div');
+    group.style.cssText='display:flex;gap:3px;align-items:flex-end;padding:4px 6px;border-radius:8px;border:1px solid;';
+    const isLeft=ci%2===0;
+    if(ph.state==='split'){group.style.borderColor=isLeft?'rgba(139,92,246,.3)':'rgba(99,102,241,.3)';group.style.background=isLeft?'rgba(139,92,246,.04)':'rgba(99,102,241,.04)';}
+    else if(ph.state==='merge'){group.style.borderColor='rgba(245,158,11,.3)';group.style.background='rgba(245,158,11,.04)';}
+    else if(ph.state==='done'){group.style.borderColor='rgba(16,185,129,.3)';group.style.background='rgba(16,185,129,.04)';}
+    else{group.style.borderColor='var(--border-color)';group.style.background='transparent';}
+    chunk.forEach(v=>{
+      const b=document.createElement('div');b.className='mbar';
+      b.style.height=Math.max(14,Math.round((v/mx)*maxH))+'px';
+      if(ph.state==='split')b.classList.add(ci%2===0?'left':'right');
+      else if(ph.state==='merge')b.classList.add('merging');
+      else if(ph.state==='done')b.classList.add('done');
+      else b.classList.add('def');
+      b.textContent=v;group.appendChild(b);
+    });
+    row.appendChild(group);
+    if(ci<ph.arr.length-1){const sep=document.createElement('div');sep.style.cssText='display:flex;align-items:center;font-size:.65rem;color:rgba(255,255,255,.25);padding-bottom:4px;';sep.textContent='|';row.appendChild(sep);}
+  });
+  viz.appendChild(row);
+  document.getElementById('conceptStatus').innerHTML=`Phase ${cPhaseIdx}: <span style="color:var(--primary-purple)">${ph.label}</span>`;
+}
+function conceptStep(){
+  if(cPhaseIdx>=cPhases.length){conceptReset();return;}
+  renderConceptPhase(cPhases[cPhaseIdx]);cPhaseIdx++;
+  if(cPhaseIdx===cPhases.length)document.getElementById('conceptStatus').innerHTML=`✅ <span style="color:var(--primary-green)">Fully sorted!</span> Merge sort complete.`;
+}
+function conceptReset(){cPhaseIdx=0;renderConceptPhase(cPhases[0]);document.getElementById('conceptStatus').textContent='Click "Next Phase" to step through merge sort';}
+renderConceptPhase(cPhases[0]);
+
+/* ── 1. DB MERGE ── */
+const dbA=[{id:101,name:'Alice'},{id:203,name:'Carol'},{id:347,name:'Eve'},{id:412,name:'Grace'}];
+const dbB=[{id:156,name:'Bob'},{id:289,name:'Dave'},{id:378,name:'Frank'},{id:450,name:'Hank'}];
+let dbAi=0,dbBi=0,dbResult=[];
+function renderDbRow(r,color){const d=document.createElement('div');d.style.cssText=`display:flex;gap:.5rem;padding:.2rem .5rem;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.68rem;border:1px solid ${color}22;color:${color};background:${color}0d;`;d.innerHTML=`<span>${r.id}</span><span style="color:var(--text-secondary)">${r.name}</span>`;return d;}
+function renderDbState(){
+  ['dbChunkA','dbChunkB'].forEach(id=>document.getElementById(id).innerHTML='');
+  dbA.slice(dbAi).forEach(r=>document.getElementById('dbChunkA').appendChild(renderDbRow(r,'var(--primary-purple)')));
+  dbB.slice(dbBi).forEach(r=>document.getElementById('dbChunkB').appendChild(renderDbRow(r,'var(--primary-indigo)')));
+}
+function renderDbOutput(){
+  const el=document.getElementById('dbOutput');el.innerHTML='';
+  dbResult.forEach(r=>{const d=document.createElement('div');d.style.cssText='padding:.15rem .4rem;border-radius:4px;font-family:\'JetBrains Mono\',monospace;font-size:.65rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--primary-green);';d.textContent=r.id;el.appendChild(d);});
+}
+function dbMergeStep(){
+  if(dbAi>=dbA.length&&dbBi>=dbB.length){document.getElementById('dbStatus').innerHTML=`✅ Merge complete — <span>${dbResult.length}</span> rows in sorted order`;return;}
+  let chosen;
+  if(dbBi>=dbB.length||(dbAi<dbA.length&&dbA[dbAi].id<=dbB[dbBi].id)){chosen=dbA[dbAi++];document.getElementById('dbStatus').innerHTML=`Took <span>${chosen.id} ${chosen.name}</span> from Chunk A (${chosen.id} ≤ ${dbBi<dbB.length?dbB[dbBi].id:'—'})`;}
+  else{chosen=dbB[dbBi++];document.getElementById('dbStatus').innerHTML=`Took <span>${chosen.id} ${chosen.name}</span> from Chunk B`;}
+  dbResult.push(chosen);renderDbState();renderDbOutput();
+}
+function dbMergeReset(){dbAi=0;dbBi=0;dbResult=[];renderDbState();document.getElementById('dbOutput').innerHTML='';document.getElementById('dbStatus').textContent='Compare front of each chunk — take the smaller';}
+renderDbState();
+
+/* ── 2. GIT MERGE ── */
+const gitA=[{n:'auth.js:L12',v:2},{n:'config.js:L3',v:5},{n:'index.js:L8',v:8},{n:'router.js:L1',v:11}];
+const gitB=[{n:'api.js:L5',v:3},{n:'db.js:L7',v:6},{n:'index.js:L15',v:9},{n:'utils.js:L2',v:13}];
+let gitAi=0,gitBi=0,gitOut=[];
+function renderGitBranches(){
+  ['gitBranchA','gitBranchB'].forEach(id=>document.getElementById(id).innerHTML='');
+  gitA.slice(gitAi).forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='padding:.2rem .45rem;border-radius:4px;font-size:.68rem;font-family:\'JetBrains Mono\',monospace;color:var(--primary-purple);background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.2);margin-bottom:.18rem;';d.textContent=r.n;document.getElementById('gitBranchA').appendChild(d);});
+  gitB.slice(gitBi).forEach((r,i)=>{const d=document.createElement('div');d.style.cssText='padding:.2rem .45rem;border-radius:4px;font-size:.68rem;font-family:\'JetBrains Mono\',monospace;color:var(--primary-indigo);background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.2);margin-bottom:.18rem;';d.textContent=r.n;document.getElementById('gitBranchB').appendChild(d);});
+}
+function renderGitOutput(){
+  const el=document.getElementById('gitOutput');el.innerHTML='';
+  gitOut.forEach(r=>{const d=document.createElement('div');d.style.cssText='padding:.2rem .45rem;border-radius:4px;font-size:.68rem;font-family:\'JetBrains Mono\',monospace;color:var(--primary-green);background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);';d.textContent=r.n;el.appendChild(d);});
+}
+function gitMergeStep(){
+  if(gitAi>=gitA.length&&gitBi>=gitB.length){document.getElementById('gitInfo').innerHTML=`✅ Merge complete — <b>${gitOut.length}</b> lines merged in order`;return;}
+  let ch,src;
+  if(gitBi>=gitB.length||(gitAi<gitA.length&&gitA[gitAi].v<=gitB[gitBi].v)){ch=gitA[gitAi++];src='main';}
+  else{ch=gitB[gitBi++];src='feature';}
+  gitOut.push(ch);renderGitBranches();renderGitOutput();
+  document.getElementById('gitInfo').innerHTML=`Took <b>${ch.n}</b> from <b>${src}</b>`;
+}
+function gitMergeReset(){gitAi=0;gitBi=0;gitOut=[];renderGitBranches();document.getElementById('gitOutput').innerHTML='';document.getElementById('gitInfo').textContent='';}
+renderGitBranches();
+
+/* ── 3. TIMSORT ── */
+// Data with two natural runs already present
+let tsArr=[3,7,12,45,2,9,18,31,5,22];
+const tsOrig=[...tsArr];
+let tsPhase=0;// 0=detect runs, 1=show runs, 2=merge runs
+let tsRuns=[];
+function buildSmbars(elId,arr,classes=[]){
+  const el=document.getElementById(elId);if(!el)return;el.innerHTML='';
+  const mx=Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='smbar '+(classes[i]||'def');
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';b.textContent=v;el.appendChild(b);
+  });
+}
+function timsortStep(){
+  if(tsPhase===0){
+    // Detect natural runs
+    tsRuns=[];let i=0;
+    while(i<tsArr.length){let j=i+1;while(j<tsArr.length&&tsArr[j]>=tsArr[j-1])j++;tsRuns.push({start:i,end:j});i=j;}
+    const cls=tsArr.map((_,i)=>{const ri=tsRuns.findIndex(r=>i>=r.start&&i<r.end);return ri%2===0?'L':'R';});
+    buildSmbars('timsortBars',tsArr,cls);
+    document.getElementById('timsortStatus').innerHTML=`Found <span>${tsRuns.length}</span> natural runs — highlighted in purple/indigo`;
+    document.getElementById('timsortInfo').innerHTML=`Run 1: indices 0-${tsRuns[0].end-1} &nbsp;|&nbsp; Run 2: ${tsRuns[1]?`indices ${tsRuns[1].start}-${tsRuns[1].end-1}`:'(none)'}`;
+    tsPhase=1;
+  } else if(tsPhase===1){
+    // Merge the two runs
+    const r1=tsArr.slice(tsRuns[0].start,tsRuns[0].end);
+    const r2=tsArr.slice(tsRuns[1]?tsRuns[1].start:tsArr.length);
+    let merged=[],ai=0,bi=0;
+    while(ai<r1.length&&bi<r2.length){if(r1[ai]<=r2[bi])merged.push(r1[ai++]);else merged.push(r2[bi++]);}
+    merged=[...merged,...r1.slice(ai),...r2.slice(bi)];
+    tsArr=merged;
+    buildSmbars('timsortBars',tsArr,tsArr.map(()=>'mrg'));
+    document.getElementById('timsortStatus').innerHTML=`Merging runs → <span>sorted output</span>`;
+    document.getElementById('timsortInfo').innerHTML=`Timsort's merge phase produces the final sorted array`;
+    tsPhase=2;
+  } else {
+    buildSmbars('timsortBars',tsArr,tsArr.map(()=>'done'));
+    document.getElementById('timsortStatus').innerHTML=`✅ <span>Timsort complete</span> — O(n log n), stable, adaptive`;
+    document.getElementById('timsortInfo').innerHTML=`Used in Python's list.sort() and Java's Arrays.sort()`;
+    tsPhase=3;
+  }
+}
+function timsortReset(){tsArr=[...tsOrig];tsPhase=0;buildSmbars('timsortBars',tsArr);document.getElementById('timsortStatus').textContent='Click to detect natural runs in data';document.getElementById('timsortInfo').textContent='';}
+buildSmbars('timsortBars',tsArr);
+
+/* ── 4. LOG MERGE ── */
+const logServers=[
+  {name:'Server A',color:'var(--primary-purple)',events:[{t:'10:01',msg:'login'},{t:'10:04',msg:'query'},{t:'10:08',msg:'logout'}]},
+  {name:'Server B',color:'var(--primary-indigo)',events:[{t:'10:02',msg:'upload'},{t:'10:06',msg:'error'},{t:'10:09',msg:'retry'}]},
+  {name:'Server C',color:'var(--primary-cyan)',events:[{t:'10:03',msg:'ping'},{t:'10:05',msg:'sync'},{t:'10:07',msg:'ack'}]},
+];
+let logPtrs=[0,0,0],logOut2=[];
+function renderLogServers(){
+  const el=document.getElementById('logServers');el.innerHTML='';
+  logServers.forEach((s,si)=>{
+    const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:.4rem;';
+    const lbl=document.createElement('span');lbl.style.cssText=`font-size:.62rem;font-weight:700;min-width:60px;color:${s.color};font-family:'JetBrains Mono',monospace;`;lbl.textContent=s.name;row.appendChild(lbl);
+    const events=document.createElement('div');events.style.cssText='display:flex;gap:.25rem;flex-wrap:wrap;';
+    s.events.slice(logPtrs[si]).forEach(e=>{const d=document.createElement('div');d.style.cssText=`padding:.15rem .35rem;border-radius:4px;font-size:.64rem;font-family:'JetBrains Mono',monospace;color:${s.color};background:${s.color}18;border:1px solid ${s.color}33;`;d.textContent=`${e.t} ${e.msg}`;events.appendChild(d);});
+    row.appendChild(events);el.appendChild(row);
+  });
+}
+function renderLogOut(){
+  const el=document.getElementById('logOutput');el.innerHTML='';
+  logOut2.forEach(e=>{const d=document.createElement('div');d.style.cssText='padding:.15rem .4rem;border-radius:4px;font-size:.64rem;font-family:\'JetBrains Mono\',monospace;color:var(--primary-green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);';d.textContent=`${e.t} ${e.msg}`;el.appendChild(d);});
+}
+function logMergeStep(){
+  // Find server with minimum timestamp
+  let mi=-1,mt='99:99';
+  logServers.forEach((s,si)=>{if(logPtrs[si]<s.events.length&&s.events[logPtrs[si]].t<mt){mt=s.events[logPtrs[si]].t;mi=si;}});
+  if(mi<0){document.getElementById('logInfo').innerHTML=`✅ All <b>${logOut2.length}</b> events merged into unified timeline`;return;}
+  const ev=logServers[mi].events[logPtrs[mi]];logPtrs[mi]++;logOut2.push(ev);
+  renderLogServers();renderLogOut();
+  document.getElementById('logInfo').innerHTML=`Took <b>${ev.t} ${ev.msg}</b> from <b>${logServers[mi].name}</b>`;
+}
+function logMergeReset(){logPtrs=[0,0,0];logOut2=[];renderLogServers();document.getElementById('logOutput').innerHTML='';document.getElementById('logInfo').textContent='';}
+renderLogServers();
+
+/* ── 5. INVERSION COUNT ── */
+let invArr=[4,2,7,1,5,3,8,6];const invOrig=[...invArr];let invPhase=0,invTotal=0;
+function renderInvBars(classes=[]){
+  const el=document.getElementById('invBars');el.innerHTML='';
+  const mx=Math.max(...invArr);
+  invArr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='smbar '+(classes[i]||'def');
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';b.textContent=v;el.appendChild(b);
+  });
+}
+// Pre-computed merge steps for inversion counting
+const invSteps=[
+  {arr:[4,2,7,1,5,3,8,6],inv:0,label:'Original: [4,2,7,1,5,3,8,6] — counting inversions',cls:[]},
+  {arr:[2,4,1,7,3,5,6,8],inv:0,label:'Merge pairs: found inversions (4>2), (7>1), (5>3), (8>6)',cls:Array(8).fill('L')},
+  {arr:[1,2,4,7,3,5,6,8],inv:4,label:'Merge left half [2,4,1,7] → [1,2,4,7]: +4 inversions from right crossing',cls:[...Array(4).fill('mrg'),...Array(4).fill('R')]},
+  {arr:[1,2,3,4,5,6,7,8],inv:10,label:'Final merge: total 10 inversions — similarity score computed',cls:Array(8).fill('done')},
+];
+let invStep2=0;
+function invStep(){
+  if(invStep2>=invSteps.length){invReset();return;}
+  const s=invSteps[invStep2];
+  invArr=[...s.arr];invTotal=s.inv;
+  renderInvBars(s.cls);
+  document.getElementById('invStatus').innerHTML=`<span>${s.label}</span>`;
+  document.getElementById('invCount').textContent=invTotal;
+  invStep2++;
+}
+function invReset(){invArr=[...invOrig];invStep2=0;invTotal=0;renderInvBars();document.getElementById('invStatus').textContent='Array represents preference ranking';document.getElementById('invCount').textContent=0;}
+renderInvBars();
+
+/* ── 6. PARALLEL SORT ── */
+const parallelData=[[8,3],[11,5],[7,14],[2,9]];// 4 cores, 2 elements each
+let parPhase=0;
+const parColors=['var(--primary-violet)','var(--primary-purple)','var(--primary-indigo)','var(--primary-cyan)'];
+function renderParCores(sortedMask=[]){
+  const el=document.getElementById('parallelCores');el.innerHTML='';
+  parallelData.forEach((chunk,ci)=>{
+    const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:.5rem;';
+    const lbl=document.createElement('span');lbl.style.cssText=`font-size:.62rem;font-weight:700;min-width:52px;font-family:'JetBrains Mono',monospace;color:${parColors[ci]};`;lbl.textContent=`Core ${ci+1}:`;row.appendChild(lbl);
+    const vals=document.createElement('div');vals.style.cssText='display:flex;gap:.25rem;';
+    chunk.forEach(v=>{const d=document.createElement('div');const sorted=sortedMask[ci];d.style.cssText=`padding:.15rem .4rem;border-radius:4px;font-size:.7rem;font-family:'JetBrains Mono',monospace;color:${sorted?'var(--primary-green)':parColors[ci]};background:${sorted?'rgba(16,185,129,.1)':parColors[ci]+'18'};border:1px solid ${sorted?'rgba(16,185,129,.3)':parColors[ci]+'33'};`;d.textContent=v;vals.appendChild(d);});
+    row.appendChild(vals);el.appendChild(row);
+  });
+}
+function parallelStep(){
+  if(parPhase===0){
+    // Each core sorts its chunk
+    parallelData.forEach(c=>c.sort((a,b)=>a-b));
+    renderParCores([true,true,true,true]);
+    document.getElementById('parallelStatus').innerHTML=`All 4 cores sorted in <span>parallel</span> simultaneously`;
+    document.getElementById('parallelOutput').innerHTML='';
+    parPhase=1;
+  } else if(parPhase===1){
+    // Merge phase 1: merge pairs
+    const m1=[...parallelData[0],...parallelData[1]].sort((a,b)=>a-b);
+    const m2=[...parallelData[2],...parallelData[3]].sort((a,b)=>a-b);
+    document.getElementById('parallelStatus').innerHTML=`Merged pairs: [${m1}] and [${m2}]`;
+    const el=document.getElementById('parallelOutput');el.innerHTML='';
+    [...m1,...m2].forEach((v,i)=>{const d=document.createElement('div');d.style.cssText=`padding:.15rem .4rem;border-radius:4px;font-size:.7rem;font-family:'JetBrains Mono',monospace;color:${i<m1.length?'var(--primary-purple)':'var(--primary-indigo)'};background:${i<m1.length?'rgba(139,92,246,.1)':'rgba(99,102,241,.1)'};border:1px solid ${i<m1.length?'rgba(139,92,246,.3)':'rgba(99,102,241,.3)'};`;d.textContent=v;el.appendChild(d);});
+    parPhase=2;
+  } else {
+    const final=[...parallelData[0],...parallelData[1],...parallelData[2],...parallelData[3]].sort((a,b)=>a-b);
+    document.getElementById('parallelStatus').innerHTML=`✅ <span>Final merge complete</span> — all 8 elements sorted`;
+    const el=document.getElementById('parallelOutput');el.innerHTML='';
+    final.forEach(v=>{const d=document.createElement('div');d.style.cssText='padding:.15rem .4rem;border-radius:4px;font-size:.7rem;font-family:\'JetBrains Mono\',monospace;color:var(--primary-green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);';d.textContent=v;el.appendChild(d);});
+    parPhase=3;
+  }
+}
+function parallelReset(){parPhase=0;parallelData[0]=[8,3];parallelData[1]=[11,5];parallelData[2]=[7,14];parallelData[3]=[2,9];renderParCores([]);document.getElementById('parallelOutput').innerHTML='';document.getElementById('parallelStatus').textContent='4 cores ready — each will sort its chunk';}
+renderParCores([]);
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

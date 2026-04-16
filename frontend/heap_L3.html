@@ -1,0 +1,2200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heap — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+/* ══════════════════════════════════════
+   CSS VARIABLES — Matching Arrays L3 palette
+   rose/pink are the primary accents here
+   ══════════════════════════════════════ */
+:root {
+  --rose:    #f43f5e;
+  --pink:    #ec4899;
+  --green:   #10b981;
+  --cyan:    #06b6d4;
+  --purple:  #8b5cf6;
+  --orange:  #f59e0b;
+  --red:     #ef4444;
+
+  --bg:      #0a0a0a;
+  --card:    #111111;
+  --card2:   #1a1a1a;
+  --txt:     #ffffff;
+  --txt2:    #a0a0a0;
+  --border:  #222222;
+  --nav-bg:  rgba(10,10,10,0.95);
+  --code-bg: #0d1117;
+  --nav-h:   60px;
+}
+
+[data-theme="light"] {
+  --bg:     #f0f4f8;  --card:    #ffffff;  --card2:   #f8fafc;
+  --txt:    #0f172a;  --txt2:    #475569;  --border:  #e2e8f0;
+  --nav-bg: rgba(240,244,248,0.95); --code-bg: #f1f5f9;
+  --rose:   #e11d48;  --pink:    #db2777;
+}
+
+[data-theme="blue"] {
+  --bg:     #010e1a;  --card:    #0a1628;  --card2:   #1e293b;
+  --txt:    #e2f0ff;  --txt2:    #7ba3c8;  --border:  #1a3050;
+  --nav-bg: rgba(1,14,26,0.95); --code-bg: #010e1a;
+}
+
+/* ══════ RESET ══════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background .3s, color .3s;
+}
+
+/* ══════ NAV ══════ */
+nav {
+  position: fixed; top:0; width:100%;
+  height: var(--nav-h); z-index:1000;
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-container {
+  max-width: 1400px; margin:0 auto;
+  padding: 0 2rem; height:100%;
+  display:flex; align-items:center; justify-content:space-between;
+}
+
+.logo {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:1.2rem; font-weight:700;
+  text-decoration:none; color:var(--txt);
+  flex-shrink:0;
+}
+
+.logo-icon {
+  width:45px; height:45px;
+  border-radius:8px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+
+.logo-icon img { width:100%; height:100%; object-fit:cover; }
+
+.nav-links { display:flex; gap:2rem; list-style:none; }
+
+.nav-links a {
+  color:var(--txt2); text-decoration:none;
+  font-size:.9rem; font-weight:500; transition:color .3s;
+}
+
+.nav-links a:hover { color:var(--rose); }
+
+.nav-right { display:flex; align-items:center; gap:.75rem; }
+
+.theme-toggle {
+  background: var(--border); border:1px solid var(--border);
+  color:var(--txt); cursor:pointer;
+  width:36px; height:36px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .3s; flex-shrink:0;
+}
+
+.theme-toggle:hover { border-color:var(--rose); }
+.theme-toggle svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; }
+
+/* hamburger — shown only on mobile */
+.hamburger {
+  display:none; flex-direction:column; gap:5px;
+  cursor:pointer; background:none; border:none; padding:5px;
+}
+
+.hamburger span {
+  width:24px; height:2px;
+  background:var(--txt); border-radius:2px; transition:all .3s;
+}
+
+/* mobile nav drawer */
+.nav-links.open {
+  display:flex; flex-direction:column;
+  position:absolute; top:var(--nav-h); left:0; width:100%;
+  background:var(--nav-bg);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:1rem 2rem; gap:1.2rem; z-index:999;
+}
+
+/* ══════ HERO ══════ */
+.hero {
+  padding: calc(var(--nav-h) + 60px) 2rem 60px;
+  max-width: 1400px; margin:0 auto;
+  text-align: center;
+}
+
+.hero-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background: rgba(244,63,94,.1);
+  border: 1px solid rgba(244,63,94,.3);
+  border-radius: 30px;
+  padding: .4rem 1.2rem;
+  font-size:.8rem; font-weight:700;
+  color: var(--rose);
+  text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:1.5rem;
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 800; line-height:1.1;
+  margin-bottom: 1rem;
+}
+
+.hero h1 .highlight {
+  background: linear-gradient(135deg, var(--rose), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: clamp(.9rem, 2vw, 1.1rem);
+  color: var(--txt2);
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  line-height:1.7;
+}
+
+.breadcrumb-bar {
+  display:flex; align-items:center; gap:.5rem;
+  font-size:.85rem; color:var(--txt2);
+  justify-content:center; margin-bottom:2rem; flex-wrap:wrap;
+}
+
+.breadcrumb-bar a { color:var(--txt2); text-decoration:none; transition:color .2s; }
+.breadcrumb-bar a:hover { color:var(--rose); }
+.breadcrumb-bar .sep { opacity:.4; }
+
+.level-badges {
+  display:flex; gap:.75rem; justify-content:center;
+  flex-wrap:wrap; margin-top:1.5rem;
+}
+
+.lvl-badge {
+  padding:.5rem 1.3rem;
+  background: var(--card); border:1px solid var(--border);
+  border-radius:50px; color:var(--txt2);
+  font-size:.82rem; font-weight:600;
+}
+
+.lvl-badge.active {
+  background: var(--rose); border-color:var(--rose);
+  color:#fff;
+}
+
+/* ══════ CONCEPT BOX ══════ */
+.concept-section {
+  max-width:1400px; margin:0 auto; padding:0 2rem 3rem;
+}
+
+.concept-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius:16px; padding:2rem;
+}
+
+.concept-title {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:1rem; font-weight:700;
+  color:var(--rose); text-transform:uppercase;
+  letter-spacing:1px; margin-bottom:1rem;
+}
+
+.concept-desc {
+  color:var(--txt2); font-size:.92rem;
+  line-height:1.75; margin-bottom:1.5rem;
+}
+
+.concept-desc strong { color:var(--txt); }
+
+/* ══════ MINI CELLS (shared across all demos) ══════ */
+.mini-cells {
+  display:flex; gap:3px;
+  justify-content:center; flex-wrap:wrap;
+  margin-bottom:.6rem;
+}
+
+/* A single cell in the mini visualizer */
+.mcell {
+  min-width:30px; height:30px;
+  border:1px solid var(--border);
+  border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono', monospace;
+  font-size:.62rem; font-weight:700;
+  transition:all .3s;
+}
+
+.mcell.def     { background:rgba(255,255,255,.05); color:var(--txt2); }
+.mcell.active  { background:rgba(244,63,94,.18);   border-color:var(--rose);   color:var(--rose); }
+.mcell.found   { background:rgba(16,185,129,.15);  border-color:var(--green);  color:var(--green); }
+.mcell.visited { background:rgba(236,72,153,.1);   border-color:rgba(236,72,153,.35); color:var(--pink); }
+.mcell.new     { background:rgba(6,182,212,.12);   border-color:var(--cyan);   color:var(--cyan); }
+.mcell.del     { background:rgba(239,68,68,.1);    border-color:rgba(239,68,68,.3);   color:var(--red); }
+.mcell.hi      { background:rgba(245,158,11,.12);  border-color:var(--orange); color:var(--orange); }
+.mcell.root    { background:rgba(139,92,246,.15);  border-color:var(--purple); color:var(--purple); }
+
+/* ══════ SECTION (apps, table, pros/cons) ══════ */
+.section {
+  max-width:1400px; margin:0 auto; padding:3rem 2rem;
+}
+
+.section-title {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:clamp(1.5rem, 3vw, 1.8rem); font-weight:800;
+  margin-bottom:.5rem;
+  display:flex; align-items:center; gap:.75rem; flex-wrap:wrap;
+}
+
+.section-title .s-icon {
+  width:40px; height:40px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; flex-shrink:0;
+}
+
+.section-sub {
+  color:var(--txt2); margin-bottom:2.5rem;
+  font-size:clamp(.85rem, 1.5vw, 1rem); line-height:1.6;
+}
+
+.divider {
+  height:1px;
+  background:linear-gradient(90deg, transparent, var(--border), transparent);
+  margin:3rem 0;
+  max-width:1400px; margin-left:auto; margin-right:auto;
+}
+
+/* ══════ APP GRID — 6 cards ══════ */
+.app-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap:1.5rem;
+}
+
+.app-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius:16px; overflow:hidden;
+  transition: transform .3s, border-color .3s, box-shadow .3s;
+}
+
+.app-card:hover { transform:translateY(-4px); }
+.app-card.rose:hover   { border-color:var(--rose);   box-shadow:0 8px 40px rgba(244,63,94,.12); }
+.app-card.pink:hover   { border-color:var(--pink);   box-shadow:0 8px 40px rgba(236,72,153,.12); }
+.app-card.orange:hover { border-color:var(--orange); box-shadow:0 8px 40px rgba(245,158,11,.12); }
+.app-card.cyan:hover   { border-color:var(--cyan);   box-shadow:0 8px 40px rgba(6,182,212,.12); }
+.app-card.purple:hover { border-color:var(--purple); box-shadow:0 8px 40px rgba(139,92,246,.12); }
+.app-card.green:hover  { border-color:var(--green);  box-shadow:0 8px 40px rgba(16,185,129,.12); }
+
+.card-header {
+  padding:1.5rem 1.5rem 1rem;
+  display:flex; align-items:flex-start; gap:1rem;
+}
+
+.card-icon {
+  width:48px; height:48px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; flex-shrink:0;
+}
+
+.card-icon.rose   { background:rgba(244,63,94,.15); }
+.card-icon.pink   { background:rgba(236,72,153,.15); }
+.card-icon.orange { background:rgba(245,158,11,.15); }
+.card-icon.cyan   { background:rgba(6,182,212,.15); }
+.card-icon.purple { background:rgba(139,92,246,.15); }
+.card-icon.green  { background:rgba(16,185,129,.15); }
+
+.card-info h3 {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:clamp(1rem, 2vw, 1.1rem); font-weight:700;
+  margin-bottom:.35rem;
+}
+
+.card-info p {
+  font-size:.84rem; color:var(--txt2); line-height:1.55;
+}
+
+.card-info p code {
+  color:var(--rose); background:var(--code-bg);
+  padding:.1rem .3rem; border-radius:3px; font-size:.78rem;
+}
+
+.card-demo { padding:0 1.5rem 1.5rem; }
+
+.demo-label {
+  font-size:.7rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.8px;
+  color:var(--txt2); margin-bottom:.7rem;
+}
+
+.demo-box {
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  border-radius:10px; padding:1rem;
+}
+
+/* Demo buttons */
+.demo-btns { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:.8rem; }
+
+.d-btn {
+  padding:.3rem .75rem; border-radius:7px;
+  border:1px solid var(--border);
+  background:transparent; color:var(--txt2);
+  font-size:.74rem; font-weight:600;
+  cursor:pointer; transition:all .2s;
+  font-family:'Inter', sans-serif;
+}
+
+.d-btn:hover    { border-color:var(--rose); color:var(--rose); }
+.d-btn.go       { background:rgba(244,63,94,.1); border-color:var(--rose); color:var(--rose); }
+.d-btn.go-cyan  { background:rgba(6,182,212,.08); border-color:var(--cyan); color:var(--cyan); }
+.d-btn.reset    { background:rgba(239,68,68,.08); border-color:var(--red);  color:var(--red); }
+.d-btn:disabled { opacity:.35; cursor:not-allowed; }
+
+/* Status / info lines */
+.status-line {
+  font-size:.75rem; color:var(--txt2);
+  padding:.4rem .6rem;
+  background:rgba(255,255,255,.03);
+  border-radius:6px; border:1px solid var(--border);
+  font-family:'JetBrains Mono', monospace;
+  line-height:1.5;
+}
+
+.status-line span { color:var(--rose); font-weight:700; }
+
+.step-info { font-size:.7rem; color:var(--txt2); margin-top:.4rem; }
+.step-info b { color:var(--rose); }
+
+/* stat row inside demos */
+.stat-row {
+  display:grid; gap:.4rem; margin-top:.5rem;
+}
+
+.stat-row.two  { grid-template-columns:1fr 1fr; }
+.stat-row.three { grid-template-columns:1fr 1fr 1fr; }
+
+.stat-pill {
+  padding:.35rem .6rem; border-radius:6px;
+  font-size:.7rem; font-family:'JetBrains Mono', monospace;
+  text-align:center;
+}
+
+.stat-pill.rose   { background:rgba(244,63,94,.06);  border:1px solid rgba(244,63,94,.2); }
+.stat-pill.green  { background:rgba(16,185,129,.06); border:1px solid rgba(16,185,129,.2); }
+.stat-pill.cyan   { background:rgba(6,182,212,.06);  border:1px solid rgba(6,182,212,.2); }
+.stat-pill.orange { background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.2); }
+
+.stat-pill b.rv { color:var(--rose); }
+.stat-pill b.gv { color:var(--green); }
+.stat-pill b.cv { color:var(--cyan); }
+.stat-pill b.ov { color:var(--orange); }
+
+/* small tree SVG inside cards */
+.tree-mini {
+  width:100%; display:block; overflow:visible;
+  margin-bottom:.5rem;
+}
+
+/* ══════ COMPLEXITY TABLE ══════ */
+.table-wrap {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; overflow:hidden;
+  overflow-x:auto; /* mobile scroll */
+}
+
+.complexity-table {
+  width:100%; border-collapse:collapse;
+  font-size:.88rem; min-width:520px;
+}
+
+.complexity-table th {
+  background:var(--code-bg); padding:.75rem 1rem;
+  text-align:left;
+  font-family:'Space Grotesk', sans-serif;
+  font-size:.78rem; text-transform:uppercase;
+  letter-spacing:.5px; color:var(--txt2);
+  border-bottom:1px solid var(--border);
+}
+
+.complexity-table td {
+  padding:.75rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,.04);
+  font-size:.85rem;
+}
+
+.complexity-table tr:hover td { background:rgba(255,255,255,.02); }
+
+.complexity-table .op  { font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--txt); }
+.complexity-table .good { color:var(--green);  font-family:'JetBrains Mono', monospace; font-weight:700; }
+.complexity-table .ok   { color:var(--orange); font-family:'JetBrains Mono', monospace; font-weight:700; }
+.complexity-table .bad  { color:var(--red);    font-family:'JetBrains Mono', monospace; font-weight:700; }
+.complexity-table .note { color:var(--txt2); font-size:.82rem; }
+
+.insight-box {
+  margin-top:1rem; padding:1rem 1.2rem;
+  background:rgba(244,63,94,.05);
+  border:1px solid rgba(244,63,94,.2);
+  border-radius:10px; font-size:.85rem;
+  color:var(--txt2); line-height:1.7;
+}
+
+.insight-box strong { color:var(--txt); }
+.insight-box .hi { color:var(--rose); }
+
+/* ══════ PROS / CONS ══════ */
+.procon-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;
+}
+
+.procon-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:1.5rem;
+}
+
+.procon-card.pros { border-color:rgba(16,185,129,.2); }
+.procon-card.cons { border-color:rgba(239,68,68,.2); }
+
+.procon-title {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:1.1rem; font-weight:700; margin-bottom:1.2rem;
+}
+
+.procon-item {
+  display:flex; align-items:flex-start; gap:.75rem;
+  margin-bottom:1rem; padding:.7rem;
+  border-radius:8px; transition:background .2s;
+}
+
+.procon-item:hover { background:rgba(255,255,255,.03); }
+
+.procon-dot {
+  width:20px; height:20px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.7rem; flex-shrink:0; margin-top:2px;
+}
+
+.procon-dot.pro { background:rgba(16,185,129,.2);  color:var(--green); }
+.procon-dot.con { background:rgba(239,68,68,.2);   color:var(--red); }
+
+.procon-text h4 { font-size:.9rem; font-weight:600; margin-bottom:.2rem; }
+.procon-text p  { font-size:.82rem; color:var(--txt2); line-height:1.5; }
+
+/* ══════ WHEN TO USE ══════ */
+.when-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;
+}
+
+.when-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:1.5rem;
+}
+
+.when-card.use   { border-color:rgba(16,185,129,.2); }
+.when-card.avoid { border-color:rgba(239,68,68,.2); }
+
+.when-title {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:1.1rem; font-weight:700; margin-bottom:1.2rem;
+}
+
+.when-item {
+  display:flex; align-items:flex-start; gap:.75rem;
+  margin-bottom:.9rem;
+}
+
+.when-icon { font-size:1rem; flex-shrink:0; margin-top:2px; }
+
+.when-text h4  { font-size:.88rem; font-weight:600; margin-bottom:.15rem; }
+.when-text p   { font-size:.8rem;  color:var(--txt2); line-height:1.5; }
+.when-code {
+  display:inline-block; font-family:'JetBrains Mono', monospace;
+  font-size:.72rem; background:var(--code-bg);
+  padding:.1rem .4rem; border-radius:4px; color:var(--rose);
+}
+
+/* ══════ CTA ══════ */
+.cta-section { padding:5rem 2rem; text-align:center; }
+.cta-inner   { max-width:700px; margin:0 auto; }
+
+.cta-label {
+  font-size:.8rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:1.5px;
+  color:var(--rose); margin-bottom:1rem;
+}
+
+.cta-title {
+  font-family:'Space Grotesk', sans-serif;
+  font-size:clamp(1.8rem, 4vw, 3rem);
+  font-weight:800; line-height:1.15;
+  margin-bottom:1rem;
+}
+
+.cta-title .glow {
+  color:var(--rose);
+  text-shadow:0 0 40px rgba(244,63,94,.4);
+}
+
+.cta-sub {
+  color:var(--txt2); font-size:1rem;
+  margin-bottom:2.5rem; line-height:1.7;
+}
+
+/* Animated heap cells in CTA */
+.heap-cta-viz {
+  display:flex; gap:3px; justify-content:center;
+  margin:2rem auto; max-width:320px; flex-wrap:wrap;
+}
+
+.hcell {
+  min-width:32px; height:38px; border-radius:5px;
+  border:1px solid; display:flex; align-items:center;
+  justify-content:center; font-family:'JetBrains Mono', monospace;
+  font-size:.65rem; font-weight:700;
+}
+
+.hcell:nth-child(odd)  { animation:hPop 2.2s ease-in-out infinite; }
+.hcell:nth-child(even) { animation:hPop 2.2s ease-in-out .3s infinite; }
+
+@keyframes hPop {
+  0%,100% { transform:scaleY(1); }
+  50%      { transform:scaleY(1.1); }
+}
+
+.cta-btn {
+  display:inline-flex; align-items:center; gap:.8rem;
+  padding:1rem 2.5rem;
+  background:linear-gradient(135deg, var(--rose), var(--pink));
+  color:#fff;
+  font-family:'Space Grotesk', sans-serif;
+  font-size:1.05rem; font-weight:800;
+  border-radius:50px; text-decoration:none;
+  transition:all .3s; position:relative;
+  overflow:hidden; border:none; cursor:pointer;
+}
+
+.cta-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, var(--pink), var(--rose));
+  opacity:0; transition:opacity .3s;
+}
+
+.cta-btn:hover::before { opacity:1; }
+.cta-btn:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(244,63,94,.4); }
+.cta-btn span  { position:relative; z-index:1; }
+.cta-btn .arrow { font-size:1.3rem; position:relative; z-index:1; transition:transform .3s; }
+.cta-btn:hover .arrow { transform:translateX(4px); }
+
+/* ══════ LEVEL NAV ══════ */
+.level-section {
+  max-width:800px; margin:3rem auto 5rem;
+  padding:3rem 2rem;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:24px; text-align:center;
+}
+
+.level-section h3 {
+  color:var(--rose); font-size:1.1rem;
+  margin-bottom:2rem;
+  font-family:'Space Grotesk', sans-serif;
+}
+
+.level-wrapper {
+  display:flex; align-items:center; justify-content:space-between;
+  position:relative; padding:0 20px; height:100px;
+}
+
+.level-wrapper button {
+  position:relative; z-index:20;
+  width:clamp(80px, 22vw, 120px);
+  padding:.9rem .5rem; border-radius:14px;
+  border:2px solid var(--border);
+  background:var(--bg); color:var(--txt);
+  font-weight:800; cursor:pointer;
+  transition:all .3s; font-family:'Inter', sans-serif;
+  font-size:clamp(.75rem, 2vw, .9rem); text-align:center;
+}
+
+.level-wrapper button:hover { border-color:var(--rose); }
+
+#l3-btn {
+  border-color:var(--rose) !important;
+  background:rgba(244,63,94,.12) !important;
+  color:var(--rose) !important;
+  box-shadow:0 0 15px rgba(244,63,94,.25);
+}
+
+.lvl-line {
+  position:absolute; top:50%; transform:translateY(-50%);
+  height:4px; background:var(--border);
+  z-index:1; pointer-events:none;
+}
+
+#line-a {
+  left:calc(clamp(80px,22vw,120px) + 20px);
+  right:calc(50% + clamp(40px,11vw,60px));
+}
+
+#line-b {
+  left:calc(50% + clamp(40px,11vw,60px));
+  right:calc(clamp(80px,22vw,120px) + 20px);
+}
+
+.lvl-line.lit {
+  background:linear-gradient(90deg, var(--rose), var(--pink));
+  box-shadow:0 0 12px var(--rose);
+}
+
+/* ══════ MODAL ══════ */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.9); backdrop-filter:blur(15px);
+  z-index:100000; justify-content:center; align-items:center;
+  padding:1rem;
+}
+
+.modal-overlay.open { display:flex; }
+
+.modal-box {
+  background:var(--card); border:2px solid var(--purple);
+  padding:clamp(1.5rem, 5vw, 3rem);
+  border-radius:24px; max-width:420px; width:100%;
+  text-align:center;
+  box-shadow:0 0 50px rgba(139,92,246,.35);
+}
+
+.modal-btns { display:flex; gap:.75rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap; }
+
+#startQuiz {
+  background:var(--rose); color:#fff;
+  min-width:80px; height:38px; border-radius:20px;
+  border:none; cursor:pointer; font-weight:700; font-size:.88rem; padding:0 1.25rem;
+}
+
+#cancelBtn {
+  background:var(--border); color:var(--txt);
+  min-width:80px; height:38px; border-radius:20px;
+  border:none; cursor:pointer; font-weight:700; font-size:.88rem; padding:0 1.25rem;
+}
+
+/* ══════ RESPONSIVE ══════ */
+@media (max-width: 768px) {
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+
+  .app-grid { grid-template-columns:1fr; }
+  .procon-grid { grid-template-columns:1fr; }
+  .when-grid   { grid-template-columns:1fr; }
+
+  .stat-row.three { grid-template-columns:1fr 1fr; }
+
+  .level-wrapper { padding:0 5px; }
+
+  .concept-box { padding:1.25rem; }
+}
+
+@media (max-width: 480px) {
+  :root { --nav-h:56px; }
+
+  .hero { padding:calc(var(--nav-h) + 40px) 1rem 40px; }
+  .section { padding:2rem 1rem; }
+  .concept-section { padding:0 1rem 2rem; }
+  .card-header { flex-direction:row; }
+  .stat-row.two   { grid-template-columns:1fr 1fr; }
+  .stat-row.three { grid-template-columns:1fr; }
+  .level-section  { margin:2rem 1rem 3rem; padding:2rem 1rem; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- ════════════════ HERO ════════════════ -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="heap_basics.html">Heap</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+
+  <div class="hero-badge">🏆 Level 3 of 3</div>
+
+  <h1>Heaps in the <span class="highlight">Real World</span></h1>
+
+  <p>From hospital triage systems to GPS navigation, from streaming platforms to operating system schedulers — heaps quietly power the most critical systems in computing with their O(log N) magic.</p>
+
+  <div class="level-badges">
+    <div class="lvl-badge">Level 1 of 3 | Basics</div>
+    <div class="lvl-badge">Level 2 of 3 | Interactive</div>
+    <div class="lvl-badge active">Level 3 of 3 | Real World</div>
+  </div>
+</div>
+
+<!-- ════════════════ CONCEPT ════════════════ -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Why Heaps Are Everywhere</div>
+    <p class="concept-desc">
+      Basically, a heap answers one question <strong>faster than any other data structure</strong>:
+      <em>"What is the current maximum (or minimum) element?"</em> in O(1), and can
+      remove it and restore order in O(log N). Think of it this way — whenever a system
+      needs to <strong>always process the most important thing next</strong>, a heap is the answer.
+      Priority queues, Dijkstra's shortest path, the top-K problem, median tracking, heap sort —
+      all of these live on this single elegant property.
+    </p>
+
+    <!-- Concept visualizer: animated root highlight -->
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--txt2);margin-bottom:1rem;text-align:center">
+        🎮 Step through — see how O(1) peek + O(log N) extract works
+      </div>
+      <div style="text-align:center;margin-bottom:.75rem">
+        <svg id="conceptSvg" viewBox="0 0 400 160" style="width:100%;max-width:440px;overflow:visible;display:inline-block;">
+          <!-- Drawn by JS -->
+        </svg>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Extract Max</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--txt2)" id="conceptMsg">
+        Click "Extract Max" — watch how the heap fixes itself in O(log N)
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.15);border:2px solid var(--purple)"></div>Root (max)
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.18);border:2px solid var(--rose)"></div>Being extracted
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.12);border:2px solid var(--orange)"></div>Sifting down
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ APPLICATIONS ════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">
+    In simple terms, wherever you need the "best next item" instantly, a heap shows up.
+    These six applications touch almost every computer you've ever used.
+  </p>
+
+  <div class="app-grid">
+
+    <!-- ── 1. PRIORITY QUEUE ── -->
+    <div class="app-card rose">
+      <div class="card-header">
+        <div class="card-icon rose">🏥</div>
+        <div class="card-info">
+          <h3>Priority Queue — Hospital Triage</h3>
+          <p>
+            The classic use case. Basically, a priority queue wraps a heap so you
+            always treat the <strong>most critical patient first</strong>, regardless of arrival order.
+            OS task schedulers, print spoolers, and event-driven simulations all
+            use this pattern. Insert = O(log N), get-min/max = <code>O(1)</code>.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Admit patients — highest priority always served first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="pqAdmit()">▶ Admit Patient</button>
+            <button class="d-btn go-cyan" onclick="pqTreat()">✓ Treat Next</button>
+            <button class="d-btn reset" onclick="pqReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="pqCells"></div>
+          <div class="status-line" id="pqStatus">Priority Queue empty — admit patients to begin</div>
+          <div class="stat-row two" style="margin-top:.5rem">
+            <div class="stat-pill rose">Waiting: <b class="rv" id="pqWaiting">0</b></div>
+            <div class="stat-pill green">Treated: <b class="gv" id="pqTreated">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2. DIJKSTRA'S ── -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🗺️</div>
+        <div class="card-info">
+          <h3>Dijkstra's Algorithm — GPS Navigation</h3>
+          <p>
+            Google Maps computes shortest paths using Dijkstra's — and at its heart is a
+            <strong>min-heap</strong> of unvisited nodes sorted by distance.
+            The heap ensures we always explore the <strong>nearest unvisited node next</strong>,
+            giving O((V + E) log V) overall. Without a heap, this drops to O(V²).
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Explore shortest path — min-heap picks nearest node each step</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dijkStep()">▶ Explore Next Node</button>
+            <button class="d-btn reset" onclick="dijkReset()">↺ Reset</button>
+          </div>
+          <!-- Node distance cells -->
+          <div class="mini-cells" id="dijkNodes"></div>
+          <div class="status-line" id="dijkStatus">Min-heap frontier: start from node A (dist 0)</div>
+          <div class="step-info" id="dijkInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3. HEAP SORT ── -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">📊</div>
+        <div class="card-info">
+          <h3>Heap Sort — In-Place O(N log N) Sorting</h3>
+          <p>
+            Think of it this way: build a max-heap in O(N), then repeatedly extract the max
+            to sorted position. The result is an <strong>in-place, O(N log N) sort</strong>
+            with O(1) extra space — better than merge sort's O(N) space.
+            Used in embedded systems where memory is tight.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch heap sort in action — extract max to sorted position</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="hsStep()">▶ Sort Next</button>
+            <button class="d-btn go-cyan" onclick="hsAuto()">⚡ Auto Play</button>
+            <button class="d-btn reset" onclick="hsReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="hsCells"></div>
+          <div class="status-line" id="hsStatus">Array ready — step through heap sort</div>
+          <div class="stat-row two" style="margin-top:.5rem">
+            <div class="stat-pill orange">Heap size: <b class="ov" id="hsHeapSz">8</b></div>
+            <div class="stat-pill green">Sorted: <b class="gv" id="hsSorted">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4. K-TH LARGEST ── -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🏆</div>
+        <div class="card-info">
+          <h3>K-th Largest — Leaderboards & Top-K</h3>
+          <p>
+            Finding the top-K items in a stream (top 10 trending videos, top 100
+            leaderboard scores) uses a <strong>min-heap of size K</strong>.
+            Stream in values; if larger than heap root, replace root and heapify.
+            Result: O(N log K) — much better than sorting the entire dataset.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Stream values — min-heap of size K keeps only the top K</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="topkStep()">▶ Stream Next</button>
+            <button class="d-btn reset" onclick="topkReset()">↺ Reset</button>
+          </div>
+          <div style="font-size:.62rem;color:var(--txt2);margin-bottom:.3rem;font-family:'JetBrains Mono',monospace">Input stream:</div>
+          <div class="mini-cells" id="topkStream"></div>
+          <div style="font-size:.62rem;color:var(--cyan);margin:.4rem 0 .3rem;font-family:'JetBrains Mono',monospace">Top-3 heap (min-heap):</div>
+          <div class="mini-cells" id="topkHeap"></div>
+          <div class="status-line" id="topkStatus">Stream 9 values — keep top 3 using min-heap</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5. MEDIAN STREAM ── -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">📈</div>
+        <div class="card-info">
+          <h3>Median of Data Stream — Two Heaps Trick</h3>
+          <p>
+            Real-time analytics (stock prices, sensor readings) need the median continuously.
+            The trick: maintain a <strong>max-heap of the lower half</strong> and a
+            <strong>min-heap of the upper half</strong>. Median = root of one (or average of both).
+            Insert O(log N), get-median <code>O(1)</code>.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Stream numbers — two heaps always track the median</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="medStep()">▶ Add Next Number</button>
+            <button class="d-btn reset" onclick="medReset()">↺ Reset</button>
+          </div>
+          <div style="font-size:.62rem;color:var(--green);margin-bottom:.3rem;font-family:'JetBrains Mono',monospace">Max-Heap (lower half):</div>
+          <div class="mini-cells" id="medLow"></div>
+          <div style="font-size:.62rem;color:var(--cyan);margin:.4rem 0 .3rem;font-family:'JetBrains Mono',monospace">Min-Heap (upper half):</div>
+          <div class="mini-cells" id="medHigh"></div>
+          <div class="status-line" id="medStatus">Stream numbers one by one — median stays O(1)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6. JOB SCHEDULING ── -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⚙️</div>
+        <div class="card-info">
+          <h3>Job Scheduling — OS Task Manager</h3>
+          <p>
+            Every modern OS scheduler (Linux CFS, Windows HPET) uses a heap-based
+            priority queue. Jobs arrive with deadlines or priorities; the scheduler
+            always picks the <strong>highest-priority ready task</strong> in O(log N).
+            Deadline scheduling, CPU time-slicing, and I/O request ordering all depend on this.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add jobs with priority — scheduler always picks highest priority next</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="schedAdd()">▶ Add Job</button>
+            <button class="d-btn go-cyan" onclick="schedRun()">✓ Run Next</button>
+            <button class="d-btn reset" onclick="schedReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="schedCells"></div>
+          <div class="status-line" id="schedStatus">Job queue empty — add jobs to begin scheduling</div>
+          <div class="stat-row three" style="margin-top:.5rem">
+            <div class="stat-pill rose">Queued: <b class="rv" id="schedQ">0</b></div>
+            <div class="stat-pill green">Completed: <b class="gv" id="schedDone">0</b></div>
+            <div class="stat-pill cyan">CPU Time: <b class="cv" id="schedTime">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-grid -->
+</div><!-- /section -->
+
+<div class="divider"></div>
+
+<!-- ════════════════ COMPLEXITY TABLE ════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time &amp; Space Complexity
+  </div>
+  <p class="section-sub">
+    Heaps are ridiculously efficient for what they do. Note: O(1) peek is what makes
+    priority queue and median operations so powerful — you never scan the whole array.
+  </p>
+
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Binary Heap</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="op">Peek (get max/min)</td>
+          <td class="good">O(1)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Root is always the answer — just read arr[0], no traversal</td>
+        </tr>
+        <tr>
+          <td class="op">Insert</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Append + heapify-up — at most log N swaps up the tree</td>
+        </tr>
+        <tr>
+          <td class="op">Extract max / min</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Remove root, place last element, heapify-down</td>
+        </tr>
+        <tr>
+          <td class="op">Build Heap (N items)</td>
+          <td class="good">O(N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Floyd's algorithm — NOT O(N log N) — proven tighter bound</td>
+        </tr>
+        <tr>
+          <td class="op">Heap Sort</td>
+          <td class="ok">O(N log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Build heap O(N) + N extractions O(N log N) — in-place</td>
+        </tr>
+        <tr>
+          <td class="op">Decrease Key (Dijkstra)</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Update priority + heapify-up — critical for graph algorithms</td>
+        </tr>
+        <tr>
+          <td class="op">Delete arbitrary node</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Replace with last element + heapify-up or down as needed</td>
+        </tr>
+        <tr>
+          <td class="op">Merge two heaps</td>
+          <td class="bad">O(N)</td>
+          <td class="ok">O(N)</td>
+          <td class="note">Merge arrays + rebuild — Fibonacci heap does O(1) amortized</td>
+        </tr>
+        <tr>
+          <td class="op">Space overall</td>
+          <td colspan="2" class="ok">O(N)</td>
+          <td class="note">Array storage — zero pointer overhead, perfect cache locality</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    💡 <strong>Key insight:</strong> Heaps are the <span class="hi">only data structure with O(1) max/min access
+    AND O(log N) insertion/deletion</span>. A sorted array gives O(1) max but O(N) insert.
+    A BST gives O(log N) for everything but no O(1) max without augmentation. Heaps hit the
+    sweet spot for any workload that says "always give me the best thing, efficiently."
+    For Dijkstra's on dense graphs, Fibonacci heaps push decrease-key to amortized O(1) —
+    but for most real-world use cases, a simple binary heap is the right call.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════ PROS & CONS ════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages &amp; Disadvantages
+  </div>
+  <p class="section-sub">
+    Heaps are not a silver bullet — they're perfect for priority access but terrible for
+    search. Knowing the trade-offs is what makes a good engineer.
+  </p>
+
+  <div class="procon-grid">
+    <!-- PROS -->
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--green)">✅ Advantages</div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>O(1) access to max/min — unbeatable</h4>
+          <p>No other general-purpose structure gives you the extreme element in constant time
+          with O(log N) updates. Arrays give O(1) read but O(N) insert. Heaps win on this trade-off.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>O(N) build via Floyd's algorithm</h4>
+          <p>Converting any unsorted array to a valid heap costs O(N), not O(N log N).
+          This is a non-obvious but proven result — bottom-up heapification is faster
+          than inserting N elements one by one.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Cache-friendly array storage</h4>
+          <p>Heaps live in a contiguous array — parent at i, children at 2i+1 and 2i+2.
+          No pointer chasing. Sequential memory access means excellent cache performance
+          compared to pointer-based trees.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>In-place heap sort — O(1) extra space</h4>
+          <p>Heap sort sorts in-place with no auxiliary array. Merge sort needs O(N) space.
+          For embedded systems or memory-constrained environments, heap sort is a serious
+          contender for O(N log N) sorting.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Dynamic — handles streaming data naturally</h4>
+          <p>Unlike sorted arrays that need O(N) inserts, heaps accept new elements in
+          O(log N) and immediately maintain the priority invariant. Perfect for real-time
+          data streams where you continuously insert and query.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Enables O((V+E) log V) Dijkstra's and Prim's</h4>
+          <p>Graph algorithms that repeatedly extract the minimum-distance node run in
+          O((V+E) log V) with a heap — vs O(V²) with a simple array. For sparse graphs,
+          this is a massive speedup: 10× faster on a million-node graph.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONS -->
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--red)">❌ Disadvantages</div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>No O(log N) search for arbitrary values</h4>
+          <p>Heaps are NOT sorted arrays. Finding an arbitrary value requires O(N) scan.
+          "Is 42 in this heap?" requires checking every element. Hash sets do this in O(1).
+          If you need search, a BST or hash map is the right choice.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Decrease-key requires knowing the index</h4>
+          <p>Dijkstra's needs to decrease the priority of an already-inserted node.
+          In a standard binary heap, you need an index map to find it in O(1) before
+          updating. This adds implementation complexity and extra O(N) space.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Merging two heaps is O(N) — expensive</h4>
+          <p>Merging two binary heaps of size N each costs O(N) — you concat and rebuild.
+          Leftist heaps, skew heaps, and Fibonacci heaps support O(log N) or O(1) merge.
+          If frequent merging is needed, binary heaps lose the battle.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Not stable — equal priority ordering not guaranteed</h4>
+          <p>Two elements with equal priority can emerge in any order during extraction.
+          For scheduling systems that need FIFO among equal-priority items, you'd need
+          a tie-breaking secondary key, adding implementation overhead.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Heap sort has poor cache locality in practice</h4>
+          <p>Despite being in-place, heap sort accesses memory in non-sequential patterns
+          during heapify-down — jumping between parent/child indices. In practice,
+          quicksort runs 2–3× faster due to far better cache utilization.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Only root is O(1) — second element is O(log N)</h4>
+          <p>Heaps only guarantee the root is the max/min. Finding the 2nd or 3rd largest
+          still requires extraction (destructive) or O(N) scan. For "top-K smallest"
+          queries on a static dataset, a sorted array + binary search beats a heap.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════ WHEN TO USE ════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Heaps — and When to Avoid Them
+  </div>
+  <p class="section-sub">
+    Heaps have a very specific sweet spot. Recognizing it instantly separates
+    great engineers from good ones.
+  </p>
+
+  <div class="when-grid">
+    <!-- USE -->
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--green)">✅ Use Heaps When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text">
+          <h4>You repeatedly need the max or min element</h4>
+          <p>If your main operation is "give me the best/worst element," heaps are unbeatable.
+          Job schedulers, event queues, and simulation engines all follow this pattern.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🗺️</div>
+        <div class="when-text">
+          <h4>Implementing Dijkstra's, Prim's, or A*</h4>
+          <p>Graph algorithms that extract minimum distance nodes use <span class="when-code">minHeap.poll()</span>
+          as their inner loop. Without a heap, these drop from O((V+E)logV) to O(V²).</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🏆</div>
+        <div class="when-text">
+          <h4>Finding K largest or K smallest efficiently</h4>
+          <p>A min-heap of size K processes a stream in O(N log K) — much faster than sorting
+          the entire dataset O(N log N) when K is small relative to N.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text">
+          <h4>Tracking median of a data stream</h4>
+          <p>The two-heap trick (max-heap + min-heap) gives O(log N) insert and O(1) median —
+          no other standard structure does better. Used in real-time analytics dashboards.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📦</div>
+        <div class="when-text">
+          <h4>Memory-tight environments needing O(1) space sort</h4>
+          <p>Heap sort is the only O(N log N) comparison sort with O(1) auxiliary space.
+          Use it when you can't afford merge sort's O(N) buffer — embedded systems, firmware.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">⚡</div>
+        <div class="when-text">
+          <h4>Dynamic priority — items change priority frequently</h4>
+          <p>With an index map, decrease-key is O(log N). Event-driven simulations, network
+          packet schedulers, and real-time operating systems update priorities continuously.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVOID -->
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--red)">❌ Avoid Heaps When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text">
+          <h4>You need to search for arbitrary values</h4>
+          <p>Heaps don't support O(log N) search by value. "Find element 42" is O(N) scan.
+          Use a hash map for O(1) lookup or a BST for O(log N) ordered search.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🔄</div>
+        <div class="when-text">
+          <h4>You need to traverse in sorted order repeatedly</h4>
+          <p>A heap is NOT a sorted structure — only the root is guaranteed. If you need to
+          iterate elements in sorted order, a balanced BST (<span class="when-code">TreeSet</span>) or sorted
+          array does it in O(N) vs O(N log N) with repeated extractions.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🤝</div>
+        <div class="when-text">
+          <h4>You need to frequently merge two collections</h4>
+          <p>Binary heap merge is O(N). If merging priority queues is common in your workload,
+          consider leftist heaps, skew heaps, or Fibonacci heaps — they merge in O(log N) or O(1).</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🎯</div>
+        <div class="when-text">
+          <h4>Your data is already sorted — just use an array</h4>
+          <p>If data arrives pre-sorted, a sorted array + binary search gives O(log N) lookup
+          and O(1) max/min access. Building a heap from sorted data is wasted effort.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📈</div>
+        <div class="when-text">
+          <h4>Stable ordering matters at equal priority</h4>
+          <p>Heaps provide no FIFO guarantee for equal-priority items. If ties must break
+          by insertion order, a deque or stable priority queue implementation is needed.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">💨</div>
+        <div class="when-text">
+          <h4>You need fastest possible sorting in practice</h4>
+          <p>Despite O(N log N) worst-case, quicksort beats heap sort empirically due to
+          cache locality. Timsort (Python, Java) also beats heap sort on real-world data.
+          Heap sort is a theoretical weapon, not always a practical one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════ CTA ════════════════ -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Heap problems</span></div>
+    <p class="cta-sub">
+      You've seen heaps power hospital triage, GPS navigation, heap sort, leaderboards,
+      median tracking, and OS schedulers.<br>
+      Now prove you can apply these patterns to classic interview and competitive programming problems.
+    </p>
+
+    <!-- Animated heap cells -->
+    <div class="heap-cta-viz">
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">90</div>
+      <div class="hcell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--pink)">80</div>
+      <div class="hcell" style="background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.5);color:var(--rose)">70</div>
+      <div class="hcell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">60</div>
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">50</div>
+      <div class="hcell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--pink)">40</div>
+      <div class="hcell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--orange)">30</div>
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">20</div>
+    </div>
+
+    <a href="practice.html?topic=heap" class="cta-btn">
+      <span>🏔 Solve Heap Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+
+
+<!-- ════════════════════════════════════
+     JAVASCRIPT
+     ════════════════════════════════════ -->
+<script>
+/*
+ * ╔═══════════════════════════════════════════════════╗
+ * ║   HEAP L3 — REAL WORLD APPLICATIONS               ║
+ * ║   Written in clean student-developer style         ║
+ * ║   Variables: i, j, val, arr, heap, etc.            ║
+ * ╚═══════════════════════════════════════════════════╝
+ */
+
+// ══════════════════════════════
+//  THEME
+// ══════════════════════════════
+
+var themes    = ['dark','light','blue'];
+var themeIcons = {
+  dark:  '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue:  '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+
+function applyTheme(t) {
+  document.body.setAttribute('data-theme', t);
+  document.getElementById('themeIcon').innerHTML = themeIcons[t];
+  localStorage.setItem('dsa-theme', t);
+}
+
+document.getElementById('themeToggle').addEventListener('click', function() {
+  var cur  = localStorage.getItem('dsa-theme') || 'dark';
+  var next = themes[(themes.indexOf(cur) + 1) % 3];
+  applyTheme(next);
+});
+
+applyTheme(localStorage.getItem('dsa-theme') || 'dark');
+
+// ══════════════════════════════
+//  HAMBURGER MENU
+// ══════════════════════════════
+
+var hamburger = document.getElementById('hamburger');
+var navLinks  = document.getElementById('navLinks');
+
+hamburger.addEventListener('click', function() {
+  navLinks.classList.toggle('open');
+  var spans = hamburger.querySelectorAll('span');
+  var isOpen = navLinks.classList.contains('open');
+  spans[0].style.transform = isOpen ? 'rotate(45deg) translate(5px,5px)' : '';
+  spans[1].style.opacity   = isOpen ? '0' : '1';
+  spans[2].style.transform = isOpen ? 'rotate(-45deg) translate(5px,-5px)' : '';
+});
+
+navLinks.querySelectorAll('a').forEach(function(a) {
+  a.addEventListener('click', function() { navLinks.classList.remove('open'); });
+});
+
+// ══════════════════════════════
+//  HELPERS
+// ══════════════════════════════
+
+// Build mini-cells in a container
+function buildCells(elId, arr, classes) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  el.innerHTML = '';
+  for (var i = 0; i < arr.length; i++) {
+    var cell = document.createElement('div');
+    cell.className = 'mcell ' + (classes[i] || 'def');
+    cell.textContent = arr[i];
+    el.appendChild(cell);
+  }
+}
+
+// Simple max-heap operations
+// Note: using 0-indexed array, parent = floor((i-1)/2)
+function heapInsertMax(arr, val) {
+  arr.push(val);
+  var i = arr.length - 1;
+  // bubble up while parent is smaller
+  while (i > 0 && arr[Math.floor((i-1)/2)] < arr[i]) {
+    var p = Math.floor((i-1)/2);
+    var tmp = arr[p]; arr[p] = arr[i]; arr[i] = tmp;
+    i = p;
+  }
+}
+
+function heapInsertMin(arr, val) {
+  arr.push(val);
+  var i = arr.length - 1;
+  // bubble up while parent is larger (min-heap rule)
+  while (i > 0 && arr[Math.floor((i-1)/2)] > arr[i]) {
+    var p = Math.floor((i-1)/2);
+    var tmp = arr[p]; arr[p] = arr[i]; arr[i] = tmp;
+    i = p;
+  }
+}
+
+function heapExtractMax(arr) {
+  if (arr.length === 0) return null;
+  var max = arr[0];
+  arr[0]  = arr[arr.length - 1];
+  arr.pop();
+  heapifyDownMax(arr, 0);
+  return max;
+}
+
+function heapExtractMin(arr) {
+  if (arr.length === 0) return null;
+  var min = arr[0];
+  arr[0]  = arr[arr.length - 1];
+  arr.pop();
+  heapifyDownMin(arr, 0);
+  return min;
+}
+
+function heapifyDownMax(arr, i) {
+  var n = arr.length;
+  while (true) {
+    var largest = i;
+    var l = 2*i+1, r = 2*i+2;
+    if (l < n && arr[l] > arr[largest]) largest = l;
+    if (r < n && arr[r] > arr[largest]) largest = r;
+    if (largest === i) break;
+    var tmp = arr[i]; arr[i] = arr[largest]; arr[largest] = tmp;
+    i = largest;
+  }
+}
+
+function heapifyDownMin(arr, i) {
+  var n = arr.length;
+  while (true) {
+    var smallest = i;
+    var l = 2*i+1, r = 2*i+2;
+    if (l < n && arr[l] < arr[smallest]) smallest = l;
+    if (r < n && arr[r] < arr[smallest]) smallest = r;
+    if (smallest === i) break;
+    var tmp = arr[i]; arr[i] = arr[smallest]; arr[smallest] = tmp;
+    i = smallest;
+  }
+}
+
+// ══════════════════════════════
+//  CONCEPT VISUALIZER — MAX-HEAP TREE
+// ══════════════════════════════
+
+var conceptHeap = [90, 70, 80, 40, 60, 55, 30];
+var conceptStep = 0;
+
+// Draw heap tree as SVG inside #conceptSvg
+function drawConceptTree(hlIdx) {
+  var svg = document.getElementById('conceptSvg');
+  svg.innerHTML = '';
+  var arr = conceptHeap;
+  var n   = arr.length;
+  if (n === 0) {
+    svg.innerHTML = '<text x="200" y="80" fill="#2a2a2a" font-size="14" text-anchor="middle">Heap empty!</text>';
+    return;
+  }
+
+  // Pre-calculated positions for up to 7 nodes — 3 levels
+  var positions = [
+    {x:200, y:28},           // 0: root
+    {x:110, y:80}, {x:290, y:80},   // 1, 2
+    {x:60,  y:132}, {x:160, y:132}, {x:240, y:132}, {x:340, y:132}  // 3-6
+  ];
+
+  var colorMap = {
+    default:  '#8b5cf6',
+    root:     '#8b5cf6',
+    active:   '#f43f5e',
+    sift:     '#f59e0b'
+  };
+
+  // Draw edges first
+  for (var i = 1; i < n; i++) {
+    var p = Math.floor((i-1)/2);
+    if (!positions[i] || !positions[p]) continue;
+    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', positions[p].x);
+    line.setAttribute('y1', positions[p].y);
+    line.setAttribute('x2', positions[i].x);
+    line.setAttribute('y2', positions[i].y);
+    line.setAttribute('stroke', '#2a2a2a');
+    line.setAttribute('stroke-width', '2');
+    svg.appendChild(line);
+  }
+
+  // Draw nodes
+  for (var i = 0; i < n && i < positions.length; i++) {
+    var x = positions[i].x, y = positions[i].y;
+    var fill = (i === 0 ? '#8b5cf6' : '#2a2a2a');
+    if (i === hlIdx && i === 0) fill = '#f43f5e';  // root being extracted
+    else if (i === hlIdx) fill = '#f59e0b';         // sifting down
+
+    var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', x); circle.setAttribute('cy', y); circle.setAttribute('r', '22');
+    circle.setAttribute('fill', fill);
+    svg.appendChild(circle);
+
+    var text = document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x', x); text.setAttribute('y', y+5);
+    text.setAttribute('text-anchor','middle');
+    text.setAttribute('font-size','13');
+    text.setAttribute('font-weight','700');
+    text.setAttribute('font-family','JetBrains Mono, monospace');
+    text.setAttribute('fill','#ffffff');
+    text.textContent = arr[i];
+    svg.appendChild(text);
+  }
+
+  // Label root
+  if (n > 0 && positions[0]) {
+    var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.setAttribute('x', positions[0].x + 28);
+    lbl.setAttribute('y', positions[0].y + 5);
+    lbl.setAttribute('font-size','10');
+    lbl.setAttribute('fill','#8b5cf6');
+    lbl.setAttribute('font-family','JetBrains Mono, monospace');
+    lbl.setAttribute('font-weight','700');
+    lbl.textContent = '← MAX';
+    svg.appendChild(lbl);
+  }
+}
+
+function conceptStep() {
+  if (conceptHeap.length === 0) {
+    document.getElementById('conceptMsg').textContent = 'Heap empty! Click Reset to start over.';
+    return;
+  }
+  drawConceptTree(0);  // highlight root (being extracted)
+  var extracted = heapExtractMax(conceptHeap);
+  setTimeout(function() {
+    drawConceptTree(-1);
+    document.getElementById('conceptMsg').innerHTML =
+      'Extracted max = <strong style="color:var(--rose)">' + extracted + '</strong>' +
+      ' — last element moved to root, heapify-down ran in O(log N). ' +
+      (conceptHeap.length > 0 ? 'New root = ' + conceptHeap[0] + '.' : 'Heap is now empty.');
+  }, 300);
+}
+
+function conceptReset() {
+  conceptHeap = [90, 70, 80, 40, 60, 55, 30];
+  drawConceptTree(-1);
+  document.getElementById('conceptMsg').textContent = 'Click "Extract Max" — watch how the heap fixes itself in O(log N)';
+}
+
+drawConceptTree(-1);
+
+// ══════════════════════════════
+//  1. PRIORITY QUEUE — HOSPITAL TRIAGE
+// ══════════════════════════════
+
+// Patients: [name, priority] higher priority = serve first
+var PQ_PATIENTS = [
+  ['Critical (P1)', 10], ['High (P2)', 8], ['Moderate (P3)', 5],
+  ['Low (P4)', 3],       ['Minor (P5)', 1], ['Urgent (P1)', 10],
+  ['High (P2)', 7]
+];
+
+var pqHeap    = [];   // max-heap of priority values
+var pqLabels  = [];   // parallel array of labels
+var pqIdx     = 0;
+var pqTreated = 0;
+
+function pqHeapInsert(label, priority) {
+  pqHeap.push(priority);
+  pqLabels.push(label);
+  var i = pqHeap.length - 1;
+  // bubble up by priority
+  while (i > 0) {
+    var p = Math.floor((i-1)/2);
+    if (pqHeap[p] < pqHeap[i]) {
+      var tmp = pqHeap[p]; pqHeap[p] = pqHeap[i]; pqHeap[i] = tmp;
+      tmp = pqLabels[p]; pqLabels[p] = pqLabels[i]; pqLabels[i] = tmp;
+      i = p;
+    } else break;
+  }
+}
+
+function pqRenderCells() {
+  var vals = pqHeap.map(function(v, i) { return 'P' + v; });
+  var cls  = pqHeap.map(function(v, i) {
+    if (i === 0) return 'root';
+    return v >= 8 ? 'active' : v >= 5 ? 'visited' : 'def';
+  });
+  buildCells('pqCells', vals, cls);
+  document.getElementById('pqWaiting').textContent  = pqHeap.length;
+  document.getElementById('pqTreated').textContent  = pqTreated;
+}
+
+function pqAdmit() {
+  if (pqIdx >= PQ_PATIENTS.length) {
+    document.getElementById('pqStatus').innerHTML = 'All patients admitted! Treat them now.';
+    return;
+  }
+  var patient = PQ_PATIENTS[pqIdx];
+  pqHeapInsert(patient[0], patient[1]);
+  document.getElementById('pqStatus').innerHTML =
+    'Admitted: <span>' + patient[0] + '</span> (priority ' + patient[1] + ')' +
+    ' — heap root = highest priority: <span>' + pqLabels[0] + '</span>';
+  pqIdx++;
+  pqRenderCells();
+}
+
+function pqTreat() {
+  if (pqHeap.length === 0) {
+    document.getElementById('pqStatus').innerHTML = '⚠ Queue empty — admit patients first!';
+    return;
+  }
+  var label    = pqLabels[0];
+  var priority = pqHeap[0];
+  // Extract max from both arrays simultaneously
+  pqHeap[0]   = pqHeap[pqHeap.length - 1];   pqHeap.pop();
+  pqLabels[0] = pqLabels[pqLabels.length-1];  pqLabels.pop();
+  // heapify-down (Note: using simple recursive approach here for readability)
+  var i = 0;
+  while (true) {
+    var largest = i, l = 2*i+1, r = 2*i+2;
+    if (l < pqHeap.length && pqHeap[l] > pqHeap[largest]) largest = l;
+    if (r < pqHeap.length && pqHeap[r] > pqHeap[largest]) largest = r;
+    if (largest === i) break;
+    var tmp = pqHeap[i]; pqHeap[i] = pqHeap[largest]; pqHeap[largest] = tmp;
+    tmp = pqLabels[i];   pqLabels[i] = pqLabels[largest]; pqLabels[largest] = tmp;
+    i = largest;
+  }
+  pqTreated++;
+  document.getElementById('pqStatus').innerHTML =
+    '✓ Treating: <span>' + label + '</span> (priority ' + priority + ')' +
+    (pqHeap.length > 0 ? ' — Next: <span>' + pqLabels[0] + '</span>' : ' — Queue now empty');
+  pqRenderCells();
+}
+
+function pqReset() {
+  pqHeap = []; pqLabels = []; pqIdx = 0; pqTreated = 0;
+  buildCells('pqCells', [], []);
+  document.getElementById('pqStatus').innerHTML = 'Priority Queue empty — admit patients to begin';
+  document.getElementById('pqWaiting').textContent = '0';
+  document.getElementById('pqTreated').textContent = '0';
+}
+
+// ══════════════════════════════
+//  2. DIJKSTRA'S
+// ══════════════════════════════
+
+// Simple 6-node graph simulation: nodes A-F with preset distances
+var DIJK_NODES  = ['A','B','C','D','E','F'];
+var DIJK_DISTS  = [0, Infinity, Infinity, Infinity, Infinity, Infinity];
+var DIJK_VISITED = [];
+var DIJK_UPDATES = [
+  // Each step: [nodeIdx, newDist, via]
+  {node:1, dist:4,  via:'A', frontier:[{n:1,d:4},{n:2,d:8}]},
+  {node:2, dist:8,  via:'A', frontier:[{n:2,d:7},{n:3,d:12}]},
+  {node:3, dist:11, via:'B', frontier:[{n:3,d:11},{n:4,d:15}]},
+  {node:4, dist:9,  via:'C', frontier:[{n:4,d:9},{n:5,d:20}]},
+  {node:5, dist:14, via:'D', frontier:[]}
+];
+var dijkPhase = 0;
+
+function dijkRenderNodes(activeIdx) {
+  var labels = DIJK_NODES.map(function(n, i) { return n + ':' + (DIJK_DISTS[i] === Infinity ? '∞' : DIJK_DISTS[i]); });
+  var cls    = DIJK_NODES.map(function(n, i) {
+    if (DIJK_VISITED.indexOf(i) !== -1) return 'found';
+    if (i === activeIdx) return 'active';
+    if (DIJK_DISTS[i] < Infinity) return 'visited';
+    return 'def';
+  });
+  buildCells('dijkNodes', labels, cls);
+}
+
+function dijkStep() {
+  if (dijkPhase >= DIJK_UPDATES.length) {
+    document.getElementById('dijkStatus').innerHTML = '✅ All nodes settled — shortest paths from A found!';
+    document.getElementById('dijkInfo').textContent = 'A→B:4  A→C:7  A→D:11  A→E:9  A→F:14';
+    dijkRenderNodes(-1);
+    return;
+  }
+  var step = DIJK_UPDATES[dijkPhase];
+  DIJK_DISTS[step.node]  = step.dist;
+  DIJK_VISITED.push(dijkPhase === 0 ? 0 : step.node - 1);  // mark previous as done
+  dijkRenderNodes(step.node);
+  document.getElementById('dijkStatus').innerHTML =
+    'Min-heap extracted <span>' + DIJK_NODES[step.node] + '</span>' +
+    ' (dist=' + step.dist + ' via ' + step.via + ')';
+  document.getElementById('dijkInfo').textContent =
+    'Updated neighbors via heap — O(log V) per extraction';
+  dijkPhase++;
+}
+
+function dijkReset() {
+  DIJK_DISTS   = [0, Infinity, Infinity, Infinity, Infinity, Infinity];
+  DIJK_VISITED = [];
+  dijkPhase    = 0;
+  dijkRenderNodes(-1);
+  document.getElementById('dijkStatus').innerHTML = 'Min-heap frontier: start from node A (dist 0)';
+  document.getElementById('dijkInfo').textContent = '';
+}
+
+dijkRenderNodes(-1);
+
+// ══════════════════════════════
+//  3. HEAP SORT
+// ══════════════════════════════
+
+var HS_INPUT  = [42, 17, 65, 9, 33, 58, 24, 81];
+var hsArr     = [];
+var hsN       = HS_INPUT.length;
+var hsPhase   = 'build';   // 'build' -> 'sort'
+var hsBuildI  = 0;
+var hsSortI   = 0;
+var hsAutoTmr = null;
+
+function hsRenderCells(activeIdx, sortedFrom) {
+  var cls = hsArr.map(function(v, i) {
+    if (i >= sortedFrom) return 'found';
+    if (i === activeIdx) return 'active';
+    return 'def';
+  });
+  buildCells('hsCells', hsArr, cls);
+  document.getElementById('hsHeapSz').textContent = sortedFrom;
+  document.getElementById('hsSorted').textContent = hsArr.length - sortedFrom;
+}
+
+function hsStep() {
+  if (hsPhase === 'build') {
+    // Build max-heap using Floyd's (heapify-down all non-leaves)
+    if (hsBuildI === 0) {
+      hsArr = [...HS_INPUT];
+      hsN   = hsArr.length;
+    }
+    var startI = Math.floor(hsN/2) - 1;
+    var curI   = startI - hsBuildI;
+    if (curI >= 0) {
+      heapifyDownMax(hsArr, curI);
+      hsBuildI++;
+      document.getElementById('hsStatus').innerHTML =
+        'Build phase: heapifyDown(<span>' + curI + '</span>) — O(N) Floyd\'s algorithm';
+      hsRenderCells(curI, hsArr.length);
+    } else {
+      hsPhase  = 'sort';
+      hsSortI  = hsArr.length - 1;
+      document.getElementById('hsStatus').innerHTML =
+        'Heap built! ✓ Root = <span>' + hsArr[0] + '</span> — now extracting max to sorted position';
+      hsRenderCells(-1, hsArr.length);
+    }
+    return;
+  }
+
+  // Sort phase: swap root with last unsorted, heapify-down
+  if (hsSortI <= 0) {
+    document.getElementById('hsStatus').innerHTML = '✅ Array sorted! Heap sort complete — O(N log N)';
+    hsRenderCells(-1, 0);
+    return;
+  }
+
+  var extracted = hsArr[0];
+  // Swap root with current last
+  var tmp = hsArr[0]; hsArr[0] = hsArr[hsSortI]; hsArr[hsSortI] = tmp;
+  hsSortI--;
+  // Heapify-down within the shrunk heap
+  var i = 0, n = hsSortI + 1;
+  while (true) {
+    var largest = i, l = 2*i+1, r = 2*i+2;
+    if (l < n && hsArr[l] > hsArr[largest]) largest = l;
+    if (r < n && hsArr[r] > hsArr[largest]) largest = r;
+    if (largest === i) break;
+    var tmp2 = hsArr[i]; hsArr[i] = hsArr[largest]; hsArr[largest] = tmp2;
+    i = largest;
+  }
+
+  document.getElementById('hsStatus').innerHTML =
+    'Placed <span>' + extracted + '</span> at sorted position — heap size now ' + (hsSortI+1);
+  hsRenderCells(-1, hsSortI+1);
+}
+
+function hsAuto() {
+  clearTimeout(hsAutoTmr);
+  function next() {
+    hsStep();
+    var done = (hsPhase === 'sort' && hsSortI <= 0);
+    if (!done) hsAutoTmr = setTimeout(next, 650);
+  }
+  next();
+}
+
+function hsReset() {
+  clearTimeout(hsAutoTmr);
+  hsArr    = [...HS_INPUT];
+  hsN      = hsArr.length;
+  hsPhase  = 'build';
+  hsBuildI = 0; hsSortI = 0;
+  buildCells('hsCells', hsArr, hsArr.map(function() { return 'def'; }));
+  document.getElementById('hsStatus').innerHTML = 'Array ready — step through heap sort';
+  document.getElementById('hsHeapSz').textContent = hsArr.length;
+  document.getElementById('hsSorted').textContent = '0';
+}
+
+hsReset();
+
+// ══════════════════════════════
+//  4. TOP-K (K-TH LARGEST)
+// ══════════════════════════════
+
+// Stream of values to process one by one
+var TOPK_STREAM = [3, 10, 7, 4, 15, 1, 12, 6, 9];
+var topkK       = 3;
+var topkHeap    = [];   // min-heap of size K
+var topkIdx     = 0;
+
+function topkRender(streamActive) {
+  // Stream cells
+  var sCls = TOPK_STREAM.map(function(v, i) {
+    if (i < topkIdx - 1) return 'visited';
+    if (i === topkIdx - 1) return streamActive ? 'active' : 'visited';
+    return 'def';
+  });
+  buildCells('topkStream', TOPK_STREAM, sCls);
+
+  // Heap cells (sorted for display — real heap keeps unsorted)
+  var hCls = topkHeap.map(function(v, i) { return i === 0 ? 'root' : 'visited'; });
+  buildCells('topkHeap', topkHeap, hCls);
+}
+
+function topkStep() {
+  if (topkIdx >= TOPK_STREAM.length) {
+    document.getElementById('topkStatus').innerHTML =
+      '✅ Done! Top-' + topkK + ' values: <span>' + [...topkHeap].sort(function(a,b){return b-a;}).join(', ') + '</span>';
+    topkRender(false);
+    return;
+  }
+
+  var val = TOPK_STREAM[topkIdx];
+  topkIdx++;
+
+  if (topkHeap.length < topkK) {
+    // Heap not full — just insert
+    heapInsertMin(topkHeap, val);
+    document.getElementById('topkStatus').innerHTML =
+      'Added <span>' + val + '</span> — heap not full yet (' + topkHeap.length + '/' + topkK + ')';
+  } else if (val > topkHeap[0]) {
+    // Larger than current min — replace root
+    var replaced = topkHeap[0];
+    topkHeap[0] = val;
+    heapifyDownMin(topkHeap, 0);
+    document.getElementById('topkStatus').innerHTML =
+      'Stream <span>' + val + '</span> > heap min (' + replaced + ') — replace! Heap root now: ' + topkHeap[0];
+  } else {
+    document.getElementById('topkStatus').innerHTML =
+      'Stream <span>' + val + '</span> ≤ heap min (' + topkHeap[0] + ') — skip, not in top-' + topkK;
+  }
+
+  topkRender(true);
+}
+
+function topkReset() {
+  topkHeap = [];
+  topkIdx  = 0;
+  topkRender(false);
+  document.getElementById('topkStatus').innerHTML = 'Stream 9 values — keep top 3 using min-heap';
+}
+
+topkReset();
+
+// ══════════════════════════════
+//  5. MEDIAN OF DATA STREAM
+// ══════════════════════════════
+
+var MED_STREAM = [5, 15, 1, 3, 8, 12, 7, 20, 9];
+var medLowH    = [];   // max-heap (lower half)
+var medHighH   = [];   // min-heap (upper half)
+var medIdx     = 0;
+
+function medRender() {
+  // Show lower half (max-heap, display sorted desc)
+  var low = [...medLowH];
+  buildCells('medLow', low, low.map(function(v, i) { return i === 0 ? 'active' : 'visited'; }));
+
+  // Show upper half (min-heap)
+  var high = [...medHighH];
+  buildCells('medHigh', high, high.map(function(v, i) { return i === 0 ? 'new' : 'def'; }));
+}
+
+function medStep() {
+  if (medIdx >= MED_STREAM.length) {
+    document.getElementById('medStatus').innerHTML = '✅ Stream complete — get median O(1) anytime!';
+    medRender();
+    return;
+  }
+
+  var val = MED_STREAM[medIdx];
+  medIdx++;
+
+  // Insert into correct heap
+  // Note: if val <= max of lower half, goes to lower; else upper
+  if (medLowH.length === 0 || val <= medLowH[0]) {
+    heapInsertMax(medLowH, val);
+  } else {
+    heapInsertMin(medHighH, val);
+  }
+
+  // Balance: sizes must differ by at most 1
+  if (medLowH.length > medHighH.length + 1) {
+    var moved = heapExtractMax(medLowH);
+    heapInsertMin(medHighH, moved);
+  } else if (medHighH.length > medLowH.length) {
+    var moved = heapExtractMin(medHighH);
+    heapInsertMax(medLowH, moved);
+  }
+
+  // Compute median
+  var median;
+  if (medLowH.length === medHighH.length) {
+    median = ((medLowH[0] || 0) + (medHighH[0] || 0)) / 2;
+  } else {
+    median = medLowH[0];
+  }
+
+  medRender();
+  document.getElementById('medStatus').innerHTML =
+    'Added <span>' + val + '</span> → Median = <span>' + median + '</span>' +
+    ' | Low-heap: ' + medLowH.length + ' | High-heap: ' + medHighH.length;
+}
+
+function medReset() {
+  medLowH = []; medHighH = []; medIdx = 0;
+  medRender();
+  document.getElementById('medStatus').innerHTML = 'Stream numbers one by one — median stays O(1)';
+}
+
+medReset();
+
+// ══════════════════════════════
+//  6. JOB SCHEDULING
+// ══════════════════════════════
+
+var SCHED_JOBS = [
+  {name:'Render',   priority:5, time:3},
+  {name:'Download', priority:2, time:1},
+  {name:'DB Write', priority:8, time:5},
+  {name:'Compress', priority:4, time:2},
+  {name:'Network',  priority:9, time:4},
+  {name:'Backup',   priority:1, time:6},
+  {name:'Encrypt',  priority:7, time:3}
+];
+
+var schedH    = [];  // max-heap [priority, name, time]
+var schedHNms = [];  // parallel names
+var schedHTms = [];  // parallel times
+var schedJIdx = 0;
+var schedDone = 0;
+var schedTime = 0;
+
+function schedInsert(name, priority, time) {
+  schedH.push(priority);
+  schedHNms.push(name);
+  schedHTms.push(time);
+  var i = schedH.length - 1;
+  while (i > 0) {
+    var p = Math.floor((i-1)/2);
+    if (schedH[p] < schedH[i]) {
+      // swap all three parallel arrays
+      var tmp;
+      tmp = schedH[p];    schedH[p] = schedH[i];       schedH[i] = tmp;
+      tmp = schedHNms[p]; schedHNms[p] = schedHNms[i]; schedHNms[i] = tmp;
+      tmp = schedHTms[p]; schedHTms[p] = schedHTms[i]; schedHTms[i] = tmp;
+      i = p;
+    } else break;
+  }
+}
+
+function schedRender() {
+  var labels = schedH.map(function(p, i) { return schedHNms[i] + '(' + p + ')'; });
+  var cls    = schedH.map(function(p, i) {
+    if (i === 0) return 'root';
+    return p >= 7 ? 'active' : p >= 4 ? 'visited' : 'def';
+  });
+  buildCells('schedCells', labels, cls);
+  document.getElementById('schedQ').textContent    = schedH.length;
+  document.getElementById('schedDone').textContent = schedDone;
+  document.getElementById('schedTime').textContent = schedTime + 'ms';
+}
+
+function schedAdd() {
+  if (schedJIdx >= SCHED_JOBS.length) {
+    document.getElementById('schedStatus').innerHTML = 'All jobs queued! Run them now.';
+    return;
+  }
+  var job = SCHED_JOBS[schedJIdx];
+  schedInsert(job.name, job.priority, job.time);
+  document.getElementById('schedStatus').innerHTML =
+    'Queued: <span>' + job.name + '</span> (priority ' + job.priority + ', ' + job.time + 'ms)' +
+    ' — Highest priority: <span>' + schedHNms[0] + '</span>';
+  schedJIdx++;
+  schedRender();
+}
+
+function schedRun() {
+  if (schedH.length === 0) {
+    document.getElementById('schedStatus').innerHTML = '⚠ Queue empty — add jobs first!';
+    return;
+  }
+  var name = schedHNms[0], priority = schedH[0], time = schedHTms[0];
+  // Extract max from all three parallel arrays
+  schedH[0]    = schedH[schedH.length - 1];       schedH.pop();
+  schedHNms[0] = schedHNms[schedHNms.length - 1]; schedHNms.pop();
+  schedHTms[0] = schedHTms[schedHTms.length - 1]; schedHTms.pop();
+  // heapify-down
+  var i = 0;
+  while (true) {
+    var largest = i, l = 2*i+1, r = 2*i+2;
+    if (l < schedH.length && schedH[l] > schedH[largest]) largest = l;
+    if (r < schedH.length && schedH[r] > schedH[largest]) largest = r;
+    if (largest === i) break;
+    var tmp;
+    tmp = schedH[i];    schedH[i] = schedH[largest];       schedH[largest] = tmp;
+    tmp = schedHNms[i]; schedHNms[i] = schedHNms[largest]; schedHNms[largest] = tmp;
+    tmp = schedHTms[i]; schedHTms[i] = schedHTms[largest]; schedHTms[largest] = tmp;
+    i = largest;
+  }
+  schedDone++;
+  schedTime += time;
+  document.getElementById('schedStatus').innerHTML =
+    '✓ Running: <span>' + name + '</span> (priority ' + priority + ', +' + time + 'ms)' +
+    (schedH.length > 0 ? ' — Next: <span>' + schedHNms[0] + '</span>' : ' — All done!');
+  schedRender();
+}
+
+function schedReset() {
+  schedH = []; schedHNms = []; schedHTms = [];
+  schedJIdx = 0; schedDone = 0; schedTime = 0;
+  buildCells('schedCells', [], []);
+  document.getElementById('schedStatus').innerHTML = 'Job queue empty — add jobs to begin scheduling';
+  document.getElementById('schedQ').textContent    = '0';
+  document.getElementById('schedDone').textContent = '0';
+  document.getElementById('schedTime').textContent = '0';
+}
+
+// ══════════════════════════════
+//  MODAL
+// ══════════════════════════════
+
+var modal = document.getElementById('modal');
+
+document.getElementById('cancelBtn').addEventListener('click', function() {
+  modal.classList.remove('open');
+});
+
+window.addEventListener('click', function(e) {
+  if (e.target === modal) modal.classList.remove('open');
+});
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+
+window.addEventListener('load', function() {
+  // Draw the concept tree
+  drawConceptTree(-1);
+});
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

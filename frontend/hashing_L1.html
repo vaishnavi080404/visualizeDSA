@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Updated by maintainer - Performance optimization -->
+    <!-- Updated by maintainer - Performance optimization -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashing - Data Structures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="hashing_L1.css">
+</head>
+<body>
+
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a>
+        <span>›</span>
+        <span>Hashing</span>
+        <span>›</span>
+        <span>Basics</span>
+    </div>
+
+    
+    <div class="page-header">
+        <h1 class="page-title">Hashing — Basics</h1>
+        <p class="page-subtitle">Understanding hash tables, hash functions, and collision resolution</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3<span class="partition"> | </span>Basics</div>
+        </div>
+    </div>
+
+   
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">📚</div>
+            <h2 class="section-title">Understanding Hashing</h2>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Hashing?</h3>
+            <p class="content-text">
+                <b>Hashing</b> refers to the process of generating a small, fixed-sized output (used as an index in a table) from an input that is typically large and variable in size. It uses mathematical formulas known as <b>hash functions</b> to perform this transformation. The result determines an index or location for storing an item in a data structure called a <b>Hash Table</b>.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🤔 Why Use Hashing?</h3>
+            <p class="content-text">
+                Hashing is one of the most widely used data structures after arrays. It mainly supports search, insert, and delete in <b>O(1) average time</b>, which is more efficient than arrays, linked lists, and self-balancing BSTs. Common uses include dictionaries, frequency counting, and maintaining data for quick access by key.
+            </p>
+            <ul class="styled-list">
+                <li><b>Database Indexing</b> — fast record lookup without scanning all rows</li>
+                <li><b>Cryptography</b> — password hashing, digital signatures, checksums</li>
+                <li><b>Caches</b> — O(1) cache hit/miss checks in browser or CPU caches</li>
+                <li><b>Symbol Tables</b> — compilers store variable names in hash maps</li>
+                <li><b>Dictionaries</b> — Python dict, JavaScript Map, C++ unordered_map</li>
+            </ul>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🔄 How Does Hashing Work?</h3>
+            <p class="content-text">
+                A key is passed to a <b>hash function</b>, which computes an integer index. That index is used to store or retrieve the value in a <b>hash table</b> (typically an array of lists). The goal is to distribute keys as uniformly as possible across the table, minimising <b>collisions</b>.
+            </p>
+        </div>
+
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Search (avg)</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Insert (avg)</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Delete (avg)</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Worst Case</div>
+                <div class="complexity-value red">O(N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space</div>
+                <div class="complexity-value orange">O(N)</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🎨</div>
+            <h2 class="section-title">Visual Representation</h2>
+        </div>
+
+        <div class="hash-visual-img">
+            <h3>Hash Table — Key → Hash Function → Index</h3>
+            <div class="hash-diagram">
+                <svg viewBox="0 0 820 480" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+                    <defs>
+                        <marker id="arr1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L8,3 z" fill="#06b6d4"/>
+                        </marker>
+                        <marker id="arr2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L8,3 z" fill="#10b981"/>
+                        </marker>
+                        <marker id="arr3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b"/>
+                        </marker>
+                    </defs>
+
+                    <!-- KEYS column -->
+                    <text x="60" y="28" fill="#a0a0a0" font-size="13" font-weight="bold" text-anchor="middle">KEYS</text>
+
+                    <!-- Key "ab" -->
+                    <rect x="10" y="42" width="100" height="38" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" rx="8"/>
+                    <text x="60" y="65" fill="#c4b5fd" font-size="14" font-weight="bold" text-anchor="middle">"ab"</text>
+
+                    <!-- Key "cd" -->
+                    <rect x="10" y="110" width="100" height="38" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" rx="8"/>
+                    <text x="60" y="133" fill="#c4b5fd" font-size="14" font-weight="bold" text-anchor="middle">"cd"</text>
+
+                    <!-- Key "efg" -->
+                    <rect x="10" y="178" width="100" height="38" fill="#1e293b" stroke="#8b5cf6" stroke-width="1.5" rx="8"/>
+                    <text x="60" y="201" fill="#c4b5fd" font-size="14" font-weight="bold" text-anchor="middle">"efg"</text>
+
+                    <!-- Key "xyz" (collision case) -->
+                    <rect x="10" y="246" width="100" height="38" fill="#1e293b" stroke="#ef4444" stroke-width="1.5" rx="8"/>
+                    <text x="60" y="269" fill="#fca5a5" font-size="14" font-weight="bold" text-anchor="middle">"xyz"</text>
+                    <text x="60" y="300" fill="#ef4444" font-size="10" text-anchor="middle">collision!</text>
+
+                    <!-- Arrows from keys -->
+                    <path d="M110 61 L215 61" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr1)"/>
+                    <path d="M110 129 L215 129" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr1)"/>
+                    <path d="M110 197 L215 197" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr1)"/>
+                    <path d="M110 265 L215 265" stroke="#06b6d4" stroke-width="2" marker-end="url(#arr1)"/>
+
+                    <!-- HASH FUNCTION box -->
+                    <rect x="215" y="30" width="150" height="280" fill="rgba(6,182,212,0.08)" stroke="#06b6d4" stroke-width="2" rx="12" stroke-dasharray="6,4"/>
+                    <text x="290" y="52" fill="#06b6d4" font-size="12" font-weight="bold" text-anchor="middle">HASH FUNCTION</text>
+                    <text x="290" y="70" fill="#a0a0a0" font-size="10" text-anchor="middle">h(key) = sum(chars)</text>
+                    <text x="290" y="84" fill="#a0a0a0" font-size="10" text-anchor="middle">mod table_size</text>
+
+                    <!-- Function computations -->
+                    <rect x="228" y="95" width="124" height="52" fill="#0d1117" stroke="#8b5cf6" stroke-width="1" rx="6"/>
+                    <text x="290" y="113" fill="#a5d6ff" font-size="10" text-anchor="middle">"ab" → 1+2 = 3</text>
+                    <text x="290" y="129" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">3 mod 7 = 3</text>
+
+                    <rect x="228" y="158" width="124" height="52" fill="#0d1117" stroke="#8b5cf6" stroke-width="1" rx="6"/>
+                    <text x="290" y="176" fill="#a5d6ff" font-size="10" text-anchor="middle">"cd" → 3+4 = 7</text>
+                    <text x="290" y="192" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">7 mod 7 = 0</text>
+
+                    <rect x="228" y="220" width="124" height="52" fill="#0d1117" stroke="#8b5cf6" stroke-width="1" rx="6"/>
+                    <text x="290" y="238" fill="#a5d6ff" font-size="10" text-anchor="middle">"efg" → 5+6+7=18</text>
+                    <text x="290" y="254" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">18 mod 7 = 4</text>
+
+                    <rect x="228" y="283" width="124" height="52" fill="#0d1117" stroke="#ef4444" stroke-width="1" rx="6"/>
+                    <text x="290" y="301" fill="#a5d6ff" font-size="10" text-anchor="middle">"xyz" → 24+25+26=75</text>
+                    <text x="290" y="317" fill="#ef4444" font-size="11" font-weight="bold" text-anchor="middle">75 mod 7 = 5? ✗</text>
+
+                    <!-- Arrows to table -->
+                    <path d="M365 121 L440 121" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                    <path d="M365 184 L440 184" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                    <path d="M365 246 L440 246" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                    <path d="M365 309 L440 309" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr3)"/>
+
+                    <!-- HASH TABLE -->
+                    <text x="570" y="20" fill="#a0a0a0" font-size="13" font-weight="bold" text-anchor="middle">HASH TABLE</text>
+                    <text x="570" y="34" fill="#a0a0a0" font-size="10" text-anchor="middle">(size = 7)</text>
+
+                    <!-- Table rows -->
+                    <g id="table-rows">
+                        <!-- Index 0 — "cd" goes here -->
+                        <rect x="440" y="42" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="68" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">0</text>
+                        <rect x="504" y="42" width="130" height="44" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" rx="4"/>
+                        <text x="569" y="68" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">"cd"</text>
+
+                        <!-- Index 1 — empty -->
+                        <rect x="440" y="90" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="116" fill="#a0a0a0" font-size="13" text-anchor="middle">1</text>
+                        <rect x="504" y="90" width="130" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1" rx="4"/>
+                        <text x="569" y="116" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+
+                        <!-- Index 2 — empty -->
+                        <rect x="440" y="138" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="164" fill="#a0a0a0" font-size="13" text-anchor="middle">2</text>
+                        <rect x="504" y="138" width="130" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1" rx="4"/>
+                        <text x="569" y="164" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+
+                        <!-- Index 3 — "ab" goes here -->
+                        <rect x="440" y="186" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="212" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">3</text>
+                        <rect x="504" y="186" width="130" height="44" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" rx="4"/>
+                        <text x="569" y="212" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">"ab"</text>
+
+                        <!-- Index 4 — "efg" goes here -->
+                        <rect x="440" y="234" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="260" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">4</text>
+                        <rect x="504" y="234" width="130" height="44" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" rx="4"/>
+                        <text x="569" y="260" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">"efg"</text>
+
+                        <!-- Index 5 — collision indicator -->
+                        <rect x="440" y="282" width="60" height="44" fill="#0d1117" stroke="#ef4444" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="308" fill="#ef4444" font-size="13" font-weight="bold" text-anchor="middle">5</text>
+                        <rect x="504" y="282" width="130" height="44" fill="rgba(239,68,68,0.1)" stroke="#ef4444" stroke-width="1.5" rx="4"/>
+                        <text x="569" y="308" fill="#ef4444" font-size="12" text-anchor="middle">COLLISION!</text>
+
+                        <!-- Index 6 — empty -->
+                        <rect x="440" y="330" width="60" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                        <text x="470" y="356" fill="#a0a0a0" font-size="13" text-anchor="middle">6</text>
+                        <rect x="504" y="330" width="130" height="44" fill="#0d1117" stroke="#2a2a2a" stroke-width="1" rx="4"/>
+                        <text x="569" y="356" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+                    </g>
+
+                    <!-- pointer arrows from table entries to labels -->
+                    <text x="650" y="68" fill="#10b981" font-size="11">✓ h("cd")=0</text>
+                    <text x="650" y="212" fill="#10b981" font-size="11">✓ h("ab")=3</text>
+                    <text x="650" y="260" fill="#10b981" font-size="11">✓ h("efg")=4</text>
+                    <text x="650" y="308" fill="#ef4444" font-size="11">⚠ resolve</text>
+
+                    <!-- Legend -->
+                    <rect x="10" y="385" width="780" height="80" fill="rgba(255,255,255,0.02)" stroke="#2a2a2a" stroke-width="1" rx="8"/>
+                    <text x="30" y="406" fill="#a0a0a0" font-size="11" font-weight="bold">LEGEND:</text>
+                    <rect x="100" y="392" width="14" height="14" fill="rgba(16,185,129,0.3)" stroke="#10b981" rx="3"/>
+                    <text x="120" y="404" fill="#10b981" font-size="10">Occupied slot</text>
+                    <rect x="220" y="392" width="14" height="14" fill="rgba(239,68,68,0.2)" stroke="#ef4444" rx="3"/>
+                    <text x="240" y="404" fill="#ef4444" font-size="10">Collision</text>
+                    <rect x="310" y="392" width="14" height="14" fill="#0d1117" stroke="#2a2a2a" rx="3"/>
+                    <text x="330" y="404" fill="#a0a0a0" font-size="10">Empty slot</text>
+                    <rect x="410" y="392" width="14" height="14" fill="rgba(139,92,246,0.3)" stroke="#8b5cf6" rx="3"/>
+                    <text x="430" y="404" fill="#c4b5fd" font-size="10">Input key</text>
+                    <text x="30" y="430" fill="#a0a0a0" font-size="10">Hash function: h(key) = sum of ASCII values  mod  table_size (7)</text>
+                    <text x="30" y="448" fill="#a0a0a0" font-size="10">Goal: map large key space → small fixed-size table indices as uniformly as possible</text>
+                </svg>
+            </div>
+            <p class="content-text" style="margin-top:1.5rem;text-align:center;">
+                A Hash Function maps keys → table indices. Collisions occur when two keys map to the same index — resolved by chaining or open addressing.
+            </p>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔢</div>
+            <h2 class="section-title">How Hashing Works — Step by Step</h2>
+        </div>
+        <p class="content-text">Let's walk through a concrete example: storing the string set <code style="color:var(--primary-cyan)">{"ab", "cd", "efg"}</code> in a hash table of size 7.</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <div class="step-title">Assign Character Values</div>
+                <div class="step-body">Map every letter to a number. 'a'=1, 'b'=2, 'c'=3, 'd'=4, 'e'=5, 'f'=6, 'g'=7 …</div>
+                <div class="step-code">a=1, b=2, c=3, d=4 …</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <div class="step-title">Compute Key Sums</div>
+                <div class="step-body">Sum the character values for each string to get a numeric representation of the key.</div>
+                <div class="step-code">"ab" = 1+2 = 3<br>"cd" = 3+4 = 7<br>"efg" = 5+6+7 = 18</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <div class="step-title">Apply Hash Function</div>
+                <div class="step-body">Take sum mod table_size (7) to get the final index. This maps any key into range [0, 6].</div>
+                <div class="step-code">h(k) = sum(k) mod 7</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">4</div>
+                <div class="step-title">Compute Indices</div>
+                <div class="step-body">Apply the formula to each key to find its destination slot in the hash table.</div>
+                <div class="step-code">3 mod 7 = 3 ✓<br>7 mod 7 = 0 ✓<br>18 mod 7 = 4 ✓</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">5</div>
+                <div class="step-title">Store in Table</div>
+                <div class="step-body">Place each key (and its value) at the computed index. Now any key can be found in O(1) by recomputing its hash.</div>
+                <div class="step-code">table[0] = "cd"<br>table[3] = "ab"<br>table[4] = "efg"</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">6</div>
+                <div class="step-title">Handle Collisions</div>
+                <div class="step-body">If two keys hash to the same index, use chaining (linked list at that slot) or open addressing (probe for next empty slot).</div>
+                <div class="step-code">Chaining or<br>Linear/Quad Probing</div>
+            </div>
+        </div>
+    </div>
+
+  
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔑</div>
+            <h2 class="section-title">Key Concepts</h2>
+        </div>
+
+        <div class="concepts-grid">
+            <div class="concept-card">
+                <div class="concept-title">🔤 Key</div>
+                <div class="concept-desc">The input fed to the hash function. Can be any data type — string, integer, object. Must be hashable (immutable in Python). Example: username, product ID.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">ƒ Hash Function</div>
+                <div class="concept-desc">A mathematical formula that converts a key into an integer index. Must be deterministic, fast to compute, and distribute keys uniformly across the table.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">📋 Hash Table</div>
+                <div class="concept-desc">The underlying array-of-buckets data structure. Each bucket holds one key-value pair (open addressing) or a list of pairs (chaining). Typical size is a prime number.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">💥 Collision</div>
+                <div class="concept-desc">When two different keys produce the same hash index. Unavoidable by the pigeonhole principle. Handled via chaining, linear probing, or quadratic probing.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">⚖️ Load Factor</div>
+                <div class="concept-desc">Ratio = n / capacity (n = entries stored). Higher load factor → more collisions. Most implementations rehash when load factor exceeds 0.7–0.8.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">🔄 Rehashing</div>
+                <div class="concept-desc">When the load factor is too high, a new larger table is allocated (usually 2× capacity) and all existing keys are re-inserted into it. O(N) one-time cost.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════ 5. COMPONENTS OF HASHING ══════════ -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🧩</div>
+            <h2 class="section-title">Components of Hashing</h2>
+        </div>
+        <p class="content-text">There are three major building blocks of any hashing system:</p>
+
+        <div class="content-block">
+            <h3 class="content-title">1️⃣ Key</h3>
+            <p class="content-text">A key can be any string or integer that is fed as input to the hash function. The key identifies what you want to store or retrieve. Keys must be <b>unique</b> within the hash table (like a primary key in databases). In most languages, keys must be immutable (strings, numbers, tuples — not lists).</p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">2️⃣ Hash Function</h3>
+            <p class="content-text">Receives the input key and returns an integer index (the <b>hash index</b>) into the underlying array. A good hash function should:</p>
+            <ul class="styled-list">
+                <li>Be <b>deterministic</b> — same key always returns same hash</li>
+                <li>Be <b>fast</b> — O(1) or O(key_length) computation</li>
+                <li>Produce <b>uniform distribution</b> — minimize clustering</li>
+                <li>Minimize <b>collisions</b> — rare but unavoidable</li>
+            </ul>
+            <div class="note-box">
+                <strong>Common hash functions:</strong> Division method <code>h(k) = k mod m</code>, Multiplication method, Universal hashing, MurmurHash, FNV hash, SHA-256 (cryptographic).
+            </div>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">3️⃣ Hash Table</h3>
+            <p class="content-text">Hash table is typically an array of buckets (lists or slots). It stores values corresponding to the keys. Each data value has its own unique index computed by the hash function. The table size is usually chosen to be a prime number to reduce clustering.</p>
+        </div>
+    </div>
+
+  
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🗂️</div>
+            <h2 class="section-title">Two Forms of Hashing</h2>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">Hash Set — Collection of Unique Keys</h3>
+            <p class="content-text">Stores only keys (no values). Used to check membership, deduplicate, or find unique elements quickly.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;">
+                <span class="tag tag-cyan">Python: set</span>
+                <span class="tag tag-orange">JS: Set</span>
+                <span class="tag tag-green">C++: unordered_set</span>
+                <span class="tag tag-red">Java: HashSet</span>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">Hash Map — Key-Value Pairs with Unique Keys</h3>
+            <p class="content-text">Stores (key → value) pairs. The most commonly used form — like a dictionary where you look up a word (key) to get its definition (value).</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 16px;">
+                <span class="tag tag-cyan">Python: dict</span>
+                <span class="tag tag-orange">JS: Map</span>
+                <span class="tag tag-green">C++: unordered_map</span>
+                <span class="tag tag-red">Java: HashMap</span>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Hash Set</th>
+                        <th>Hash Map</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Stores</td><td>Keys only</td><td>Key-Value pairs</td></tr>
+                    <tr><td>Use case</td><td>Membership testing, dedup</td><td>Dictionary, frequency count</td></tr>
+                    <tr><td>Search</td><td>O(1) avg</td><td>O(1) avg</td></tr>
+                    <tr><td>Duplicates</td><td>Not allowed</td><td>Keys must be unique</td></tr>
+                    <tr><td>Access value</td><td>✗ No values</td><td>✓ map[key] = value</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+   
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚠️</div>
+            <h2 class="section-title">When NOT to Use Hashing</h2>
+        </div>
+        <p class="content-text">Hashing is powerful but not a universal tool. There are cases where other data structures are more appropriate:</p>
+
+        <div class="concepts-grid">
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🌳 Need Sorted Data</div>
+                <div class="concept-desc">When you need to maintain sorted order along with search/insert/delete, use a <b>Self-Balancing BST</b> (AVL Tree, Red-Black Tree) — O(log N) for all ops but sorted.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🔠 Prefix Search on Strings</div>
+                <div class="concept-desc">When keys are strings and you need prefix search (autocomplete), use a <b>Trie</b>. Hash tables can't efficiently handle prefix queries.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🏔️ Floor / Ceiling Queries</div>
+                <div class="concept-desc">When you need to find the greatest key ≤ x or smallest key ≥ x, use a <b>Self-Balancing BST</b> or <b>Sorted Array</b>. Hash tables are unordered.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">📊 Range Queries</div>
+                <div class="concept-desc">When you need all keys in a range [lo, hi], hash tables require O(N) scan. Use a <b>BST or Segment Tree</b> for O(log N) range queries.</div>
+            </div>
+        </div>
+
+        <div class="note-box" style="margin-top:1.5rem;">
+            <strong>Rule of thumb:</strong> If you only need O(1) exact key lookup, insert, and delete — use Hashing. If you need ordering, ranges, or sorted traversal — use a BST-based structure.
+        </div>
+    </div>
+
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">💻</div>
+            <h2 class="section-title">Hash Table Implementation</h2>
+        </div>
+        <p class="content-text" style="margin-bottom:2rem;">
+            Let's explore core hash table operations — Insert, Search, and Delete — using both the <b>built-in</b> hash map (unordered_map / dict / HashMap) and a <b>custom implementation</b> using chaining.
+        </p>
+
+        <!-- INSERT -->
+        <div class="impl-type">
+            <div class="impl-header">
+                <h3 class="impl-title">🗃️ Core Hash Map Operations</h3>
+                <span class="impl-badge">Built-in / STL</span>
+            </div>
+
+            <!-- Insert -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('insert')">
+                    <div class="operation-title">
+                        <div class="operation-number">1</div>
+                        <span>Insert Operation</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-insert">▼</div>
+                </div>
+                <div class="operation-content" id="content-insert">
+                    <div class="operation-body">
+                        <p class="content-text">Inserts a key-value pair into the hash map. The key is hashed, the index is computed, and the value is stored at that bucket.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time (avg)</div><div class="complexity-value">O(1)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Time (worst)</div><div class="complexity-value red">O(N)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Space</div><div class="complexity-value orange">O(1)</div></div>
+                        </div>
+                        <h4 style="margin:1.5rem 0 1rem;color:var(--primary-cyan);">Algorithm:</h4>
+                        <ul class="styled-list">
+                            <li>Compute hash index: <code>idx = hash(key) mod capacity</code></li>
+                            <li>If slot is empty, insert directly</li>
+                            <li>If collision, use chaining (append to list) or probing (find next slot)</li>
+                            <li>If load factor exceeds threshold, rehash and double capacity</li>
+                        </ul>
+                        <div class="language-tabs" data-group="insert">
+                            <div class="lang-tab active" onclick="switchCode(event,'insert','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'insert','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'insert','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'insert','c')">C</div>
+                            <div class="lang-tab" onclick="switchCode(event,'insert','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="insert" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">#include</span> <span class="string">&lt;unordered_map&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    unordered_map&lt;<span class="type">string</span>, <span class="keyword">int</span>&gt; hashMap;
+
+    <span class="comment">// Insert key-value pairs — O(1) average</span>
+    hashMap[<span class="string">"apple"</span>]  = <span class="number">5</span>;
+    hashMap[<span class="string">"banana"</span>] = <span class="number">3</span>;
+    hashMap[<span class="string">"cherry"</span>] = <span class="number">8</span>;
+
+    <span class="comment">// Using insert() method</span>
+    hashMap.<span class="function">insert</span>({<span class="string">"date"</span>, <span class="number">2</span>});
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="insert" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment"># Python dict — built-in hash map</span>
+hash_map = {}
+
+<span class="comment"># Insert key-value pairs — O(1) average</span>
+hash_map[<span class="string">"apple"</span>]  = <span class="number">5</span>
+hash_map[<span class="string">"banana"</span>] = <span class="number">3</span>
+hash_map[<span class="string">"cherry"</span>] = <span class="number">8</span>
+
+<span class="comment"># Using update()</span>
+hash_map.<span class="function">update</span>({<span class="string">"date"</span>: <span class="number">2</span>})
+
+<span class="function">print</span>(hash_map)  <span class="comment"># {'apple':5, 'banana':3, ...}</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="insert" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">import</span> java.util.HashMap;
+
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
+        HashMap&lt;String, Integer&gt; hashMap = <span class="keyword">new</span> HashMap&lt;&gt;();
+
+        <span class="comment">// Insert key-value pairs — O(1) average</span>
+        hashMap.<span class="function">put</span>(<span class="string">"apple"</span>,  <span class="number">5</span>);
+        hashMap.<span class="function">put</span>(<span class="string">"banana"</span>, <span class="number">3</span>);
+        hashMap.<span class="function">put</span>(<span class="string">"cherry"</span>, <span class="number">8</span>);
+
+        System.out.<span class="function">println</span>(hashMap);
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="insert" data-lang="c">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C (Custom Chaining)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// Simple chaining hash map in C</span>
+<span class="keyword">#define</span> SIZE <span class="number">7</span>
+
+<span class="keyword">typedef struct</span> Node {
+    <span class="keyword">int</span> key, value;
+    <span class="keyword">struct</span> Node* next;
+} Node;
+
+Node* table[SIZE];
+
+<span class="keyword">void</span> <span class="function">insert</span>(<span class="keyword">int</span> key, <span class="keyword">int</span> value) {
+    <span class="keyword">int</span> idx = key % SIZE;    <span class="comment">// hash function</span>
+    Node* node = (Node*)<span class="function">malloc</span>(<span class="keyword">sizeof</span>(Node));
+    node->key   = key;
+    node->value = value;
+    node->next  = table[idx]; <span class="comment">// prepend to chain</span>
+    table[idx]  = node;
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="insert" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// JavaScript Map — built-in hash map</span>
+<span class="keyword">const</span> hashMap = <span class="keyword">new</span> Map();
+
+<span class="comment">// Insert key-value pairs — O(1) average</span>
+hashMap.<span class="function">set</span>(<span class="string">"apple"</span>,  <span class="number">5</span>);
+hashMap.<span class="function">set</span>(<span class="string">"banana"</span>, <span class="number">3</span>);
+hashMap.<span class="function">set</span>(<span class="string">"cherry"</span>, <span class="number">8</span>);
+
+console.<span class="function">log</span>(hashMap.<span class="function">get</span>(<span class="string">"apple"</span>)); <span class="comment">// 5</span></pre></div></div>
+                        </div>
+
+                        <!-- INSERT SVG -->
+                        <h4 style="margin:1.5rem 0 0.8rem;color:var(--primary-cyan);">Insert Visualization</h4>
+                        <div style="background:#0a0a0a;border-radius:12px;padding:10px;overflow-x:auto;">
+                        <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono,monospace" style="min-width:320px;width:100%;">
+                            <text x="60"  y="22" fill="#06b6d4" font-size="14" font-weight="bold" text-anchor="middle">Before</text>
+                            <rect x="10"  y="34" width="100" height="36" fill="none" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                            <text x="60"  y="57" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+                            <rect x="10"  y="74" width="100" height="36" fill="none" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                            <text x="60"  y="97" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+                            <rect x="10" y="114" width="100" height="36" fill="none" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                            <text x="60" y="137" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+
+                            <text x="200" y="115" fill="#10b981" font-size="16" font-weight="bold" text-anchor="middle">INSERT</text>
+                            <text x="200" y="133" fill="#10b981" font-size="11" text-anchor="middle">("apple", 5)</text>
+                            <path d="M250 115 L300 115" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr2)"/>
+                            <defs><marker id="arr2b" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10b981"/></marker></defs>
+
+                            <text x="450" y="22" fill="#06b6d4" font-size="14" font-weight="bold" text-anchor="middle">After</text>
+                            <rect x="305"  y="34" width="130" height="36" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" rx="4"/>
+                            <text x="370"  y="57" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">"apple" → 5</text>
+                            <rect x="305"  y="74" width="130" height="36" fill="none" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                            <text x="370"  y="97" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+                            <rect x="305" y="114" width="130" height="36" fill="none" stroke="#2a2a2a" stroke-width="1.5" rx="4"/>
+                            <text x="370" y="137" fill="#333" font-size="11" text-anchor="middle">— empty —</text>
+
+                            <text x="320" y="185" fill="#10b981" font-size="11">hash("apple") mod 7 = idx  →  stored in O(1)</text>
+                        </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('search')">
+                    <div class="operation-title">
+                        <div class="operation-number">2</div>
+                        <span>Search / Lookup Operation</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-search">▼</div>
+                </div>
+                <div class="operation-content" id="content-search">
+                    <div class="operation-body">
+                        <p class="content-text">Retrieves the value for a given key. The key is hashed, and the bucket at that index is checked. If using chaining, the chain is traversed for the exact key match.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time (avg)</div><div class="complexity-value">O(1)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Time (worst)</div><div class="complexity-value red">O(N)</div></div>
+                        </div>
+                        <h4 style="margin:1.5rem 0 1rem;color:var(--primary-cyan);">Algorithm:</h4>
+                        <ul class="styled-list">
+                            <li>Compute <code>idx = hash(key) mod capacity</code></li>
+                            <li>Check the bucket at <code>idx</code> for the key</li>
+                            <li>If chaining: traverse the linked list at that slot</li>
+                            <li>If found, return the value; else return null/-1/None</li>
+                        </ul>
+                        <div class="language-tabs" data-group="search">
+                            <div class="lang-tab active" onclick="switchCode(event,'search','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'search','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'search','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'search','c')">C</div>
+                            <div class="lang-tab" onclick="switchCode(event,'search','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="search" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre>unordered_map&lt;<span class="type">string</span>, <span class="keyword">int</span>&gt; hashMap = {
+    {<span class="string">"apple"</span>, <span class="number">5</span>}, {<span class="string">"banana"</span>, <span class="number">3</span>}
+};
+
+<span class="comment">// Search — O(1) average</span>
+<span class="keyword">auto</span> it = hashMap.<span class="function">find</span>(<span class="string">"apple"</span>);
+<span class="keyword">if</span> (it != hashMap.<span class="function">end</span>()) {
+    cout &lt;&lt; <span class="string">"Found: "</span> &lt;&lt; it->second &lt;&lt; endl; <span class="comment">// 5</span>
+} <span class="keyword">else</span> {
+    cout &lt;&lt; <span class="string">"Key not found"</span> &lt;&lt; endl;
+}
+
+<span class="comment">// Or direct access (inserts 0 if missing!)</span>
+<span class="keyword">int</span> val = hashMap[<span class="string">"banana"</span>]; <span class="comment">// 3</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="search" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre>hash_map = {<span class="string">"apple"</span>: <span class="number">5</span>, <span class="string">"banana"</span>: <span class="number">3</span>}
+
+<span class="comment"># Safe search using get() — returns None if missing</span>
+val = hash_map.<span class="function">get</span>(<span class="string">"apple"</span>)     <span class="comment"># 5</span>
+val = hash_map.<span class="function">get</span>(<span class="string">"grape"</span>, -<span class="number">1</span>)  <span class="comment"># -1 (default)</span>
+
+<span class="comment"># Check membership</span>
+<span class="keyword">if</span> <span class="string">"apple"</span> <span class="keyword">in</span> hash_map:
+    <span class="function">print</span>(hash_map[<span class="string">"apple"</span>])  <span class="comment"># 5</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="search" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre>HashMap&lt;String, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();
+map.<span class="function">put</span>(<span class="string">"apple"</span>, <span class="number">5</span>);
+
+<span class="comment">// Search — O(1) average</span>
+<span class="keyword">if</span> (map.<span class="function">containsKey</span>(<span class="string">"apple"</span>)) {
+    System.out.<span class="function">println</span>(map.<span class="function">get</span>(<span class="string">"apple"</span>));  <span class="comment">// 5</span>
+}
+
+<span class="comment">// getOrDefault — safe lookup</span>
+<span class="keyword">int</span> val = map.<span class="function">getOrDefault</span>(<span class="string">"grape"</span>, -<span class="number">1</span>);  <span class="comment">// -1</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="search" data-lang="c">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C (Custom Chaining)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">int</span> <span class="function">search</span>(<span class="keyword">int</span> key) {
+    <span class="keyword">int</span> idx = key % SIZE;
+    Node* cur = table[idx];
+
+    <span class="comment">// Traverse the chain at this bucket</span>
+    <span class="keyword">while</span> (cur != <span class="keyword">NULL</span>) {
+        <span class="keyword">if</span> (cur->key == key)
+            <span class="keyword">return</span> cur->value;  <span class="comment">// found!</span>
+        cur = cur->next;
+    }
+    <span class="keyword">return</span> -<span class="number">1</span>;  <span class="comment">// not found</span>
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="search" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">const</span> map = <span class="keyword">new</span> Map([[<span class="string">"apple"</span>, <span class="number">5</span>], [<span class="string">"banana"</span>, <span class="number">3</span>]]);
+
+<span class="comment">// Search — O(1) average</span>
+<span class="keyword">if</span> (map.<span class="function">has</span>(<span class="string">"apple"</span>)) {
+    console.<span class="function">log</span>(map.<span class="function">get</span>(<span class="string">"apple"</span>));  <span class="comment">// 5</span>
+}
+
+<span class="comment">// Safe get with default</span>
+<span class="keyword">const</span> val = map.<span class="function">get</span>(<span class="string">"grape"</span>) ?? -<span class="number">1</span>;  <span class="comment">// -1</span></pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('delete')">
+                    <div class="operation-title">
+                        <div class="operation-number">3</div>
+                        <span>Delete Operation</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-delete">▼</div>
+                </div>
+                <div class="operation-content" id="content-delete">
+                    <div class="operation-body">
+                        <p class="content-text">Removes a key-value pair from the hash map. The key is hashed, the bucket is located, and the entry is removed from the chain or slot.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time (avg)</div><div class="complexity-value">O(1)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Time (worst)</div><div class="complexity-value red">O(N)</div></div>
+                        </div>
+                        <div class="language-tabs" data-group="delete">
+                            <div class="lang-tab active" onclick="switchCode(event,'delete','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'delete','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'delete','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'delete','c')">C</div>
+                            <div class="lang-tab" onclick="switchCode(event,'delete','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="delete" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// erase() removes by key — O(1) average</span>
+hashMap.<span class="function">erase</span>(<span class="string">"apple"</span>);
+
+<span class="comment">// Check before erasing (safe)</span>
+<span class="keyword">if</span> (hashMap.<span class="function">count</span>(<span class="string">"banana"</span>)) {
+    hashMap.<span class="function">erase</span>(<span class="string">"banana"</span>);
+    cout &lt;&lt; <span class="string">"Deleted banana"</span> &lt;&lt; endl;
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="delete" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment"># del — raises KeyError if missing</span>
+<span class="keyword">del</span> hash_map[<span class="string">"apple"</span>]
+
+<span class="comment"># pop() — safe, returns value or default</span>
+val = hash_map.<span class="function">pop</span>(<span class="string">"banana"</span>, <span class="keyword">None</span>)
+
+<span class="comment"># Delete if exists</span>
+<span class="keyword">if</span> <span class="string">"cherry"</span> <span class="keyword">in</span> hash_map:
+    <span class="keyword">del</span> hash_map[<span class="string">"cherry"</span>]</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="delete" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// remove() returns the value (or null)</span>
+Integer val = map.<span class="function">remove</span>(<span class="string">"apple"</span>);
+
+<span class="comment">// Safe: only remove if value matches</span>
+map.<span class="function">remove</span>(<span class="string">"banana"</span>, <span class="number">3</span>);  <span class="comment">// conditional delete</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="delete" data-lang="c">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C (Custom Chaining)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">void</span> <span class="function">deleteKey</span>(<span class="keyword">int</span> key) {
+    <span class="keyword">int</span> idx = key % SIZE;
+    Node* cur  = table[idx];
+    Node* prev = <span class="keyword">NULL</span>;
+
+    <span class="keyword">while</span> (cur) {
+        <span class="keyword">if</span> (cur->key == key) {
+            <span class="keyword">if</span> (prev) prev->next = cur->next;
+            <span class="keyword">else</span>      table[idx] = cur->next;
+            <span class="function">free</span>(cur);
+            <span class="keyword">return</span>;
+        }
+        prev = cur; cur = cur->next;
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="delete" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// delete() returns true/false</span>
+map.<span class="function">delete</span>(<span class="string">"apple"</span>);
+
+<span class="comment">// Safe delete</span>
+<span class="keyword">if</span> (map.<span class="function">has</span>(<span class="string">"banana"</span>)) {
+    map.<span class="function">delete</span>(<span class="string">"banana"</span>);
+}</pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ITERATE -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('iterate')">
+                    <div class="operation-title">
+                        <div class="operation-number">4</div>
+                        <span>Iteration / Traversal</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-iterate">▼</div>
+                </div>
+                <div class="operation-content" id="content-iterate">
+                    <div class="operation-body">
+                        <p class="content-text">Iterating over a hash map visits all key-value pairs in an <b>unspecified order</b> (hash tables are unordered). Time complexity is O(N + capacity).</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time</div><div class="complexity-value orange">O(N)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Order</div><div class="complexity-value red">Unordered</div></div>
+                        </div>
+                        <div class="language-tabs" data-group="iterate">
+                            <div class="lang-tab active" onclick="switchCode(event,'iterate','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'iterate','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'iterate','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'iterate','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="iterate" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// Range-based for loop</span>
+<span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [key, val] : hashMap) {
+    cout &lt;&lt; key &lt;&lt; <span class="string">" → "</span> &lt;&lt; val &lt;&lt; endl;
+}
+
+<span class="comment">// Keys only</span>
+<span class="keyword">for</span> (<span class="keyword">auto</span>&amp; it : hashMap)
+    cout &lt;&lt; it.first &lt;&lt; endl;</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="iterate" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment"># Iterate key-value pairs</span>
+<span class="keyword">for</span> key, val <span class="keyword">in</span> hash_map.<span class="function">items</span>():
+    <span class="function">print</span>(f<span class="string">"{key} → {val}"</span>)
+
+<span class="comment"># Keys only</span>
+<span class="keyword">for</span> key <span class="keyword">in</span> hash_map:
+    <span class="function">print</span>(key)
+
+<span class="comment"># Values only</span>
+<span class="keyword">for</span> val <span class="keyword">in</span> hash_map.<span class="function">values</span>():
+    <span class="function">print</span>(val)</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="iterate" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// entrySet() — key-value pairs</span>
+<span class="keyword">for</span> (Map.Entry&lt;String,Integer&gt; e : map.<span class="function">entrySet</span>()) {
+    System.out.<span class="function">println</span>(e.<span class="function">getKey</span>() + <span class="string">" → "</span> + e.<span class="function">getValue</span>());
+}
+
+<span class="comment">// Keys only</span>
+<span class="keyword">for</span> (String key : map.<span class="function">keySet</span>()) System.out.<span class="function">println</span>(key);
+
+<span class="comment">// Values only</span>
+<span class="keyword">for</span> (Integer val : map.<span class="function">values</span>()) System.out.<span class="function">println</span>(val);</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="iterate" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// forEach</span>
+map.<span class="function">forEach</span>((val, key) => {
+    console.<span class="function">log</span>(`${key} → ${val}`);
+});
+
+<span class="comment">// for...of entries</span>
+<span class="keyword">for</span> (<span class="keyword">const</span> [key, val] <span class="keyword">of</span> map) {
+    console.<span class="function">log</span>(key, val);
+}</pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLLISION RESOLUTION -->
+        <div class="impl-type">
+            <div class="impl-header">
+                <h3 class="impl-title">💥 Collision Resolution</h3>
+                <span class="impl-badge" style="background:var(--primary-orange);color:#000;">Critical Concept</span>
+            </div>
+
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('chain')">
+                    <div class="operation-title">
+                        <div class="operation-number">1</div>
+                        <span>Chaining (Separate Chaining)</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-chain">▼</div>
+                </div>
+                <div class="operation-content" id="content-chain">
+                    <div class="operation-body">
+                        <p class="content-text">Each slot in the hash table holds a <b>linked list</b> (or dynamic array) of all keys that hashed to that index. On collision, the new entry is simply appended to the chain. This is the most common approach used by Python, Java HashMap, and C++ unordered_map.</p>
+                        <ul class="styled-list">
+                            <li>Simple to implement and handles high load factors well</li>
+                            <li>Extra memory for pointers; potential cache misses</li>
+                            <li>Worst case O(N) if all keys hash to same slot</li>
+                        </ul>
+                        <!-- Chaining SVG -->
+                        <div style="background:#0a0a0a;border-radius:12px;padding:12px;margin-top:1rem;overflow-x:auto;">
+                        <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono,monospace" style="min-width:340px;width:100%;">
+                            <defs><marker id="arrc" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#a0a0a0"/></marker></defs>
+                            <text x="20" y="18" fill="#a0a0a0" font-size="12" font-weight="bold">CHAINING — Hash Table (size = 5)</text>
+                            <!-- Slots -->
+                            <g>
+                                <rect x="20" y="30" width="50" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="45" y="51" fill="#a0a0a0" font-size="12" text-anchor="middle">0</text>
+                                <rect x="20" y="66" width="50" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="45" y="87" fill="#a0a0a0" font-size="12" text-anchor="middle">1</text>
+                                <rect x="20" y="102" width="50" height="32" fill="#0d1117" stroke="#8b5cf6" stroke-width="2" rx="4"/><text x="45" y="123" fill="#c4b5fd" font-size="12" text-anchor="middle">2</text>
+                                <rect x="20" y="138" width="50" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="45" y="159" fill="#a0a0a0" font-size="12" text-anchor="middle">3</text>
+                                <rect x="20" y="174" width="50" height="32" fill="#0d1117" stroke="#8b5cf6" stroke-width="2" rx="4"/><text x="45" y="195" fill="#c4b5fd" font-size="12" text-anchor="middle">4</text>
+                            </g>
+                            <!-- Slot 2 chain: key7, key12 -->
+                            <path d="M70 118 L100 118" stroke="#a0a0a0" stroke-width="1.5" marker-end="url(#arrc)"/>
+                            <rect x="100" y="104" width="80" height="28" fill="#1e293b" stroke="#8b5cf6" rx="6"/>
+                            <text x="140" y="122" fill="#c4b5fd" font-size="11" text-anchor="middle">key=7</text>
+                            <path d="M180 118 L210 118" stroke="#a0a0a0" stroke-width="1.5" marker-end="url(#arrc)"/>
+                            <rect x="210" y="104" width="80" height="28" fill="#1e293b" stroke="#8b5cf6" rx="6"/>
+                            <text x="250" y="122" fill="#c4b5fd" font-size="11" text-anchor="middle">key=12</text>
+                            <path d="M290 118 L320 118" stroke="#a0a0a0" stroke-width="1.5" marker-end="url(#arrc)"/>
+                            <rect x="320" y="110" width="30" height="16" fill="#0d1117" stroke="#333" rx="3"/>
+                            <text x="335" y="122" fill="#333" font-size="10" text-anchor="middle">null</text>
+                            <text x="360" y="122" fill="#10b981" font-size="10">← collision at idx 2 → chain</text>
+                            <!-- Slot 4 chain: key4 -->
+                            <path d="M70 190 L100 190" stroke="#a0a0a0" stroke-width="1.5" marker-end="url(#arrc)"/>
+                            <rect x="100" y="176" width="80" height="28" fill="#1e293b" stroke="#8b5cf6" rx="6"/>
+                            <text x="140" y="194" fill="#c4b5fd" font-size="11" text-anchor="middle">key=4</text>
+                            <path d="M180 190 L210 190" stroke="#a0a0a0" stroke-width="1.5" marker-end="url(#arrc)"/>
+                            <rect x="210" y="182" width="30" height="16" fill="#0d1117" stroke="#333" rx="3"/>
+                            <text x="225" y="194" fill="#333" font-size="10" text-anchor="middle">null</text>
+                        </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOp('probe')">
+                    <div class="operation-title">
+                        <div class="operation-number">2</div>
+                        <span>Open Addressing (Linear Probing)</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-probe">▼</div>
+                </div>
+                <div class="operation-content" id="content-probe">
+                    <div class="operation-body">
+                        <p class="content-text">Instead of a linked list, <b>all entries live directly in the table</b>. On collision, probe for the next empty slot: <code>idx = (h(key) + i) mod capacity</code>. Better cache performance; works best with low load factors (&lt; 0.7).</p>
+                        <ul class="styled-list">
+                            <li><b>Linear Probing:</b> check idx+1, idx+2 … (clustering issues)</li>
+                            <li><b>Quadratic Probing:</b> check idx+1², idx+2² … (less clustering)</li>
+                            <li><b>Double Hashing:</b> use a second hash function for step size</li>
+                        </ul>
+                        <div style="background:#0a0a0a;border-radius:12px;padding:12px;margin-top:1rem;overflow-x:auto;">
+                        <svg viewBox="0 0 680 130" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono,monospace" style="min-width:340px;width:100%;">
+                            <text x="20" y="18" fill="#a0a0a0" font-size="12" font-weight="bold">LINEAR PROBING — key=7, key=12 both hash to slot 2</text>
+                            <!-- 7 slots -->
+                            <g id="lp-slots">
+                                <rect x="20"  y="30" width="80" height="42" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="60" y="56" fill="#333" font-size="11" text-anchor="middle">0 empty</text>
+                                <rect x="104" y="30" width="80" height="42" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="144" y="56" fill="#333" font-size="11" text-anchor="middle">1 empty</text>
+                                <rect x="188" y="30" width="80" height="42" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="2" rx="4"/>
+                                <text x="228" y="48" fill="#10b981" font-size="10" text-anchor="middle" font-weight="bold">2 → key=7</text>
+                                <text x="228" y="64" fill="#10b981" font-size="9" text-anchor="middle">(first insert)</text>
+                                <rect x="272" y="30" width="80" height="42" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="2" rx="4"/>
+                                <text x="312" y="48" fill="#f59e0b" font-size="10" text-anchor="middle" font-weight="bold">3 → key=12</text>
+                                <text x="312" y="64" fill="#f59e0b" font-size="9" text-anchor="middle">(probed +1)</text>
+                                <rect x="356" y="30" width="80" height="42" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="396" y="56" fill="#333" font-size="11" text-anchor="middle">4 empty</text>
+                                <rect x="440" y="30" width="80" height="42" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="480" y="56" fill="#333" font-size="11" text-anchor="middle">5 empty</text>
+                                <rect x="524" y="30" width="80" height="42" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="564" y="56" fill="#333" font-size="11" text-anchor="middle">6 empty</text>
+                            </g>
+                            <text x="188" y="100" fill="#10b981" font-size="10">↑ h(7)=2 ✓</text>
+                            <text x="260" y="100" fill="#f59e0b" font-size="10">↑ h(12)=2 taken → probe → slot 3</text>
+                        </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🌍</div>
+            <h2 class="section-title">Real-World Analogies</h2>
+        </div>
+        <p class="content-text">Hashing shows up everywhere in real life. Think of it as finding a locker number from your student ID:</p>
+        <div class="example-grid">
+            <div class="example-card">
+                <div class="example-number">1</div>
+                <div class="example-title">Library Card Catalog</div>
+                <div class="example-desc">You look up a book by title → the index points to the exact shelf location. No need to scan every book. O(1) lookup!</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">2</div>
+                <div class="example-title">School Locker System</div>
+                <div class="example-desc">Your student ID (key) maps to a locker number (hash index). Two students might be assigned same locker → collision, assign next free locker.</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">3</div>
+                <div class="example-title">Phone Contacts</div>
+                <div class="example-desc">You search "Alice" → instantly found. Behind the scenes your phone stores contacts in a hash map by name for O(1) retrieval.</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">4</div>
+                <div class="example-title">Password Verification</div>
+                <div class="example-desc">Websites store hash(password) not the password itself. On login: hash(input) → compare with stored hash. Even if stolen, raw password stays safe.</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="video-section">
+        <div class="video-info">
+            <span>📺</span>
+            <span>Hashing Explained</span>
+        </div>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7mUKGHznpfg?si=aDUxxuOrMvTQJH18" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    
+      <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+        <h3 style="color:var(--primary-purple);font-family:'Space Grotesk',sans-serif;font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+        <p style="color:var(--text-secondary);" id="modalMsg">Pass the Level 1 Quiz to unlock Level 2 and continue your Hashing journey.</p>
+        <div class="modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="hashing_L1.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

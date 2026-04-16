@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>String — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-orange:#f59e0b;
+  --primary-red:#ef4444;--primary-indigo:#6366f1;--primary-violet:#7c3aed;
+  --primary-blue:#3b82f6;--primary-teal:#0d9488;--primary-pink:#ec4899;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-teal);}
+.nav-right{display:flex;align-items:center;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-teal);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* HERO */
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-teal),var(--primary-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-teal);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+/* CONCEPT */
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+/* String character cells */
+.str-track{display:inline-flex;gap:2px;flex-wrap:wrap;justify-content:center;margin:.5rem auto;}
+.str-cell{min-width:36px;height:40px;border:1px solid var(--border-color);border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;padding:0 4px;}
+.str-cell .cidx{font-size:.48rem;font-weight:600;opacity:.45;margin-top:1px;}
+.str-cell.def{background:rgba(255,255,255,.04);color:var(--text-secondary);}
+.str-cell.active{background:rgba(13,148,136,.2);border-color:var(--primary-teal);color:var(--primary-teal);}
+.str-cell.visited{background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);}
+.str-cell.found{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.str-cell.highlight{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.str-cell.match{background:rgba(236,72,153,.12);border-color:var(--primary-pink);color:var(--primary-pink);}
+.str-cell.window{background:rgba(99,102,241,.12);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.str-cell.pointer{background:rgba(59,130,246,.15);border-color:var(--primary-blue);color:var(--primary-blue);}
+.str-cell.skip{background:rgba(239,68,68,.1);border-color:var(--primary-red);color:var(--primary-red);}
+.str-cell.space{background:rgba(124,58,237,.1);border-color:var(--primary-violet);color:var(--primary-violet);}
+
+/* Small string cells for demos */
+.sm-str{display:inline-flex;gap:2px;flex-wrap:wrap;justify-content:center;margin:.4rem auto;}
+.scell-s{min-width:28px;height:28px;border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;transition:all .3s;padding:0 2px;}
+.scell-s.def{background:rgba(255,255,255,.05);color:var(--text-secondary);}
+.scell-s.active{background:rgba(13,148,136,.2);border-color:var(--primary-teal);color:var(--primary-teal);}
+.scell-s.visited{background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.35);color:var(--primary-cyan);}
+.scell-s.found{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.scell-s.match{background:rgba(236,72,153,.12);border-color:var(--primary-pink);color:var(--primary-pink);}
+.scell-s.window{background:rgba(99,102,241,.12);border-color:var(--primary-indigo);color:var(--primary-indigo);}
+.scell-s.skip{background:rgba(239,68,68,.1);border-color:var(--primary-red);color:var(--primary-red);}
+.scell-s.highlight{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.scell-s.pointer{background:rgba(59,130,246,.15);border-color:var(--primary-blue);color:var(--primary-blue);}
+.scell-s.palindrome{background:rgba(124,58,237,.15);border-color:var(--primary-violet);color:var(--primary-violet);}
+
+/* SECTIONS */
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+/* APP CARDS */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.teal:hover{border-color:var(--primary-teal);box-shadow:0 8px 40px rgba(13,148,136,.12);}
+.app-card.violet:hover{border-color:var(--primary-violet);box-shadow:0 8px 40px rgba(124,58,237,.12);}
+.app-card.blue:hover{border-color:var(--primary-blue);box-shadow:0 8px 40px rgba(59,130,246,.12);}
+.app-card.pink:hover{border-color:var(--primary-pink);box-shadow:0 8px 40px rgba(236,72,153,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.teal{background:rgba(13,148,136,.15);}
+.card-icon.violet{background:rgba(124,58,237,.15);}
+.card-icon.blue{background:rgba(59,130,246,.15);}
+.card-icon.pink{background:rgba(236,72,153,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-teal);color:var(--primary-teal);}
+.d-btn.go{background:rgba(13,148,136,.1);border-color:var(--primary-teal);color:var(--primary-teal);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-teal);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-teal);}
+
+/* COMPLEXITY TABLE */
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+/* PROS & CONS */
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+/* WHEN TO USE */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-teal);}
+
+/* CTA */
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-teal);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-teal);text-shadow:0 0 40px rgba(13,148,136,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-teal),var(--primary-cyan));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-teal));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(13,148,136,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+/* CTA string viz */
+.str-cta-viz{display:flex;flex-direction:column;gap:6px;margin:2rem auto;align-items:center;animation:strPulse 2.2s ease-in-out infinite;}
+.scta-row{display:flex;gap:3px;}
+.scta-cell{width:32px;height:28px;border-radius:4px;border:1px solid;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+@keyframes strPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="string_L1.html">String</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Strings in the <span class="highlight">Real World</span></h1>
+  <p>The sequence data structure powering search engines, DNA analysis, compilers, text editors, network protocols, and every algorithm that processes human language or symbolic data.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Indexed Character Sequence with O(1) Access</div>
+    <p class="concept-desc">A string is a <strong>sequence of characters</strong> stored contiguously in memory: character at index i is accessed as <strong>str[i]</strong> in O(1). Beyond storage, strings encode <strong>meaning, patterns, and structure</strong> — a URL encodes a resource location, a DNA strand encodes a protein sequence, a regex encodes a matching rule. The same O(1) access that makes arrays powerful is applied to characters, and the algorithms built on top (sliding window, two pointers, KMP, Z-function) unlock the ability to process text in linear time.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1rem;text-align:center">🎮 Step through string traversal — index-by-index access visits every character in O(n)</div>
+      <div style="display:flex;justify-content:center;margin-bottom:.8rem">
+        <div class="str-track" id="conceptStr"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Visit Next Char</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Visit Next Char" — sequential traversal</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(13,148,136,.2);border:2px solid var(--primary-teal)"></div>Current character</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(6,182,212,.08);border:2px solid var(--primary-cyan)"></div>Already visited</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Found / match</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(13,148,136,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Strings are the universal medium of information — from the text in your browser's address bar to the genome sequences that define life. Any time you process symbols in order, string algorithms are the right tool.</p>
+  <div class="app-grid">
+
+    <!-- 1. KMP Pattern Matching -->
+    <div class="app-card teal">
+      <div class="card-header">
+        <div class="card-icon teal">🔍</div>
+        <div class="card-title-wrap">
+          <h3>KMP Pattern Matching — Linear Search</h3>
+          <p>Search engines, IDEs (Ctrl+F), antivirus scanners, and log analyzers all use <strong>KMP or similar algorithms</strong> to find a pattern inside text in O(n + m) — never re-scanning characters. The failure function precomputes overlaps in the pattern, letting mismatches skip ahead without going backward. Naive search is O(n × m); KMP is always O(n + m).</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 KMP finds pattern "ABABC" in text — watch the pointer jump on mismatch</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="kmpStep()">▶ KMP Step</button>
+            <button class="d-btn reset" onclick="kmpReset()">↺ Reset</button>
+          </div>
+          <div style="margin-bottom:.5rem">
+            <div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">Text</div>
+            <div class="sm-str" id="kmpTextRow"></div>
+          </div>
+          <div style="margin-bottom:.5rem">
+            <div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">Pattern</div>
+            <div class="sm-str" id="kmpPatRow"></div>
+          </div>
+          <div class="status-line" id="kmpStatus">KMP: precompute failure function → search in O(n+m)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(13,148,136,.06);border:1px solid rgba(13,148,136,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Comparisons: <b id="kmpComps" style="color:var(--primary-teal)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Matches: <b id="kmpMatches" style="color:var(--primary-green)">—</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Sliding Window — Longest Substring -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🪟</div>
+        <div class="card-title-wrap">
+          <h3>Sliding Window — Longest Unique Substring</h3>
+          <p>Browser history deduplication, text compression (LZ77), network packet processing, and many LeetCode problems use the <strong>sliding window technique</strong> on strings: maintain a window [left, right], expand right to include new chars, shrink left when a constraint is violated. Finds longest substring without repeating chars in O(n) — a classic string interview problem.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sliding window finds longest substring without repeating characters</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="swStep()">▶ Expand Window</button>
+            <button class="d-btn reset" onclick="swReset()">↺ Reset</button>
+          </div>
+          <div class="sm-str" id="swRow"></div>
+          <div class="status-line" id="swStatus">Sliding window: expand right, shrink left on duplicate</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Window: [<b id="swL" style="color:var(--primary-violet)">0</b>, <b id="swR" style="color:var(--primary-violet)">0</b>]</div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Max len: <b id="swMax" style="color:var(--primary-green)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Two Pointer — Palindrome Check -->
+    <div class="app-card blue">
+      <div class="card-header">
+        <div class="card-icon blue">🔁</div>
+        <div class="card-title-wrap">
+          <h3>Two Pointers — Palindrome & Reversal</h3>
+          <p>DNA palindrome detection in bioinformatics, URL normalization, and input validation use the <strong>two-pointer technique</strong>: one pointer at start, one at end, march inward comparing characters. Detects palindromes in O(n) time, O(1) space — no extra copy of the string needed. The same pattern extends to reverse in-place, partition around pivot, and Dutch flag on chars.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Two-pointer palindrome check — inward march from both ends</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="palStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="palReset()">↺ Reset</button>
+          </div>
+          <div class="sm-str" id="palRow"></div>
+          <div class="status-line" id="palStatus">Two pointers: left → and ← right, compare each pair</div>
+          <div class="step-info" id="palInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Anagram / Frequency Count -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🔤</div>
+        <div class="card-title-wrap">
+          <h3>Anagram Detection — Frequency Hashing</h3>
+          <p>Plagiarism detectors, spell checkers, word game engines (Scrabble solvers), and search engine query normalization all rely on <strong>character frequency maps</strong>. Count each character's frequency in both strings — if frequency arrays match, they are anagrams. O(n) time, O(1) space (fixed 26-letter or 128-ASCII alphabet). Classic sliding window variant: find all anagram positions.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Check if "listen" and "silent" are anagrams — frequency map comparison</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="anaStep()">▶ Count Next Char</button>
+            <button class="d-btn reset" onclick="anaReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:.5rem">
+            <div style="text-align:center"><div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">"listen"</div><div class="sm-str" id="anaRow1"></div></div>
+            <div style="text-align:center"><div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">"silent"</div><div class="sm-str" id="anaRow2"></div></div>
+          </div>
+          <div class="status-line" id="anaStatus">Build frequency map for each string then compare</div>
+          <div class="step-info" id="anaInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. String Compression / Run-Length Encoding -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">📦</div>
+        <div class="card-title-wrap">
+          <h3>Run-Length Encoding — Text Compression</h3>
+          <p>Fax machines, BMP image encoding, and simple data compression use <strong>Run-Length Encoding (RLE)</strong>: scan the string, group consecutive identical characters into (char, count) pairs. "AAABBBCC" → "A3B3C2". Used as a first pass in more advanced codecs (JPEG, PNG). O(n) time, O(n) space. A classic string traversal problem that teaches grouping-by-runs logic.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Run-Length Encode "AAABBBCCDDDDEE" — group consecutive chars</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="rleStep()">▶ Process Next</button>
+            <button class="d-btn reset" onclick="rleReset()">↺ Reset</button>
+          </div>
+          <div class="sm-str" id="rleRow"></div>
+          <div class="status-line" id="rleStatus">Scan left to right — group identical consecutive chars</div>
+          <div class="step-info" id="rleInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Longest Common Subsequence (DP on strings) -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🧬</div>
+        <div class="card-title-wrap">
+          <h3>Longest Common Subsequence — DNA Alignment</h3>
+          <p>Bioinformatics tools (BLAST, ClustalW), diff utilities (<code style="color:var(--primary-green);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">git diff</code>), and plagiarism detectors use <strong>LCS on strings</strong> to find the longest shared subsequence between two sequences. A 2D DP table fills in O(n × m) time. Critical for comparing DNA strands, file versions, and sentence similarity in NLP preprocessing.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 LCS of "ABCBDAB" and "BDCAB" — step through the DP table fill</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="lcsStep()">▶ Fill Next Cell</button>
+            <button class="d-btn reset" onclick="lcsReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center;overflow-x:auto" id="lcsGridWrap">
+            <div id="lcsGrid" style="display:inline-flex;flex-direction:column;gap:2px;"></div>
+          </div>
+          <div class="status-line" id="lcsStatus">LCS DP: if chars match → diagonal+1, else max(up, left)</div>
+          <div class="step-info" id="lcsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY TABLE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(13,148,136,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">String algorithms range from naive O(n²) scanning to clever O(n) techniques. Knowing which algorithm fits which problem separates a brute-force solution from an optimal one.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation / Algorithm</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Access str[i]</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Direct index — base + i × char_size; one instruction</td></tr>
+        <tr><td class="op">Linear traversal</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Iterate every character once — sequential, cache-friendly</td></tr>
+        <tr><td class="op">Naive pattern search</td><td class="bad">O(n × m)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Check pattern at every position — re-scans characters on mismatch</td></tr>
+        <tr><td class="op">KMP / Z-function search</td><td class="ok">O(n + m)</td><td class="ok">O(m)</td><td style="color:var(--text-secondary);font-size:.82rem">Precompute failure function O(m), search O(n) — never backtrack</td></tr>
+        <tr><td class="op">Sliding window (unique chars)</td><td class="good">O(n)</td><td class="ok">O(k)</td><td style="color:var(--text-secondary);font-size:.82rem">k = charset size (26 or 128); each char added/removed at most once</td></tr>
+        <tr><td class="op">Two-pointer palindrome</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Inward march — no extra space; each char checked once</td></tr>
+        <tr><td class="op">Anagram check (frequency)</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Fixed 26-char or 128-ASCII array; constant space regardless of n</td></tr>
+        <tr><td class="op">LCS / Edit Distance (DP)</td><td class="bad">O(n × m)</td><td class="ok">O(n × m)</td><td style="color:var(--text-secondary);font-size:.82rem">2D DP table; space-optimized to O(min(n,m)) with rolling array</td></tr>
+        <tr><td class="op">String concatenation (loop)</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td style="color:var(--text-secondary);font-size:.82rem">Each concat copies full string; use StringBuilder / join instead</td></tr>
+        <tr><td class="op">Run-Length Encoding</td><td class="good">O(n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Single pass left-to-right; output at most n tokens</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(13,148,136,.05);border:1px solid rgba(13,148,136,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> The most common string mistake is <strong style="color:var(--primary-teal)">string concatenation in a loop</strong>. Each <code style="color:var(--primary-teal)">str += char</code> in Java or Python creates a new string object, copying all existing characters — giving O(n²) total work for n appends. Always use <strong style="color:var(--primary-teal)">StringBuilder</strong> (Java), <strong style="color:var(--primary-teal)">''.join(list)</strong> (Python), or string streams (C++) for accumulating characters. This single change can turn a TLE into an accepted submission.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Strings are the universal data type — but their immutability in many languages and their O(n²) concatenation traps trip up even experienced developers.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) access to any character by index</h4><p>Direct indexed access to any character without traversal. str[i] computes the address in one step. This enables O(1) character lookup, comparison at arbitrary positions, and random access substring checks.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural model for all text and language data</h4><p>URLs, source code, DNA sequences, chat messages, file paths — all are naturally represented as character sequences. The string type preserves exact textual structure that forcing into other types would lose.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) space two-pointer algorithms</h4><p>Palindrome check, reversal, and partitioning all work in-place with two pointers — no extra copy of the string needed. This makes many string problems solvable with constant additional memory regardless of input size.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Excellent cache performance for sequential access</h4><p>Characters are stored contiguously in memory. Sequential left-to-right traversal (most string algorithms) loads entire cache lines at once — near maximum memory bandwidth efficiency, especially for large texts.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(n + m) pattern matching with KMP / Z-function</h4><p>Preprocessing the pattern in O(m) enables searching a text of length n for all occurrences in O(n) — never re-scanning characters. Critical for search engines that need to find patterns in multi-gigabyte texts.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Sliding window enables O(n) substring problems</h4><p>Problems asking for the longest or shortest substring satisfying a constraint (unique chars, at most k distinct, fixed frequency) can almost always be solved in O(n) with the sliding window pattern — amortized O(1) per character.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>String concatenation in loop is O(n²)</h4><p>In Java, Python, and JavaScript, <code>str += char</code> inside a loop creates a new string each iteration, copying all prior characters. For n characters, this is O(1 + 2 + … + n) = O(n²) total work. Use StringBuilder, join(), or buffers instead.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Immutability in most high-level languages</h4><p>Strings in Java, Python, and JavaScript are immutable — every modification returns a new string. In-place algorithms must work character arrays (char[] in Java, bytearray in Python). Forgetting immutability leads to accidental O(n) copies inside loops.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Naive pattern search is O(n × m)</h4><p>The obvious "try pattern at every position" approach is O(n × m). For a 1MB text and a 1KB pattern, that's 10⁹ operations. Without KMP or similar, search can time out on large inputs where O(n + m) is required.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Multi-byte / Unicode characters break naive indexing</h4><p>str[i] gives byte i, not character i for multi-byte Unicode. Emoji, Chinese characters, and Arabic text use 2–4 bytes in UTF-8. Naive index-based string algorithms silently break on non-ASCII data unless explicitly using code-point iteration.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>LCS / Edit Distance uses O(n × m) space</h4><p>The standard DP table for LCS between strings of length n and m allocates an (n+1) × (m+1) array. For two strings of length 10,000, that's 100M cells — ~400MB for integers. Space-optimized rolling-array version reduces this to O(min(n,m)).</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Substring extraction is O(k) — not O(1)</h4><p>Getting a substring of length k always copies k characters into a new string. Operations that appear to be O(1) (like <code>str.substring(0, n/2)</code>) are actually O(k). For algorithms that repeatedly take substrings, prefer index ranges (start, end) to avoid hidden copy costs.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Strings — and When to Avoid Them
+  </div>
+  <p class="section-sub">Strings are the right choice for any sequential symbolic data. Know the cases where a hash map, integer array, or trie beats a plain string.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use String Algorithms When...</div>
+      <div class="when-item"><div class="when-icon">🔍</div><div class="when-text"><h4>Pattern matching / substring search</h4><p>Any problem asking "does pattern P appear in text T?" or "find all positions of P in T" is a string search problem. Use KMP or Z-function for O(n + m). If patterns are from a fixed set, use Aho-Corasick (multi-pattern KMP) in O(n + total_pattern_len + matches).</p></div></div>
+      <div class="when-item"><div class="when-icon">🪟</div><div class="when-text"><h4>Longest / shortest substring with constraints</h4><p>If a problem asks for the longest/shortest contiguous substring satisfying a condition (at most k distinct characters, all unique, exactly k of each), reach for the <span class="when-code">sliding window</span>. Nearly all such problems are O(n) with this technique.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Palindrome and symmetry problems</h4><p>Two-pointer palindrome check, longest palindromic substring (Manacher's algorithm O(n)), palindrome partitioning — these are canonical string problems. Two-pointer is O(n) time and O(1) space; Manacher's is the optimal O(n) for finding the longest palindrome.</p></div></div>
+      <div class="when-item"><div class="when-icon">🧬</div><div class="when-text"><h4>Sequence alignment and similarity (DP)</h4><p>When two strings must be compared for similarity — edit distance, LCS, longest common substring, sequence alignment — a 2D DP table on the two strings is the standard approach. Foundation of git diff, DNA alignment tools, and spell checkers.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔤</div><div class="when-text"><h4>Character frequency and anagram problems</h4><p>Use a frequency array of size 26 (or 128 for ASCII). Anagram check, group anagrams, find all anagram positions in text — all O(n) with a fixed-size frequency map. Much faster than sorting-based approaches which are O(n log n).</p></div></div>
+      <div class="when-item"><div class="when-icon">📦</div><div class="when-text"><h4>Encoding, compression, and formatting</h4><p>RLE, base64, URL encoding, CSV parsing — these are string transformation problems best solved with a single-pass traversal building an output buffer. Use <span class="when-code">StringBuilder</span> or <span class="when-code">''.join()</span> to collect output; avoid repeated concatenation.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Plain String Operations When...</div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>You need O(1) prefix lookups (use Trie instead)</h4><p>For autocomplete, spell checking, and prefix-based routing, a Trie outperforms string comparison. A trie traversal to depth k takes O(k) and returns all strings with that prefix, versus O(n × k) to filter an array of strings by prefix manually.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><td></td><div class="when-text"><h4>Repeated modification (use char array / StringBuilder)</h4><p>If your algorithm modifies the string many times (insert, delete, replace characters in a loop), don't use an immutable string type. Convert to <span class="when-code">char[]</span> (Java), <span class="when-code">list(s)</span> (Python), or use StringBuilder — all give O(1) mutation instead of O(n) per change.</p></div></div>
+      <div class="when-item"><div class="when-icon">🌐</div><div class="when-text"><h4>Multi-pattern search over large text (use Aho-Corasick)</h4><p>Searching a 100MB log file for 1000 different error patterns using KMP per pattern is O(1000 × n) = too slow. Aho-Corasick builds a single automaton from all patterns and searches the text once in O(n + total_pattern_length + matches).</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Numeric data disguised as strings</h4><p>If your "string" is really a number (IP address, phone number, numeric ID), convert it to integers or use structured types. String comparison of numeric-looking data gives wrong sort order: "9" > "10" lexicographically. Parse first; compare as numbers.</p></div></div>
+      <div class="when-item"><div class="when-icon">📏</div><div class="when-text"><h4>Very long repeated substring operations</h4><p>Algorithms that repeatedly extract substrings (like O(n²) string DP with explicit substring calls) have hidden O(k) copy costs per call. Use index-based representations — pass (string, start, end) instead of copied substrings — to avoid O(n³) total work.</p></div></div>
+      <div class="when-item"><div class="when-icon">🌏</div><div class="when-text"><h4>International text needing correct Unicode handling</h4><p>Naive char-index loops break on emoji and CJK characters in UTF-8. If your application handles non-ASCII text, use proper Unicode libraries: Python's <span class="when-code">str</span> handles code points correctly, but Java's <span class="when-code">charAt()</span> does not for supplementary characters. Use <span class="when-code">codePoints()</span> or ICU4J.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real String problems</span></div>
+    <p class="cta-sub">You've seen how strings power KMP pattern matching, sliding window substring search, two-pointer palindromes, anagram detection, RLE compression, and DNA alignment via LCS.<br>Now prove you can apply these patterns to classic string-based interview and competitive programming problems.</p>
+    <div style="display:flex;justify-content:center">
+      <div class="str-cta-viz">
+        <div class="scta-row">
+          <div class="scta-cell" style="background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.4);color:var(--primary-teal)">K</div>
+          <div class="scta-cell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">M</div>
+          <div class="scta-cell" style="background:rgba(13,148,136,.08);border-color:rgba(13,148,136,.2);color:var(--primary-teal)">P</div>
+          <div class="scta-cell" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)"> </div>
+          <div class="scta-cell" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--primary-violet)">S</div>
+          <div class="scta-cell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--primary-pink)">T</div>
+          <div class="scta-cell" style="background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.4);color:var(--primary-teal)">R</div>
+        </div>
+        <div class="scta-row">
+          <div class="scta-cell" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:var(--primary-green)">W</div>
+          <div class="scta-cell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">I</div>
+          <div class="scta-cell" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--primary-violet)">N</div>
+          <div class="scta-cell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">D</div>
+          <div class="scta-cell" style="background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.4);color:var(--primary-teal)">O</div>
+          <div class="scta-cell" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)">W</div>
+          <div class="scta-cell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green)">!</div>
+        </div>
+      </div>
+    </div>
+    <a href="practice.html?topic=string" class="cta-btn">
+      <span>📝 Solve String Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ── THEME ── */
+const themes=['dark','light','blue'];
+const themeIcons={dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=themeIcons[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ── HELPERS ── */
+function makeStrRow(elId, chars, classes){
+  const el=document.getElementById(elId); if(!el)return; el.innerHTML='';
+  chars.forEach((ch,i)=>{
+    const c=document.createElement('div');
+    c.className='scell-s '+(classes[i]||'def');
+    c.textContent=ch===' '?'·':ch; el.appendChild(c);
+  });
+}
+
+/* ── CONCEPT: sequential traversal ── */
+const cStr='Hello World!'.split('');
+let cIdx=0, cSeen=[];
+function renderConceptStr(ai=-1){
+  const el=document.getElementById('conceptStr'); el.innerHTML='';
+  cStr.forEach((ch,i)=>{
+    const cell=document.createElement('div');cell.className='str-cell';
+    cell.innerHTML=`${ch==' '?'·':ch}<span class="cidx">[${i}]</span>`;
+    if(i===ai) cell.classList.add('active');
+    else if(cSeen.includes(i)) cell.classList.add('visited');
+    else cell.classList.add('def');
+    el.appendChild(cell);
+  });
+}
+function conceptStep(){
+  if(cIdx>=cStr.length){
+    renderConceptStr(-1);
+    document.getElementById('conceptStatus').innerHTML=`✅ Traversed all ${cStr.length} characters in O(n)`;
+    cIdx=0;cSeen=[];return;
+  }
+  cSeen.push(cIdx);
+  renderConceptStr(cIdx);
+  const ch=cStr[cIdx];
+  document.getElementById('conceptStatus').innerHTML=`str[<span>${cIdx}</span>] = '<span>${ch==' '?'space':ch}</span>' (ASCII ${ch.charCodeAt(0)})`;
+  cIdx++;
+}
+function conceptReset(){cIdx=0;cSeen=[];renderConceptStr();document.getElementById('conceptStatus').textContent='Click "Visit Next Char" — sequential traversal';}
+renderConceptStr();
+
+/* ── 1. KMP PATTERN MATCHING ── */
+const kmpText='AABABABABCABABC'.split('');
+const kmpPat='ABABC'.split('');
+let kmpI=0,kmpJ=0,kmpCompsVal=0,kmpMatchesVal=0,kmpDone=false,kmpMatchPos=[];
+// Build failure function
+function buildFailure(pat){
+  const f=Array(pat.length).fill(0);let k=0;
+  for(let i=1;i<pat.length;i++){
+    while(k>0&&pat[i]!==pat[k])k=f[k-1];
+    if(pat[i]===pat[k])k++;
+    f[i]=k;
+  }
+  return f;
+}
+const kmpFail=buildFailure(kmpPat);
+function renderKMP(){
+  const tCls=Array(kmpText.length).fill('def');
+  const pCls=Array(kmpPat.length).fill('def');
+  kmpMatchPos.forEach(p=>{ for(let x=p;x<p+kmpPat.length;x++) tCls[x]='found'; });
+  if(!kmpDone&&kmpI<kmpText.length){ tCls[kmpI]='active'; if(kmpJ>0)for(let x=kmpI-kmpJ;x<kmpI;x++)tCls[x]='match'; }
+  for(let x=0;x<kmpJ;x++) pCls[x]='match';
+  if(kmpJ<kmpPat.length) pCls[kmpJ]='active';
+  makeStrRow('kmpTextRow',kmpText,tCls);
+  makeStrRow('kmpPatRow',kmpPat,pCls);
+}
+function kmpReset(){kmpI=0;kmpJ=0;kmpCompsVal=0;kmpMatchesVal=0;kmpDone=false;kmpMatchPos=[];renderKMP();document.getElementById('kmpStatus').textContent='KMP: precompute failure function → search in O(n+m)';document.getElementById('kmpComps').textContent=0;document.getElementById('kmpMatches').textContent='—';}
+function kmpStep(){
+  if(kmpDone){kmpReset();return;}
+  if(kmpI>=kmpText.length){kmpDone=true;renderKMP();document.getElementById('kmpStatus').innerHTML=`✅ Done: <span>${kmpMatchesVal}</span> match(es) found in ${kmpCompsVal} comparisons`;document.getElementById('kmpMatches').textContent=kmpMatchesVal;return;}
+  kmpCompsVal++;
+  if(kmpText[kmpI]===kmpPat[kmpJ]){
+    document.getElementById('kmpStatus').innerHTML=`str[${kmpI}]='${kmpText[kmpI]}' = pat[${kmpJ}]='${kmpPat[kmpJ]}' → <span>match ✓</span>`;
+    kmpJ++;kmpI++;
+    if(kmpJ===kmpPat.length){kmpMatchesVal++;kmpMatchPos.push(kmpI-kmpJ);kmpJ=kmpFail[kmpJ-1];document.getElementById('kmpStatus').innerHTML=`🎉 <span>Full match found at index ${kmpI-kmpPat.length}!</span>`;}
+  } else {
+    if(kmpJ>0){document.getElementById('kmpStatus').innerHTML=`Mismatch — jump j from ${kmpJ} to <span>${kmpFail[kmpJ-1]}</span> (no backtrack on i)`;kmpJ=kmpFail[kmpJ-1];}
+    else{document.getElementById('kmpStatus').innerHTML=`str[${kmpI}]='${kmpText[kmpI]}' ≠ pat[0]='${kmpPat[0]}' → advance i`;kmpI++;}
+  }
+  renderKMP();
+  document.getElementById('kmpComps').textContent=kmpCompsVal;
+  document.getElementById('kmpMatches').textContent=kmpMatchesVal||'—';
+}
+kmpReset();
+
+/* ── 2. SLIDING WINDOW ── */
+const swStr='abcabcbb'.split('');
+let swLeft=0,swRight=0,swMap={},swMaxVal=0,swMaxL=0,swMaxR=0,swDone=false;
+function renderSW(){
+  const cls=swStr.map((c,i)=>{
+    if(i===swRight&&!swDone)return'active';
+    if(i>=swLeft&&i<swRight)return'window';
+    if(swDone&&i>=swMaxL&&i<=swMaxR)return'found';
+    return'def';
+  });
+  makeStrRow('swRow',swStr,cls);
+}
+function swReset(){swLeft=0;swRight=0;swMap={};swMaxVal=0;swMaxL=0;swMaxR=0;swDone=false;renderSW();document.getElementById('swStatus').textContent='Sliding window: expand right, shrink left on duplicate';document.getElementById('swL').textContent=0;document.getElementById('swR').textContent=0;document.getElementById('swMax').textContent=0;}
+function swStep(){
+  if(swDone){swReset();return;}
+  if(swRight>=swStr.length){
+    swDone=true;renderSW();
+    document.getElementById('swStatus').innerHTML=`✅ Longest substring: "<span>${swStr.slice(swMaxL,swMaxR+1).join('')}</span>" length <span>${swMaxVal}</span>`;
+    document.getElementById('swMax').textContent=swMaxVal;return;
+  }
+  const ch=swStr[swRight];
+  if(swMap[ch]!==undefined&&swMap[ch]>=swLeft){
+    document.getElementById('swStatus').innerHTML=`'<span>${ch}</span>' already in window → shrink left to ${swMap[ch]+1}`;
+    swLeft=swMap[ch]+1;
+  } else {
+    document.getElementById('swStatus').innerHTML=`'<span>${ch}</span>' is new → expand window to [${swLeft},${swRight}] len=${swRight-swLeft+1}`;
+  }
+  swMap[ch]=swRight;
+  const len=swRight-swLeft+1;
+  if(len>swMaxVal){swMaxVal=len;swMaxL=swLeft;swMaxR=swRight;}
+  renderSW();
+  document.getElementById('swL').textContent=swLeft;
+  document.getElementById('swR').textContent=swRight;
+  document.getElementById('swMax').textContent=swMaxVal;
+  swRight++;
+}
+swReset();
+
+/* ── 3. TWO POINTER PALINDROME ── */
+const palStr='racecar'.split('');
+let palL=0,palR=palStr.length-1,palDone=false,palResult=null;
+function renderPal(state='default'){
+  const cls=palStr.map((c,i)=>{
+    if(palDone){return palResult?'found':'skip';}
+    if(i===palL||i===palR)return'active';
+    if(i<palL||i>palR)return'visited';
+    return'def';
+  });
+  makeStrRow('palRow',palStr,cls);
+}
+function palReset(){palL=0;palR=palStr.length-1;palDone=false;palResult=null;renderPal();document.getElementById('palStatus').textContent='Two pointers: left → and ← right, compare each pair';document.getElementById('palInfo').textContent='';}
+function palStep(){
+  if(palDone){palReset();return;}
+  if(palL>=palR){
+    palDone=true;palResult=true;renderPal();
+    document.getElementById('palStatus').innerHTML=`✅ "<span>${palStr.join('')}</span>" IS a palindrome — all pairs matched!`;
+    document.getElementById('palInfo').innerHTML=`Two-pointer check: O(n) time, O(1) space`;return;
+  }
+  const lc=palStr[palL],rc=palStr[palR];
+  if(lc!==rc){
+    palDone=true;palResult=false;renderPal();
+    document.getElementById('palStatus').innerHTML=`❌ Mismatch: str[${palL}]='<span>${lc}</span>' ≠ str[${palR}]='<span>${rc}</span>' — NOT a palindrome`;
+    document.getElementById('palInfo').innerHTML=`Failed at indices <b>${palL}</b> and <b>${palR}</b>`;return;
+  }
+  document.getElementById('palStatus').innerHTML=`str[${palL}]='<span>${lc}</span>' = str[${palR}]='<span>${rc}</span>' → <span>match ✓</span>`;
+  document.getElementById('palInfo').innerHTML=`Advance: left ${palL}→${palL+1}, right ${palR}→${palR-1}`;
+  palL++;palR--;renderPal();
+}
+palReset();
+
+/* ── 4. ANAGRAM ── */
+const anaS1='listen'.split('');
+const anaS2='silent'.split('');
+let anaIdx=0,anaFreq1={},anaFreq2={},anaDone=false;
+function renderAna(){
+  const cls1=anaS1.map((c,i)=>i<anaIdx?'visited':i===anaIdx&&!anaDone?'active':'def');
+  const cls2=anaS2.map((c,i)=>i<anaIdx?'visited':i===anaIdx&&!anaDone?'active':'def');
+  makeStrRow('anaRow1',anaS1,cls1);
+  makeStrRow('anaRow2',anaS2,cls2);
+}
+function anaReset(){anaIdx=0;anaFreq1={};anaFreq2={};anaDone=false;renderAna();document.getElementById('anaStatus').textContent='Build frequency map for each string then compare';document.getElementById('anaInfo').textContent='';}
+function anaStep(){
+  if(anaDone){anaReset();return;}
+  if(anaIdx>=anaS1.length){
+    // compare
+    const isAna=Object.keys(anaFreq1).every(k=>anaFreq1[k]===(anaFreq2[k]||0))&&Object.keys(anaFreq2).every(k=>anaFreq2[k]===(anaFreq1[k]||0));
+    anaDone=true;renderAna();
+    if(isAna)document.getElementById('anaStatus').innerHTML=`✅ <span>"${anaS1.join('')}" and "${anaS2.join('')}" ARE anagrams!</span> Frequency maps match`;
+    else document.getElementById('anaStatus').innerHTML=`❌ NOT anagrams — frequency maps differ`;
+    document.getElementById('anaInfo').innerHTML=`freq1: {${Object.entries(anaFreq1).map(([k,v])=>`${k}:${v}`).join(', ')}}<br>freq2: {${Object.entries(anaFreq2).map(([k,v])=>`${k}:${v}`).join(', ')}}`;
+    return;
+  }
+  const c1=anaS1[anaIdx],c2=anaS2[anaIdx];
+  anaFreq1[c1]=(anaFreq1[c1]||0)+1;
+  anaFreq2[c2]=(anaFreq2[c2]||0)+1;
+  document.getElementById('anaStatus').innerHTML=`idx ${anaIdx}: count '${c1}' in s1 → <span>${anaFreq1[c1]}</span>, count '${c2}' in s2 → <span>${anaFreq2[c2]}</span>`;
+  document.getElementById('anaInfo').innerHTML=`s1[${anaIdx}]='${c1}', s2[${anaIdx}]='${c2}'`;
+  anaIdx++;renderAna();
+}
+anaReset();
+
+/* ── 5. RUN-LENGTH ENCODING ── */
+const rleStr='AAABBBCCDDDDEE'.split('');
+let rleIdx=0,rleGroups=[],rleCurChar=rleStr[0],rleCurCount=1,rleDone=false;
+function renderRLE(){
+  const cls=rleStr.map((c,i)=>{
+    if(i<rleIdx)return'visited';
+    if(i===rleIdx)return'active';
+    return'def';
+  });
+  makeStrRow('rleRow',rleStr,cls);
+}
+function rleReset(){rleIdx=0;rleGroups=[];rleCurChar=rleStr[0];rleCurCount=1;rleDone=false;renderRLE();document.getElementById('rleStatus').textContent='Scan left to right — group identical consecutive chars';document.getElementById('rleInfo').textContent='';}
+function rleStep(){
+  if(rleDone){rleReset();return;}
+  rleIdx++;
+  if(rleIdx>=rleStr.length){
+    rleGroups.push({ch:rleCurChar,cnt:rleCurCount});
+    rleDone=true;
+    const enc=rleGroups.map(g=>g.ch+g.cnt).join('');
+    document.getElementById('rleStatus').innerHTML=`✅ Encoded: "<span>${enc}</span>" (${rleStr.length} → ${enc.length} chars, ${Math.round((1-enc.length/rleStr.length)*100)}% saved)`;
+    document.getElementById('rleInfo').innerHTML=`Groups: ${rleGroups.map(g=>`${g.ch}×${g.cnt}`).join(' | ')}`;
+    return;
+  }
+  const ch=rleStr[rleIdx];
+  if(ch===rleCurChar){
+    rleCurCount++;
+    document.getElementById('rleStatus').innerHTML=`str[${rleIdx}]='<span>${ch}</span>' = current '${rleCurChar}' → count = <span>${rleCurCount}</span>`;
+  } else {
+    rleGroups.push({ch:rleCurChar,cnt:rleCurCount});
+    document.getElementById('rleStatus').innerHTML=`New char '${ch}' → flush '${rleCurChar}'×${rleCurCount}, start new group '<span>${ch}</span>'`;
+    rleCurChar=ch;rleCurCount=1;
+  }
+  document.getElementById('rleInfo').innerHTML=`Encoded so far: <b>${rleGroups.map(g=>g.ch+g.cnt).join('')}</b>${rleCurChar?'['+rleCurChar+'…]':''}`;
+  renderRLE();
+}
+rleReset();
+
+/* ── 6. LCS DP ── */
+const lcsS1='ABCBDAB',lcsS2='BDCAB';
+const lcsR=lcsS1.length+1,lcsC=lcsS2.length+1;
+let lcsTable=Array.from({length:lcsR},()=>Array(lcsC).fill(0));
+let lcsDpR=1,lcsDpC=1,lcsDone=false;
+function renderLCS(ar=-1,ac=-1){
+  const el=document.getElementById('lcsGrid');el.innerHTML='';
+  const mkCell=(txt,cls)=>{const d=document.createElement('div');d.className='scell-s '+cls;d.textContent=txt;d.style.minWidth='22px';d.style.fontSize='.55rem';return d;};
+  // header
+  const hr=document.createElement('div');hr.style.display='flex';hr.style.gap='2px';
+  hr.appendChild(mkCell('','def'));hr.appendChild(mkCell('ε','highlight'));
+  for(const ch of lcsS2)hr.appendChild(mkCell(ch,'highlight'));
+  el.appendChild(hr);
+  for(let r=0;r<lcsR;r++){
+    const row=document.createElement('div');row.style.display='flex';row.style.gap='2px';
+    row.appendChild(mkCell(r===0?'ε':lcsS1[r-1],'highlight'));
+    for(let c=0;c<lcsC;c++){
+      const isActive=r===ar&&c===ac;
+      const isFilled=(r===0||c===0)||(r<ar)||(r===ar&&c<ac);
+      const cls=isActive?'active':isFilled?'visited':'def';
+      row.appendChild(mkCell(lcsTable[r][c],cls));
+    }
+    el.appendChild(row);
+  }
+}
+function lcsReset(){lcsTable=Array.from({length:lcsR},()=>Array(lcsC).fill(0));lcsDpR=1;lcsDpC=1;lcsDone=false;renderLCS();document.getElementById('lcsStatus').textContent='LCS DP: if chars match → diagonal+1, else max(up, left)';document.getElementById('lcsInfo').textContent='';}
+function lcsStep(){
+  if(lcsDone){lcsReset();return;}
+  if(lcsDpR>=lcsR){
+    renderLCS(-1,-1);
+    document.getElementById('lcsStatus').innerHTML=`✅ LCS length = <span>${lcsTable[lcsR-1][lcsC-1]}</span> — "BCAB" is the LCS of "${lcsS1}" and "${lcsS2}"`;
+    lcsDone=true;return;
+  }
+  const r=lcsDpR,c=lcsDpC;
+  if(lcsS1[r-1]===lcsS2[c-1]){lcsTable[r][c]=lcsTable[r-1][c-1]+1;document.getElementById('lcsStatus').innerHTML=`dp[${r}][${c}]: '<span>${lcsS1[r-1]}</span>'='<span>${lcsS2[c-1]}</span>' match → diag+1 = <span>${lcsTable[r][c]}</span>`;}
+  else{lcsTable[r][c]=Math.max(lcsTable[r-1][c],lcsTable[r][c-1]);document.getElementById('lcsStatus').innerHTML=`dp[${r}][${c}]: '${lcsS1[r-1]}'≠'${lcsS2[c-1]}' → max(${lcsTable[r-1][c]},${lcsTable[r][c-1]}) = <span>${lcsTable[r][c]}</span>`;}
+  document.getElementById('lcsInfo').innerHTML=`Row <b>${r}</b>="${lcsS1[r-1]}", Col <b>${c}</b>="${lcsS2[c-1]}"`;
+  renderLCS(r,c);
+  lcsDpC++;if(lcsDpC>=lcsC){lcsDpC=1;lcsDpR++;}
+}
+lcsReset();
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

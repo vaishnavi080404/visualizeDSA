@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tree — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARIABLES ── */
+:root{
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;
+  --primary-violet:#7c3aed;--primary-lime:#84cc16;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+
+/* accent = violet/purple for trees */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+.logo-icon{width:35px;height:35px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;flex-shrink:0;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-violet);}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-violet);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;align-items:center;justify-content:center;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text-primary);border-radius:2px;transition:all .3s;}
+
+/* Mobile nav */
+.mobile-nav{display:none;position:fixed;top:60px;left:0;right:0;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);z-index:999;padding:1rem 1.5rem;flex-direction:column;gap:.25rem;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{color:var(--text-secondary);text-decoration:none;padding:.75rem 1rem;border-radius:10px;font-size:.95rem;font-weight:500;transition:all .2s;}
+.mobile-nav a:hover{background:rgba(124,58,237,.08);color:var(--primary-violet);}
+
+/* ── HERO ── */
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-violet);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-violet),var(--primary-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;flex-wrap:wrap;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-violet);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+/* ── CONCEPT SECTION ── */
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-violet);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+/* Tree node cells */
+.tree-viz-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tree-canvas{display:flex;flex-direction:column;align-items:center;gap:.4rem;min-width:300px;}
+.tree-level{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;}
+.tnode{width:44px;height:44px;border-radius:50%;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;transition:all .35s;cursor:default;flex-shrink:0;}
+.tnode.def{background:rgba(255,255,255,.04);color:var(--text-secondary);}
+.tnode.active{background:rgba(124,58,237,.2);border-color:var(--primary-violet);color:var(--primary-violet);box-shadow:0 0 12px rgba(124,58,237,.3);}
+.tnode.visited{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.4);color:var(--primary-purple);}
+.tnode.found{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);box-shadow:0 0 12px rgba(16,185,129,.3);}
+.tnode.highlight{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.tnode.path{background:rgba(6,182,212,.1);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-violet);color:var(--primary-violet);}
+.d-btn.go{background:rgba(124,58,237,.1);border-color:var(--primary-violet);color:var(--primary-violet);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+
+/* ── LAYOUT ── */
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+/* ── APP CARDS ── */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.violet:hover{border-color:var(--primary-violet);box-shadow:0 8px 40px rgba(124,58,237,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.blue2:hover{border-color:#3b82f6;box-shadow:0 8px 40px rgba(59,130,246,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.violet{background:rgba(124,58,237,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.blue2{background:rgba(59,130,246,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-violet);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-violet);}
+
+/* mini node cells */
+.mini-nodes{display:flex;gap:3px;justify-content:center;margin-bottom:.6rem;flex-wrap:wrap;}
+.mnode{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;transition:all .3s;flex-shrink:0;}
+.mnode.def{background:rgba(255,255,255,.05);color:var(--text-secondary);}
+.mnode.active{background:rgba(124,58,237,.2);border-color:var(--primary-violet);color:var(--primary-violet);}
+.mnode.found{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.mnode.visited{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.35);color:var(--primary-purple);}
+.mnode.path{background:rgba(6,182,212,.1);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.mnode.highlight{background:rgba(245,158,11,.12);border-color:var(--primary-orange);color:var(--primary-orange);}
+.mnode.leaf{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);color:var(--primary-green);}
+
+/* stat row */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem;}
+.stat-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.35rem;margin-top:.5rem;}
+.sp{padding:.35rem .6rem;border-radius:6px;font-size:.72rem;font-family:'JetBrains Mono',monospace;}
+.sp-v{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);}.sp-v b{color:var(--primary-violet);}
+.sp-g{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);}.sp-g b{color:var(--primary-green);}
+.sp-o{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);}.sp-o b{color:var(--primary-orange);}
+.sp-c{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);}.sp-c b{color:var(--primary-cyan);}
+.sp-p{background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);}.sp-p b{color:var(--primary-purple);}
+
+/* ── COMPLEXITY TABLE ── */
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;overflow-x:auto;}
+
+/* ── PROS / CONS ── */
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+/* ── WHEN TO USE ── */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.wcode{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-violet);}
+
+/* ── CTA ── */
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-violet);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-violet);text-shadow:0 0 40px rgba(124,58,237,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-violet),var(--primary-purple));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-purple),var(--primary-violet));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,58,237,.4);}
+.cta-btn span,.cta-btn .arrow{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+.tree-cta-viz{display:flex;gap:3px;justify-content:center;margin:2rem auto;max-width:320px;flex-wrap:wrap;}
+.tcell{width:36px;height:36px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;}
+.tcell:nth-child(odd){animation:tPop 2.2s ease-in-out infinite;}
+.tcell:nth-child(even){animation:tPop 2.2s ease-in-out .28s infinite;}
+@keyframes tPop{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+}
+@media(max-width:768px){
+  .app-grid{grid-template-columns:1fr;}
+  .procon-grid,.when-grid{grid-template-columns:1fr;}
+  .concept-section,.section{padding-left:1rem;padding-right:1rem;}
+}
+@media(max-width:480px){
+  .hero{padding:90px 1rem 40px;}
+  .hero h1{font-size:2rem;}
+  .section-title{font-size:1.4rem;}
+  .concept-box,.procon-card,.when-card{padding:1.2rem;}
+  .card-header{padding:1.2rem 1.2rem .8rem;}
+  .card-demo{padding:0 1.2rem 1.2rem;}
+  .nav-container{padding:0 1rem;}
+  .stat-row3{grid-template-columns:1fr 1fr;}
+  .complexity-table td,.complexity-table th{padding:.6rem .75rem;font-size:.78rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="topics.html">Topics</a>
+  <a href="prerequisite.html">Prerequisites</a>
+  <a href="tree_L1.html">Tree Level 1</a>
+  <a href="tree_L2.html">Tree Level 2</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="tree_L1.html">Tree</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">🌳 Level 3 of 3</div>
+  <h1>Trees in the <span class="highlight">Real World</span></h1>
+  <p>The hierarchical data structure behind every file system, database index, compiler, network router, and AI decision engine — anywhere parent-child relationships and O(log n) search combine to solve real problems at scale.</p>
+</div>
+
+<!-- CONCEPT VISUALIZER -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Hierarchical Structure, O(log n) Search</div>
+    <p class="concept-desc">A tree stores data in <strong>parent-child relationships</strong>. Each node has at most one parent and any number of children. A <strong>Binary Search Tree</strong> enforces the ordering property: left subtree values &lt; node value &lt; right subtree values. This gives <strong>O(log n) average search, insert, and delete</strong> in a balanced tree — and naturally represents any hierarchical data (file systems, DOM, organizational charts). A tree with N nodes has exactly N−1 edges, and the height determines all operation costs.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through BST search — watch how O(log n) eliminates half the tree each step</div>
+      <div class="tree-viz-wrap">
+        <div class="tree-canvas" id="conceptTree"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0">
+        <button class="d-btn go" onclick="conceptStep()">▶ Search Next Value</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Search Next Value" — watch BST halve the search space</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(124,58,237,.2);border:2px solid var(--primary-violet)"></div>Current node</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(139,92,246,.1);border:2px solid rgba(139,92,246,.4)"></div>Visited / eliminated</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Found</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLICATIONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(124,58,237,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Trees are the backbone of software infrastructure. File systems, compilers, databases, network routing, and AI — all rely on hierarchical structures and the O(log n) advantage trees provide.</p>
+  <div class="app-grid">
+
+    <!-- 1. File System -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">📁</div>
+        <div class="card-title-wrap">
+          <h3>File System — Directory N-ary Tree</h3>
+          <p>Every operating system stores files in an <strong>N-ary tree of directories</strong>. The root directory (<code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">/</code> or <code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">C:\</code>) is the tree root. Each folder is an internal node with children (files and subfolders). Path resolution like <code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">/usr/bin/python</code> is a root-to-leaf traversal — O(depth) per lookup.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Navigate a directory tree — watch path resolution from root to target</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="fsStep()">▶ Next Directory</button>
+            <button class="d-btn reset" onclick="fsReset()">↺ Reset</button>
+          </div>
+          <div id="fsDirs" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.8;min-height:80px;margin-bottom:.6rem;color:var(--text-secondary)"></div>
+          <div class="status-line" id="fsStatus">Resolving path: /usr/local/bin/node</div>
+          <div class="step-info" id="fsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BST Database Index -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🗃️</div>
+        <div class="card-title-wrap">
+          <h3>Database Index — B-Tree for O(log n) Queries</h3>
+          <p>SQL databases (MySQL, PostgreSQL) use <strong>B-Trees</strong> as their primary index structure. A B-Tree is a self-balancing tree where each node holds multiple keys and has many children — optimized for disk I/O. An indexed column lets the database find any row in O(log n) comparisons instead of scanning O(n) rows — crucial for tables with billions of records.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 BST range query — find all IDs between 30 and 70 using tree traversal</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbStep()">▶ Next Node</button>
+            <button class="d-btn reset" onclick="dbReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="dbNodes"></div>
+          <div class="status-line" id="dbStatus">Range query: find all nodes where 30 ≤ value ≤ 70</div>
+          <div class="stat-row">
+            <div class="sp sp-v">Visited: <b id="dbVisited">0</b></div>
+            <div class="sp sp-g">In range: <b id="dbFound">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Compiler AST -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Compiler — Abstract Syntax Tree (AST)</h3>
+          <p>Every compiler parses source code into an <strong>Abstract Syntax Tree</strong>. The expression <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">(3 + 4) × 2</code> becomes a tree with <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">×</code> at the root, <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">+</code> as the left child, and 2 as the right child. Code generation, optimization, and interpretation all happen by traversing this tree — preorder, inorder, and postorder each extract different information.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Evaluate expression tree — postorder traversal computes result bottom-up</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="astStep()">▶ Evaluate Node</button>
+            <button class="d-btn reset" onclick="astReset()">↺ Reset</button>
+          </div>
+          <div class="tree-viz-wrap">
+            <div class="tree-canvas" id="astTree"></div>
+          </div>
+          <div class="status-line" id="astStatus">Postorder: left → right → root (evaluates bottom-up)</div>
+          <div class="step-info" id="astInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DFS Graph traversal -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>DFS Tree — Network & Graph Traversal</h3>
+          <p>Depth-First Search builds an implicit <strong>DFS spanning tree</strong> as it traverses a graph. Used in network topology discovery, social graph analysis (finding connected components), web crawler sitemaps, and maze solving. The DFS tree captures parent-child relationships of discovery — tree edges, back edges, and cross edges together reveal graph structure.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 DFS traversal — explore nodes depth-first, build the spanning tree</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dfsStep()">▶ Next DFS Step</button>
+            <button class="d-btn reset" onclick="dfsReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="dfsNodes"></div>
+          <div class="status-line" id="dfsStatus">DFS from root — explore deepest unvisited child first</div>
+          <div class="stat-row">
+            <div class="sp sp-v">Visited: <b id="dfsVisited">0</b></div>
+            <div class="sp sp-o">Stack depth: <b id="dfsDepth">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Heap Priority Queue -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⬆️</div>
+        <div class="card-title-wrap">
+          <h3>Heap — Priority Queue in O(log n)</h3>
+          <p>A <strong>binary heap</strong> is a complete binary tree stored as an array where parent[i] ≥ children (max-heap). Insert and extract-max each take O(log n) by bubbling up/down. Used in Dijkstra's shortest path (min-heap for edge weights), OS task schedulers (priority-based CPU allocation), Huffman coding (character frequency), and heap sort (O(n log n) in-place).</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Max-heap operations — insert then extract-max with heapify</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="heapInsert()">⬆ Insert</button>
+            <button class="d-btn go" onclick="heapExtract()" style="border-color:var(--primary-orange);color:var(--primary-orange);background:rgba(245,158,11,.08)">⬇ Extract Max</button>
+            <button class="d-btn reset" onclick="heapReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="heapNodes"></div>
+          <div class="status-line" id="heapStatus">Max-heap: parent ≥ both children always</div>
+          <div class="stat-row">
+            <div class="sp sp-g">Max: <b id="heapMax">—</b></div>
+            <div class="sp sp-v">Size: <b id="heapSize">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Trie autocomplete -->
+    <div class="app-card blue2">
+      <div class="card-header">
+        <div class="card-icon blue2">🔤</div>
+        <div class="card-title-wrap">
+          <h3>Trie — O(L) Autocomplete & Prefix Search</h3>
+          <p>A <strong>Trie</strong> (prefix tree) stores strings character-by-character — each node is a letter, each root-to-leaf path is a word. Prefix search takes O(L) where L is the prefix length, regardless of how many words are stored. Used in search engine autocomplete (Google, Bing), IDE code completion, spell checkers, IP routing tables (longest prefix match), and T9 phone keyboards.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Trie prefix search — find all words starting with "ca" in O(prefix length)</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="trieStep()">▶ Next Character</button>
+            <button class="d-btn reset" onclick="trieReset()">↺ Reset</button>
+          </div>
+          <div id="trieDisplay" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.9;min-height:60px;margin-bottom:.6rem;color:var(--text-secondary)"></div>
+          <div class="status-line" id="trieStatus">Searching prefix "ca" in word list</div>
+          <div class="step-info" id="trieInfo"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY TABLE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(124,58,237,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Tree performance depends critically on balance. A balanced BST gives O(log n) for everything — a skewed tree degrades to O(n). Always know which tree type your use-case needs.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead><tr><th>Operation</th><th>Balanced BST</th><th>Skewed BST</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="op">Search</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Eliminates half the tree per comparison in balanced case</td></tr>
+        <tr><td class="op">Insert</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Find insertion position + rebalance (AVL/RB) if needed</td></tr>
+        <tr><td class="op">Delete</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Find node + restructure (successor/predecessor replacement)</td></tr>
+        <tr><td class="op">Min / Max</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Leftmost / rightmost node — O(h) where h = height</td></tr>
+        <tr><td class="op">Inorder Traversal</td><td class="ok" colspan="2">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Always visits all n nodes — gives sorted output for BST</td></tr>
+        <tr><td class="op">Height (BST)</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Height governs all operation costs — keep it balanced</td></tr>
+        <tr><td class="op">Space</td><td class="ok" colspan="2">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n nodes + n−1 edges. No extra space for traversal (iterative)</td></tr>
+        <tr><td class="op">Trie Search</td><td class="good" colspan="2">O(L)</td><td style="color:var(--text-secondary);font-size:.82rem">L = prefix/word length — independent of number of stored words</td></tr>
+        <tr><td class="op">Heap Insert/Extract</td><td class="good" colspan="2">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Complete binary tree — always balanced, stored in array</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Trees give <strong style="color:var(--primary-violet)">O(log n) for all operations on ordered data</strong> — insert, search, delete, min, max, floor, ceiling, and range queries. This is something hash tables can't do (they're unordered). The price: O(log n) instead of O(1) for pure lookups. Use trees when you need ordering; use hash maps when you don't. Self-balancing BSTs (AVL, Red-Black) guarantee O(log n) worst-case by maintaining balance automatically.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages &amp; Disadvantages
+  </div>
+  <p class="section-sub">Trees are the right tool for hierarchical data and ordered operations — but they come with real trade-offs in complexity and performance that drive when to choose arrays or hash tables instead.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(log n) for all core operations on ordered data</h4><p>Balanced BSTs give O(log n) for search, insert, delete, min, max, floor, and ceiling — simultaneously. No other structure matches this for ordered data. Hash tables can't do floor/ceiling at all; sorted arrays have O(n) insert.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural fit for hierarchical data</h4><p>File systems, DOM trees, organizational charts, XML/JSON documents, and game scene graphs all have inherent parent-child structure. Forcing them into arrays or hash maps loses structural information trees preserve natively.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Inorder traversal gives sorted output for free</h4><p>An inorder traversal of a BST visits nodes in ascending order in O(n) — a sorted sequence without any sort algorithm. This is exploited by database iterators, range scans, and sorted output in compilers.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Dynamic structure — grows/shrinks without reallocation</h4><p>Unlike arrays, trees grow by adding nodes with no copying. Unlike hash maps, no rehashing spike. Each insert/delete is O(log n) in both average and worst case for self-balancing trees — predictable latency.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Range queries in O(log n + k)</h4><p>"Find all elements between 100 and 200" takes O(log n) to find the lower bound then O(k) to enumerate k results — total O(log n + k). Hash tables need O(n) full scan. This is why every SQL database uses B-Trees for indexed range queries.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Foundation of heaps, tries, segment trees, and more</h4><p>Binary heaps (priority queues), tries (prefix search), segment trees (range-sum/min queries), and Fenwick trees all build on the basic tree structure. Mastering trees unlocks the most powerful algorithmic tools in competitive programming and systems design.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(log n) vs O(1) — slower than hash tables for pure lookups</h4><p>If you only need "does key X exist?" or "what value does key X map to?", a hash table answers in O(1) average — up to 30× faster than O(log n) at n = 1 billion. Trees are the wrong choice when ordering is irrelevant.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Complex implementation — rotations, rebalancing</h4><p>Self-balancing trees (AVL, Red-Black) require rotation operations on insert/delete — tricky to implement correctly. Even a basic BST has subtle bugs around deletion (three cases: leaf, one child, two children). Use library implementations in production.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance — pointer chasing</h4><p>Each tree node is a separate heap allocation with pointer fields. Traversing a tree follows pointers across memory — causing cache misses per node. An array-based binary search on a sorted array is 3–5× faster in practice due to cache locality, even though both are O(log n).</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Memory overhead — pointers per node</h4><p>A BST node stores value + left pointer + right pointer = 3 words per element. A sorted array stores only the value. For billions of integers, a BST uses 3× the memory of a sorted array. B-Trees mitigate this by packing many keys per node.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Skewed tree — O(n) worst case without balancing</h4><p>Inserting sorted data (1,2,3,...,n) into a basic BST creates a linked-list-like skewed tree with O(n) height — every operation degrades to O(n). Self-balancing trees (AVL/RB) prevent this at the cost of rotation complexity.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No O(1) access by index</h4><p>"Get the 5th element" requires O(n) traversal unless you augment each node with subtree size (order-statistics tree — complex). Arrays give O(1) indexed access. Trees are not the right structure for positional access patterns.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Trees — and When to Avoid Them
+  </div>
+  <p class="section-sub">Trees are the right default for ordered data and hierarchical relationships. But knowing precisely when a hash table, sorted array, or trie beats them separates good engineers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Trees When...</div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>You need sorted order plus fast search</h4><p>BSTs (and their balanced variants) give both — inorder traversal produces sorted output while O(log n) search/insert/delete maintain the structure dynamically. Use when both ordering and mutation are required.</p></div></div>
+      <div class="when-item"><div class="when-icon">📈</div><div class="when-text"><h4>Range queries: "all values between lo and hi"</h4><p>This is where trees beat hash maps completely. A BST answers range queries in O(log n + k) — the definitive reason databases use B-Trees for every indexed column. <span class="wcode">SELECT * WHERE id BETWEEN 100 AND 200</span> uses a tree.</p></div></div>
+      <div class="when-item"><div class="when-icon">🏔️</div><div class="when-text"><h4>Floor, ceiling, predecessor, successor</h4><p>BSTs support "largest key ≤ x" (floor) and "smallest key ≥ x" (ceiling) in O(log n). Java's TreeMap/TreeSet expose these directly. Essential for scheduling, interval trees, and sliding-window maximum problems.</p></div></div>
+      <div class="when-item"><div class="when-icon">📁</div><div class="when-text"><h4>Hierarchical data representation</h4><p>File systems, XML/HTML parsing, org charts, game scene graphs — whenever the data naturally has parent-child structure, a tree is the most direct representation. Forcing hierarchy into arrays requires complex index arithmetic.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Priority queues — always get the max/min fast</h4><p>Binary heaps (complete binary trees) give O(log n) insert and O(log n) extract-min/max. Used in Dijkstra's algorithm, A* pathfinding, OS scheduling, and Huffman encoding. <span class="wcode">heapq</span> in Python, <span class="wcode">PriorityQueue</span> in Java.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔠</div><div class="when-text"><h4>Prefix search and autocomplete</h4><p>Tries beat hash maps for any query involving string prefixes. "All words starting with 're'" is O(prefix_len) with a trie, O(n × word_len) with a hash set. Used in every autocomplete feature, DNS longest-prefix match, and IP routing.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Trees When...</div>
+      <div class="when-item"><div class="when-icon">🔍</div><div class="when-text"><h4>Pure exact-key lookup (ordering doesn't matter)</h4><p>If your only operation is "does key X exist?" or "what is the value for key X?", a hash table gives O(1) average — always faster than O(log n). Don't pay the tree overhead when you don't need ordering.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Performance-critical sequential access</h4><p>Iterating over tree nodes follows pointers, causing cache misses per step. Iterating over a sorted array is sequential memory access — cache-line-friendly and 5–10× faster in practice. For read-heavy, sorted, static datasets use sorted arrays with binary search.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Random access by index (positional)</h4><p>"Get the 5th element" is O(1) in an array but O(n) or O(log n) in a BST (requiring subtree-size augmentation). Arrays are the only structure with true O(1) positional access. Don't use trees as index-addressable containers.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory-tight environments</h4><p>Each BST node carries left/right pointers — 2× the pointer overhead of a linked list node. For billions of small values, a sorted array or compressed B-Tree is far more memory-efficient than a pointer-heavy BST.</p></div></div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Frequency counting or grouping</h4><p><span class="wcode">count[word]++</span> is trivially O(1) with a hash map. With a BST this is O(log n) — 30× slower at scale. Hash maps are the canonical frequency-counter structure; trees add ordering overhead you don't need.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔄</div><div class="when-text"><h4>Simple membership testing at scale</h4><p>For "have I seen element X before?" (BFS visited set, dedup), a hash set gives O(1) and simpler code than a BST. Only choose a TreeSet over a HashSet when you also need sorted iteration or floor/ceiling queries.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Tree problems</span></div>
+    <p class="cta-sub">You've seen how trees power file systems, database indexes, compilers, DFS traversal, priority queues, and autocomplete.<br>Now prove you can apply BST operations, tree traversals, and hierarchical thinking to classic interview problems.</p>
+    <div class="tree-cta-viz">
+      <div class="tcell" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4);color:var(--primary-violet)">50</div>
+      <div class="tcell" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:var(--primary-purple)">30</div>
+      <div class="tcell" style="background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);color:var(--primary-violet)">70</div>
+      <div class="tcell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green)">✓</div>
+      <div class="tcell" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4);color:var(--primary-violet)">40</div>
+      <div class="tcell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">60</div>
+      <div class="tcell" style="background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.4);color:var(--primary-purple)">80</div>
+      <div class="tcell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">O(lg)</div>
+    </div>
+    <a href="practice.html?topic=trees" class="cta-btn">
+      <span>🌳 Solve Tree Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ── THEME ── */
+const themes=['dark','light','blue'];
+const TI={
+  dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=TI[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ── HAMBURGER ── */
+const hamburger=document.getElementById('hamburger');
+const mobileNav=document.getElementById('mobileNav');
+let menuOpen=false;
+hamburger.addEventListener('click',()=>{
+  menuOpen=!menuOpen;
+  mobileNav.classList.toggle('open',menuOpen);
+  const spans=hamburger.querySelectorAll('span');
+  if(menuOpen){spans[0].style.transform='rotate(45deg) translate(5px,5px)';spans[1].style.opacity='0';spans[2].style.transform='rotate(-45deg) translate(5px,-5px)';}
+  else{spans[0].style.transform='';spans[1].style.opacity='1';spans[2].style.transform='';}
+});
+document.addEventListener('click',e=>{
+  if(menuOpen&&!mobileNav.contains(e.target)&&!hamburger.contains(e.target)){
+    menuOpen=false;mobileNav.classList.remove('open');
+    hamburger.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='1';});
+  }
+});
+mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  menuOpen=false;mobileNav.classList.remove('open');
+  hamburger.querySelectorAll('span').forEach(s=>{s.style.transform='';s.style.opacity='1';});
+}));
+
+/* ── HELPERS ── */
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function buildMNodes(elId,vals,classes=[]){
+  const el=document.getElementById(elId);if(!el)return;
+  el.innerHTML='';
+  vals.forEach((v,i)=>{
+    const c=document.createElement('div');c.className='mnode '+(classes[i]||'def');
+    c.textContent=v;el.appendChild(c);
+  });
+}
+
+/* ── CONCEPT: BST SEARCH VISUALIZER ── */
+// BST: 50 as root, balanced
+//         50
+//       30   70
+//      20 40 60 80
+//            55 65
+const conceptBST=[
+  [50],
+  [30,70],
+  [20,40,60,80],
+];
+const searchTarget=60;
+// Path to 60: 50 (go right) → 70 (go left) → 60 (found)
+const searchPath=[50,70,60];
+let cStep=0,cVisited=[];
+
+function renderConceptTree(active=-1,found=-1){
+  const el=document.getElementById('conceptTree');el.innerHTML='';
+  conceptBST.forEach((level,li)=>{
+    const row=document.createElement('div');row.className='tree-level';
+    level.forEach(v=>{
+      const n=document.createElement('div');
+      n.className='tnode';
+      if(v===found)n.classList.add('found');
+      else if(v===active)n.classList.add('active');
+      else if(cVisited.includes(v))n.classList.add('visited');
+      else n.classList.add('def');
+      n.textContent=v;row.appendChild(n);
+    });
+    el.appendChild(row);
+  });
+}
+
+function conceptStep(){
+  if(cStep>=searchPath.length){
+    cStep=0;cVisited=[];renderConceptTree();
+    document.getElementById('conceptStatus').textContent='Click "Search Next Value" — watch BST halve the search space';
+    return;
+  }
+  const node=searchPath[cStep];
+  const isFound=node===searchTarget;
+  cVisited.push(node);
+  renderConceptTree(isFound?-1:node,isFound?node:-1);
+  if(isFound){
+    document.getElementById('conceptStatus').innerHTML=`Found <span>${searchTarget}</span>! Took ${cStep+1} comparisons — O(log n) = O(${Math.ceil(Math.log2(7))}) for 7 nodes`;
+  } else {
+    const dir=searchTarget<node?'left':'right';
+    document.getElementById('conceptStatus').innerHTML=`Node <span>${node}</span>: target ${searchTarget} ${searchTarget<node?'<':'>'} ${node} → go <span>${dir}</span>`;
+  }
+  cStep++;
+}
+function conceptReset(){cStep=0;cVisited=[];renderConceptTree();document.getElementById('conceptStatus').textContent='Click "Search Next Value" — watch BST halve the search space';}
+renderConceptTree();
+
+/* ── 1. FILE SYSTEM ── */
+const fsParts=['/','/usr','/usr/local','/usr/local/bin','/usr/local/bin/node'];
+let fsIdx=0;
+function renderFsDirs(upTo){
+  let html='';
+  for(let i=0;i<=upTo&&i<fsParts.length;i++){
+    const indent='  '.repeat(i);
+    const isActive=i===upTo;
+    const icon=i===fsParts.length-1?'📄':'📁';
+    html+=`<span style="color:${isActive?'var(--primary-violet)':'var(--primary-green)'}">${indent}${icon} ${fsParts[i].split('/').pop()||'/'}</span>\n`;
+  }
+  document.getElementById('fsDirs').innerHTML=html.replace(/\n/g,'<br>');
+}
+function fsStep(){
+  if(fsIdx>=fsParts.length){fsIdx=0;renderFsDirs(-1);document.getElementById('fsStatus').textContent='Resolving path: /usr/local/bin/node';document.getElementById('fsInfo').textContent='';return;}
+  renderFsDirs(fsIdx);
+  document.getElementById('fsStatus').innerHTML=`Resolving <span>${fsParts[fsIdx]}</span>`;
+  document.getElementById('fsInfo').innerHTML=`Depth ${fsIdx} — each directory lookup is O(children) per level`;
+  fsIdx++;
+}
+function fsReset(){fsIdx=0;renderFsDirs(-1);document.getElementById('fsStatus').textContent='Resolving path: /usr/local/bin/node';document.getElementById('fsInfo').textContent='';}
+renderFsDirs(-1);
+
+/* ── 2. DATABASE BST RANGE QUERY ── */
+// BST values for range query demo: 10,20,30,40,50,60,70,80,90
+// Inorder: 10 20 30 40 50 60 70 80 90 — find values in [30,70]
+const dbVals=[50,30,70,20,40,60,80,10,35,55,65];
+const DB_LO=30,DB_HI=70;
+let dbIdx=0,dbFoundCount=0,dbVisitedCount=0;
+
+function dbStep(){
+  if(dbIdx>=dbVals.length){
+    buildMNodes('dbNodes',dbVals,dbVals.map(v=>v>=DB_LO&&v<=DB_HI?'found':'visited'));
+    document.getElementById('dbStatus').innerHTML=`✅ Found <span>${dbFoundCount}</span> values in [${DB_LO}, ${DB_HI}] — visited ${dbVisitedCount} nodes`;
+    return;
+  }
+  const v=dbVals[dbIdx];
+  const inRange=v>=DB_LO&&v<=DB_HI;
+  if(inRange)dbFoundCount++;
+  dbVisitedCount++;
+  const cls=dbVals.map((x,i)=>i<dbIdx?(dbVals[i]>=DB_LO&&dbVals[i]<=DB_HI?'found':'visited'):i===dbIdx?'active':'def');
+  buildMNodes('dbNodes',dbVals,cls);
+  document.getElementById('dbStatus').innerHTML=`Node <span>${v}</span>: ${inRange?`✓ in range [${DB_LO},${DB_HI}]`:`outside range — prune subtree if BST ordering`}`;
+  document.getElementById('dbVisited').textContent=dbVisitedCount;
+  document.getElementById('dbFound').textContent=dbFoundCount;
+  dbIdx++;
+}
+function dbReset(){dbIdx=0;dbFoundCount=0;dbVisitedCount=0;buildMNodes('dbNodes',dbVals);document.getElementById('dbStatus').textContent=`Range query: find all nodes where ${DB_LO} ≤ value ≤ ${DB_HI}`;document.getElementById('dbVisited').textContent=0;document.getElementById('dbFound').textContent=0;}
+buildMNodes('dbNodes',dbVals);
+
+/* ── 3. COMPILER AST ── */
+// Expression: (3 + 4) × 2
+// Tree levels:
+//      ×
+//   +     2
+//  3  4
+const astLevels=[[{v:'×',t:'op'}],[{v:'+',t:'op'},{v:'2',t:'num'}],[{v:'3',t:'num'},{v:'4',t:'num'}]];
+// Postorder: 3, 4, +, 2, ×
+const astOrder=[
+  {node:'3',result:null,msg:'Leaf node 3 → value = 3'},
+  {node:'4',result:null,msg:'Leaf node 4 → value = 4'},
+  {node:'+',result:7,msg:'Operator + → 3 + 4 = 7'},
+  {node:'2',result:null,msg:'Leaf node 2 → value = 2'},
+  {node:'×',result:14,msg:'Operator × → 7 × 2 = 14 ✅'},
+];
+let astIdx=0,astVisited=[];
+
+function renderAST(active=''){
+  const el=document.getElementById('astTree');el.innerHTML='';
+  astLevels.forEach(level=>{
+    const row=document.createElement('div');row.className='tree-level';
+    level.forEach(item=>{
+      const n=document.createElement('div');n.className='tnode';
+      const isActive=item.v===active;
+      const isVisited=astVisited.includes(item.v)&&item.v!==active;
+      if(item.v==='×'&&astIdx>=astOrder.length)n.classList.add('found');
+      else if(isActive)n.classList.add('active');
+      else if(isVisited)n.classList.add('visited');
+      else n.classList.add('def');
+      n.textContent=item.v;row.appendChild(n);
+    });
+    el.appendChild(row);
+  });
+}
+
+function astStep(){
+  if(astIdx>=astOrder.length){astIdx=0;astVisited=[];renderAST();document.getElementById('astStatus').textContent='Postorder: left → right → root (evaluates bottom-up)';document.getElementById('astInfo').textContent='';return;}
+  const step=astOrder[astIdx];
+  astVisited.push(step.node);
+  renderAST(step.node);
+  document.getElementById('astStatus').innerHTML=`<span>${step.node}</span>: ${step.msg}`;
+  document.getElementById('astInfo').innerHTML=step.result?`Stack result: <b>${step.result}</b> — intermediate value stored`:`Leaf pushed to evaluation stack`;
+  astIdx++;
+}
+function astReset(){astIdx=0;astVisited=[];renderAST();document.getElementById('astStatus').textContent='Postorder: left → right → root (evaluates bottom-up)';document.getElementById('astInfo').textContent='';}
+renderAST();
+
+/* ── 4. DFS TRAVERSAL ── */
+const dfsTree=[1,2,3,4,5,6,7,8,9,10];
+// DFS order (preorder on implicit BST): 1→2→4→8→9→5→10→3→6→7
+const dfsOrder=[1,2,4,8,9,5,10,3,6,7];
+let dfsIdx=0,dfsVisit=[],dfsStack=[];
+
+function dfsStep(){
+  if(dfsIdx>=dfsOrder.length){
+    buildMNodes('dfsNodes',dfsTree,dfsTree.map((_,i)=>'found'));
+    document.getElementById('dfsStatus').innerHTML=`✅ DFS complete — visited all <span>${dfsTree.length}</span> nodes`;
+    document.getElementById('dfsVisited').textContent=dfsTree.length;
+    document.getElementById('dfsDepth').textContent=0;
+    return;
+  }
+  const v=dfsOrder[dfsIdx];
+  dfsVisit.push(v);
+  const depth=Math.floor(Math.log2(v+0.5));
+  dfsStack=dfsStack.slice(0,depth+1);dfsStack[depth]=v;
+  const cls=dfsTree.map(x=>x===v?'active':dfsVisit.includes(x)?'visited':'def');
+  buildMNodes('dfsNodes',dfsTree,cls);
+  document.getElementById('dfsStatus').innerHTML=`Visit node <span>${v}</span> — depth ${depth}, explore children first`;
+  document.getElementById('dfsVisited').textContent=dfsVisit.length;
+  document.getElementById('dfsDepth').textContent=depth;
+  dfsIdx++;
+}
+function dfsReset(){dfsIdx=0;dfsVisit=[];dfsStack=[];buildMNodes('dfsNodes',dfsTree);document.getElementById('dfsStatus').textContent='DFS from root — explore deepest unvisited child first';document.getElementById('dfsVisited').textContent=0;document.getElementById('dfsDepth').textContent=0;}
+buildMNodes('dfsNodes',dfsTree);
+
+/* ── 5. HEAP ── */
+let heapArr=[],heapNext=Math.floor(Math.random()*20)+10;
+
+function renderHeap(activeIdx=-1){
+  const cls=heapArr.map((_,i)=>i===activeIdx?'active':'found');
+  buildMNodes('heapNodes',heapArr,cls);
+  document.getElementById('heapSize').textContent=heapArr.length;
+  document.getElementById('heapMax').textContent=heapArr.length?heapArr[0]:'—';
+}      
+
+function heapify(arr,i){
+  // bubble down
+  let largest=i,l=2*i+1,r=2*i+2;
+  if(l<arr.length&&arr[l]>arr[largest])largest=l;
+  if(r<arr.length&&arr[r]>arr[largest])largest=r;
+  if(largest!==i){[arr[i],arr[largest]]=[arr[largest],arr[i]];heapify(arr,largest);}
+}
+function heapBubbleUp(arr,i){
+  while(i>0){const p=Math.floor((i-1)/2);if(arr[p]<arr[i]){[arr[p],arr[i]]=[arr[i],arr[p]];i=p;}else break;}
+}
+
+function heapInsert(){
+  if(heapArr.length>=10){document.getElementById('heapStatus').innerHTML='Max size 10 reached — <span>extract first</span>';return;}
+  const val=heapNext;heapNext=Math.floor(Math.random()*50)+5;
+  heapArr.push(val);
+  heapBubbleUp(heapArr,heapArr.length-1);
+  renderHeap();
+  document.getElementById('heapStatus').innerHTML=`Inserted <span>${val}</span> — bubbled up to maintain heap property`;
+}
+function heapExtract(){
+  if(!heapArr.length){document.getElementById('heapStatus').innerHTML='Heap <span>empty</span>!';return;}
+  const max=heapArr[0];
+  heapArr[0]=heapArr[heapArr.length-1];
+  heapArr.pop();
+  if(heapArr.length)heapify(heapArr,0);
+  renderHeap();
+  document.getElementById('heapStatus').innerHTML=`Extracted max = <span>${max}</span> — heapified down O(log n)`;
+}
+function heapReset(){heapArr=[];renderHeap();document.getElementById('heapStatus').textContent='Max-heap: parent ≥ both children always';document.getElementById('heapMax').textContent='—';}
+renderHeap();
+
+/* ── 6. TRIE PREFIX SEARCH ── */
+const trieWords=['cat','car','card','care','cast','can','dog','door','do'];
+const triePrefix='ca';
+let trieIdx=0;
+
+// Simulate trie traversal: first show prefix navigation, then matching words
+const trieSteps=[
+  {type:'prefix',ch:'c',msg:`Trie: following prefix character '<span>c</span>'`},
+  {type:'prefix',ch:'a',msg:`Trie: following prefix character '<span>a</span>'`},
+  {type:'match',word:'cat',msg:`Found word '<span>cat</span>' — matches prefix "ca"`},
+  {type:'match',word:'car',msg:`Found word '<span>car</span>' — matches prefix "ca"`},
+  {type:'match',word:'card',msg:`Found word '<span>card</span>' — matches prefix "ca"`},
+  {type:'match',word:'care',msg:`Found word '<span>care</span>' — matches prefix "ca"`},
+  {type:'match',word:'cast',msg:`Found word '<span>cast</span>' — matches prefix "ca"`},
+  {type:'match',word:'can',msg:`Found word '<span>can</span>' — matches prefix "ca"`},
+  {type:'done',msg:`✅ Found <span>6</span> words starting with "ca" — O(2) to reach node, O(k) to enumerate`},
+];
+let trieMatches=[];
+
+function renderTrie(){
+  const el=document.getElementById('trieDisplay');
+  let html=trieWords.map(w=>{
+    const isMatch=trieMatches.includes(w);
+    return `<span style="color:${isMatch?'var(--primary-violet)':'var(--text-secondary)'};">${isMatch?'✓ ':' ─ '} ${w}</span>`;
+  }).join('<br>');
+  el.innerHTML=html;
+}
+
+function trieStep(){
+  if(trieIdx>=trieSteps.length){trieIdx=0;trieMatches=[];renderTrie();document.getElementById('trieStatus').textContent='Searching prefix "ca" in word list';document.getElementById('trieInfo').textContent='';return;}
+  const step=trieSteps[trieIdx];
+  if(step.type==='match'){trieMatches.push(step.word);}
+  renderTrie();
+  document.getElementById('trieStatus').innerHTML=step.msg;
+  if(step.type==='prefix')document.getElementById('trieInfo').innerHTML=`Navigating prefix — O(1) per character, no full-word comparison`;
+  else if(step.type==='match')document.getElementById('trieInfo').innerHTML=`Match ${trieMatches.length} found so far — enumeration phase`;
+  else document.getElementById('trieInfo').innerHTML=`Total: O(|prefix|) + O(k matches) — hash map can't do this`;
+  trieIdx++;
+}
+function trieReset(){trieIdx=0;trieMatches=[];renderTrie();document.getElementById('trieStatus').textContent='Searching prefix "ca" in word list';document.getElementById('trieInfo').textContent='';}
+renderTrie();
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

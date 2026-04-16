@@ -1,0 +1,2437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>String - Level 2 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --primary-green:#10b981; --primary-cyan:#06b6d4; --primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b; --primary-red:#ef4444; --primary-pink:#ec4899;
+  --dark-bg:#0a0a0a; --card-bg:#1a1a1a; --text-primary:#ffffff;
+  --text-secondary:#a0a0a0; --border-color:#2a2a2a;
+  --nav-bg:rgba(10,10,10,0.85); --code-bg:#0d1117; --terminal-bg:#0d1117;
+}
+[data-theme="light"]{
+  --dark-bg:#f8fafc;--card-bg:#ffffff;--text-primary:#0f172a;
+  --text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(248,250,252,0.85);
+  --code-bg:#f1f5f9;--terminal-bg:#f1f5f9;--primary-cyan:#0891b2;--primary-green:#059669;
+}
+[data-theme="blue"]{
+  --dark-bg:#011425;--card-bg:#1e293b;--text-primary:#ffffff;
+  --text-secondary:#94a3b8;--border-color:#242424;--nav-bg:rgba(1,20,37,0.85);
+  --code-bg:#011425;--terminal-bg:#011425;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);transition:background .3s,border-color .3s;}
+.nav-container{max-width:1400px;margin:0 auto;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.3rem;font-weight:700;text-decoration:none;color:inherit;}
+.logo-icon{width:35px;height:35px;background:transparent;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:#fff;}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{color:var(--text-primary);text-decoration:none;font-size:.95rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-green);}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-green);background:rgba(16,185,129,.1);}
+.theme-toggle svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ── CONTAINER ── */
+.container{max-width:1400px;margin:0 auto;padding:100px 2rem 3rem;}
+.breadcrumb{display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;font-size:.9rem;color:var(--text-secondary);}
+.breadcrumb a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb span.sep{opacity:.5;}
+.page-header{margin-bottom:3rem;}
+.page-title{font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:800;margin-bottom:.5rem;}
+.level-tabs{display:flex;gap:1rem;margin-top:1.5rem;}
+.level-tab{padding:.6rem 1.5rem;background:var(--card-bg);border:1px solid var(--border-color);border-radius:50px;color:var(--text-secondary);font-weight:600;cursor:default;}
+.level-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+.content-text{color:var(--text-secondary);margin-bottom:1.5rem;font-size:1.05rem;}
+
+/* ── SECTION CARD ── */
+.section-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:2.5rem;margin-bottom:2.5rem;}
+.section-header{display:flex;align-items:center;gap:1rem;margin-bottom:2rem;}
+.section-icon{width:50px;height:50px;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:white;}
+.section-title{font-size:1.8rem;font-weight:700;color:var(--text-primary);}
+.content-title{font-size:1.25rem;font-weight:600;margin-bottom:1rem;color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;}
+
+/* ── VISUALIZER GRID ── */
+.visualizer-grid{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;}
+
+/* ── PSEUDO CODE ── */
+.pseudo-code-container{background:var(--card-bg);border-radius:15px;padding:20px;border:1px solid var(--border-color);max-height:680px;overflow-y:auto;position:sticky;top:90px;}
+.pseudo-code-container h5{color:var(--primary-orange);font-weight:700;margin-bottom:20px;text-align:center;font-family:'Space Grotesk',sans-serif;font-size:17px;letter-spacing:1px;}
+.pseudo-step{background:var(--code-bg);padding:10px 13px;margin:8px 0;border-radius:8px;color:var(--text-secondary);border-left:3px solid transparent;transition:all .3s;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.6;cursor:default;}
+.pseudo-step.active{background:linear-gradient(90deg,var(--primary-cyan),#00a8a8);color:#000;border-left-color:var(--primary-orange);transform:translateX(5px);box-shadow:0 4px 15px rgba(6,182,212,.3);font-weight:600;}
+.pseudo-step strong{color:var(--primary-cyan);}
+.pseudo-step.active strong{color:#000;font-weight:800;}
+.ps-op-label{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--primary-orange);margin:12px 0 4px;padding:0 4px;opacity:.8;}
+
+/* ── VISUALIZATION CARD ── */
+.visualization-card{background:var(--card-bg);border-radius:20px;border:1px solid var(--border-color);overflow:hidden;}
+.card-header{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));padding:20px;border-bottom:2px solid var(--border-color);}
+.card-header h5{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:#fff;margin:0;}
+.card-body{background:var(--code-bg);padding:30px;min-height:420px;}
+.card-footer{background:var(--card-bg);padding:20px;border-top:2px solid var(--border-color);}
+
+/* ── OPERATION SELECTOR TABS ── */
+.op-selector{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;}
+.op-btn{padding:7px 14px;background:var(--code-bg);border:1.5px solid var(--border-color);border-radius:8px;color:var(--text-secondary);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;white-space:nowrap;}
+.op-btn:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.op-btn.active{background:var(--primary-cyan);border-color:var(--primary-cyan);color:#000;}
+
+/* ── STRING CHAR DISPLAY ── */
+.str-display-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;min-height:200px;justify-content:center;}
+.str-chars{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:flex-end;}
+.str-cell{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.str-cell-idx{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-secondary);}
+.str-char{min-width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;border:2px solid transparent;transition:all .3s;position:relative;}
+.str-char.ch-default{background:linear-gradient(135deg,#1e2a3a,#2a3a4a);color:var(--text-primary);border-color:var(--border-color);}
+.str-char.ch-highlight{background:linear-gradient(135deg,var(--primary-cyan),#00d4d4);color:#000;border-color:var(--primary-cyan);box-shadow:0 0 16px rgba(6,182,212,.5);animation:chPop .4s ease;}
+.str-char.ch-found{background:linear-gradient(135deg,var(--primary-green),#059669);color:#000;border-color:var(--primary-green);box-shadow:0 0 18px rgba(16,185,129,.6);animation:chPop .4s ease;}
+.str-char.ch-insert{background:linear-gradient(135deg,var(--primary-orange),#ff8c00);color:#000;border-color:var(--primary-orange);animation:chIn .5s ease;}
+.str-char.ch-delete{background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;border-color:var(--primary-red);animation:chOut .4s ease forwards;}
+.str-char.ch-reverse{background:linear-gradient(135deg,var(--primary-purple),#7c3aed);color:#fff;border-color:var(--primary-purple);animation:chPop .4s ease;}
+.str-char.ch-concat{background:linear-gradient(135deg,var(--primary-pink),#db2777);color:#fff;border-color:var(--primary-pink);animation:chIn .5s ease;}
+.str-char.ch-rotate{background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border-color:#f97316;animation:chPop .4s ease;}
+.str-char.ch-palindrome-yes{background:linear-gradient(135deg,var(--primary-green),#059669);color:#000;border-color:var(--primary-green);}
+.str-char.ch-palindrome-no{background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;border-color:var(--primary-red);}
+
+@keyframes chPop{0%,100%{transform:scale(1);}40%{transform:scale(1.18) translateY(-4px);}}
+@keyframes chIn{from{opacity:0;transform:scale(.5) translateY(-20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+@keyframes chOut{to{opacity:0;transform:scale(.4) translateY(10px);}}
+
+/* caption below chars */
+.str-caption{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--primary-cyan);text-align:center;min-height:22px;transition:all .3s;}
+.str-caption.cap-green{color:var(--primary-green);}
+.str-caption.cap-red{color:var(--primary-red);}
+.str-caption.cap-orange{color:var(--primary-orange);}
+.str-caption.cap-purple{color:var(--primary-purple);}
+.str-caption.cap-pink{color:var(--primary-pink);}
+
+.str-result-badge{padding:.5rem 1.4rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;display:inline-block;margin-top:6px;transition:all .3s;}
+.badge-cyan{background:rgba(6,182,212,.15);border:1.5px solid var(--primary-cyan);color:var(--primary-cyan);}
+.badge-green{background:rgba(16,185,129,.15);border:1.5px solid var(--primary-green);color:var(--primary-green);}
+.badge-red{background:rgba(239,68,68,.15);border:1.5px solid var(--primary-red);color:var(--primary-red);}
+.badge-orange{background:rgba(245,158,11,.15);border:1.5px solid var(--primary-orange);color:var(--primary-orange);}
+.badge-purple{background:rgba(139,92,246,.15);border:1.5px solid var(--primary-purple);color:var(--primary-purple);}
+.badge-pink{background:rgba(236,72,153,.15);border:1.5px solid var(--primary-pink);color:var(--primary-pink);}
+
+/* pointer */
+.str-pointer{font-size:18px;margin-bottom:-2px;animation:ptrBounce .6s ease-in-out infinite alternate;color:var(--primary-orange);}
+@keyframes ptrBounce{from{transform:translateY(0);}to{transform:translateY(-4px);}}
+
+/* ── CONTROLS ── */
+.form-control{background:var(--dark-bg);border:2px solid var(--border-color);color:var(--text-primary);border-radius:8px;padding:9px 12px;width:100%;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.form-control:focus{border-color:var(--primary-cyan);box-shadow:0 0 8px rgba(6,182,212,.2);}
+.btn{border:none;font-weight:700;padding:10px 20px;border-radius:8px;transition:all .3s;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn:hover:not(:disabled){transform:translateY(-2px);}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn-success{background:linear-gradient(135deg,var(--primary-green),#059669);color:#fff;}
+.btn-primary{background:linear-gradient(135deg,var(--primary-cyan),#0891b2);color:#fff;}
+.btn-warning{background:linear-gradient(135deg,var(--primary-orange),#d97706);color:#000;}
+.btn-danger{background:linear-gradient(135deg,var(--primary-red),#dc2626);color:#fff;}
+.btn-purple{background:linear-gradient(135deg,var(--primary-purple),#7c3aed);color:#fff;}
+.btn-ghost{background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+.btn-ghost:hover:not(:disabled){border-color:var(--primary-cyan);color:var(--primary-cyan);}
+
+/* ── SCENARIO SECTION ── */
+.q-scenario-tabs{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.8rem;}
+.q-scenario-tab{display:flex;align-items:center;gap:.45rem;padding:.55rem 1.3rem;border-radius:50px;border:1.5px solid var(--border-color);background:var(--code-bg);color:var(--text-secondary);font-weight:600;font-size:.88rem;cursor:pointer;transition:all .25s;font-family:'Inter',sans-serif;}
+.q-scenario-tab:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);background:rgba(6,182,212,.07);}
+.qtab-best{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.qtab-avg{background:rgba(6,182,212,.15);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.qtab-worst{background:rgba(245,158,11,.15);border-color:var(--primary-orange);color:var(--primary-orange);}
+.qtab-custom{background:rgba(139,92,246,.15);border-color:var(--primary-purple);color:var(--primary-purple);}
+.q-scenario-panel{display:none;}
+.q-scenario-panel.active{display:block;}
+.q-scenario-inner{background:var(--code-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.8rem 2rem;}
+.q-scenario-inner h4{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:.4rem;}
+.q-scenario-inner p{color:var(--text-secondary);font-size:.92rem;line-height:1.65;margin-bottom:1.2rem;}
+.q-divider{border:none;border-top:1px solid var(--border-color);margin:.9rem 0 1.3rem;}
+.q-input-label{display:flex;align-items:center;gap:.5rem;color:var(--text-secondary);font-size:.8rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.9rem;font-family:'Space Grotesk',sans-serif;}
+.q-stage{display:grid;grid-template-columns:1fr 260px;gap:2rem;align-items:start;margin-top:.5rem;}
+.q-log-panel{background:var(--terminal-bg);border:1px solid var(--border-color);border-radius:12px;padding:1rem 1.1rem;font-family:'JetBrains Mono',monospace;font-size:.79rem;min-height:200px;max-height:260px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(6,182,212,.2) transparent;}
+.q-log-panel::-webkit-scrollbar{width:4px;}
+.q-log-panel::-webkit-scrollbar-thumb{background:rgba(6,182,212,.2);border-radius:4px;}
+.q-log-title{font-family:'Space Grotesk',sans-serif;color:var(--primary-cyan);font-size:.72rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.75rem;font-weight:700;}
+.q-log-entry{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:qLogFade .28s ease both;line-height:1.5;}
+@keyframes qLogFade{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:translateX(0);}}
+.q-log-green{color:var(--primary-green);}
+.q-log-red{color:var(--primary-red);}
+.q-log-cyan{color:var(--primary-cyan);}
+.q-log-info{color:var(--text-secondary);}
+.q-log-warn{color:var(--primary-orange);}
+.q-log-result{color:var(--primary-purple);font-weight:700;}
+.q-ctl-row{display:flex;align-items:center;gap:.6rem;margin-top:1rem;flex-wrap:wrap;}
+.q-btn{padding:8px 17px;border-radius:8px;border:none;font-weight:700;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.q-btn:hover:not(:disabled){transform:translateY(-2px);}
+.q-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.q-btn-green{background:var(--primary-green);color:#fff;}
+.q-btn-green:hover:not(:disabled){box-shadow:0 4px 14px rgba(16,185,129,.4);}
+.q-btn-red{background:var(--primary-red);color:#fff;}
+.q-btn-red:hover:not(:disabled){box-shadow:0 4px 14px rgba(239,68,68,.4);}
+.q-btn-cyan{background:var(--primary-cyan);color:#000;}
+.q-btn-cyan:hover:not(:disabled){box-shadow:0 4px 14px rgba(6,182,212,.4);}
+.q-btn-orange{background:var(--primary-orange);color:#000;}
+.q-btn-orange:hover:not(:disabled){box-shadow:0 4px 14px rgba(245,158,11,.4);}
+.q-btn-purple{background:var(--primary-purple);color:#fff;}
+.q-btn-purple:hover:not(:disabled){box-shadow:0 4px 14px rgba(139,92,246,.4);}
+.q-btn-ghost{background:var(--code-bg);color:var(--text-secondary);border:1.5px solid var(--border-color);}
+.q-btn-ghost:hover:not(:disabled){border-color:var(--primary-cyan);color:var(--primary-cyan);}
+
+/* custom inputs */
+.q-custom-input{padding:8px 12px;background:var(--code-bg);border:2px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:.88rem;outline:none;transition:border-color .2s;}
+.q-custom-input::placeholder{color:var(--text-secondary);opacity:.7;}
+.q-custom-input:focus{border-color:var(--primary-cyan);box-shadow:0 0 8px rgba(6,182,212,.2);}
+.q-custom-input-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;}
+
+/* scenario str track */
+.sc-str-wrap{display:flex;flex-direction:column;gap:.8rem;}
+.sc-chars{display:flex;gap:6px;flex-wrap:wrap;}
+.sc-char{min-width:44px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.95rem;border:2px solid transparent;transition:all .3s;color:#000;}
+.sc-char.sc-default{background:linear-gradient(135deg,#1e2a3a,#2a3a4a);color:var(--text-secondary);border-color:var(--border-color);}
+.sc-char.sc-active{background:linear-gradient(135deg,var(--primary-orange),#ff8c00);border-color:var(--primary-orange);box-shadow:0 0 14px rgba(245,158,11,.5);animation:chPop .4s ease;}
+.sc-char.sc-found{background:linear-gradient(135deg,var(--primary-green),#059669);border-color:var(--primary-green);box-shadow:0 0 14px rgba(16,185,129,.5);animation:chPop .4s ease;}
+.sc-char.sc-miss{background:linear-gradient(135deg,#1a1a1a,#222);color:#444;border-color:#333;}
+.sc-char.sc-mark{background:linear-gradient(135deg,var(--primary-purple),#7c3aed);border-color:var(--primary-purple);box-shadow:0 0 12px rgba(139,92,246,.4);color:#fff;animation:chPop .4s ease;}
+.sc-info{font-size:.78rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;margin-top:4px;}
+
+/* complexity cc cards */
+.q-cc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-bottom:1rem;}
+.q-cc-card{background:rgba(0,0,0,.25);border:1.5px solid var(--border-color);border-radius:10px;padding:.8rem .9rem;transition:border-color .25s,box-shadow .25s,transform .2s;}
+.q-cc-card.qcc-active{border-color:var(--primary-cyan);box-shadow:0 0 16px rgba(6,182,212,.3);transform:translateY(-2px);}
+.q-cc-op{font-family:'Space Grotesk',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text-primary);margin-bottom:.5rem;}
+.q-cc-row{font-size:.76rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;line-height:1.7;}
+.q-cc-val{font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:.8rem;}
+.q-cc-green{color:var(--primary-green);}
+.q-cc-orange{color:var(--primary-orange);}
+.q-cc-red{color:var(--primary-red);}
+.q-cc-note{margin-top:.45rem;font-size:.68rem;color:rgba(160,160,160,.6);font-style:italic;line-height:1.4;border-top:1px solid rgba(255,255,255,.05);padding-top:.4rem;}
+.q-cc-toast{display:none;align-items:center;gap:.55rem;padding:.55rem 1rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:.5px;margin-bottom:.6rem;animation:qToastIn .3s ease both;border:1.5px solid;}
+.q-cc-toast.show-toast{display:flex;}
+.qtoast-cyan{background:rgba(6,182,212,.1);border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.qtoast-green{background:rgba(16,185,129,.1);border-color:var(--primary-green);color:var(--primary-green);}
+.qtoast-orange{background:rgba(245,158,11,.1);border-color:var(--primary-orange);color:var(--primary-orange);}
+.qtoast-warn{background:rgba(245,158,11,.1);border-color:var(--primary-orange);color:var(--primary-orange);}
+@keyframes qToastIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── CODE EDITOR ── */
+.impl-selector{display:flex;gap:.8rem;margin:1.5rem 0;padding:1rem;background:var(--card-bg);border-radius:16px;border:1px solid var(--border-color);justify-content:center;flex-wrap:wrap;}
+.impl-opt{padding:.9rem 2rem;background:var(--code-bg);border:2px solid var(--border-color);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center;min-width:160px;}
+.impl-opt:hover{border-color:var(--primary-cyan);transform:translateY(-2px);}
+.impl-opt.active{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-purple));border-color:var(--primary-cyan);color:white;box-shadow:0 4px 15px rgba(6,182,212,.3);}
+.impl-opt-icon{font-size:1.6rem;margin-bottom:.4rem;}
+.impl-opt-title{font-weight:700;font-size:.95rem;}
+.impl-opt.active .impl-opt-title{color:white;}
+.lang-tabs{display:flex;gap:.8rem;margin:1.5rem 0;flex-wrap:wrap;background:var(--border-color);padding:6px;border-radius:12px;width:fit-content;}
+.lang-tab{padding:8px 16px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--text-secondary);cursor:pointer;font-weight:600;transition:all .2s;}
+.lang-tab.active{background:var(--primary-cyan);color:white;border-color:var(--primary-cyan);}
+.editor-wrapper{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;margin:1.5rem 0;}
+.editor-header{background:rgba(6,182,212,.1);padding:1rem 1.5rem;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+.code-copy{width:60px;height:38px;background:var(--primary-purple);border:none;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:white;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;}
+.run-code-btn{background:linear-gradient(90deg,var(--primary-green),#059669);color:white;border:none;padding:12px 30px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:15px;transition:all .3s;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:8px;}
+.run-code-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(16,185,129,.3);}
+.output-container{background:var(--code-bg);color:var(--primary-green);padding:20px;border-radius:12px;margin-top:15px;min-height:150px;font-family:'JetBrains Mono',monospace;border:2px solid var(--border-color);font-size:14px;line-height:1.6;}
+.output-container h6{color:var(--primary-cyan);margin-bottom:10px;font-family:'Space Grotesk',sans-serif;}
+.CodeMirror{height:380px!important;font-size:14px;border-radius:0 0 12px 12px;}
+
+/* ── LEVEL NAV ── */
+.level-wrapper{display:flex;align-items:center;justify-content:space-between;position:relative;padding:0 20px;height:100px;margin:4rem 0;}
+.level-wrapper button{position:relative;z-index:20;width:140px;padding:1rem;border-radius:14px;border:2px solid var(--border-color);background:var(--dark-bg);color:var(--text-primary);font-weight:800;cursor:pointer;transition:all .3s;}
+#l1{border-color:var(--primary-cyan);background:rgba(6,182,212,.15);color:var(--primary-cyan)!important;box-shadow:0 0 15px rgba(6,182,212,.2);}
+#l2{border-color:var(--primary-green);background:rgba(16,185,129,.15);color:var(--primary-green)!important;box-shadow:0 0 15px rgba(16,185,129,.2);}
+.slider{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border-color);width:20%;z-index:1;pointer-events:none;}
+#slider1{left:22%;}#slider2{left:58%;}
+.slider.active{background:linear-gradient(90deg,var(--primary-cyan),var(--primary-purple));box-shadow:0 0 20px var(--primary-cyan);}
+.level-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);backdrop-filter:blur(15px);z-index:100000;justify-content:center;align-items:center;}
+.level-modal-content{background:var(--card-bg);border:2px solid var(--primary-purple);padding:3rem;border-radius:30px;max-width:450px;width:90%;text-align:center;box-shadow:0 0 50px rgba(139,92,246,.4);}
+#startQuiz{background:var(--primary-cyan);color:white;width:80px;height:40px;border-radius:20px;box-shadow:none;}
+#startQuiz:hover{box-shadow:0 0 15px var(--primary-cyan);}
+#cancelBtn{background:var(--border-color);color:var(--text-primary);width:80px;height:40px;border-radius:20px;box-shadow:none;}
+
+/* ── INPUT AREA ── */
+.input-section{background:var(--code-bg);border:1px solid var(--border-color);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1rem;}
+.input-section-title{font-size:.85rem;color:var(--primary-cyan);font-weight:700;margin-bottom:12px;font-family:'Space Grotesk',sans-serif;letter-spacing:.5px;}
+.input-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;}
+.input-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;}
+
+@media(max-width:900px){
+  .visualizer-grid{grid-template-columns:1fr;}
+  .pseudo-code-container{position:relative;top:0;max-height:350px;}
+  .q-stage{grid-template-columns:1fr;}
+  .q-cc-grid{grid-template-columns:1fr;}
+  .input-grid,.input-grid-3{grid-template-columns:1fr;}
+}
+</style>
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep"> › </span>
+    <a href="string_basics.html">String</a><span class="sep"> › </span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">String — Interactive Visualizer</h1>
+    <p class="content-text">Explore every string operation step-by-step with live animations and explanations.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MAIN VISUALIZER ═══════════════ -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo-code sidebar -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div class="ps-op-label">Length</div>
+      <div class="pseudo-step" data-step="len-loop"><strong>LOOP:</strong> i = 0 → n-1<br>count each char</div>
+      <div class="pseudo-step" data-step="len-ret"><strong>RETURN:</strong> count</div>
+
+      <div class="ps-op-label">Search Char</div>
+      <div class="pseudo-step" data-step="sch-loop"><strong>LOOP:</strong> for i = 0 → n-1</div>
+      <div class="pseudo-step" data-step="sch-cmp"><strong>CMP:</strong> if str[i] == target</div>
+      <div class="pseudo-step" data-step="sch-ret"><strong>RETURN:</strong> index i or -1</div>
+
+      <div class="ps-op-label">Substring</div>
+      <div class="pseudo-step" data-step="sub-loop"><strong>LOOP:</strong> slide window of len(sub)</div>
+      <div class="pseudo-step" data-step="sub-cmp"><strong>CMP:</strong> match each char</div>
+      <div class="pseudo-step" data-step="sub-ret"><strong>FOUND / NOT FOUND</strong></div>
+
+      <div class="ps-op-label">Insert / Delete</div>
+      <div class="pseudo-step" data-step="ins"><strong>INSERT:</strong> shift right, place char</div>
+      <div class="pseudo-step" data-step="del"><strong>DELETE:</strong> shift left, reduce length</div>
+
+      <div class="ps-op-label">Reverse</div>
+      <div class="pseudo-step" data-step="rev-swap"><strong>SWAP:</strong> str[i] ↔ str[n-1-i]</div>
+      <div class="pseudo-step" data-step="rev-done"><strong>DONE:</strong> i reaches mid</div>
+
+      <div class="ps-op-label">Concat / Rotate / Palindrome</div>
+      <div class="pseudo-step" data-step="cat"><strong>CONCAT:</strong> append chars of s2</div>
+      <div class="pseudo-step" data-step="rot"><strong>ROTATE:</strong> shift by k positions</div>
+      <div class="pseudo-step" data-step="pal"><strong>PALINDROME:</strong> check symmetry</div>
+      <div class="pseudo-step" data-step="same"><strong>SAME:</strong> compare char by char</div>
+    </div>
+
+    <!-- Main vis card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="vis-title">String Operations Visualizer</h5>
+        </div>
+        <div class="card-body">
+          <!-- Operation selector -->
+          <div class="op-selector" id="opSelector">
+            <button class="op-btn active" data-op="length"     onclick="setOp('length')">📏 Length</button>
+            <button class="op-btn"        data-op="search"     onclick="setOp('search')">🔍 Search Char</button>
+            <button class="op-btn"        data-op="substring"  onclick="setOp('substring')">📌 Substring</button>
+            <button class="op-btn"        data-op="insert"     onclick="setOp('insert')">➕ Insert</button>
+            <button class="op-btn"        data-op="delete"     onclick="setOp('delete')">✂️ Delete</button>
+            <button class="op-btn"        data-op="same"       onclick="setOp('same')">🔀 Same?</button>
+            <button class="op-btn"        data-op="concat"     onclick="setOp('concat')">🔗 Concat</button>
+            <button class="op-btn"        data-op="reverse"    onclick="setOp('reverse')">↩️ Reverse</button>
+            <button class="op-btn"        data-op="rotate"     onclick="setOp('rotate')">🔄 Rotate</button>
+            <button class="op-btn"        data-op="palindrome" onclick="setOp('palindrome')">🪞 Palindrome</button>
+          </div>
+
+          <!-- String display -->
+          <div class="str-display-wrap" id="mainDisplay">
+            <div class="str-chars" id="mainChars"></div>
+            <div class="str-caption" id="mainCaption">Enter a string and click Run.</div>
+            <div id="mainBadge"></div>
+          </div>
+        </div>
+
+        <div class="card-footer" id="mainControls">
+          <!-- Dynamic controls rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SCENARIOS ═══════════════ -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="q-scenario-tabs">
+      <button class="q-scenario-tab qtab-best"  id="qstab-best"   onclick="qSwitch('best')">⚡ Best Case</button>
+      <button class="q-scenario-tab"            id="qstab-avg"    onclick="qSwitch('avg')">〜 Average Case</button>
+      <button class="q-scenario-tab"            id="qstab-worst"  onclick="qSwitch('worst')">⚠ Worst Case</button>
+      <button class="q-scenario-tab"            id="qstab-custom" onclick="qSwitch('custom')">✏ Custom</button>
+    </div>
+
+    <div>
+      <!-- BEST -->
+      <div class="q-scenario-panel active" id="qspanel-best">
+        <div class="q-scenario-inner">
+          <h4>Best Case — O(1)</h4>
+          <p>The target character is found at <strong style="color:var(--primary-green)">index 0</strong> — only 1 comparison needed. Or checking length takes a single read with a pre-stored counter.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 String: "hello" — searching 'h' (index 0)</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-best-chars"></div>
+              <div class="sc-info" id="sc-best-info">Comparisons: 0</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-best-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-cyan"   onclick="scBestStep()"  id="sc-best-step">▶ Next Step</button>
+                <button class="q-btn q-btn-orange" onclick="scBestAuto()"  id="sc-best-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="q-scenario-panel" id="qspanel-avg">
+        <div class="q-scenario-inner">
+          <h4>Average Case — O(N/2)</h4>
+          <p>Searching for a substring in the <strong style="color:var(--primary-cyan)">middle</strong> of the string. On average, N/2 comparisons are needed before a match is found.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 String: "algorithms" — searching "rit" (appears at index 4)</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-avg-chars"></div>
+              <div class="sc-info" id="sc-avg-info">Window position: 0</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-avg-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-cyan"   onclick="scAvgStep()"  id="sc-avg-step">▶ Next Step</button>
+                <button class="q-btn q-btn-orange" onclick="scAvgAuto()"  id="sc-avg-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="q-scenario-panel" id="qspanel-worst">
+        <div class="q-scenario-inner">
+          <h4>Worst Case — O(N)</h4>
+          <p>Reversing a string requires visiting <strong style="color:var(--primary-orange)">every character</strong> exactly once. All N characters must be processed — O(N) time.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 Reversing "reverse" — all N chars processed</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-worst-chars"></div>
+              <div class="sc-info" id="sc-worst-info">Swaps: 0 / 3</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-worst-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-orange" onclick="scWorstStep()" id="sc-worst-step">▶ Next Swap</button>
+                <button class="q-btn q-btn-red"    onclick="scWorstAuto()" id="sc-worst-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="q-scenario-panel" id="qspanel-custom">
+        <div class="q-scenario-inner">
+          <h4>Custom Input — Explore Operations</h4>
+          <p>Enter your own string and choose any operation to visualize. Live complexity feedback shows which case you're hitting.</p>
+          <hr class="q-divider">
+
+          <div class="q-cc-grid">
+            <div class="q-cc-card" id="qcc-o1">
+              <div class="q-cc-op">⚡ O(1) Operations</div>
+              <div class="q-cc-row">Time: <span class="q-cc-val q-cc-green">O(1)</span></div>
+              <div class="q-cc-row">Length (cached), Peek at index</div>
+              <div class="q-cc-note">Single read — no traversal needed</div>
+            </div>
+            <div class="q-cc-card" id="qcc-on">
+              <div class="q-cc-op">⚠ O(N) Operations</div>
+              <div class="q-cc-row">Time: <span class="q-cc-val q-cc-orange">O(N)</span></div>
+              <div class="q-cc-row">Search, Reverse, Rotate, Palindrome</div>
+              <div class="q-cc-note">Traverse all or half of the string</div>
+            </div>
+          </div>
+
+          <div class="q-cc-toast" id="q-cc-toast">
+            <span id="q-cc-toast-icon"></span>
+            <span id="q-cc-toast-text"></span>
+          </div>
+
+          <div class="q-input-label" style="margin-top:.8rem;">📥 Your String &amp; Operation</div>
+          <div class="q-custom-input-row">
+            <input type="text"   class="q-custom-input" id="cust-str"  placeholder="e.g. hello" style="width:150px;">
+            <input type="text"   class="q-custom-input" id="cust-arg"  placeholder="char/substr/pos" style="width:150px;">
+            <select class="q-custom-input" id="cust-op" style="width:160px;">
+              <option value="length">📏 Length</option>
+              <option value="search">🔍 Search Char</option>
+              <option value="substring">📌 Substring</option>
+              <option value="insert">➕ Insert at pos</option>
+              <option value="delete">✂️ Delete at pos</option>
+              <option value="same">🔀 Same String?</option>
+              <option value="concat">🔗 Concatenate</option>
+              <option value="reverse">↩️ Reverse</option>
+              <option value="rotate">🔄 Rotate by k</option>
+              <option value="palindrome">🪞 Palindrome?</option>
+            </select>
+            <button class="q-btn q-btn-green" onclick="scCustomRun()">▶ Run</button>
+            <button class="q-btn q-btn-ghost" onclick="scCustomReset()">↺ Reset</button>
+          </div>
+
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-cust-chars"></div>
+              <div class="sc-info" id="sc-cust-info">Result will appear here</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-cust-log"><div class="q-log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CODE EDITOR ═══════════════ -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <!-- Operation selector for code -->
+    <div class="impl-selector" id="codeOpSelector">
+      <div class="impl-opt active" data-cop="length"    onclick="setCodeOp('length')">   <div class="impl-opt-icon">📏</div><div class="impl-opt-title">Length</div></div>
+      <div class="impl-opt"       data-cop="search"    onclick="setCodeOp('search')">    <div class="impl-opt-icon">🔍</div><div class="impl-opt-title">Search</div></div>
+      <div class="impl-opt"       data-cop="substring" onclick="setCodeOp('substring')"> <div class="impl-opt-icon">📌</div><div class="impl-opt-title">Substring</div></div>
+      <div class="impl-opt"       data-cop="insert"    onclick="setCodeOp('insert')">    <div class="impl-opt-icon">➕</div><div class="impl-opt-title">Insert</div></div>
+      <div class="impl-opt"       data-cop="delete"    onclick="setCodeOp('delete')">    <div class="impl-opt-icon">✂️</div><div class="impl-opt-title">Delete</div></div>
+      <div class="impl-opt"       data-cop="same"      onclick="setCodeOp('same')">      <div class="impl-opt-icon">🔀</div><div class="impl-opt-title">Same?</div></div>
+      <div class="impl-opt"       data-cop="concat"    onclick="setCodeOp('concat')">    <div class="impl-opt-icon">🔗</div><div class="impl-opt-title">Concat</div></div>
+      <div class="impl-opt"       data-cop="reverse"   onclick="setCodeOp('reverse')">   <div class="impl-opt-icon">↩️</div><div class="impl-opt-title">Reverse</div></div>
+      <div class="impl-opt"       data-cop="rotate"    onclick="setCodeOp('rotate')">    <div class="impl-opt-icon">🔄</div><div class="impl-opt-title">Rotate</div></div>
+      <div class="impl-opt"       data-cop="palindrome" onclick="setCodeOp('palindrome')"><div class="impl-opt-icon">🪞</div><div class="impl-opt-title">Palindrome</div></div>
+    </div>
+
+    <div class="lang-tabs" id="editorLangTabs">
+      <button class="lang-tab active" data-lang="cpp">C++</button>
+      <button class="lang-tab"        data-lang="python">Python</button>
+      <button class="lang-tab"        data-lang="java">Java</button>
+      <button class="lang-tab"        data-lang="c">C</button>
+      <button class="lang-tab"        data-lang="javascript">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span id="editorLabel" style="font-weight:600;color:var(--primary-cyan);font-family:'Space Grotesk',sans-serif;">C++ — Length of String</span>
+        <button class="code-copy" id="copyBtn" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <!-- Inputs before run -->
+    <div class="input-section">
+      <div class="input-section-title">📥 PROVIDE INPUTS BEFORE RUNNING</div>
+      <div id="runInputArea"></div>
+    </div>
+
+    <button class="run-code-btn" onclick="runCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Select an operation, fill in inputs and click Run...</div>
+    </div>
+  </div>
+
+  <!-- Level Nav -->
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your String journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+   THEME
+════════════════════════════════════════════════════════ */
+const THEMES=['dark','light','blue']; let thIdx=0;
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  thIdx=(thIdx+1)%THEMES.length;
+  document.body.setAttribute('data-theme',THEMES[thIdx]);
+  if(codeEditor) codeEditor.setOption('theme',{dark:'material-ocean',light:'eclipse',blue:'nord'}[THEMES[thIdx]]);
+});
+
+/* ════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════ */
+const COLORS=['#06b6d4','#8b5cf6','#10b981','#f59e0b','#ef4444','#3b82f6','#ec4899','#14b8a6','#f97316','#a78bfa'];
+
+function buildChars(containerId, str, stateMap={}, showIdx=true){
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML='';
+  [...str].forEach((ch,i)=>{
+    const cell=document.createElement('div');
+    cell.className='str-cell';
+    const ptr=stateMap[i+'_ptr']?`<div class="str-pointer">▼</div>`:`<div style="height:22px;"></div>`;
+    const cls=stateMap[i]||'ch-default';
+    const style=cls==='ch-default'?`background:${COLORS[i%COLORS.length]};color:#000;`:'';
+    cell.innerHTML=`${ptr}<div class="str-char ${cls}" style="${style}">${ch==' '?'·':ch}</div>${showIdx?`<div class="str-cell-idx">[${i}]</div>`:''}`;
+    el.appendChild(cell);
+  });
+}
+
+function setCaption(id,text,cls=''){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=text;
+  el.className='str-caption'+(cls?' '+cls:'');
+}
+
+function setBadge(id,text,cls){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.innerHTML=text?`<div class="str-result-badge ${cls}">${text}</div>`:'';
+}
+
+function highlightPS(step){
+  document.querySelectorAll('.pseudo-step').forEach(s=>s.classList.remove('active'));
+  const el=document.querySelector(`[data-step="${step}"]`);
+  if(el) el.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════
+   MAIN VISUALIZER — OPERATION RUNNER
+════════════════════════════════════════════════════════ */
+let currentOp='length';
+let mainStr='', mainArg='', mainArg2='';
+let stepIdx=0, stepDone=false, stepTimer=null;
+let stepData=null; // holds per-operation step state
+
+const OP_CONTROLS={
+  length:`
+    <div style="display:grid;grid-template-columns:2fr auto auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" placeholder='e.g. "hello world"' value="hello world"></div>
+      <button class="btn btn-primary" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+      <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+      <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+    </div>`,
+  search:`
+    <div style="display:grid;grid-template-columns:2fr 1fr auto auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="hello world"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Target Char</label>
+      <input type="text" id="mc-arg" class="form-control" maxlength="1" value="o" style="width:60px;"></div>
+      <button class="btn btn-primary" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+      <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+      <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+    </div>`,
+  substring:`
+    <div style="display:grid;grid-template-columns:2fr 1fr auto auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="algorithms"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Substring</label>
+      <input type="text" id="mc-arg" class="form-control" value="rit"></div>
+      <button class="btn btn-primary" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+      <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+      <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+    </div>`,
+  insert:`
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="helo"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Char</label>
+      <input type="text" id="mc-arg" class="form-control" maxlength="1" value="l" style="width:60px;"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Index</label>
+      <input type="number" id="mc-arg2" class="form-control" value="3" style="width:70px;"></div>
+      <button class="btn btn-success" onclick="mainBuildInstant('insert')">▶ Run</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:10px;width:100%;" onclick="mainReset()">↺ Reset</button>`,
+  delete:`
+    <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="helllo"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Index to delete</label>
+      <input type="number" id="mc-arg" class="form-control" value="3" style="width:70px;"></div>
+      <button class="btn btn-danger" onclick="mainBuildInstant('delete')">✂️ Delete</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:10px;width:100%;" onclick="mainReset()">↺ Reset</button>`,
+  same:`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 1</label>
+      <input type="text" id="mc-str" class="form-control" value="code"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 2</label>
+      <input type="text" id="mc-arg" class="form-control" value="code"></div>
+      <button class="btn btn-primary" onclick="mainBuildInstant('same')">🔀 Check</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:10px;width:100%;" onclick="mainReset()">↺ Reset</button>`,
+  concat:`
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 1</label>
+      <input type="text" id="mc-str" class="form-control" value="hello"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 2</label>
+      <input type="text" id="mc-arg" class="form-control" value=" world"></div>
+      <button class="btn btn-success" onclick="mainBuildInstant('concat')">🔗 Concat</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:10px;width:100%;" onclick="mainReset()">↺ Reset</button>`,
+  reverse:`
+    <div style="display:grid;grid-template-columns:2fr auto auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="abcdef"></div>
+      <button class="btn btn-primary" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+      <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+      <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+    </div>`,
+  rotate:`
+    <div style="display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="abcdef"></div>
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Rotate by k</label>
+      <input type="number" id="mc-arg" class="form-control" value="2" style="width:70px;"></div>
+      <button class="btn btn-purple" onclick="mainBuildInstant('rotate')">🔄 Rotate</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:10px;width:100%;" onclick="mainReset()">↺ Reset</button>`,
+  palindrome:`
+    <div style="display:grid;grid-template-columns:2fr auto auto;gap:10px;align-items:end;">
+      <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+      <input type="text" id="mc-str" class="form-control" value="racecar"></div>
+      <button class="btn btn-primary" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+      <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+      <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+      <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+    </div>`,
+};
+
+function setOp(op){
+  currentOp=op;
+  document.querySelectorAll('.op-btn').forEach(b=>b.classList.toggle('active',b.dataset.op===op));
+  document.getElementById('vis-title').textContent={
+    length:'Length of String',search:'Search a Character',substring:'Check for Substring',
+    insert:'Insert a Character',delete:'Delete a Character',same:'Check for Same Strings',
+    concat:'String Concatenation',reverse:'Reverse a String',rotate:'Rotate a String',
+    palindrome:'Check for Palindrome'
+  }[op]+' — Visualizer';
+  document.getElementById('mainControls').innerHTML=OP_CONTROLS[op]||'';
+  mainStr=''; stepIdx=0; stepDone=false; clearTimeout(stepTimer);
+  document.getElementById('mainChars').innerHTML='';
+  setCaption('mainCaption','Build the string to begin.','');
+  setBadge('mainBadge','','');
+}
+
+function getInputs(){
+  mainStr=(document.getElementById('mc-str')||{value:''}).value.trim();
+  mainArg=(document.getElementById('mc-arg')||{value:''}).value.trim();
+  mainArg2=(document.getElementById('mc-arg2')||{value:''}).value.trim();
+}
+
+function mainReset(){
+  clearTimeout(stepTimer); stepIdx=0; stepDone=false; stepData=null;
+  document.getElementById('mainChars').innerHTML='';
+  setCaption('mainCaption','Build the string to begin.','');
+  setBadge('mainBadge','','');
+  const bs=document.getElementById('btnStep'), ba=document.getElementById('btnAuto');
+  if(bs) bs.disabled=true; if(ba) ba.disabled=true;
+}
+
+function mainBuild(){
+  getInputs();
+  if(!mainStr){setCaption('mainCaption','Please enter a string!','cap-red');return;}
+  clearTimeout(stepTimer); stepIdx=0; stepDone=false;
+  buildChars('mainChars',mainStr);
+  setCaption('mainCaption',`"${mainStr}" — ready. Click ▶ Step.`,'');
+  setBadge('mainBadge','','');
+  const bs=document.getElementById('btnStep'), ba=document.getElementById('btnAuto');
+  if(bs) bs.disabled=false; if(ba) ba.disabled=false;
+  // prepare step data
+  if(currentOp==='length') stepData={chars:[...mainStr], i:0};
+  if(currentOp==='search') stepData={chars:[...mainStr], target:mainArg[0]||'', i:0, found:-1};
+  if(currentOp==='substring') stepData={chars:[...mainStr], sub:mainArg, i:0, found:-1};
+  if(currentOp==='reverse'){const a=[...mainStr]; stepData={arr:a,lo:0,hi:a.length-1};}
+  if(currentOp==='palindrome'){const a=[...mainStr]; stepData={arr:a,lo:0,hi:a.length-1,ok:true};}
+}
+
+function mainStep(){
+  if(stepDone) return;
+  if(currentOp==='length') doLengthStep();
+  else if(currentOp==='search') doSearchStep();
+  else if(currentOp==='substring') doSubStep();
+  else if(currentOp==='reverse') doReverseStep();
+  else if(currentOp==='palindrome') doPalinStep();
+}
+
+function mainAuto(){
+  if(stepDone) return;
+  const bs=document.getElementById('btnStep'), ba=document.getElementById('btnAuto');
+  if(ba) ba.disabled=true;
+  (function go(){
+    if(stepDone) return;
+    mainStep();
+    stepTimer=setTimeout(go,700);
+  })();
+}
+
+/* LENGTH STEPS */
+function doLengthStep(){
+  const d=stepData;
+  if(d.i<d.chars.length){
+    highlightPS('len-loop');
+    const sm={}; for(let k=0;k<d.i;k++) sm[k]='ch-found';
+    sm[d.i]='ch-highlight'; sm[d.i+'_ptr']=true;
+    buildChars('mainChars',mainStr,sm);
+    setCaption('mainCaption',`Counting index ${d.i}: '${d.chars[d.i]}' — count = ${d.i+1}`,'');
+    d.i++;
+  } else {
+    highlightPS('len-ret');
+    const sm={}; [...mainStr].forEach((_,k)=>sm[k]='ch-found');
+    buildChars('mainChars',mainStr,sm);
+    setCaption('mainCaption',`Length = ${d.chars.length}`,'cap-green');
+    setBadge('mainBadge',`Length: ${d.chars.length}`,'badge-green');
+    stepDone=true; clearTimeout(stepTimer);
+    const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+    if(bs)bs.disabled=true; if(ba)ba.disabled=true;
+  }
+}
+
+/* SEARCH STEPS */
+function doSearchStep(){
+  const d=stepData;
+  if(d.i<d.chars.length){
+    highlightPS('sch-loop');
+    const sm={}; for(let k=0;k<d.i;k++) sm[k]='ch-delete';
+    sm[d.i]='ch-highlight'; sm[d.i+'_ptr']=true;
+    if(d.chars[d.i]===d.target){
+      sm[d.i]='ch-found';
+      highlightPS('sch-ret');
+      buildChars('mainChars',mainStr,sm);
+      setCaption('mainCaption',`Found '${d.target}' at index ${d.i}!`,'cap-green');
+      setBadge('mainBadge',`Index: ${d.i}`,'badge-green');
+      stepDone=true; clearTimeout(stepTimer);
+      const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+      if(bs)bs.disabled=true; if(ba)ba.disabled=true;
+    } else {
+      highlightPS('sch-cmp');
+      buildChars('mainChars',mainStr,sm);
+      setCaption('mainCaption',`Index ${d.i}: '${d.chars[d.i]}' ≠ '${d.target}'`,'cap-orange');
+      d.i++;
+    }
+  } else {
+    highlightPS('sch-ret');
+    const sm={}; [...mainStr].forEach((_,k)=>sm[k]='ch-delete');
+    buildChars('mainChars',mainStr,sm);
+    setCaption('mainCaption',`'${d.target}' not found in string!`,'cap-red');
+    setBadge('mainBadge','Not Found: -1','badge-red');
+    stepDone=true; clearTimeout(stepTimer);
+    const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+    if(bs)bs.disabled=true; if(ba)ba.disabled=true;
+  }
+}
+
+/* SUBSTRING STEPS */
+function doSubStep(){
+  const d=stepData;
+  const slen=d.sub.length, n=d.chars.length;
+  if(d.i<=n-slen){
+    highlightPS('sub-loop');
+    const sm={};
+    let match=true;
+    for(let k=0;k<slen;k++){
+      if(d.chars[d.i+k]!==d.sub[k]){match=false;break;}
+    }
+    if(match){
+      highlightPS('sub-ret');
+      for(let k=0;k<n;k++) sm[k]='ch-default';
+      for(let k=0;k<slen;k++) sm[d.i+k]='ch-found';
+      buildChars('mainChars',mainStr,sm);
+      setCaption('mainCaption',`"${d.sub}" found at index ${d.i}!`,'cap-green');
+      setBadge('mainBadge',`Found at index ${d.i}`,'badge-green');
+      stepDone=true; clearTimeout(stepTimer);
+      const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+      if(bs)bs.disabled=true;if(ba)ba.disabled=true;
+    } else {
+      highlightPS('sub-cmp');
+      for(let k=0;k<n;k++) sm[k]='ch-default';
+      for(let k=0;k<slen;k++){
+        if(d.i+k<n) sm[d.i+k]='ch-highlight';
+      }
+      buildChars('mainChars',mainStr,sm);
+      setCaption('mainCaption',`Window at [${d.i}…${d.i+slen-1}]: "${mainStr.substring(d.i,d.i+slen)}" ≠ "${d.sub}"`,'cap-orange');
+      d.i++;
+    }
+  } else {
+    highlightPS('sub-ret');
+    const sm={}; [...mainStr].forEach((_,k)=>sm[k]='ch-delete');
+    buildChars('mainChars',mainStr,sm);
+    setCaption('mainCaption',`"${d.sub}" not found in string!`,'cap-red');
+    setBadge('mainBadge','Not Found','badge-red');
+    stepDone=true; clearTimeout(stepTimer);
+    const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+    if(bs)bs.disabled=true;if(ba)ba.disabled=true;
+  }
+}
+
+/* REVERSE STEPS */
+function doReverseStep(){
+  const d=stepData;
+  if(d.lo<d.hi){
+    highlightPS('rev-swap');
+    [d.arr[d.lo],d.arr[d.hi]]=[d.arr[d.hi],d.arr[d.lo]];
+    const sm={}; sm[d.lo]='ch-reverse'; sm[d.hi]='ch-reverse';
+    buildChars('mainChars',d.arr.join(''),sm);
+    setCaption('mainCaption',`Swapped [${d.lo}]↔[${d.hi}]: "${d.arr.join('')}"`,'cap-purple');
+    d.lo++; d.hi--;
+  } else {
+    highlightPS('rev-done');
+    const sm={}; d.arr.forEach((_,k)=>sm[k]='ch-reverse');
+    buildChars('mainChars',d.arr.join(''),sm);
+    setCaption('mainCaption',`Reversed: "${d.arr.join('')}"`,'cap-purple');
+    setBadge('mainBadge',`"${d.arr.join('')}"`,'badge-purple');
+    stepDone=true; clearTimeout(stepTimer);
+    const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+    if(bs)bs.disabled=true;if(ba)ba.disabled=true;
+  }
+}
+
+/* PALINDROME STEPS */
+function doPalinStep(){
+  const d=stepData;
+  if(d.lo<d.hi){
+    highlightPS('pal');
+    const match=d.arr[d.lo]===d.arr[d.hi];
+    if(!match) d.ok=false;
+    const sm={};
+    sm[d.lo]=match?'ch-palindrome-yes':'ch-palindrome-no';
+    sm[d.hi]=match?'ch-palindrome-yes':'ch-palindrome-no';
+    buildChars('mainChars',d.arr.join(''),sm);
+    setCaption('mainCaption',`Comparing [${d.lo}]='${d.arr[d.lo]}' with [${d.hi}]='${d.arr[d.hi]}': ${match?'✓ Match':'✗ Mismatch'}`,'cap-'+(match?'green':'red'));
+    d.lo++; d.hi--;
+    if(!match){
+      setBadge('mainBadge','Not a Palindrome','badge-red');
+      stepDone=true; clearTimeout(stepTimer);
+      const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+      if(bs)bs.disabled=true;if(ba)ba.disabled=true;
+    }
+  } else {
+    if(d.ok){
+      const sm={}; d.arr.forEach((_,k)=>sm[k]='ch-palindrome-yes');
+      buildChars('mainChars',d.arr.join(''),sm);
+      setCaption('mainCaption',`"${d.arr.join('')}" IS a Palindrome! ✓`,'cap-green');
+      setBadge('mainBadge','✓ Palindrome','badge-green');
+    }
+    stepDone=true; clearTimeout(stepTimer);
+    const bs=document.getElementById('btnStep'),ba=document.getElementById('btnAuto');
+    if(bs)bs.disabled=true;if(ba)ba.disabled=true;
+  }
+}
+
+/* INSTANT OPERATIONS (no stepping) */
+function mainBuildInstant(op){
+  getInputs();
+  if(!mainStr){setCaption('mainCaption','Please enter a string!','cap-red');return;}
+  clearTimeout(stepTimer); stepIdx=0; stepDone=true;
+  const charsEl=document.getElementById('mainChars');
+
+  if(op==='insert'){
+    const idx=parseInt(mainArg2)||0, ch=mainArg[0]||'*';
+    const result=mainStr.slice(0,idx)+ch+mainStr.slice(idx);
+    highlightPS('ins');
+    const sm={};
+    for(let k=0;k<result.length;k++) sm[k]=k===idx?'ch-insert':'ch-default';
+    buildChars('mainChars',result,sm);
+    setCaption('mainCaption',`Inserted '${ch}' at index ${idx} → "${result}"`,'cap-orange');
+    setBadge('mainBadge',`"${result}"`,'badge-orange');
+  }
+  if(op==='delete'){
+    const idx=parseInt(mainArg)||0;
+    if(idx<0||idx>=mainStr.length){setCaption('mainCaption','Index out of bounds!','cap-red');return;}
+    const del=mainStr[idx];
+    const sm={};
+    [...mainStr].forEach((_,k)=>{ if(k===idx) sm[k]='ch-delete'; });
+    buildChars('mainChars',mainStr,sm);
+    setCaption('mainCaption',`Deleting '${del}' at index ${idx}…`,'cap-red');
+    highlightPS('del');
+    setTimeout(()=>{
+      const result=mainStr.slice(0,idx)+mainStr.slice(idx+1);
+      buildChars('mainChars',result,{});
+      setCaption('mainCaption',`Deleted '${del}' → "${result}"`,'cap-red');
+      setBadge('mainBadge',`"${result}"`,'badge-red');
+    },600);
+  }
+  if(op==='same'){
+    const s1=mainStr, s2=mainArg;
+    const same=s1===s2;
+    highlightPS('same');
+    const sm={};
+    [...s1].forEach((_,k)=>sm[k]=same?'ch-found':'ch-delete');
+    buildChars('mainChars',s1,sm);
+    const sep=document.createElement('div');
+    sep.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;color:${same?'var(--primary-green)':'var(--primary-red)'};margin:0 12px;font-weight:700;">${same?'==':'≠'}</span>`;
+    charsEl.appendChild(sep);
+    [...s2].forEach((c,k)=>{
+      const cell=document.createElement('div');
+      cell.className='str-cell';
+      const cls=same?'ch-found':'ch-delete';
+      cell.innerHTML=`<div style="height:22px;"></div><div class="str-char ${cls}">${c}</div><div class="str-cell-idx">[${k}]</div>`;
+      charsEl.appendChild(cell);
+    });
+    setCaption('mainCaption',`"${s1}" ${same?'==':'≠'} "${s2}"`,'cap-'+(same?'green':'red'));
+    setBadge('mainBadge',same?'✓ Same Strings':'✗ Different Strings',same?'badge-green':'badge-red');
+  }
+  if(op==='concat'){
+    const s1=mainStr, s2=mainArg, result=s1+s2;
+    highlightPS('cat');
+    const sm={};
+    [...result].forEach((_,k)=>{ sm[k]=k<s1.length?'ch-default':'ch-concat'; });
+    buildChars('mainChars',result,sm);
+    setCaption('mainCaption',`"${s1}" + "${s2}" = "${result}"`,'cap-pink');
+    setBadge('mainBadge',`"${result}"`,'badge-pink');
+  }
+  if(op==='rotate'){
+    const k=((parseInt(mainArg)||0)%mainStr.length+mainStr.length)%mainStr.length;
+    const result=mainStr.slice(k)+mainStr.slice(0,k);
+    highlightPS('rot');
+    const sm={};
+    [...result].forEach((_,i)=>{sm[i]='ch-rotate';});
+    buildChars('mainChars',result,sm);
+    setCaption('mainCaption',`Rotated by ${k}: "${result}"`,'cap-orange');
+    setBadge('mainBadge',`"${result}"`,'badge-orange');
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   SCENARIO SECTION
+════════════════════════════════════════════════════════ */
+function qSwitch(name){
+  const MAP={best:'qtab-best',avg:'qtab-avg',worst:'qtab-worst',custom:'qtab-custom'};
+  document.querySelectorAll('.q-scenario-tab').forEach(t=>t.className='q-scenario-tab');
+  document.getElementById('qstab-'+name).classList.add(MAP[name]);
+  document.querySelectorAll('.q-scenario-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('qspanel-'+name).classList.add('active');
+}
+
+function scLog(logId,msg,cls){
+  const log=document.getElementById(logId);
+  if(!log) return;
+  const e=document.createElement('div');
+  e.className='q-log-entry '+(cls||'q-log-info');
+  e.textContent='> '+msg;
+  log.appendChild(e); log.scrollTop=log.scrollHeight;
+}
+
+function scBuildChars(containerId,arr,stateMap={}){
+  const el=document.getElementById(containerId); if(!el) return;
+  el.innerHTML='';
+  arr.forEach((ch,i)=>{
+    const d=document.createElement('div'); d.className='sc-char '+(stateMap[i]||'sc-default');
+    if(!stateMap[i]) d.style.background=COLORS[i%COLORS.length];
+    d.textContent=ch==' '?'·':ch;
+    el.appendChild(d);
+  });
+}
+
+/* ─ BEST ─ */
+const SC_BEST_STR=[...'hello']; const SC_BEST_TGT='h';
+let scBestIdx=0,scBestDone=false,scBestTimer=null;
+function scInitBest(){
+  clearTimeout(scBestTimer); scBestIdx=0; scBestDone=false;
+  scBuildChars('sc-best-chars',SC_BEST_STR);
+  document.getElementById('sc-best-log').innerHTML='<div class="q-log-title">📋 Operation Log</div>';
+  document.getElementById('sc-best-info').textContent='Comparisons: 0';
+  document.getElementById('sc-best-step').disabled=false;
+  document.getElementById('sc-best-auto').disabled=false;
+  scLog('sc-best-log',`String: "${SC_BEST_STR.join('')}"  Target: '${SC_BEST_TGT}'`,'q-log-info');
+  scLog('sc-best-log','Target at index 0 → Best Case O(1)','q-log-info');
+}
+function scBestStep(){
+  if(scBestDone) return;
+  if(scBestIdx===0){
+    scBuildChars('sc-best-chars',SC_BEST_STR,{0:'sc-active'});
+    scLog('sc-best-log',`Check [0]='${SC_BEST_STR[0]}' == '${SC_BEST_TGT}'? YES ✓`,'q-log-green');
+    document.getElementById('sc-best-info').textContent='Comparisons: 1';
+    setTimeout(()=>{
+      scBuildChars('sc-best-chars',SC_BEST_STR,{0:'sc-found'});
+      scLog('sc-best-log','Found at index 0! Only 1 comparison.','q-log-result');
+      scLog('sc-best-log','✓ Best Case: O(1)','q-log-result');
+      scBestDone=true;
+      document.getElementById('sc-best-step').disabled=true;
+      document.getElementById('sc-best-auto').disabled=true;
+    },500);
+  }
+  scBestIdx++;
+}
+function scBestAuto(){document.getElementById('sc-best-auto').disabled=true; scBestStep();}
+
+/* ─ AVERAGE ─ */
+const SC_AVG_STR=[...'algorithms']; const SC_AVG_SUB='rit'; // at index 4
+let scAvgIdx=0,scAvgDone=false,scAvgTimer=null;
+function scInitAvg(){
+  clearTimeout(scAvgTimer); scAvgIdx=0; scAvgDone=false;
+  scBuildChars('sc-avg-chars',SC_AVG_STR);
+  document.getElementById('sc-avg-log').innerHTML='<div class="q-log-title">📋 Operation Log</div>';
+  document.getElementById('sc-avg-info').textContent='Window position: 0';
+  document.getElementById('sc-avg-step').disabled=false;
+  document.getElementById('sc-avg-auto').disabled=false;
+  scLog('sc-avg-log',`String: "${SC_AVG_STR.join('')}"  Sub: "${SC_AVG_SUB}"`,'q-log-info');
+}
+function scAvgStep(){
+  if(scAvgDone||scAvgIdx>SC_AVG_STR.length-SC_AVG_SUB.length) return;
+  const n=SC_AVG_STR.length, slen=SC_AVG_SUB.length;
+  const window=SC_AVG_STR.slice(scAvgIdx,scAvgIdx+slen).join('');
+  const sm={}; for(let k=scAvgIdx;k<scAvgIdx+slen&&k<n;k++) sm[k]='sc-active';
+  scBuildChars('sc-avg-chars',SC_AVG_STR,sm);
+  document.getElementById('sc-avg-info').textContent=`Window position: ${scAvgIdx}`;
+  const match=window===SC_AVG_SUB;
+  scLog('sc-avg-log',`[${scAvgIdx}…${scAvgIdx+slen-1}]: "${window}" ${match?'== FOUND!':'≠ '+SC_AVG_SUB}`,match?'q-log-green':'q-log-red');
+  if(match){
+    const sm2={};
+    for(let k=scAvgIdx;k<scAvgIdx+slen;k++) sm2[k]='sc-found';
+    scBuildChars('sc-avg-chars',SC_AVG_STR,sm2);
+    scLog('sc-avg-log',`Found at index ${scAvgIdx} after ${scAvgIdx+1} windows`,'q-log-result');
+    scLog('sc-avg-log','✓ Average Case: O(N/2) = O(N)','q-log-result');
+    scAvgDone=true;
+    document.getElementById('sc-avg-step').disabled=true;
+    document.getElementById('sc-avg-auto').disabled=true;
+    clearTimeout(scAvgTimer);
+  }
+  scAvgIdx++;
+}
+function scAvgAuto(){
+  if(scAvgDone) return;
+  document.getElementById('sc-avg-auto').disabled=true;
+  (function go(){
+    if(scAvgDone||scAvgIdx>SC_AVG_STR.length-SC_AVG_SUB.length) return;
+    scAvgStep(); scAvgTimer=setTimeout(go,750);
+  })();
+}
+function scInitAvgFull(){clearTimeout(scAvgTimer); scInitAvg();}
+
+/* ─ WORST ─ */
+const SC_WORST_STR=[...'reverse'];
+let scWorstIdx=0,scWorstDone=false,scWorstTimer=null,scWorstArr=[...SC_WORST_STR];
+function scInitWorst(){
+  clearTimeout(scWorstTimer); scWorstIdx=0; scWorstDone=false;
+  scWorstArr=[...SC_WORST_STR];
+  scBuildChars('sc-worst-chars',scWorstArr);
+  document.getElementById('sc-worst-log').innerHTML='<div class="q-log-title">📋 Operation Log</div>';
+  document.getElementById('sc-worst-info').textContent='Swaps: 0 / '+Math.floor(SC_WORST_STR.length/2);
+  document.getElementById('sc-worst-step').disabled=false;
+  document.getElementById('sc-worst-auto').disabled=false;
+  scLog('sc-worst-log',`Reversing: "${SC_WORST_STR.join('')}"  (N=${SC_WORST_STR.length})`,'q-log-info');
+  scLog('sc-worst-log','Every char must be visited → O(N)','q-log-warn');
+}
+function scWorstStep(){
+  if(scWorstDone) return;
+  const hi=scWorstArr.length-1-scWorstIdx;
+  if(scWorstIdx<Math.floor(scWorstArr.length/2)){
+    const lo=scWorstIdx;
+    const a=scWorstArr[lo], b=scWorstArr[hi];
+    [scWorstArr[lo],scWorstArr[hi]]=[b,a];
+    const sm={}; sm[lo]='sc-mark'; sm[hi]='sc-mark';
+    scBuildChars('sc-worst-chars',scWorstArr,sm);
+    scLog('sc-worst-log',`Swap [${lo}]↔[${hi}]: '${a}'↔'${b}' → "${scWorstArr.join('')}"`,'q-log-cyan');
+    document.getElementById('sc-worst-info').textContent=`Swaps: ${scWorstIdx+1} / ${Math.floor(SC_WORST_STR.length/2)}`;
+    scWorstIdx++;
+    if(scWorstIdx>=Math.floor(scWorstArr.length/2)){
+      setTimeout(()=>{
+        const sm2={}; scWorstArr.forEach((_,k)=>sm2[k]='sc-found');
+        scBuildChars('sc-worst-chars',scWorstArr,sm2);
+        scLog('sc-worst-log',`Reversed: "${scWorstArr.join('')}" — all N processed!`,'q-log-result');
+        scLog('sc-worst-log','✓ Worst Case: O(N)','q-log-result');
+        scWorstDone=true;
+        document.getElementById('sc-worst-step').disabled=true;
+        document.getElementById('sc-worst-auto').disabled=true;
+        clearTimeout(scWorstTimer);
+      },500);
+    }
+  }
+}
+function scWorstAuto(){
+  if(scWorstDone) return;
+  document.getElementById('sc-worst-auto').disabled=true;
+  (function go(){
+    if(scWorstDone) return;
+    scWorstStep(); scWorstTimer=setTimeout(go,700);
+  })();
+}
+
+/* ─ CUSTOM ─ */
+let ccTimer=null;
+function scInitCustom(){
+  document.getElementById('sc-cust-chars').innerHTML='';
+  document.getElementById('sc-cust-log').innerHTML='<div class="q-log-title">📋 Operation Log</div>';
+  document.getElementById('sc-cust-info').textContent='Result will appear here';
+  const toast=document.getElementById('q-cc-toast'); if(toast) toast.className='q-cc-toast';
+  scLog('sc-cust-log','Enter string & select operation, then click Run.','q-log-info');
+}
+function scCustomReset(){clearTimeout(ccTimer); scInitCustom();}
+
+function scCustomRun(){
+  const str=document.getElementById('cust-str').value.trim();
+  const arg=document.getElementById('cust-arg').value.trim();
+  const op=document.getElementById('cust-op').value;
+  if(!str){scLog('sc-cust-log','⚠ Enter a string first!','q-log-warn');return;}
+  document.getElementById('sc-cust-log').innerHTML='<div class="q-log-title">📋 Operation Log</div>';
+  scLog('sc-cust-log',`String: "${str}"  Op: ${op}  Arg: "${arg||'-'}"`, 'q-log-info');
+
+  const sm={};
+  let info='', toastType='cyan', toastMsg='';
+
+  if(op==='length'){
+    [...str].forEach((_,k)=>sm[k]='sc-found');
+    scBuildChars('sc-cust-chars',[...str],sm);
+    info=`Length = ${str.length}`;
+    scLog('sc-cust-log',info,'q-log-green');
+    scLog('sc-cust-log','✓ O(N) — traverse once','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — count each char';
+    sCcCard('on');
+  }
+  if(op==='search'){
+    const tgt=arg[0]||'';
+    const idx=str.indexOf(tgt);
+    [...str].forEach((_,k)=>{sm[k]=k===idx?'sc-found':idx>-1&&k<idx?'sc-miss':'sc-default';});
+    scBuildChars('sc-cust-chars',[...str],sm);
+    info=idx>-1?`Found '${tgt}' at index ${idx}`:`'${tgt}' not found (-1)`;
+    const cmp=idx>-1?idx+1:str.length;
+    scLog('sc-cust-log',info, idx>-1?'q-log-green':'q-log-red');
+    scLog('sc-cust-log',`Comparisons: ${cmp} → ${idx===0?'O(1) Best':'O(N)'}`, 'q-log-result');
+    toastType=idx===0?'green':'cyan';
+    toastMsg=idx===0?'O(1) Best Case!':'O(N) Average/Worst';
+    sCcCard(idx===0?'o1':'on');
+  }
+  if(op==='substring'){
+    const pos=str.indexOf(arg);
+    [...str].forEach((_,k)=>{sm[k]=(pos>-1&&k>=pos&&k<pos+arg.length)?'sc-found':'sc-default';});
+    scBuildChars('sc-cust-chars',[...str],sm);
+    info=pos>-1?`"${arg}" found at index ${pos}`:`"${arg}" not found`;
+    scLog('sc-cust-log',info,pos>-1?'q-log-green':'q-log-red');
+    scLog('sc-cust-log','O(N×M) — sliding window','q-log-result');
+    toastType='cyan'; toastMsg='O(N×M) substring search';
+    sCcCard('on');
+  }
+  if(op==='insert'){
+    const pos=parseInt(arg)||0;
+    const ch=document.getElementById('cust-arg').value.trim()||'*';
+    const result=str.slice(0,pos)+ch+str.slice(pos);
+    [...result].forEach((_,k)=>{sm[k]=k===pos?'sc-mark':'sc-default';});
+    scBuildChars('sc-cust-chars',[...result],sm);
+    info=`Inserted '${ch}' at ${pos} → "${result}"`;
+    scLog('sc-cust-log',info,'q-log-cyan');
+    scLog('sc-cust-log','O(N) — shift characters','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — shift needed';
+    sCcCard('on');
+  }
+  if(op==='delete'){
+    const pos=parseInt(arg)||0;
+    if(pos<0||pos>=str.length){scLog('sc-cust-log','⚠ Index out of bounds','q-log-warn');return;}
+    const del=str[pos];
+    sm[pos]='sc-miss';
+    scBuildChars('sc-cust-chars',[...str],sm);
+    const result=str.slice(0,pos)+str.slice(pos+1);
+    setTimeout(()=>{
+      scBuildChars('sc-cust-chars',[...result],{});
+      scLog('sc-cust-log',`Deleted '${del}' → "${result}"`,'q-log-red');
+    },600);
+    info=`Deleting '${del}' at index ${pos}`;
+    scLog('sc-cust-log',info,'q-log-red');
+    scLog('sc-cust-log','O(N) — shift characters','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — shift needed';
+    sCcCard('on');
+  }
+  if(op==='same'){
+    const s2=arg;
+    const same=str===s2;
+    [...str].forEach((_,k)=>{sm[k]=same?'sc-found':'sc-miss';});
+    scBuildChars('sc-cust-chars',[...str],sm);
+    info=`"${str}" ${same?'==':'≠'} "${s2}" → ${same}`;
+    scLog('sc-cust-log',info,same?'q-log-green':'q-log-red');
+    scLog('sc-cust-log','O(N) — compare each char','q-log-result');
+    toastType=same?'green':'cyan'; toastMsg='O(N) — full comparison';
+    sCcCard('on');
+  }
+  if(op==='concat'){
+    const s2=arg, result=str+s2;
+    [...result].forEach((_,k)=>{sm[k]=k<str.length?'sc-default':'sc-mark';});
+    scBuildChars('sc-cust-chars',[...result],sm);
+    info=`"${str}"+"${s2}" = "${result}"`;
+    scLog('sc-cust-log',info,'q-log-cyan');
+    scLog('sc-cust-log','O(N) — copy both strings','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — copy s2 chars';
+    sCcCard('on');
+  }
+  if(op==='reverse'){
+    const rev=[...str].reverse();
+    rev.forEach((_,k)=>{sm[k]='sc-found';});
+    scBuildChars('sc-cust-chars',rev,sm);
+    info=`Reversed: "${rev.join('')}"`;
+    scLog('sc-cust-log',info,'q-log-cyan');
+    scLog('sc-cust-log','O(N) — N/2 swaps','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — N/2 swaps needed';
+    sCcCard('on');
+  }
+  if(op==='rotate'){
+    const k=((parseInt(arg)||0)%str.length+str.length)%str.length;
+    const result=str.slice(k)+str.slice(0,k);
+    [...result].forEach((_,i)=>{sm[i]='sc-mark';});
+    scBuildChars('sc-cust-chars',[...result],sm);
+    info=`Rotated by ${k}: "${result}"`;
+    scLog('sc-cust-log',info,'q-log-cyan');
+    scLog('sc-cust-log','O(N) — copy with offset','q-log-result');
+    toastType='cyan'; toastMsg='O(N) — copy all chars';
+    sCcCard('on');
+  }
+  if(op==='palindrome'){
+    const arr=[...str]; let isPal=true;
+    for(let lo=0,hi=arr.length-1;lo<hi;lo++,hi--){
+      if(arr[lo]!==arr[hi]){isPal=false; sm[lo]='sc-miss'; sm[hi]='sc-miss';}
+      else{sm[lo]='sc-found'; sm[hi]='sc-found';}
+    }
+    if(arr.length%2===1) sm[Math.floor(arr.length/2)]='sc-found';
+    scBuildChars('sc-cust-chars',arr,sm);
+    info=isPal?`"${str}" IS a Palindrome ✓`:`"${str}" is NOT a Palindrome ✗`;
+    scLog('sc-cust-log',info,isPal?'q-log-green':'q-log-red');
+    scLog('sc-cust-log','O(N/2) = O(N)','q-log-result');
+    toastType=isPal?'green':'cyan'; toastMsg=isPal?'✓ Palindrome O(N/2)':'✗ Not Palindrome O(N)';
+    sCcCard('on');
+  }
+
+  document.getElementById('sc-cust-info').textContent=info;
+  showCcToast(toastType,toastMsg);
+}
+
+function sCcCard(type){
+  ['o1','on'].forEach(t=>{const c=document.getElementById('qcc-'+t);if(c)c.classList.remove('qcc-active');});
+  clearTimeout(ccTimer);
+  const card=document.getElementById('qcc-'+type);
+  if(card){card.classList.add('qcc-active'); ccTimer=setTimeout(()=>card.classList.remove('qcc-active'),2000);}
+}
+function showCcToast(type,msg){
+  const toast=document.getElementById('q-cc-toast');
+  document.getElementById('q-cc-toast-icon').textContent=type==='green'?'⚡':type==='orange'?'⚠':'ℹ';
+  document.getElementById('q-cc-toast-text').textContent=msg;
+  toast.className='q-cc-toast show-toast qtoast-'+type;
+  clearTimeout(toast._t); toast._t=setTimeout(()=>toast.className='q-cc-toast',2800);
+}
+
+/* ════════════════════════════════════════════════════════
+   CODE EDITOR — TEMPLATES
+════════════════════════════════════════════════════════ */
+let codeEditor, currentCodeOp='length', currentLang='cpp';
+
+const CODE_TEMPLATES={
+  length:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+int lengthOfString(const string& s) {
+    int count = 0;
+    for (char c : s) count++;   // manual count
+    return count;
+    // OR: return s.length();   // built-in O(1)
+}
+
+int main() {
+    string s;
+    cout << "Enter string: ";
+    cin >> s;
+    cout << "Length: " << lengthOfString(s) << endl;
+    return 0;
+}`,
+    python:`def length_of_string(s):
+    count = 0
+    for _ in s:
+        count += 1          # manual count
+    return count
+    # OR: return len(s)     # built-in O(1)
+
+s = input("Enter string: ")
+print("Length:", length_of_string(s))`,
+    java:`import java.util.Scanner;
+public class StringLength {
+    static int lengthOfString(String s) {
+        int count = 0;
+        for (char c : s.toCharArray()) count++;
+        return count;
+        // OR: return s.length();
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter string: ");
+        String s = sc.next();
+        System.out.println("Length: " + lengthOfString(s));
+    }
+}`,
+    c:`#include <stdio.h>
+int lengthOfString(const char* s) {
+    int count = 0;
+    while (s[count] != '\\0') count++;
+    return count;
+}
+int main() {
+    char s[100];
+    printf("Enter string: "); scanf("%s", s);
+    printf("Length: %d\\n", lengthOfString(s));
+    return 0;
+}`,
+    javascript:`function lengthOfString(s) {
+    let count = 0;
+    for (let c of s) count++;   // manual
+    return count;
+    // OR: return s.length;
+}
+
+const s = prompt("Enter string:") || "hello";
+console.log("Length:", lengthOfString(s));`
+  },
+  search:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+int searchChar(const string& s, char target) {
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == target) return i;    // Found at index i
+    }
+    return -1;                           // Not found
+}
+
+int main() {
+    string s; char c;
+    cout << "Enter string: "; cin >> s;
+    cout << "Enter char to search: "; cin >> c;
+    int idx = searchChar(s, c);
+    if (idx != -1) cout << "Found at index: " << idx << endl;
+    else cout << "'" << c << "' not found\\n";
+    return 0;
+}`,
+    python:`def search_char(s, target):
+    for i, c in enumerate(s):
+        if c == target:
+            return i      # Found
+    return -1             # Not found
+
+s = input("Enter string: ")
+t = input("Enter char to search: ")
+idx = search_char(s, t[0] if t else '')
+if idx != -1: print(f"Found at index: {idx}")
+else: print(f"'{t}' not found")`,
+    java:`import java.util.Scanner;
+public class SearchChar {
+    static int searchChar(String s, char target) {
+        for (int i = 0; i < s.length(); i++)
+            if (s.charAt(i) == target) return i;
+        return -1;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter string: "); String s = sc.next();
+        System.out.print("Enter char: ");   char c = sc.next().charAt(0);
+        int idx = searchChar(s, c);
+        System.out.println(idx != -1 ? "Found at: " + idx : "Not found");
+    }
+}`,
+    c:`#include <stdio.h>
+int searchChar(const char* s, char target) {
+    for (int i = 0; s[i] != '\\0'; i++)
+        if (s[i] == target) return i;
+    return -1;
+}
+int main() {
+    char s[100]; char c;
+    printf("Enter string: "); scanf("%s", s);
+    printf("Enter char: ");   scanf(" %c", &c);
+    int idx = searchChar(s, c);
+    if (idx != -1) printf("Found at index: %d\\n", idx);
+    else printf("Not found\\n");
+    return 0;
+}`,
+    javascript:`function searchChar(s, target) {
+    for (let i = 0; i < s.length; i++) {
+        if (s[i] === target) return i;
+    }
+    return -1;
+}
+
+const s = prompt("String:") || "hello";
+const c = (prompt("Char to search:") || "l")[0];
+const idx = searchChar(s, c);
+console.log(idx !== -1 ? \`Found at: \${idx}\` : "Not found");`
+  },
+  substring:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+int checkSubstring(const string& s, const string& sub) {
+    int n = s.size(), m = sub.size();
+    for (int i = 0; i <= n - m; i++) {
+        bool match = true;
+        for (int j = 0; j < m; j++) {
+            if (s[i+j] != sub[j]) { match = false; break; }
+        }
+        if (match) return i;    // Substring found at i
+    }
+    return -1;                  // Not found
+}
+
+int main() {
+    string s, sub;
+    cout << "Enter string: ";    cin >> s;
+    cout << "Enter substring: "; cin >> sub;
+    int pos = checkSubstring(s, sub);
+    if (pos != -1) cout << "Found at index: " << pos << endl;
+    else cout << "Substring not found\\n";
+    return 0;
+}`,
+    python:`def check_substring(s, sub):
+    n, m = len(s), len(sub)
+    for i in range(n - m + 1):
+        if s[i:i+m] == sub:
+            return i        # Found at i
+    return -1               # Not found
+
+s   = input("Enter string: ")
+sub = input("Enter substring: ")
+pos = check_substring(s, sub)
+if pos != -1: print(f"Found at index: {pos}")
+else: print("Substring not found")`,
+    java:`import java.util.Scanner;
+public class CheckSubstring {
+    static int checkSubstring(String s, String sub) {
+        int n = s.length(), m = sub.length();
+        for (int i = 0; i <= n - m; i++) {
+            if (s.substring(i, i + m).equals(sub)) return i;
+        }
+        return -1;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("String: ");    String s   = sc.next();
+        System.out.print("Substring: "); String sub = sc.next();
+        int pos = checkSubstring(s, sub);
+        System.out.println(pos != -1 ? "Found at: " + pos : "Not found");
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+int checkSubstring(const char* s, const char* sub) {
+    int n = strlen(s), m = strlen(sub);
+    for (int i = 0; i <= n - m; i++) {
+        int match = 1;
+        for (int j = 0; j < m; j++)
+            if (s[i+j] != sub[j]) { match = 0; break; }
+        if (match) return i;
+    }
+    return -1;
+}
+int main() {
+    char s[100], sub[50];
+    printf("String: ");    scanf("%s", s);
+    printf("Substring: "); scanf("%s", sub);
+    int pos = checkSubstring(s, sub);
+    if (pos != -1) printf("Found at: %d\\n", pos);
+    else printf("Not found\\n");
+    return 0;
+}`,
+    javascript:`function checkSubstring(s, sub) {
+    const n = s.length, m = sub.length;
+    for (let i = 0; i <= n - m; i++) {
+        if (s.slice(i, i + m) === sub) return i;
+    }
+    return -1;
+}
+
+const s   = prompt("String:")    || "algorithms";
+const sub = prompt("Substring:") || "rit";
+const pos = checkSubstring(s, sub);
+console.log(pos !== -1 ? \`Found at: \${pos}\` : "Not found");`
+  },
+  insert:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+string insertChar(string s, char c, int pos) {
+    if (pos < 0 || pos > (int)s.size()) return s;
+    return s.substr(0, pos) + c + s.substr(pos);
+    // or: s.insert(pos, 1, c); return s;
+}
+
+int main() {
+    string s; char c; int pos;
+    cout << "Enter string: ";   cin >> s;
+    cout << "Char to insert: "; cin >> c;
+    cout << "Position: ";       cin >> pos;
+    cout << "Result: " << insertChar(s, c, pos) << endl;
+    return 0;
+}`,
+    python:`def insert_char(s, c, pos):
+    if pos < 0 or pos > len(s):
+        return s
+    return s[:pos] + c + s[pos:]
+
+s   = input("Enter string: ")
+c   = input("Char to insert: ")[0]
+pos = int(input("Position: "))
+print("Result:", insert_char(s, c, pos))`,
+    java:`import java.util.Scanner;
+public class InsertChar {
+    static String insertChar(String s, char c, int pos) {
+        if (pos < 0 || pos > s.length()) return s;
+        return s.substring(0, pos) + c + s.substring(pos);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("String: ");       String s = sc.next();
+        System.out.print("Char: ");         char   c = sc.next().charAt(0);
+        System.out.print("Position: ");     int  pos = sc.nextInt();
+        System.out.println("Result: " + insertChar(s, c, pos));
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+void insertChar(char* s, char c, int pos) {
+    int n = strlen(s);
+    for (int i = n; i >= pos; i--) s[i+1] = s[i];
+    s[pos] = c;
+}
+int main() {
+    char s[110]; char c; int pos;
+    printf("String: ");   scanf("%s", s);
+    printf("Char: ");     scanf(" %c", &c);
+    printf("Position: "); scanf("%d", &pos);
+    insertChar(s, c, pos);
+    printf("Result: %s\\n", s);
+    return 0;
+}`,
+    javascript:`function insertChar(s, c, pos) {
+    if (pos < 0 || pos > s.length) return s;
+    return s.slice(0, pos) + c + s.slice(pos);
+}
+
+const s   = prompt("String:")       || "helo";
+const c   = (prompt("Char:") || "l")[0];
+const pos = parseInt(prompt("Position:")) || 3;
+console.log("Result:", insertChar(s, c, pos));`
+  },
+  delete:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+string deleteChar(string s, int pos) {
+    if (pos < 0 || pos >= (int)s.size()) return s;
+    return s.substr(0, pos) + s.substr(pos + 1);
+    // or: s.erase(pos, 1); return s;
+}
+
+int main() {
+    string s; int pos;
+    cout << "Enter string: ";       cin >> s;
+    cout << "Position to delete: "; cin >> pos;
+    cout << "Result: " << deleteChar(s, pos) << endl;
+    return 0;
+}`,
+    python:`def delete_char(s, pos):
+    if pos < 0 or pos >= len(s):
+        return s
+    return s[:pos] + s[pos+1:]
+
+s   = input("Enter string: ")
+pos = int(input("Position to delete: "))
+print("Result:", delete_char(s, pos))`,
+    java:`import java.util.Scanner;
+public class DeleteChar {
+    static String deleteChar(String s, int pos) {
+        if (pos < 0 || pos >= s.length()) return s;
+        return s.substring(0, pos) + s.substring(pos + 1);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("String: ");   String s   = sc.next();
+        System.out.print("Position: "); int    pos = sc.nextInt();
+        System.out.println("Result: " + deleteChar(s, pos));
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+void deleteChar(char* s, int pos) {
+    int n = strlen(s);
+    for (int i = pos; i < n - 1; i++) s[i] = s[i+1];
+    s[n-1] = '\\0';
+}
+int main() {
+    char s[100]; int pos;
+    printf("String: ");   scanf("%s", s);
+    printf("Position: "); scanf("%d", &pos);
+    deleteChar(s, pos);
+    printf("Result: %s\\n", s);
+    return 0;
+}`,
+    javascript:`function deleteChar(s, pos) {
+    if (pos < 0 || pos >= s.length) return s;
+    return s.slice(0, pos) + s.slice(pos + 1);
+}
+
+const s   = prompt("String:")       || "helllo";
+const pos = parseInt(prompt("Position:")) || 3;
+console.log("Result:", deleteChar(s, pos));`
+  },
+  same:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+bool sameStrings(const string& s1, const string& s2) {
+    if (s1.size() != s2.size()) return false;
+    for (int i = 0; i < s1.size(); i++)
+        if (s1[i] != s2[i]) return false;
+    return true;
+}
+
+int main() {
+    string s1, s2;
+    cout << "Enter string 1: "; cin >> s1;
+    cout << "Enter string 2: "; cin >> s2;
+    cout << (sameStrings(s1, s2) ? "Same!" : "Different!") << endl;
+    return 0;
+}`,
+    python:`def same_strings(s1, s2):
+    if len(s1) != len(s2): return False
+    for a, b in zip(s1, s2):
+        if a != b: return False
+    return True
+    # OR: return s1 == s2
+
+s1 = input("String 1: ")
+s2 = input("String 2: ")
+print("Same!" if same_strings(s1, s2) else "Different!")`,
+    java:`import java.util.Scanner;
+public class SameStrings {
+    static boolean sameStrings(String s1, String s2) {
+        if (s1.length() != s2.length()) return false;
+        for (int i = 0; i < s1.length(); i++)
+            if (s1.charAt(i) != s2.charAt(i)) return false;
+        return true;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("String 1: "); String s1 = sc.next();
+        System.out.print("String 2: "); String s2 = sc.next();
+        System.out.println(sameStrings(s1, s2) ? "Same!" : "Different!");
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+int sameStrings(const char* s1, const char* s2) {
+    if (strlen(s1) != strlen(s2)) return 0;
+    for (int i = 0; s1[i]; i++)
+        if (s1[i] != s2[i]) return 0;
+    return 1;
+}
+int main() {
+    char s1[100], s2[100];
+    printf("String 1: "); scanf("%s", s1);
+    printf("String 2: "); scanf("%s", s2);
+    printf(sameStrings(s1, s2) ? "Same!\\n" : "Different!\\n");
+    return 0;
+}`,
+    javascript:`function sameStrings(s1, s2) {
+    if (s1.length !== s2.length) return false;
+    for (let i = 0; i < s1.length; i++)
+        if (s1[i] !== s2[i]) return false;
+    return true;
+}
+
+const s1 = prompt("String 1:") || "code";
+const s2 = prompt("String 2:") || "code";
+console.log(sameStrings(s1, s2) ? "Same!" : "Different!");`
+  },
+  concat:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+string concatenate(const string& s1, const string& s2) {
+    string result = s1;
+    for (char c : s2) result += c;  // manual append
+    return result;
+    // OR: return s1 + s2;
+}
+
+int main() {
+    string s1, s2;
+    cout << "String 1: "; cin >> s1;
+    cout << "String 2: "; cin >> s2;
+    cout << "Result: " << concatenate(s1, s2) << endl;
+    return 0;
+}`,
+    python:`def concatenate(s1, s2):
+    result = s1
+    for c in s2:
+        result += c     # manual append
+    return result
+    # OR: return s1 + s2
+
+s1 = input("String 1: ")
+s2 = input("String 2: ")
+print("Result:", concatenate(s1, s2))`,
+    java:`import java.util.Scanner;
+public class Concatenate {
+    static String concatenate(String s1, String s2) {
+        StringBuilder sb = new StringBuilder(s1);
+        for (char c : s2.toCharArray()) sb.append(c);
+        return sb.toString();
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("String 1: "); String s1 = sc.next();
+        System.out.print("String 2: "); String s2 = sc.next();
+        System.out.println("Result: " + concatenate(s1, s2));
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+void concatenate(char* dest, const char* s2) {
+    int n = strlen(dest);
+    for (int i = 0; s2[i]; i++) dest[n+i] = s2[i];
+    dest[n + strlen(s2)] = '\\0';
+}
+int main() {
+    char s1[200], s2[100];
+    printf("String 1: "); scanf("%s", s1);
+    printf("String 2: "); scanf("%s", s2);
+    concatenate(s1, s2);
+    printf("Result: %s\\n", s1);
+    return 0;
+}`,
+    javascript:`function concatenate(s1, s2) {
+    let result = s1;
+    for (let c of s2) result += c;
+    return result;
+}
+
+const s1 = prompt("String 1:") || "hello";
+const s2 = prompt("String 2:") || " world";
+console.log("Result:", concatenate(s1, s2));`
+  },
+  reverse:{
+    cpp:`#include <iostream>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+string reverseString(string s) {
+    int lo = 0, hi = s.size() - 1;
+    while (lo < hi) {
+        swap(s[lo], s[hi]);
+        lo++; hi--;
+    }
+    return s;
+    // OR: reverse(s.begin(), s.end()); return s;
+}
+
+int main() {
+    string s;
+    cout << "Enter string: "; cin >> s;
+    cout << "Reversed: " << reverseString(s) << endl;
+    return 0;
+}`,
+    python:`def reverse_string(s):
+    arr = list(s)
+    lo, hi = 0, len(arr) - 1
+    while lo < hi:
+        arr[lo], arr[hi] = arr[hi], arr[lo]
+        lo += 1; hi -= 1
+    return ''.join(arr)
+    # OR: return s[::-1]
+
+s = input("Enter string: ")
+print("Reversed:", reverse_string(s))`,
+    java:`import java.util.Scanner;
+public class ReverseString {
+    static String reverseString(String s) {
+        char[] arr = s.toCharArray();
+        int lo = 0, hi = arr.length - 1;
+        while (lo < hi) {
+            char tmp = arr[lo]; arr[lo] = arr[hi]; arr[hi] = tmp;
+            lo++; hi--;
+        }
+        return new String(arr);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter string: "); String s = sc.next();
+        System.out.println("Reversed: " + reverseString(s));
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+void reverseString(char* s) {
+    int lo = 0, hi = strlen(s) - 1;
+    while (lo < hi) {
+        char tmp = s[lo]; s[lo] = s[hi]; s[hi] = tmp;
+        lo++; hi--;
+    }
+}
+int main() {
+    char s[100];
+    printf("Enter string: "); scanf("%s", s);
+    reverseString(s);
+    printf("Reversed: %s\\n", s);
+    return 0;
+}`,
+    javascript:`function reverseString(s) {
+    const arr = s.split('');
+    let lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+        [arr[lo], arr[hi]] = [arr[hi], arr[lo]];
+        lo++; hi--;
+    }
+    return arr.join('');
+    // OR: return s.split('').reverse().join('');
+}
+
+const s = prompt("Enter string:") || "abcdef";
+console.log("Reversed:", reverseString(s));`
+  },
+  rotate:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+string rotateString(string s, int k) {
+    int n = s.size();
+    if (n == 0) return s;
+    k = ((k % n) + n) % n;     // handle negative k
+    return s.substr(k) + s.substr(0, k);
+}
+
+int main() {
+    string s; int k;
+    cout << "Enter string: ";     cin >> s;
+    cout << "Rotate by k = ";     cin >> k;
+    cout << "Rotated: " << rotateString(s, k) << endl;
+    return 0;
+}`,
+    python:`def rotate_string(s, k):
+    n = len(s)
+    if n == 0: return s
+    k = k % n                   # normalize k
+    return s[k:] + s[:k]
+
+s = input("Enter string: ")
+k = int(input("Rotate by k = "))
+print("Rotated:", rotate_string(s, k))`,
+    java:`import java.util.Scanner;
+public class RotateString {
+    static String rotateString(String s, int k) {
+        int n = s.length();
+        if (n == 0) return s;
+        k = ((k % n) + n) % n;
+        return s.substring(k) + s.substring(0, k);
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter string: "); String s = sc.next();
+        System.out.print("Rotate by k: ");  int    k = sc.nextInt();
+        System.out.println("Rotated: " + rotateString(s, k));
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+void rotateString(char* s, int k) {
+    int n = strlen(s);
+    k = ((k % n) + n) % n;
+    char tmp[110];
+    strcpy(tmp, s + k);
+    strncat(tmp, s, k);
+    strcpy(s, tmp);
+}
+int main() {
+    char s[100]; int k;
+    printf("Enter string: "); scanf("%s", s);
+    printf("Rotate by k: ");  scanf("%d", &k);
+    rotateString(s, k);
+    printf("Rotated: %s\\n", s);
+    return 0;
+}`,
+    javascript:`function rotateString(s, k) {
+    const n = s.length;
+    if (n === 0) return s;
+    k = ((k % n) + n) % n;
+    return s.slice(k) + s.slice(0, k);
+}
+
+const s = prompt("String:") || "abcdef";
+const k = parseInt(prompt("Rotate by k:")) || 2;
+console.log("Rotated:", rotateString(s, k));`
+  },
+  palindrome:{
+    cpp:`#include <iostream>
+#include <string>
+using namespace std;
+
+bool isPalindrome(const string& s) {
+    int lo = 0, hi = s.size() - 1;
+    while (lo < hi) {
+        if (s[lo] != s[hi]) return false;  // mismatch
+        lo++; hi--;
+    }
+    return true;    // all pairs matched
+}
+
+int main() {
+    string s;
+    cout << "Enter string: "; cin >> s;
+    cout << s << " is " << (isPalindrome(s) ? "" : "NOT ") << "a palindrome\\n";
+    return 0;
+}`,
+    python:`def is_palindrome(s):
+    lo, hi = 0, len(s) - 1
+    while lo < hi:
+        if s[lo] != s[hi]:
+            return False    # mismatch
+        lo += 1; hi -= 1
+    return True             # all matched
+    # OR: return s == s[::-1]
+
+s = input("Enter string: ")
+print(f'"{s}" is{" " if is_palindrome(s) else " NOT "}a palindrome')`,
+    java:`import java.util.Scanner;
+public class Palindrome {
+    static boolean isPalindrome(String s) {
+        int lo = 0, hi = s.length() - 1;
+        while (lo < hi) {
+            if (s.charAt(lo) != s.charAt(hi)) return false;
+            lo++; hi--;
+        }
+        return true;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter string: "); String s = sc.next();
+        System.out.println(s + (isPalindrome(s) ? " IS" : " is NOT") + " a palindrome");
+    }
+}`,
+    c:`#include <stdio.h>
+#include <string.h>
+int isPalindrome(const char* s) {
+    int lo = 0, hi = strlen(s) - 1;
+    while (lo < hi) {
+        if (s[lo] != s[hi]) return 0;
+        lo++; hi--;
+    }
+    return 1;
+}
+int main() {
+    char s[100];
+    printf("Enter string: "); scanf("%s", s);
+    printf("%s %s a palindrome\\n", s, isPalindrome(s) ? "IS" : "is NOT");
+    return 0;
+}`,
+    javascript:`function isPalindrome(s) {
+    let lo = 0, hi = s.length - 1;
+    while (lo < hi) {
+        if (s[lo] !== s[hi]) return false;
+        lo++; hi--;
+    }
+    return true;
+}
+
+const s = prompt("Enter string:") || "racecar";
+console.log(\`"\${s}" \${isPalindrome(s) ? "IS" : "is NOT"} a palindrome\`);`
+  }
+};
+
+const OP_LABELS={
+  length:'Length of String', search:'Search a Character', substring:'Check for Substring',
+  insert:'Insert a Character', delete:'Delete a Character', same:'Check for Same Strings',
+  concat:'String Concatenation', reverse:'Reverse a String', rotate:'Rotate a String',
+  palindrome:'Check for Palindrome'
+};
+
+const RUN_INPUTS={
+  length:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="hello world"></div>
+    <div></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  search:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="hello"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Target Char</label>
+    <input type="text" id="ri-arg" class="form-control" maxlength="1" value="l"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  substring:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="algorithms"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Substring</label>
+    <input type="text" id="ri-arg" class="form-control" value="rit"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  insert:`<div class="input-grid-3">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="helo"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Char to Insert</label>
+    <input type="text" id="ri-arg" class="form-control" maxlength="1" value="l"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Position</label>
+    <input type="number" id="ri-arg2" class="form-control" value="3"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  delete:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="helllo"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">Position to Delete</label>
+    <input type="number" id="ri-arg" class="form-control" value="3"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  same:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 1</label>
+    <input type="text" id="ri-str" class="form-control" value="code"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 2</label>
+    <input type="text" id="ri-arg" class="form-control" value="code"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  concat:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 1</label>
+    <input type="text" id="ri-str" class="form-control" value="hello"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String 2</label>
+    <input type="text" id="ri-arg" class="form-control" value=" world"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  reverse:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="abcdef"></div>
+    <div></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  rotate:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="abcdef"></div>
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">k (rotate by)</label>
+    <input type="number" id="ri-arg" class="form-control" value="2"></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+  palindrome:`<div class="input-grid">
+    <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;">String</label>
+    <input type="text" id="ri-str" class="form-control" value="racecar"></div>
+    <div></div>
+    <button class="run-code-btn" style="margin:0;" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+  </div>`,
+};
+
+function setCodeOp(op){
+  currentCodeOp=op;
+  document.querySelectorAll('.impl-opt').forEach(o=>o.classList.toggle('active',o.dataset.cop===op));
+  document.getElementById('editorLabel').textContent=`${currentLang.toUpperCase()} — ${OP_LABELS[op]}`;
+  codeEditor.setValue(CODE_TEMPLATES[op][currentLang]||'// Not yet available');
+  document.getElementById('runInputArea').innerHTML=RUN_INPUTS[op]||'';
+  document.getElementById('codeOutput').textContent='Fill inputs and click Run...';
+}
+
+function runCode(){
+  const s   =(document.getElementById('ri-str') ||{value:''}).value;
+  const arg =(document.getElementById('ri-arg') ||{value:''}).value;
+  const arg2=(document.getElementById('ri-arg2')||{value:''}).value;
+  const out=document.getElementById('codeOutput');
+  out.innerHTML='<span style="color:var(--primary-cyan)">[Executing…]</span>';
+
+  setTimeout(()=>{
+    if(currentLang==='javascript'){
+      try{
+        const logs=[]; const origLog=console.log;
+        console.log=(...a)=>logs.push(a.join(' '));
+        let code=codeEditor.getValue();
+        // patch prompt calls with actual inputs
+        code=code.replace(/prompt\([^)]*\)\s*\|\|\s*["'][^"']*["']/g,`"${s.replace(/"/g,'\\"')}"`);
+        code=code.replace(/prompt\([^)]*\)/g,`"${s.replace(/"/g,'\\"')}"`);
+        eval(code);
+        console.log=origLog;
+        out.innerHTML=logs.map(l=>`<span style="color:var(--primary-green)">${l}</span>`).join('<br>')||'No output.';
+      }catch(e){out.innerHTML=`<span style="color:var(--primary-red)">Error: ${e.message}</span>`;}
+      return;
+    }
+    // Simulate for compiled languages
+    let result='', html='';
+    const fmt=(label,val,col='var(--primary-green)')=>`<span style="color:${col}">${label}: ${val}</span>`;
+
+    if(currentCodeOp==='length'){result=s.length; html=fmt('Length',result);}
+    else if(currentCodeOp==='search'){
+      const idx=s.indexOf(arg[0]||'');
+      html=`<span>String: "${s}"</span><br><span>Target: '${arg[0]||''}'</span><br><br>`;
+      for(let i=0;i<s.length;i++){
+        const hit=s[i]===(arg[0]||'');
+        html+=`<span style="color:${hit?'var(--primary-green)':'var(--text-secondary)'}">Check [${i}]='${s[i]}' ${hit?'== FOUND':'≠ target'}</span><br>`;
+        if(hit) break;
+      }
+      html+=`<br>`+fmt(idx>-1?`Found at index`:'Not found',idx>-1?idx:-1,idx>-1?'var(--primary-green)':'var(--primary-red)');
+    }
+    else if(currentCodeOp==='substring'){
+      const pos=s.indexOf(arg);
+      html=`<span>String: "${s}"</span><br><span>Substring: "${arg}"</span><br><br>`;
+      const slen=arg.length;
+      for(let i=0;i<=s.length-slen;i++){
+        const w=s.slice(i,i+slen); const m=w===arg;
+        html+=`<span style="color:${m?'var(--primary-green)':'var(--text-secondary)'}">Window [${i}…${i+slen-1}]: "${w}" ${m?'✓ MATCH':'≠ target'}</span><br>`;
+        if(m) break;
+      }
+      html+=`<br>`+fmt(pos>-1?'Found at index':'Not found',pos>-1?pos:'N/A',pos>-1?'var(--primary-green)':'var(--primary-red)');
+    }
+    else if(currentCodeOp==='insert'){
+      const pos=parseInt(arg2)||0; const c=arg[0]||'*';
+      const res=s.slice(0,pos)+c+s.slice(pos);
+      html=`<span>Original: "${s}"</span><br><span>Insert '${c}' at [${pos}]</span><br><br>`+fmt('Result',`"${res}"`);
+    }
+    else if(currentCodeOp==='delete'){
+      const pos=parseInt(arg)||0;
+      if(pos<0||pos>=s.length){html=`<span style="color:var(--primary-red)">Error: index out of bounds</span>`;out.innerHTML=html;return;}
+      const res=s.slice(0,pos)+s.slice(pos+1);
+      html=`<span>Original: "${s}"</span><br><span>Delete at [${pos}]: '${s[pos]}'</span><br><br>`+fmt('Result',`"${res}"`);
+    }
+    else if(currentCodeOp==='same'){
+      const same=s===arg;
+      html=`<span>String 1: "${s}"</span><br><span>String 2: "${arg}"</span><br><br>`+fmt('Result',same?'Same ✓':'Different ✗',same?'var(--primary-green)':'var(--primary-red)');
+    }
+    else if(currentCodeOp==='concat'){
+      const res=s+arg;
+      html=`<span>String 1: "${s}"</span><br><span>String 2: "${arg}"</span><br><br>`+fmt('Result',`"${res}"`);
+    }
+    else if(currentCodeOp==='reverse'){
+      const res=[...s].reverse().join('');
+      html=`<span>Original: "${s}"</span><br>`;
+      [...s].forEach((c,i)=>{
+        html+=`<span style="color:var(--text-secondary)">Swap [${i}]↔[${s.length-1-i}]</span><br>`;
+        if(i>=Math.floor(s.length/2)-1) return;
+      });
+      html+=`<br>`+fmt('Reversed',`"${res}"`,'var(--primary-purple)');
+    }
+    else if(currentCodeOp==='rotate'){
+      const k=((parseInt(arg)||0)%s.length+s.length)%s.length;
+      const res=s.slice(k)+s.slice(0,k);
+      html=`<span>Original: "${s}"</span><br><span>k = ${k}</span><br><br>`+fmt('Rotated',`"${res}"`,'var(--primary-orange)');
+    }
+    else if(currentCodeOp==='palindrome'){
+      let isPal=true; const arr=[...s];
+      html=`<span>String: "${s}"</span><br><br>`;
+      for(let lo=0,hi=arr.length-1;lo<hi;lo++,hi--){
+        const m=arr[lo]===arr[hi];
+        if(!m) isPal=false;
+        html+=`<span style="color:${m?'var(--primary-green)':'var(--primary-red)'}">Compare [${lo}]='${arr[lo]}' ↔ [${hi}]='${arr[hi]}': ${m?'✓ Match':'✗ Mismatch'}</span><br>`;
+      }
+      html+=`<br>`+fmt('Result',isPal?'✓ Palindrome':'✗ Not a Palindrome',isPal?'var(--primary-green)':'var(--primary-red)');
+    }
+    out.innerHTML=`<span style="color:var(--primary-cyan)">[Simulated ${currentLang.toUpperCase()} Output]</span><br><br>`+html;
+  },600);
+}
+
+/* ════════════════════════════════════════════════════════
+   CODEMIRROR INIT + LANG TABS
+════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  codeEditor=CodeMirror.fromTextArea(document.getElementById('code-editor'),{
+    lineNumbers:true, theme:'material-ocean', mode:'text/x-c++src',
+    indentUnit:4, autoCloseBrackets:true
+  });
+  setCodeOp('length');
+  // render default op controls
+  setOp('length');
+  document.getElementById('mainControls').innerHTML=OP_CONTROLS['length'];
+  // init scenarios
+  scInitBest(); scInitAvg(); scInitWorst(); scInitCustom();
+
+  document.querySelectorAll('#editorLangTabs .lang-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('#editorLangTabs .lang-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      currentLang=tab.dataset.lang;
+      const modes={cpp:'text/x-c++src',python:'text/x-python',java:'text/x-java',c:'text/x-csrc',javascript:'text/javascript'};
+      codeEditor.setOption('mode',modes[currentLang]);
+      codeEditor.setValue(CODE_TEMPLATES[currentCodeOp][currentLang]||'// Not yet available');
+      document.getElementById('editorLabel').textContent=`${currentLang.toUpperCase()} — ${OP_LABELS[currentCodeOp]}`;
+    });
+  });
+});
+
+function copyCode(){
+  navigator.clipboard.writeText(codeEditor.getValue());
+  const btn=document.getElementById('copyBtn');
+  btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',2000);
+}
+
+   // --- Level Slider & Modal Logic (FIXED) ---
+ // Get the algorithm name from the page to use as a unique key
+const ALGO_KEY = document.title.split(' - ')[0].trim().toLowerCase().replace(/\s+/g, '_');
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+const modal = document.getElementById("quizModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const startQuizBtn = document.getElementById("startQuiz");
+
+function updateLevelButtons() {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+
+    if (l2Unlocked) {
+        btnL2.style.borderColor = 'var(--primary-green)';
+        btnL2.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL2.style.color = 'var(--primary-green)';
+        btnL2.title = 'Unlocked';
+    }
+    if (l3Unlocked) {
+        btnL3.style.borderColor = 'var(--primary-green)';
+        btnL3.style.background = 'rgba(16, 185, 129, 0.15)';
+        btnL3.style.color = 'var(--primary-green)';
+        btnL3.title = 'Unlocked';
+    }
+}
+
+btnL2.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    if (l2Unlocked) {
+        // Already unlocked — go directly, no modal
+        window.location.href = `${ALGO_KEY}_L2.html`;
+    } else {
+        // Not yet unlocked — show quiz modal
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    }
+};
+
+btnL3.onclick = () => {
+    const l2Unlocked = localStorage.getItem(L2_KEY) === 'true';
+    const l3Unlocked = localStorage.getItem(L3_KEY) === 'true';
+    if (l3Unlocked) {
+        window.location.href = `${ALGO_KEY}_L3.html`;
+    } else if (!l2Unlocked) {
+        // L2 not even unlocked yet — prompt L1 quiz first
+        modal.querySelector('p').textContent = 'Pass the Level 1 Quiz to unlock Level 2 first before accessing Level 3.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l1`;
+    } else {
+        // L2 unlocked but L3 not — prompt L2 quiz
+        modal.querySelector('p').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your journey.';
+        modal.style.display = "flex";
+        startQuizBtn.onclick = () => window.location.href = `quiz.html?id=${ALGO_KEY}-l2`;
+    }
+};
+
+cancelBtn.onclick = () => {
+    modal.style.display = "none";
+    // Reset modal text in case it was changed
+    modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+};
+
+window.onclick = (event) => {
+    if (event.target == modal) {
+        modal.style.display = "none";
+        modal.querySelector('p').textContent = `Pass the Level 1 Quiz to unlock Level 2 and continue your journey.`;
+    }
+};
+    </script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>
+</script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

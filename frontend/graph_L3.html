@@ -1,0 +1,3518 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphs — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ══════════════════════════════════════
+   GRAPHS L3 — same design system as Heap L3
+   rose/pink primary, #111 cards, #222 borders
+   ══════════════════════════════════════ */
+      :root {
+        --rose: #f43f5e;
+        --pink: #ec4899;
+        --green: #10b981;
+        --cyan: #06b6d4;
+        --purple: #8b5cf6;
+        --orange: #f59e0b;
+        --red: #ef4444;
+
+        --bg: #0a0a0a;
+        --card: #111111;
+        --card2: #1a1a1a;
+        --txt: #ffffff;
+        --txt2: #a0a0a0;
+        --border: #222222;
+        --nav-bg: rgba(10, 10, 10, 0.95);
+        --code-bg: #0d1117;
+        --nav-h: 60px;
+      }
+
+      [data-theme="light"] {
+        --bg: #f0f4f8;
+        --card: #ffffff;
+        --card2: #f8fafc;
+        --txt: #0f172a;
+        --txt2: #475569;
+        --border: #e2e8f0;
+        --nav-bg: rgba(240, 244, 248, 0.95);
+        --code-bg: #f1f5f9;
+        --rose: #e11d48;
+        --pink: #db2777;
+      }
+
+      [data-theme="blue"] {
+        --bg: #010e1a;
+        --card: #0a1628;
+        --card2: #1e293b;
+        --txt: #e2f0ff;
+        --txt2: #7ba3c8;
+        --border: #1a3050;
+        --nav-bg: rgba(1, 14, 26, 0.95);
+        --code-bg: #010e1a;
+      }
+
+      /* ── reset ── */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--txt);
+        line-height: 1.6;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      /* ── nav ── */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.2rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: inherit;
+      }
+      .logo-icon {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--primary-cyan)
+        );
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      .nav-links a:hover {
+        color: var(--primary-green);
+      }
+      .theme-toggle {
+        background: var(--border-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+      .theme-toggle:hover {
+        border-color: var(--primary-green);
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .nav-hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        padding: 4px;
+      }
+      .nav-hamburger svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: var(--nav-h);
+        left: 0;
+        width: 100%;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 2rem;
+        gap: 1.2rem;
+        z-index: 999;
+      }
+
+      /* ── hero ── */
+      .hero {
+        padding: calc(var(--nav-h) + 60px) 2rem 60px;
+        max-width: 1400px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(244, 63, 94, 0.1);
+        border: 1px solid rgba(244, 63, 94, 0.3);
+        border-radius: 30px;
+        padding: 0.4rem 1.2rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--rose);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 .highlight {
+        background: linear-gradient(135deg, var(--rose), var(--pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero p {
+        font-size: clamp(0.9rem, 2vw, 1.1rem);
+        color: var(--txt2);
+        max-width: 640px;
+        margin: 0 auto 2rem;
+        line-height: 1.7;
+      }
+
+      .breadcrumb-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--txt2);
+        justify-content: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .breadcrumb-bar a {
+        color: var(--txt2);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .breadcrumb-bar a:hover {
+        color: var(--rose);
+      }
+      .breadcrumb-bar .sep {
+        opacity: 0.4;
+      }
+
+      .level-badges {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+      }
+
+      .lvl-badge {
+        padding: 0.5rem 1.3rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 50px;
+        color: var(--txt2);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+      .lvl-badge.active {
+        background: var(--rose);
+        border-color: var(--rose);
+        color: #fff;
+      }
+
+      /* ── concept section ── */
+      .concept-section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem 3rem;
+      }
+
+      .concept-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+      }
+
+      .concept-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--rose);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+      }
+
+      .concept-desc {
+        color: var(--txt2);
+        font-size: 0.92rem;
+        line-height: 1.75;
+        margin-bottom: 1.5rem;
+      }
+      .concept-desc strong {
+        color: var(--txt);
+      }
+
+      /* ── shared mini cells ── */
+      .mini-cells {
+        display: flex;
+        gap: 3px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 0.6rem;
+      }
+
+      .mcell {
+        min-width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.62rem;
+        font-weight: 700;
+        transition: all 0.3s;
+      }
+      .mcell.def {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--txt2);
+      }
+      .mcell.active {
+        background: rgba(244, 63, 94, 0.18);
+        border-color: var(--rose);
+        color: var(--rose);
+      }
+      .mcell.found {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .mcell.visited {
+        background: rgba(236, 72, 153, 0.1);
+        border-color: rgba(236, 72, 153, 0.35);
+        color: var(--pink);
+      }
+      .mcell.new {
+        background: rgba(6, 182, 212, 0.12);
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .mcell.hi {
+        background: rgba(245, 158, 11, 0.12);
+        border-color: var(--orange);
+        color: var(--orange);
+      }
+      .mcell.root {
+        background: rgba(139, 92, 246, 0.15);
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+
+      /* ── section layout ── */
+      .section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .section-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(1.5rem, 3vw, 1.8rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .section-title .s-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+      .section-sub {
+        color: var(--txt2);
+        margin-bottom: 2.5rem;
+        font-size: clamp(0.85rem, 1.5vw, 1rem);
+        line-height: 1.6;
+      }
+
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border),
+          transparent
+        );
+        margin: 3rem auto;
+        max-width: 1400px;
+      }
+
+      /* ── app grid ── */
+      .app-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .app-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition:
+          transform 0.3s,
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+      .app-card:hover {
+        transform: translateY(-4px);
+      }
+      .app-card.rose:hover {
+        border-color: var(--rose);
+        box-shadow: 0 8px 40px rgba(244, 63, 94, 0.12);
+      }
+      .app-card.pink:hover {
+        border-color: var(--pink);
+        box-shadow: 0 8px 40px rgba(236, 72, 153, 0.12);
+      }
+      .app-card.orange:hover {
+        border-color: var(--orange);
+        box-shadow: 0 8px 40px rgba(245, 158, 11, 0.12);
+      }
+      .app-card.cyan:hover {
+        border-color: var(--cyan);
+        box-shadow: 0 8px 40px rgba(6, 182, 212, 0.12);
+      }
+      .app-card.purple:hover {
+        border-color: var(--purple);
+        box-shadow: 0 8px 40px rgba(139, 92, 246, 0.12);
+      }
+      .app-card.green:hover {
+        border-color: var(--green);
+        box-shadow: 0 8px 40px rgba(16, 185, 129, 0.12);
+      }
+
+      .card-header {
+        padding: 1.5rem 1.5rem 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+      .card-icon.rose {
+        background: rgba(244, 63, 94, 0.15);
+      }
+      .card-icon.pink {
+        background: rgba(236, 72, 153, 0.15);
+      }
+      .card-icon.orange {
+        background: rgba(245, 158, 11, 0.15);
+      }
+      .card-icon.cyan {
+        background: rgba(6, 182, 212, 0.15);
+      }
+      .card-icon.purple {
+        background: rgba(139, 92, 246, 0.15);
+      }
+      .card-icon.green {
+        background: rgba(16, 185, 129, 0.15);
+      }
+
+      .card-info h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+      }
+      .card-info p {
+        font-size: 0.84rem;
+        color: var(--txt2);
+        line-height: 1.55;
+      }
+      .card-info p code {
+        color: var(--rose);
+        background: var(--code-bg);
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        font-size: 0.78rem;
+      }
+
+      .card-demo {
+        padding: 0 1.5rem 1.5rem;
+      }
+      .demo-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--txt2);
+        margin-bottom: 0.7rem;
+      }
+      .demo-box {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem;
+      }
+      .demo-btns {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+      }
+
+      .d-btn {
+        padding: 0.3rem 0.75rem;
+        border-radius: 7px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--txt2);
+        font-size: 0.74rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "Inter", sans-serif;
+      }
+      .d-btn:hover {
+        border-color: var(--rose);
+        color: var(--rose);
+      }
+      .d-btn.go {
+        background: rgba(244, 63, 94, 0.1);
+        border-color: var(--rose);
+        color: var(--rose);
+      }
+      .d-btn.go-cyan {
+        background: rgba(6, 182, 212, 0.08);
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .d-btn.go-green {
+        background: rgba(16, 185, 129, 0.08);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .d-btn.reset {
+        background: rgba(239, 68, 68, 0.08);
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .d-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      .status-line {
+        font-size: 0.75rem;
+        color: var(--txt2);
+        padding: 0.4rem 0.6rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-family: "JetBrains Mono", monospace;
+        line-height: 1.5;
+      }
+      .status-line span {
+        color: var(--rose);
+        font-weight: 700;
+      }
+
+      .step-info {
+        font-size: 0.7rem;
+        color: var(--txt2);
+        margin-top: 0.4rem;
+      }
+      .step-info b {
+        color: var(--rose);
+      }
+
+      .stat-row {
+        display: grid;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+      }
+      .stat-row.two {
+        grid-template-columns: 1fr 1fr;
+      }
+      .stat-row.three {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .stat-pill {
+        padding: 0.35rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-family: "JetBrains Mono", monospace;
+        text-align: center;
+      }
+      .stat-pill.rose {
+        background: rgba(244, 63, 94, 0.06);
+        border: 1px solid rgba(244, 63, 94, 0.2);
+      }
+      .stat-pill.green {
+        background: rgba(16, 185, 129, 0.06);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+      }
+      .stat-pill.cyan {
+        background: rgba(6, 182, 212, 0.06);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+      }
+      .stat-pill.orange {
+        background: rgba(245, 158, 11, 0.06);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+      }
+      .stat-pill.purple {
+        background: rgba(139, 92, 246, 0.06);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+      }
+      .stat-pill b.rv {
+        color: var(--rose);
+      }
+      .stat-pill b.gv {
+        color: var(--green);
+      }
+      .stat-pill b.cv {
+        color: var(--cyan);
+      }
+      .stat-pill b.ov {
+        color: var(--orange);
+      }
+      .stat-pill b.pv {
+        color: var(--purple);
+      }
+
+      /* ── complexity table ── */
+      .table-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        overflow-x: auto;
+      }
+
+      .complexity-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        min-width: 520px;
+      }
+      .complexity-table th {
+        background: var(--code-bg);
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--txt2);
+        border-bottom: 1px solid var(--border);
+      }
+      .complexity-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 0.85rem;
+      }
+      .complexity-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .complexity-table .op {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        color: var(--txt);
+      }
+      .complexity-table .good {
+        color: var(--green);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .complexity-table .ok {
+        color: var(--orange);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .complexity-table .bad {
+        color: var(--red);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .complexity-table .note {
+        color: var(--txt2);
+        font-size: 0.82rem;
+      }
+
+      .insight-box {
+        margin-top: 1rem;
+        padding: 1rem 1.2rem;
+        background: rgba(244, 63, 94, 0.05);
+        border: 1px solid rgba(244, 63, 94, 0.2);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        color: var(--txt2);
+        line-height: 1.7;
+      }
+      .insight-box strong {
+        color: var(--txt);
+      }
+      .insight-box .hi {
+        color: var(--rose);
+      }
+
+      /* ── pros/cons ── */
+      .procon-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .procon-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .procon-card.pros {
+        border-color: rgba(16, 185, 129, 0.2);
+      }
+      .procon-card.cons {
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+      .procon-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+      .procon-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 0.7rem;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+      .procon-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .procon-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .procon-dot.pro {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--green);
+      }
+      .procon-dot.con {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--red);
+      }
+      .procon-text h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+      .procon-text p {
+        font-size: 0.82rem;
+        color: var(--txt2);
+        line-height: 1.5;
+      }
+
+      /* ── when to use ── */
+      .when-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .when-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .when-card.use {
+        border-color: rgba(16, 185, 129, 0.2);
+      }
+      .when-card.avoid {
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+      .when-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+      .when-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+      }
+      .when-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .when-text h4 {
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+      }
+      .when-text p {
+        font-size: 0.8rem;
+        color: var(--txt2);
+        line-height: 1.5;
+      }
+      .when-code {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        background: var(--code-bg);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        color: var(--rose);
+      }
+
+      /* ── cta ── */
+      .cta-section {
+        padding: 5rem 2rem;
+        text-align: center;
+      }
+      .cta-inner {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .cta-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--rose);
+        margin-bottom: 1rem;
+      }
+      .cta-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+      }
+      .cta-title .glow {
+        color: var(--rose);
+        text-shadow: 0 0 40px rgba(244, 63, 94, 0.4);
+      }
+      .cta-sub {
+        color: var(--txt2);
+        font-size: 1rem;
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+      }
+
+      /* Animated graph nodes in CTA */
+      .graph-cta-viz {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin: 2rem auto;
+        max-width: 320px;
+        flex-wrap: wrap;
+      }
+      .gcell {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1.5px solid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        font-weight: 700;
+      }
+      .gcell:nth-child(odd) {
+        animation: gPop 2.2s ease-in-out infinite;
+      }
+      .gcell:nth-child(even) {
+        animation: gPop 2.2s ease-in-out 0.35s infinite;
+      }
+      @keyframes gPop {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.12);
+        }
+      }
+
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, var(--rose), var(--pink));
+        color: #fff;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+      }
+      .cta-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--pink), var(--rose));
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .cta-btn:hover::before {
+        opacity: 1;
+      }
+      .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(244, 63, 94, 0.4);
+      }
+      .cta-btn span {
+        position: relative;
+        z-index: 1;
+      }
+      .cta-btn .arrow {
+        font-size: 1.3rem;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s;
+      }
+      .cta-btn:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      /* ── level nav ── */
+      .level-section {
+        max-width: 800px;
+        margin: 2rem auto 5rem;
+        padding: 2.5rem 2rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        text-align: center;
+      }
+      .level-section h3 {
+        color: var(--rose);
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .level-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 0 20px;
+        height: 100px;
+      }
+      .level-wrapper button {
+        position: relative;
+        z-index: 20;
+        width: clamp(80px, 22vw, 120px);
+        padding: 0.9rem 0.5rem;
+        border-radius: 14px;
+        border: 2px solid var(--border);
+        background: var(--bg);
+        color: var(--txt);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Inter", sans-serif;
+        font-size: clamp(0.75rem, 2vw, 0.9rem);
+        text-align: center;
+      }
+      .level-wrapper button:hover {
+        border-color: var(--rose);
+      }
+      #l3-btn {
+        border-color: var(--rose) !important;
+        background: rgba(244, 63, 94, 0.12) !important;
+        color: var(--rose) !important;
+        box-shadow: 0 0 15px rgba(244, 63, 94, 0.25);
+      }
+      .lvl-line {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 4px;
+        background: var(--border);
+        z-index: 1;
+        pointer-events: none;
+      }
+      #line-a {
+        left: calc(clamp(80px, 22vw, 120px) + 20px);
+        right: calc(50% + clamp(40px, 11vw, 60px));
+      }
+      #line-b {
+        left: calc(50% + clamp(40px, 11vw, 60px));
+        right: calc(clamp(80px, 22vw, 120px) + 20px);
+      }
+      .lvl-line.lit {
+        background: linear-gradient(90deg, var(--rose), var(--pink));
+        box-shadow: 0 0 12px var(--rose);
+      }
+
+      /* ── modal ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px);
+        z-index: 100000;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--card);
+        border: 2px solid var(--purple);
+        padding: clamp(1.5rem, 5vw, 3rem);
+        border-radius: 24px;
+        max-width: 420px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(139, 92, 246, 0.35);
+      }
+      .modal-btns {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+      #startQuiz {
+        background: var(--rose);
+        color: #fff;
+        min-width: 80px;
+        height: 38px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0 1.25rem;
+      }
+      #cancelBtn {
+        background: var(--border);
+        color: var(--txt);
+        min-width: 80px;
+        height: 38px;
+        border-radius: 20px;
+        border: none;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 0 1.25rem;
+      }
+
+      /* ── responsive ── */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .app-grid {
+          grid-template-columns: 1fr;
+        }
+        .procon-grid {
+          grid-template-columns: 1fr;
+        }
+        .when-grid {
+          grid-template-columns: 1fr;
+        }
+        .stat-row.three {
+          grid-template-columns: 1fr 1fr;
+        }
+        .level-wrapper {
+          padding: 0 5px;
+        }
+        .concept-box {
+          padding: 1.25rem;
+        }
+      }
+      @media (max-width: 480px) {
+        :root {
+          --nav-h: 56px;
+        }
+        .hero {
+          padding: calc(var(--nav-h) + 40px) 1rem 40px;
+        }
+        .section {
+          padding: 2rem 1rem;
+        }
+        .concept-section {
+          padding: 0 1rem 2rem;
+        }
+        .stat-row.two {
+          grid-template-columns: 1fr 1fr;
+        }
+        .stat-row.three {
+          grid-template-columns: 1fr;
+        }
+        .level-section {
+          margin: 2rem 1rem 3rem;
+          padding: 2rem 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <!-- ══════════════ NAV ══════════════ -->
+    <nav>
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">G</div>
+          <span>CODEANIME</span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="#level-nav">Levels</a></li>
+        </ul>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              ></path>
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+          <button
+            class="nav-hamburger"
+            id="navHamburger"
+            aria-label="Toggle menu"
+          >
+            <svg viewBox="0 0 24 24">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ══════════════ HERO ══════════════ -->
+    <div class="hero">
+      <div class="breadcrumb-bar">
+        <a href="topics.html">Topics</a><span class="sep">›</span>
+        <a href="graph_basics.html">Graphs</a><span class="sep">›</span>
+        <span>Level 3 — Real World</span>
+      </div>
+      <div class="hero-badge">🌐 Level 3 of 3</div>
+      <h1>Graphs in the <span class="highlight">Real World</span></h1>
+      <p>
+        Behind every GPS route, every social network, every web search, and
+        every network packet — there's a graph. The most versatile data
+        structure in computer science, powering the systems billions of people
+        use every day.
+      </p>
+      <div class="level-badges">
+        <div class="lvl-badge">Level 1 of 3 | Basics</div>
+        <div class="lvl-badge">Level 2 of 3 | Interactive</div>
+        <div class="lvl-badge active">Level 3 of 3 | Real World</div>
+      </div>
+    </div>
+
+    <!-- ══════════════ CONCEPT ══════════════ -->
+    <div class="concept-section">
+      <div class="concept-box">
+        <div class="concept-title">
+          🧠 The Core Idea — Vertices, Edges, and Traversal
+        </div>
+        <p class="concept-desc">
+          Basically, a graph is just
+          <strong>nodes (vertices) connected by edges</strong>. That's it. But
+          this simple structure lets you model almost any real-world
+          relationship — friendships, roads, web links, dependencies, electrical
+          circuits. The trick is that
+          <strong>how you traverse a graph</strong> determines what problems you
+          can solve: BFS finds shortest paths in unweighted graphs, DFS explores
+          all reachable nodes, Dijkstra's handles weighted shortest paths, and
+          topological sort handles dependencies. Think of it this way — if your
+          problem has "connections between things," a graph is probably the
+          answer.
+        </p>
+
+        <!-- Concept visualizer: BFS step-by-step on a 7-node graph -->
+        <div style="margin-bottom: 1.5rem">
+          <div
+            style="
+              font-size: 0.72rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.8px;
+              color: var(--txt2);
+              margin-bottom: 1rem;
+              text-align: center;
+            "
+          >
+            🎮 Step through BFS — watch how it explores level by level from the
+            source node
+          </div>
+
+          <div
+            style="
+              background: var(--code-bg);
+              border: 1px solid var(--border);
+              border-radius: 12px;
+              padding: 1rem;
+              margin-bottom: 0.75rem;
+              overflow: hidden;
+            "
+          >
+            <!-- Graph SVG — drawn by JS -->
+            <svg
+              id="conceptSvg"
+              viewBox="0 0 460 200"
+              style="
+                width: 100%;
+                display: block;
+                overflow: visible;
+                min-height: 150px;
+              "
+            ></svg>
+
+            <!-- BFS queue display -->
+            <div
+              style="
+                margin-top: 0.5rem;
+                border-top: 1px solid var(--border);
+                padding-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.6px;
+                  color: var(--txt2);
+                  margin-bottom: 0.35rem;
+                  text-align: center;
+                "
+              >
+                BFS Queue
+              </div>
+              <div
+                id="bfsQueue"
+                style="
+                  display: flex;
+                  gap: 3px;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                  min-height: 24px;
+                "
+              ></div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 0.6rem;
+              justify-content: center;
+              flex-wrap: wrap;
+              margin-bottom: 0.75rem;
+            "
+          >
+            <button class="d-btn go" onclick="doBfsStep()">
+              ▶ BFS Next Step
+            </button>
+            <button class="d-btn reset" onclick="doBfsReset()">↺ Reset</button>
+          </div>
+          <div
+            style="
+              text-align: center;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 0.78rem;
+              color: var(--txt2);
+              padding: 0.45rem 0.75rem;
+              background: rgba(255, 255, 255, 0.03);
+              border: 1px solid var(--border);
+              border-radius: 7px;
+            "
+            id="conceptMsg"
+          >
+            Click "BFS Next Step" — nodes explored level by level, shortest path
+            guaranteed
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(244, 63, 94, 0.25);
+                border: 2px solid #f43f5e;
+              "
+            ></div>
+            Source
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(245, 158, 11, 0.2);
+                border: 2px solid #f59e0b;
+              "
+            ></div>
+            In queue
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(16, 185, 129, 0.2);
+                border: 2px solid #10b981;
+              "
+            ></div>
+            Visited
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid #333;
+              "
+            ></div>
+            Unvisited
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ APPLICATIONS ══════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(244, 63, 94, 0.15)">🌍</div>
+        Real World Applications
+      </div>
+      <p class="section-sub">
+        In simple terms, if a problem involves "things connected to other
+        things," it's a graph problem. These six applications touch systems that
+        billions of people use every single day.
+      </p>
+
+      <div class="app-grid">
+        <!-- 1. GPS / Shortest Path -->
+        <div class="app-card rose">
+          <div class="card-header">
+            <div class="card-icon rose">🗺️</div>
+            <div class="card-info">
+              <h3>GPS Navigation — Dijkstra's Shortest Path</h3>
+              <p>
+                Google Maps, Waze, and every GPS device model roads as a
+                <strong>weighted directed graph</strong>. Intersections are
+                vertices, roads are edges, travel time is the weight. Dijkstra's
+                algorithm finds the shortest path in O((V+E) log V). Without a
+                graph, computing "fastest route" across a city is literally
+                unsolvable.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Step through Dijkstra's — watch shortest distances update one
+              node at a time
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="dijkStep()">
+                  ▶ Explore Next
+                </button>
+                <button class="d-btn reset" onclick="dijkReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="dijkSvg"
+                viewBox="0 0 300 160"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 120px;
+                "
+              ></svg>
+              <div class="status-line" id="dijkStatus">
+                Dijkstra from A — min-heap picks nearest unvisited node
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill rose">
+                  Settled: <b class="rv" id="dijkSettled">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Remaining: <b class="gv" id="dijkRemain">6</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Social Network -->
+        <div class="app-card pink">
+          <div class="card-header">
+            <div class="card-icon pink">👥</div>
+            <div class="card-info">
+              <h3>Social Networks — BFS Friend Suggestions</h3>
+              <p>
+                Facebook, LinkedIn, and Instagram model users as vertices and
+                friendships as edges. BFS from your profile finds
+                friends-of-friends at each "degree of separation."
+                <strong>"People you may know"</strong> = BFS level 2 from your
+                node. With 3B users, Facebook's graph has more edges than the
+                Milky Way has stars.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 BFS from "You" — find 1st and 2nd degree connections
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="socialStep()">
+                  ▶ BFS Next Level
+                </button>
+                <button class="d-btn reset" onclick="socialReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="socialCells"></div>
+              <div class="status-line" id="socialStatus">
+                Starting from "You" — explore friend network
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill rose">
+                  Degree: <b class="rv" id="socialDeg">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Found: <b class="gv" id="socialFound">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Web Crawler / PageRank -->
+        <div class="app-card orange">
+          <div class="card-header">
+            <div class="card-icon orange">🕷️</div>
+            <div class="card-info">
+              <h3>Web Crawler — DFS over the Internet Graph</h3>
+              <p>
+                Google's crawler treats the entire web as a
+                <strong>directed graph</strong> — pages are vertices, hyperlinks
+                are edges. DFS follows links recursively, BFS explores
+                level-by-level. PageRank then assigns importance based on how
+                many edges point to each node. The web has ~60 trillion edges.
+                Graph algorithms index all of it.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 DFS crawl — follow links depth-first, mark visited pages
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="crawlStep()">
+                  ▶ Follow Link
+                </button>
+                <button class="d-btn go-cyan" onclick="crawlAuto()">
+                  ⚡ Auto Crawl
+                </button>
+                <button class="d-btn reset" onclick="crawlReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="crawlCells"></div>
+              <div class="status-line" id="crawlStatus">
+                DFS from homepage — follow links depth-first
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill orange">
+                  Stack depth: <b class="ov" id="crawlDepth">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Crawled: <b class="gv" id="crawlCount">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Course Prerequisites / Topological Sort -->
+        <div class="app-card cyan">
+          <div class="card-header">
+            <div class="card-icon cyan">📚</div>
+            <div class="card-info">
+              <h3>Task Dependencies — Topological Sort</h3>
+              <p>
+                University course prerequisites, build systems (Make, Webpack),
+                and CI/CD pipelines all use <strong>topological sort</strong> on
+                a Directed Acyclic Graph (DAG). "You must take Calc before
+                Linear Algebra" = a directed edge. Topo sort gives a valid
+                ordering in O(V+E). If there's a cycle, no valid order exists.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Kahn's algorithm — build valid course order step by step
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="topoStep()">
+                  ▶ Next Course
+                </button>
+                <button class="d-btn reset" onclick="topoReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  color: var(--txt2);
+                  margin-bottom: 0.3rem;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                Available (in-degree 0):
+              </div>
+              <div class="mini-cells" id="topoQueue"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  color: var(--green);
+                  margin: 0.4rem 0 0.3rem;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                Sorted order so far:
+              </div>
+              <div class="mini-cells" id="topoResult"></div>
+              <div class="status-line" id="topoStatus">
+                Kahn's algorithm — process nodes with no prerequisites first
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Network Flow / Matching -->
+        <div class="app-card purple">
+          <div class="card-header">
+            <div class="card-icon purple">🔗</div>
+            <div class="card-info">
+              <h3>Network Flow — Routing & Bipartite Matching</h3>
+              <p>
+                Internet packet routing, power grid distribution, and
+                job-to-candidate matching all use
+                <strong>max-flow algorithms</strong> on flow networks. Every
+                pipe, wire, or network link is an edge with capacity.
+                Ford-Fulkerson finds maximum throughput in O(VE²). Bipartite
+                matching (students ↔ dorms) is a special case.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Max-flow — find how much can flow from source S to sink T
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="flowStep()">
+                  ▶ Augment Path
+                </button>
+                <button class="d-btn reset" onclick="flowReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="flowSvg"
+                viewBox="0 0 300 140"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 110px;
+                "
+              ></svg>
+              <div class="status-line" id="flowStatus">
+                Find augmenting paths from S to T — Ford-Fulkerson
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill purple">
+                  Max flow: <b class="pv" id="flowTotal">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Paths found: <b class="gv" id="flowPaths">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Spanning Tree / MST -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🌲</div>
+            <div class="card-info">
+              <h3>Minimum Spanning Tree — Network Design</h3>
+              <p>
+                Laying cables to connect N cities at minimum cost, designing
+                circuit boards, clustering in machine learning — all solved by
+                <strong>Minimum Spanning Tree</strong>. Prim's and Kruskal's
+                find the MST in O(E log V). The MST connects all vertices with
+                the minimum total edge weight — no cycle, no redundancy.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Kruskal's algorithm — add cheapest edge that doesn't form a
+              cycle
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="mstStep()">▶ Add Edge</button>
+                <button class="d-btn reset" onclick="mstReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="mstSvg"
+                viewBox="0 0 300 160"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 120px;
+                "
+              ></svg>
+              <div class="status-line" id="mstStatus">
+                Sort edges by weight — add cheapest non-cycle edge
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill green">
+                  MST cost: <b class="gv" id="mstCost">0</b>
+                </div>
+                <div class="stat-pill cyan">
+                  Edges added: <b class="cv" id="mstEdges">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════ COMPLEXITY TABLE ══════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(244, 63, 94, 0.15)">⚡</div>
+        Time &amp; Space Complexity
+      </div>
+      <p class="section-sub">
+        Graph algorithm complexity depends on both V (vertices) and E (edges).
+        Sparse graphs (few edges, E ≈ V) and dense graphs (many edges, E ≈ V²)
+        behave very differently.
+      </p>
+      <div class="table-wrap">
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Time</th>
+              <th>Space</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op">BFS (unweighted)</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Shortest path in hops. Queue-based. Visits every reachable
+                vertex once.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">DFS (recursive/iterative)</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Stack-based. Used for cycle detection, topological sort,
+                connected components.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Dijkstra's (min-heap)</td>
+              <td class="ok">O((V+E) log V)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Weighted shortest path. Requires non-negative weights. Fails
+                with negative edges.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Bellman-Ford</td>
+              <td class="bad">O(VE)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Handles negative edges. Detects negative cycles. Slower but more
+                general than Dijkstra.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Floyd-Warshall</td>
+              <td class="bad">O(V³)</td>
+              <td class="bad">O(V²)</td>
+              <td class="note">
+                All-pairs shortest path. Dynamic programming on adjacency
+                matrix. Only for small V.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Topological Sort</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Only for DAGs. Kahn's (BFS) or DFS-based. Detects cycles if none
+                found.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Kruskal's MST</td>
+              <td class="ok">O(E log E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Sort edges + Union-Find. Best for sparse graphs. E log E ≈ E log
+                V since E ≤ V².
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Prim's MST (heap)</td>
+              <td class="ok">O(E log V)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Greedy. Grows MST from one node. Better for dense graphs with
+                adjacency matrix.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Union-Find (DSU)</td>
+              <td class="good">O(α(V)) ≈ O(1)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Amortized near-constant with path compression + union by rank.
+                Powers Kruskal's.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box">
+        💡 <strong>Key insight:</strong> Most graph problems boil down to one of
+        these:
+        <span class="hi"
+          >BFS for shortest hops, Dijkstra for shortest weighted path, DFS for
+          connectivity/cycles/topo-sort, MST for minimum cost spanning</span
+        >. The representation matters too — adjacency list is O(V+E) space and
+        better for sparse graphs; adjacency matrix is O(V²) but gives O(1) edge
+        lookup and is better for dense graphs or Floyd-Warshall. In interviews,
+        always clarify: directed or undirected? Weighted? Can there be cycles or
+        negative weights?
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════ PROS & CONS ══════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(16, 185, 129, 0.15)">
+          ⚖️
+        </div>
+        Advantages &amp; Disadvantages
+      </div>
+      <p class="section-sub">
+        Graphs are the most expressive data structure — but that power comes
+        with real complexity in implementation and memory.
+      </p>
+      <div class="procon-grid">
+        <div class="procon-card pros">
+          <div class="procon-title" style="color: var(--green)">
+            ✅ Advantages
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Models any relationship — the most general structure</h4>
+              <p>
+                Any problem that involves "things connected to other things" is
+                a graph. Roads, friendships, dependencies, web links, electrical
+                circuits — graphs represent them all naturally. No other data
+                structure is this general.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(V + E) traversal — linear in graph size</h4>
+              <p>
+                BFS and DFS visit every vertex and edge exactly once. For a road
+                network with millions of intersections, finding all reachable
+                nodes is linear — as efficient as it can possibly be for this
+                kind of problem.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Handles complex dependency and ordering problems</h4>
+              <p>
+                Topological sort on a DAG solves scheduling, build order, and
+                prerequisite problems in O(V+E). No other structure handles "A
+                must come before B" constraints this elegantly.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Shortest path algorithms cover a huge class of problems</h4>
+              <p>
+                Dijkstra, Bellman-Ford, and Floyd-Warshall cover unweighted,
+                weighted, negative-weight, and all-pairs shortest paths. These
+                algorithms power GPS, network routing, and game AI pathfinding.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>
+                Flexible representation — list or matrix to fit any workload
+              </h4>
+              <p>
+                Adjacency lists save memory for sparse graphs (social networks,
+                road maps). Adjacency matrices give O(1) edge queries for dense
+                graphs. You pick the representation that fits your access
+                pattern — most structures don't give you that choice.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Foundation of network flow, matching, and optimization</h4>
+              <p>
+                Max-flow, bipartite matching, min-cut — entire fields of
+                combinatorial optimization are built on graphs. Transportation
+                planning, supply chain routing, and resource allocation all rely
+                on graph flow algorithms.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="procon-card cons">
+          <div class="procon-title" style="color: var(--red)">
+            ❌ Disadvantages
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>High memory usage for dense graphs</h4>
+              <p>
+                An adjacency matrix for V vertices uses O(V²) space — a graph
+                with 100,000 nodes needs 10GB just for the matrix. Adjacency
+                lists are better for sparse graphs, but even those use O(V + E)
+                which grows fast on large networks.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Complex to implement correctly — many edge cases</h4>
+              <p>
+                Cycles, disconnected components, negative weights, self-loops,
+                and directed vs undirected all create subtle bugs. Dijkstra
+                silently gives wrong answers with negative edges. Graph code is
+                notoriously tricky to get right under interview pressure.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>
+                No O(1) "find shortest path" — must run an algorithm each time
+              </h4>
+              <p>
+                Unlike arrays (O(1) access) or hash maps (O(1) lookup), graphs
+                don't give you any answer in O(1). Every query — shortest path,
+                connectivity, cycle detection — requires running an algorithm.
+                Precomputation is possible but expensive.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Poor cache performance — pointer-chasing adjacency lists</h4>
+              <p>
+                Following edges in an adjacency list means chasing pointers
+                across memory — causing cache misses per hop. On large sparse
+                graphs, BFS/DFS can be memory-bound. CSR (Compressed Sparse Row)
+                format helps but adds implementation complexity.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Negative cycles break most shortest-path algorithms</h4>
+              <p>
+                A negative weight cycle means "shortest path" is −∞ — undefined.
+                Dijkstra can't handle negative edges at all. Bellman-Ford
+                detects negative cycles but is O(VE) — slow for large graphs.
+                This limitation constrains where graph algorithms apply.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>
+                All-pairs shortest path is O(V³) — only feasible for small
+                graphs
+              </h4>
+              <p>
+                Floyd-Warshall runs in O(V³) and needs O(V²) space. For V =
+                10,000 nodes, that's a trillion operations. In practice, you run
+                Dijkstra from each source separately (O(V × (V+E) log V)) or use
+                heuristics like A*.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════ WHEN TO USE ══════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(245, 158, 11, 0.15)">
+          🎯
+        </div>
+        When to Use Graphs — and When to Avoid Them
+      </div>
+      <p class="section-sub">
+        The trick is recognizing graph problems fast. Once you see "nodes and
+        connections," the algorithm usually follows naturally.
+      </p>
+      <div class="when-grid">
+        <div class="when-card use">
+          <div class="when-title" style="color: var(--green)">
+            ✅ Use Graphs When...
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🛣️</div>
+            <div class="when-text">
+              <h4>Finding shortest path between two points</h4>
+              <p>
+                GPS routing, game pathfinding, network routing — any "get from A
+                to B" problem. Unweighted? BFS. Weighted non-negative? Dijkstra.
+                Negative weights? Bellman-Ford.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔗</div>
+            <div class="when-text">
+              <h4>Checking if things are connected</h4>
+              <p>
+                Is user X reachable from user Y? Is the network split into
+                components? BFS/DFS from a source in O(V+E). Union-Find for
+                dynamic connectivity in near-O(1) per query.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">📋</div>
+            <div class="when-text">
+              <h4>Ordering tasks with dependencies</h4>
+              <p>
+                Build systems, course scheduling, spreadsheet recalculation —
+                anything with "A must happen before B." Model as a DAG, run
+                topological sort in O(V+E). Detect impossible cases (cycles)
+                automatically.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔄</div>
+            <div class="when-text">
+              <h4>Detecting cycles in a system</h4>
+              <p>
+                Deadlock detection in OS, circular dependency detection in
+                compilers, import cycle detection in module systems — all DFS on
+                a directed graph.
+                <span class="when-code">back edge in DFS = cycle found</span>.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">💰</div>
+            <div class="when-text">
+              <h4>Minimizing connection cost across all nodes</h4>
+              <p>
+                Laying network cables, designing circuit boards, clustering data
+                — Kruskal's or Prim's MST gives minimum total weight spanning
+                tree in O(E log V). Classic interview problem: connect all
+                cities at minimum cost.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🌊</div>
+            <div class="when-text">
+              <h4>Maximizing flow through a network</h4>
+              <p>
+                Network bandwidth, supply chain capacity, resource assignment —
+                max-flow algorithms find maximum throughput from source to sink.
+                <span class="when-code">Ford-Fulkerson</span> / Edmonds-Karp
+                handle these in O(VE²) or O(VE log V).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="when-card avoid">
+          <div class="when-title" style="color: var(--red)">
+            ❌ Avoid Graphs When...
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔢</div>
+            <div class="when-text">
+              <h4>Data is naturally sequential or hierarchical</h4>
+              <p>
+                If your data is a list, array, or tree — use those structures. A
+                binary search tree is faster than a graph for ordered key
+                lookups. Don't model a sorted list as a graph just to feel
+                fancy.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔍</div>
+            <div class="when-text">
+              <h4>You just need key-value lookups</h4>
+              <p>
+                If the question is "does key X map to value Y?", use a hash map
+                — O(1) average. Don't model a dictionary as a graph. Graphs
+                answer relationship questions, not lookup questions.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">💾</div>
+            <div class="when-text">
+              <h4>Memory is severely constrained and graph is dense</h4>
+              <p>
+                A dense graph with V=10,000 needs ~100MB just for the adjacency
+                matrix. If memory is tight and the graph is dense, consider
+                implicit graph representations or specialized algorithms that
+                don't materialize the full adjacency structure.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">⚡</div>
+            <div class="when-text">
+              <h4>You need real-time O(1) answers</h4>
+              <p>
+                Graph queries are expensive — O(V+E) minimum for most questions.
+                If you need "is A connected to B?" answered in O(1) offline
+                (static graph), precompute connected components and store in a
+                hash map instead.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔀</div>
+            <div class="when-text">
+              <h4>The "graph" has no meaningful edge semantics</h4>
+              <p>
+                If you're forcing graph structure onto data that doesn't have
+                natural connections, you're overcomplicating it. Ask yourself:
+                "what does an edge actually mean here?" If the answer is vague,
+                a simpler structure probably fits better.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">📉</div>
+            <div class="when-text">
+              <h4>Graph has negative cycles and you need shortest paths</h4>
+              <p>
+                Negative cycles make shortest paths undefined. If your graph can
+                have negative cycles, either detect and report them
+                (Bellman-Ford) or restructure the problem — no standard
+                shortest-path algorithm handles them correctly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════ CTA ══════════════ -->
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+        <div class="cta-title">
+          Challenge yourself with<br /><span class="glow"
+            >real Graph problems</span
+          >
+        </div>
+        <p class="cta-sub">
+          You've seen graphs power GPS navigation, social networks, web
+          crawlers, task scheduling, network flow, and MST.<br />
+          Now prove you can apply BFS, DFS, Dijkstra's, and topological sort to
+          classic interview problems.
+        </p>
+        <div class="graph-cta-viz">
+          <div
+            class="gcell"
+            style="
+              background: rgba(244, 63, 94, 0.15);
+              border-color: rgba(244, 63, 94, 0.4);
+              color: var(--rose);
+            "
+          >
+            A
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(236, 72, 153, 0.1);
+              border-color: rgba(236, 72, 153, 0.3);
+              color: var(--pink);
+            "
+          >
+            B
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(16, 185, 129, 0.12);
+              border-color: rgba(16, 185, 129, 0.35);
+              color: var(--green);
+            "
+          >
+            C
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(6, 182, 212, 0.1);
+              border-color: rgba(6, 182, 212, 0.3);
+              color: var(--cyan);
+            "
+          >
+            D
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(244, 63, 94, 0.18);
+              border-color: rgba(244, 63, 94, 0.5);
+              color: var(--rose);
+            "
+          >
+            E
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(245, 158, 11, 0.1);
+              border-color: rgba(245, 158, 11, 0.3);
+              color: var(--orange);
+            "
+          >
+            F
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(139, 92, 246, 0.12);
+              border-color: rgba(139, 92, 246, 0.35);
+              color: var(--purple);
+            "
+          >
+            G
+          </div>
+        </div>
+        <a href="practice.html?topic=graphs" class="cta-btn">
+          <span>🌐 Solve Graph Problems</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+ 
+
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/navbar.js"></script>
+
+    <!-- ══════════════════════════════════════════════
+     JAVASCRIPT — student-dev style
+     let/const throughout, named vars like adj, dist, vis, q
+     ══════════════════════════════════════════════ -->
+    <script>
+      /*
+       * ╔══════════════════════════════════════════════════╗
+       * ║   GRAPHS L3 — REAL WORLD APPLICATIONS JS         ║
+       * ║   Clean student-dev style. let/const, no var.     ║
+       * ║   Short names: adj, vis, q, dist, src, u, v       ║
+       * ╚══════════════════════════════════════════════════╝
+       */
+
+      // ── THEME ──────────────────────────────────────────
+
+      const themes = ["dark", "light", "blue"];
+      const themeIcons = {
+        dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+        light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+        blue: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>',
+      };
+
+      const applyTheme = (t) => {
+        document.body.setAttribute("data-theme", t);
+        document.getElementById("themeIcon").innerHTML = themeIcons[t];
+        localStorage.setItem("dsa-theme", t);
+      };
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const cur = localStorage.getItem("dsa-theme") || "dark";
+        applyTheme(themes[(themes.indexOf(cur) + 1) % 3]);
+      });
+
+      applyTheme(localStorage.getItem("dsa-theme") || "dark");
+
+      // ── HAMBURGER ──────────────────────────────────────
+
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("navLinks");
+
+      hamburger.addEventListener("click", () => {
+        navLinks.classList.toggle("open");
+        const spans = hamburger.querySelectorAll("span");
+        const isOpen = navLinks.classList.contains("open");
+        spans[0].style.transform = isOpen
+          ? "rotate(45deg) translate(5px,5px)"
+          : "";
+        spans[1].style.opacity = isOpen ? "0" : "1";
+        spans[2].style.transform = isOpen
+          ? "rotate(-45deg) translate(5px,-5px)"
+          : "";
+      });
+
+      navLinks
+        .querySelectorAll("a")
+        .forEach((a) =>
+          a.addEventListener("click", () => navLinks.classList.remove("open")),
+        );
+
+      // ── SVG HELPERS ──────────────────────────────────────
+
+      const NS = "http://www.w3.org/2000/svg";
+
+      // Quick helper to make SVG elements — saves a lot of repetition
+      const svgEl = (tag, attrs) => {
+        const el = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        return el;
+      };
+
+      // Draw a circle node on an SVG
+      const drawNode = (
+        svg,
+        x,
+        y,
+        r,
+        fill,
+        label,
+        textColor = "#fff",
+        fontSize = "12",
+      ) => {
+        svg.appendChild(svgEl("circle", { cx: x, cy: y, r, fill }));
+        const t = svgEl("text", {
+          x,
+          y: +y + 4,
+          "text-anchor": "middle",
+          "font-size": fontSize,
+          "font-weight": "700",
+          "font-family": "JetBrains Mono, monospace",
+          fill: textColor,
+        });
+        t.textContent = label;
+        svg.appendChild(t);
+      };
+
+      // Draw an edge (line) between two positions
+      const drawEdge = (
+        svg,
+        x1,
+        y1,
+        x2,
+        y2,
+        color = "#3a3a3a",
+        width = 2,
+        dashed = false,
+      ) => {
+        const attrs = {
+          x1,
+          y1,
+          x2,
+          y2,
+          stroke: color,
+          "stroke-width": width,
+          "stroke-linecap": "round",
+        };
+        if (dashed) attrs["stroke-dasharray"] = "4 3";
+        svg.appendChild(svgEl("line", attrs));
+      };
+
+      // Draw an edge label at midpoint
+      const drawEdgeLabel = (svg, x1, y1, x2, y2, label, color = "#666") => {
+        const mx = (x1 + x2) / 2,
+          my = (y1 + y2) / 2;
+        const bg = svgEl("rect", {
+          x: mx - 9,
+          y: my - 8,
+          width: 18,
+          height: 13,
+          rx: 3,
+          fill: "#111",
+        });
+        svg.appendChild(bg);
+        const t = svgEl("text", {
+          x: mx,
+          y: my + 2,
+          "text-anchor": "middle",
+          "font-size": "9",
+          "font-weight": "700",
+          "font-family": "JetBrains Mono, monospace",
+          fill: color,
+        });
+        t.textContent = label;
+        svg.appendChild(t);
+      };
+
+      // Mini cell builder
+      const buildCells = (elId, arr, classes) => {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.innerHTML = "";
+        arr.forEach((v, i) => {
+          const c = document.createElement("div");
+          c.className = "mcell " + (classes[i] || "def");
+          c.textContent = v;
+          el.appendChild(c);
+        });
+      };
+
+      // ══════════════════════════════════════════
+      //  CONCEPT VISUALIZER — BFS on 7-node graph
+      // ══════════════════════════════════════════
+
+      // Graph: 7 nodes (0-6), labeled A-G
+      // Adjacency list (undirected)
+      const BFS_LABELS = ["A", "B", "C", "D", "E", "F", "G"];
+      const BFS_ADJ = [
+        [1, 2], // A → B, C
+        [0, 3, 4], // B → A, D, E
+        [0, 5, 6], // C → A, F, G
+        [1], // D → B
+        [1], // E → B
+        [2], // F → C
+        [2], // G → C
+      ];
+
+      // Node positions inside viewBox 0 0 460 200
+      const BFS_POS = [
+        { x: 230, y: 35 }, // A — root
+        { x: 110, y: 105 }, // B
+        { x: 350, y: 105 }, // C
+        { x: 40, y: 175 }, // D
+        { x: 180, y: 175 }, // E
+        { x: 290, y: 175 }, // F
+        { x: 420, y: 175 }, // G
+      ];
+
+      // BFS state
+      let bfsVisited = new Array(7).fill(false);
+      let bfsQueue = []; // indices waiting to be processed
+      let bfsInQueue = new Array(7).fill(false); // tracking who's in queue
+      let bfsStep = 0;
+      let bfsDone = false;
+
+      const BFS_COLORS = {
+        unvisited: "#1e1e1e",
+        inQueue: "#f59e0b", // orange — in queue
+        visited: "#10b981", // green  — done
+        source: "#f43f5e", // rose   — source node
+      };
+
+      const drawConceptGraph = (activeIdx = -1) => {
+        const svg = document.getElementById("conceptSvg");
+        svg.innerHTML = "";
+
+        // Draw edges first
+        for (let u = 0; u < BFS_ADJ.length; u++) {
+          for (const v of BFS_ADJ[u]) {
+            if (v > u) {
+              // draw each edge once
+              drawEdge(
+                svg,
+                BFS_POS[u].x,
+                BFS_POS[u].y,
+                BFS_POS[v].x,
+                BFS_POS[v].y,
+                "#3a3a3a",
+                2,
+              );
+            }
+          }
+        }
+
+        // Draw nodes
+        BFS_LABELS.forEach((lbl, i) => {
+          let fill;
+          if (i === 0 && bfsStep === 0) fill = BFS_COLORS.source;
+          else if (bfsVisited[i]) fill = BFS_COLORS.visited;
+          else if (bfsInQueue[i]) fill = BFS_COLORS.inQueue;
+          else fill = BFS_COLORS.unvisited;
+
+          // Glow ring for active node
+          if (i === activeIdx) {
+            svg.appendChild(
+              svgEl("circle", {
+                cx: BFS_POS[i].x,
+                cy: BFS_POS[i].y,
+                r: "24",
+                fill: "none",
+                stroke: "#fff",
+                "stroke-width": "2",
+                opacity: "0.4",
+              }),
+            );
+          }
+
+          drawNode(svg, BFS_POS[i].x, BFS_POS[i].y, 20, fill, lbl);
+        });
+      };
+
+      // Render the queue display as small cells
+      const renderBfsQueueDisplay = () => {
+        const el = document.getElementById("bfsQueue");
+        el.innerHTML = "";
+        bfsQueue.forEach((idx) => {
+          const c = document.createElement("div");
+          c.style.cssText =
+            'min-width:24px;height:24px;border-radius:4px;background:rgba(245,158,11,.2);border:1.5px solid #f59e0b;display:flex;align-items:center;justify-content:center;font-family:"JetBrains Mono",monospace;font-size:.62rem;font-weight:700;color:#f59e0b;';
+          c.textContent = BFS_LABELS[idx];
+          el.appendChild(c);
+        });
+        if (bfsQueue.length === 0 && !bfsDone) {
+          el.innerHTML =
+            "<span style=\"font-size:.65rem;color:var(--txt2);font-family:'JetBrains Mono',monospace;\">empty</span>";
+        }
+      };
+
+      const doBfsStep = () => {
+        if (bfsDone) {
+          doBfsReset();
+          return;
+        }
+
+        // First call — init BFS from node 0 (A)
+        if (bfsStep === 0) {
+          bfsQueue.push(0);
+          bfsInQueue[0] = true;
+          drawConceptGraph(0);
+          renderBfsQueueDisplay();
+          document.getElementById("conceptMsg").innerHTML =
+            "BFS init: source <span>A</span> added to queue. Queue = [A]";
+          bfsStep++;
+          return;
+        }
+
+        if (bfsQueue.length === 0) {
+          bfsDone = true;
+          drawConceptGraph(-1);
+          document.getElementById("conceptMsg").innerHTML =
+            "✅ BFS complete! All <span>" +
+            BFS_LABELS.filter((_, i) => bfsVisited[i]).length +
+            "</span> reachable nodes visited in level-order.";
+          return;
+        }
+
+        // Dequeue front
+        const u = bfsQueue.shift();
+        bfsVisited[u] = true;
+        bfsInQueue[u] = false;
+
+        // Enqueue unvisited neighbors
+        const newNeighbors = [];
+        for (const v of BFS_ADJ[u]) {
+          if (!bfsVisited[v] && !bfsInQueue[v]) {
+            bfsQueue.push(v);
+            bfsInQueue[v] = true;
+            newNeighbors.push(BFS_LABELS[v]);
+          }
+        }
+
+        drawConceptGraph(u);
+        renderBfsQueueDisplay();
+
+        const neighborStr =
+          newNeighbors.length > 0
+            ? " — added [" + newNeighbors.join(",") + "] to queue"
+            : " — no new neighbors";
+        document.getElementById("conceptMsg").innerHTML =
+          "Visited <span>" +
+          BFS_LABELS[u] +
+          "</span>" +
+          neighborStr +
+          ". Queue: [" +
+          bfsQueue.map((i) => BFS_LABELS[i]).join(",") +
+          "]";
+
+        bfsStep++;
+      };
+
+      const doBfsReset = () => {
+        bfsVisited = new Array(7).fill(false);
+        bfsInQueue = new Array(7).fill(false);
+        bfsQueue = [];
+        bfsStep = 0;
+        bfsDone = false;
+        drawConceptGraph(-1);
+        renderBfsQueueDisplay();
+        document.getElementById("conceptMsg").textContent =
+          'Click "BFS Next Step" — nodes explored level by level, shortest path guaranteed';
+      };
+
+      // Draw on page load
+      drawConceptGraph(-1);
+      renderBfsQueueDisplay();
+
+      // ══════════════════════════════════════════
+      //  1. DIJKSTRA'S — GPS / SHORTEST PATH
+      //  6-node weighted graph: A B C D E F
+      // ══════════════════════════════════════════
+
+      // Node positions for Dijkstra SVG (viewBox 0 0 300 160)
+      const DIJK_POS = [
+        { x: 30, y: 80, lbl: "A" }, // 0
+        { x: 110, y: 30, lbl: "B" }, // 1
+        { x: 110, y: 130, lbl: "C" }, // 2
+        { x: 200, y: 30, lbl: "D" }, // 3
+        { x: 200, y: 130, lbl: "E" }, // 4
+        { x: 275, y: 80, lbl: "F" }, // 5
+      ];
+
+      // Weighted edges: [u, v, weight]
+      const DIJK_EDGES = [
+        [0, 1, 4],
+        [0, 2, 2],
+        [1, 3, 5],
+        [1, 2, 1],
+        [2, 4, 8],
+        [3, 5, 2],
+        [3, 4, 2],
+        [4, 5, 3],
+      ];
+
+      // Dijkstra's step-by-step state
+      // Note: running a simplified preset simulation for clarity
+      let dijkDist = [0, Infinity, Infinity, Infinity, Infinity, Infinity];
+      let dijkSettledSet = new Set();
+      let dijkInQueue = [true, false, false, false, false, false];
+
+      // Pre-computed steps for the simulation
+      const DIJK_STEPS = [
+        {
+          settle: 0,
+          updates: [
+            { n: 1, d: 4 },
+            { n: 2, d: 2 },
+          ],
+          msg: "Settled <span>A</span> (dist=0) — updated B=4, C=2",
+        },
+        {
+          settle: 2,
+          updates: [
+            { n: 1, d: 3 },
+            { n: 4, d: 10 },
+          ],
+          msg: "Settled <span>C</span> (dist=2) — updated B=3, E=10",
+        },
+        {
+          settle: 1,
+          updates: [{ n: 3, d: 8 }],
+          msg: "Settled <span>B</span> (dist=3) — updated D=8",
+        },
+        {
+          settle: 3,
+          updates: [
+            { n: 5, d: 10 },
+            { n: 4, d: 10 },
+          ],
+          msg: "Settled <span>D</span> (dist=8) — D→F=10, D→E=10",
+        },
+        {
+          settle: 4,
+          updates: [{ n: 5, d: 13 }],
+          msg: "Settled <span>E</span> (dist=10) — E→F would be 13 (no update)",
+        },
+        {
+          settle: 5,
+          updates: [],
+          msg: "Settled <span>F</span> (dist=10) — all nodes done! ✅",
+        },
+      ];
+
+      let dijkPhase = 0;
+
+      const drawDijkGraph = () => {
+        const svg = document.getElementById("dijkSvg");
+        svg.innerHTML = "";
+
+        // Draw all edges
+        DIJK_EDGES.forEach(([u, v, w]) => {
+          const pu = DIJK_POS[u],
+            pv = DIJK_POS[v];
+          const settled = dijkSettledSet.has(u) && dijkSettledSet.has(v);
+          drawEdge(
+            svg,
+            pu.x,
+            pu.y,
+            pv.x,
+            pv.y,
+            settled ? "#10b981" : "#3a3a3a",
+            settled ? 2.5 : 1.5,
+          );
+          drawEdgeLabel(svg, pu.x, pu.y, pv.x, pv.y, w, "#888");
+        });
+
+        // Draw nodes
+        DIJK_POS.forEach((p, i) => {
+          let fill;
+          if (dijkSettledSet.has(i))
+            fill = "#10b981"; // settled = green
+          else if (dijkInQueue[i])
+            fill = "#f59e0b"; // in queue = orange
+          else fill = "#1e1e1e"; // not yet discovered
+
+          drawNode(svg, p.x, p.y, 18, fill, p.lbl);
+
+          // Show current dist below node
+          const d = dijkDist[i] === Infinity ? "∞" : dijkDist[i];
+          const dt = svgEl("text", {
+            x: p.x,
+            y: p.y + 30,
+            "text-anchor": "middle",
+            "font-size": "9",
+            "font-family": "JetBrains Mono, monospace",
+            fill: dijkSettledSet.has(i) ? "#10b981" : "#666",
+          });
+          dt.textContent = d;
+          svg.appendChild(dt);
+        });
+      };
+
+      const dijkStep = () => {
+        if (dijkPhase >= DIJK_STEPS.length) {
+          document.getElementById("dijkStatus").innerHTML =
+            "✅ Dijkstra complete — shortest paths from A found!";
+          return;
+        }
+
+        const step = DIJK_STEPS[dijkPhase];
+        dijkSettledSet.add(step.settle);
+        dijkInQueue[step.settle] = false;
+
+        // Apply distance updates
+        step.updates.forEach(({ n, d }) => {
+          if (d < dijkDist[n]) {
+            dijkDist[n] = d;
+            dijkInQueue[n] = true;
+          }
+        });
+
+        dijkPhase++;
+        drawDijkGraph();
+
+        document.getElementById("dijkStatus").innerHTML = step.msg;
+        document.getElementById("dijkSettled").textContent =
+          dijkSettledSet.size;
+        document.getElementById("dijkRemain").textContent =
+          6 - dijkSettledSet.size;
+      };
+
+      const dijkReset = () => {
+        dijkDist = [0, Infinity, Infinity, Infinity, Infinity, Infinity];
+        dijkSettledSet = new Set();
+        dijkInQueue = [true, false, false, false, false, false];
+        dijkPhase = 0;
+        drawDijkGraph();
+        document.getElementById("dijkStatus").innerHTML =
+          "Dijkstra from A — min-heap picks nearest unvisited node";
+        document.getElementById("dijkSettled").textContent = "0";
+        document.getElementById("dijkRemain").textContent = "6";
+      };
+
+      dijkReset();
+
+      // ══════════════════════════════════════════
+      //  2. SOCIAL NETWORK — BFS friend suggestions
+      // ══════════════════════════════════════════
+
+      // Nodes: You(0), Alice(1), Bob(2), Carol(3), Dave(4), Eve(5), Frank(6), Grace(7), Heidi(8)
+      const SOCIAL_NAMES = [
+        "You",
+        "Alice",
+        "Bob",
+        "Carol",
+        "Dave",
+        "Eve",
+        "Frank",
+        "Grace",
+        "Heidi",
+      ];
+      const SOCIAL_ADJ = [
+        [1, 2, 3], // You → Alice, Bob, Carol  (degree 1)
+        [0, 4, 5], // Alice → You, Dave, Eve
+        [0, 6], // Bob → You, Frank
+        [0, 7, 8], // Carol → You, Grace, Heidi
+        [1], // Dave → Alice
+        [1], // Eve → Alice
+        [2], // Frank → Bob
+        [3], // Grace → Carol
+        [3], // Heidi → Carol
+      ];
+
+      let socialVisited = new Array(9).fill(false);
+      let socialQueue = [];
+      let socialInQ = new Array(9).fill(false);
+      let socialDeg = 0;
+      let socialPhase = 0;
+      let socialFoundCount = 0;
+
+      const socialRender = (highlightLevel) => {
+        const cls = SOCIAL_NAMES.map((_, i) => {
+          if (i === 0) return "active"; // You = always rose
+          if (socialVisited[i]) return "found"; // visited = green
+          if (socialInQ[i]) return "hi"; // in queue = orange
+          return "def";
+        });
+        buildCells("socialCells", SOCIAL_NAMES, cls);
+        document.getElementById("socialDeg").textContent = socialDeg;
+        document.getElementById("socialFound").textContent = socialFoundCount;
+      };
+
+      const socialStep = () => {
+        if (socialPhase === 0) {
+          // Init: mark You as visited, enqueue neighbors (degree 1)
+          socialVisited[0] = true;
+          SOCIAL_ADJ[0].forEach((n) => {
+            socialQueue.push(n);
+            socialInQ[n] = true;
+          });
+          socialPhase++;
+          socialDeg = 1;
+          socialRender();
+          document.getElementById("socialStatus").innerHTML =
+            "Level 1 — Direct friends: <span>" +
+            SOCIAL_ADJ[0].map((i) => SOCIAL_NAMES[i]).join(", ") +
+            "</span>";
+          return;
+        }
+
+        if (socialPhase === 1) {
+          // Process all level-1 nodes, collect level-2
+          let nextQueue = [];
+          socialQueue.forEach((u) => {
+            socialVisited[u] = true;
+            socialInQ[u] = false;
+            socialFoundCount++;
+            SOCIAL_ADJ[u].forEach((v) => {
+              if (!socialVisited[v] && !socialInQ[v]) {
+                nextQueue.push(v);
+                socialInQ[v] = true;
+              }
+            });
+          });
+          socialQueue = nextQueue;
+          socialPhase++;
+          socialDeg = 2;
+          socialRender();
+          document.getElementById("socialStatus").innerHTML =
+            '2nd degree — "People you may know": <span>' +
+            nextQueue.map((i) => SOCIAL_NAMES[i]).join(", ") +
+            "</span>";
+          return;
+        }
+
+        if (socialPhase === 2) {
+          // Process level-2
+          socialQueue.forEach((u) => {
+            socialVisited[u] = true;
+            socialInQ[u] = false;
+            socialFoundCount++;
+          });
+          socialQueue = [];
+          socialPhase++;
+          socialRender();
+          document.getElementById("socialStatus").innerHTML =
+            "✅ BFS done! Found <span>" +
+            socialFoundCount +
+            "</span> people across 2 degrees of separation.";
+          return;
+        }
+
+        socialReset();
+      };
+
+      const socialReset = () => {
+        socialVisited = new Array(9).fill(false);
+        socialQueue = [];
+        socialInQ = new Array(9).fill(false);
+        socialDeg = 0;
+        socialPhase = 0;
+        socialFoundCount = 0;
+        buildCells(
+          "socialCells",
+          SOCIAL_NAMES,
+          SOCIAL_NAMES.map((_, i) => (i === 0 ? "active" : "def")),
+        );
+        document.getElementById("socialStatus").innerHTML =
+          'Starting from "You" — explore friend network';
+        document.getElementById("socialDeg").textContent = "0";
+        document.getElementById("socialFound").textContent = "0";
+      };
+
+      socialReset();
+
+      // ══════════════════════════════════════════
+      //  3. WEB CRAWLER — DFS
+      // ══════════════════════════════════════════
+
+      // Pages as nodes, links as edges (directed)
+      const PAGES = [
+        "Home",
+        "About",
+        "Blog",
+        "Post1",
+        "Post2",
+        "Contact",
+        "Services",
+        "FAQ",
+        "Portfolio",
+        "Team",
+      ];
+      // DFS order from Home (index 0)
+      const DFS_ORDER = [0, 1, 7, 2, 3, 4, 5, 8, 9, 6];
+      // Parent for each (to show depth)
+      const DFS_DEPTH = [0, 1, 1, 2, 2, 1, 1, 2, 1, 2];
+
+      let crawlIdx = 0;
+      let crawlVisited = [];
+      let crawlAutoTmr = null;
+
+      const crawlRender = (activeIdx) => {
+        const cls = PAGES.map((_, i) => {
+          if (i === activeIdx) return "active";
+          if (crawlVisited.includes(i)) return "found";
+          return "def";
+        });
+        buildCells("crawlCells", PAGES, cls);
+        document.getElementById("crawlCount").textContent = crawlVisited.length;
+      };
+
+      const crawlStep = () => {
+        if (crawlIdx >= DFS_ORDER.length) {
+          document.getElementById("crawlStatus").innerHTML =
+            "✅ DFS complete — all <span>" +
+            crawlVisited.length +
+            "</span> pages crawled!";
+          crawlRender(-1);
+          return;
+        }
+
+        const node = DFS_ORDER[crawlIdx];
+        const depth = DFS_DEPTH[crawlIdx];
+        crawlVisited.push(node);
+        crawlRender(node);
+
+        document.getElementById("crawlStatus").innerHTML =
+          "Crawled: <span>" +
+          PAGES[node] +
+          "</span> (depth " +
+          depth +
+          ") — DFS pushes to stack, follows deepest link first";
+        document.getElementById("crawlDepth").textContent = depth;
+
+        crawlIdx++;
+      };
+
+      const crawlAuto = () => {
+        clearTimeout(crawlAutoTmr);
+        const next = () => {
+          if (crawlIdx >= DFS_ORDER.length) return;
+          crawlStep();
+          crawlAutoTmr = setTimeout(next, 550);
+        };
+        next();
+      };
+
+      const crawlReset = () => {
+        clearTimeout(crawlAutoTmr);
+        crawlIdx = 0;
+        crawlVisited = [];
+        crawlRender(-1);
+        document.getElementById("crawlStatus").innerHTML =
+          "DFS from homepage — follow links depth-first";
+        document.getElementById("crawlDepth").textContent = "0";
+        document.getElementById("crawlCount").textContent = "0";
+      };
+
+      crawlReset();
+
+      // ══════════════════════════════════════════
+      //  4. TOPOLOGICAL SORT — KAHN'S ALGORITHM
+      //  Courses as nodes, prerequisites as edges
+      // ══════════════════════════════════════════
+
+      // Courses: 0=Math, 1=CS101, 2=DS, 3=Algo, 4=ML, 5=AI, 6=Capstone
+      const COURSES = ["Math", "CS101", "DS", "Algo", "ML", "AI", "Cap"];
+      // Edges: [from, to] — from must be taken before to
+      const TOPO_EDGES = [
+        [0, 1],
+        [0, 2],
+        [1, 2],
+        [1, 3],
+        [2, 3],
+        [2, 4],
+        [3, 5],
+        [4, 5],
+        [5, 6],
+      ];
+
+      // Compute in-degrees
+      let topoInDeg = new Array(7).fill(0);
+      TOPO_EDGES.forEach(([, v]) => topoInDeg[v]++);
+
+      let topoQueue = []; // nodes with in-degree 0
+      let topoResult = []; // sorted order
+      let topoRemAdj = TOPO_EDGES.map((e) => [...e]); // mutable copy of edges
+      let topoCurInDeg = [...topoInDeg];
+      let topoDone = false;
+
+      // Init queue with zero in-degree nodes
+      const topoInitQueue = () => {
+        topoQueue = [];
+        for (let i = 0; i < 7; i++) {
+          if (topoCurInDeg[i] === 0 && !topoResult.includes(i))
+            topoQueue.push(i);
+        }
+      };
+
+      const topoRender = () => {
+        // Available courses (in queue)
+        buildCells(
+          "topoQueue",
+          topoQueue.map((i) => COURSES[i]),
+          topoQueue.map(() => "hi"),
+        );
+        // Sorted result so far
+        buildCells(
+          "topoResult",
+          topoResult.map((i) => COURSES[i]),
+          topoResult.map(() => "found"),
+        );
+      };
+
+      const topoStep = () => {
+        if (topoDone) {
+          topoReset();
+          return;
+        }
+
+        if (topoQueue.length === 0) {
+          topoInitQueue();
+          if (topoQueue.length === 0) {
+            document.getElementById("topoStatus").innerHTML =
+              "✅ All courses ordered — valid plan: " +
+              topoResult.map((i) => COURSES[i]).join(" → ");
+            topoDone = true;
+            topoRender();
+            return;
+          }
+        }
+
+        // Take front of queue
+        const u = topoQueue.shift();
+        topoResult.push(u);
+
+        // Reduce in-degree of all neighbors
+        const freed = [];
+        TOPO_EDGES.forEach(([from, to]) => {
+          if (from === u) {
+            topoCurInDeg[to]--;
+            if (topoCurInDeg[to] === 0) {
+              topoQueue.push(to);
+              freed.push(COURSES[to]);
+            }
+          }
+        });
+
+        topoRender();
+
+        const freedStr =
+          freed.length > 0
+            ? " — unlocked: <span>" + freed.join(", ") + "</span>"
+            : "";
+        document.getElementById("topoStatus").innerHTML =
+          "Added <span>" + COURSES[u] + "</span> to order" + freedStr;
+
+        if (topoResult.length === 7) {
+          topoDone = true;
+          document.getElementById("topoStatus").innerHTML =
+            "✅ Done! Valid order: " +
+            topoResult.map((i) => COURSES[i]).join(" → ");
+        }
+      };
+
+      const topoReset = () => {
+        topoCurInDeg = [...topoInDeg];
+        topoQueue = [];
+        topoResult = [];
+        topoDone = false;
+        topoInitQueue();
+        topoRender();
+        document.getElementById("topoStatus").innerHTML =
+          "Kahn's algorithm — process nodes with no prerequisites first";
+      };
+
+      topoReset();
+
+      // ══════════════════════════════════════════
+      //  5. NETWORK FLOW — FORD-FULKERSON
+      //  Simple 6-node flow network S→A→B→T + S→C→D→T
+      // ══════════════════════════════════════════
+
+      // Nodes: 0=S, 1=A, 2=B, 3=C, 4=D, 5=T
+      const FLOW_POS = [
+        { x: 25, y: 70, lbl: "S" },
+        { x: 110, y: 30, lbl: "A" },
+        { x: 200, y: 30, lbl: "B" },
+        { x: 110, y: 110, lbl: "C" },
+        { x: 200, y: 110, lbl: "D" },
+        { x: 280, y: 70, lbl: "T" },
+      ];
+
+      // Edges with capacity and current flow
+      // Each: {u, v, cap, flow}
+      let flowEdges = [
+        { u: 0, v: 1, cap: 10, flow: 0 },
+        { u: 0, v: 3, cap: 10, flow: 0 },
+        { u: 1, v: 2, cap: 10, flow: 0 },
+        { u: 2, v: 5, cap: 10, flow: 0 },
+        { u: 3, v: 4, cap: 10, flow: 0 },
+        { u: 4, v: 5, cap: 10, flow: 0 },
+        { u: 1, v: 4, cap: 5, flow: 0 }, // cross edge
+      ];
+
+      const FLOW_PATHS = [
+        {
+          path: [0, 1, 2, 5],
+          bottleneck: 7,
+          msg: "Path S→A→B→T — bottleneck = 7, send 7 units",
+        },
+        {
+          path: [0, 3, 4, 5],
+          bottleneck: 5,
+          msg: "Path S→C→D→T — bottleneck = 5, send 5 units",
+        },
+        {
+          path: [0, 1, 4, 5],
+          bottleneck: 3,
+          msg: "Path S→A→D→T — bottleneck = 3, send 3 units",
+        },
+      ];
+
+      let flowPhase = 0;
+      let flowTotal = 0;
+
+      const drawFlowGraph = (activePath = []) => {
+        const svg = document.getElementById("flowSvg");
+        svg.innerHTML = "";
+
+        flowEdges.forEach((e) => {
+          const pu = FLOW_POS[e.u],
+            pv = FLOW_POS[e.v];
+          const isActive =
+            activePath.includes(e.u) &&
+            activePath.includes(e.v) &&
+            Math.abs(activePath.indexOf(e.u) - activePath.indexOf(e.v)) === 1;
+          drawEdge(
+            svg,
+            pu.x,
+            pu.y,
+            pv.x,
+            pv.y,
+            isActive ? "#f43f5e" : e.flow > 0 ? "#10b981" : "#3a3a3a",
+            isActive ? 3 : 2,
+          );
+          drawEdgeLabel(
+            svg,
+            pu.x,
+            pu.y,
+            pv.x,
+            pv.y,
+            e.flow + "/" + e.cap,
+            e.flow > 0 ? "#10b981" : "#666",
+          );
+        });
+
+        FLOW_POS.forEach((p, i) => {
+          let fill;
+          if (i === 0 || i === 5)
+            fill = "#f43f5e"; // source/sink = rose
+          else if (activePath.includes(i))
+            fill = "#f59e0b"; // on current path = orange
+          else fill = "#1e1e1e";
+          drawNode(svg, p.x, p.y, 18, fill, p.lbl);
+        });
+      };
+
+      const flowStep = () => {
+        if (flowPhase >= FLOW_PATHS.length) {
+          document.getElementById("flowStatus").innerHTML =
+            "✅ Max flow = <span>" +
+            flowTotal +
+            "</span> — no more augmenting paths exist!";
+          return;
+        }
+
+        const fp = FLOW_PATHS[flowPhase];
+        // Update edge flows along the path
+        for (let i = 0; i < fp.path.length - 1; i++) {
+          const u = fp.path[i],
+            v = fp.path[i + 1];
+          const e = flowEdges.find((e) => e.u === u && e.v === v);
+          if (e) e.flow = Math.min(e.flow + fp.bottleneck, e.cap);
+        }
+
+        flowTotal += fp.bottleneck;
+        flowPhase++;
+
+        drawFlowGraph(fp.path);
+        document.getElementById("flowStatus").innerHTML = fp.msg;
+        document.getElementById("flowTotal").textContent = flowTotal;
+        document.getElementById("flowPaths").textContent = flowPhase;
+      };
+
+      const flowReset = () => {
+        flowEdges = flowEdges.map((e) => ({ ...e, flow: 0 }));
+        flowPhase = 0;
+        flowTotal = 0;
+        drawFlowGraph();
+        document.getElementById("flowStatus").innerHTML =
+          "Find augmenting paths from S to T — Ford-Fulkerson";
+        document.getElementById("flowTotal").textContent = "0";
+        document.getElementById("flowPaths").textContent = "0";
+      };
+
+      flowReset();
+
+      // ══════════════════════════════════════════
+      //  6. MINIMUM SPANNING TREE — KRUSKAL'S
+      //  5-node graph, find MST by adding cheapest non-cycle edges
+      // ══════════════════════════════════════════
+
+      // Nodes: A B C D E
+      const MST_POS = [
+        { x: 50, y: 80, lbl: "A" },
+        { x: 150, y: 30, lbl: "B" },
+        { x: 250, y: 80, lbl: "C" },
+        { x: 150, y: 130, lbl: "D" },
+        { x: 250, y: 130, lbl: "E" },
+      ];
+
+      // All edges sorted by weight (Kruskal's needs sorted edges)
+      const ALL_MST_EDGES = [
+        { u: 0, v: 3, w: 1 }, // A-D: 1  ← cheapest
+        { u: 1, v: 3, w: 2 }, // B-D: 2
+        { u: 0, v: 1, w: 4 }, // A-B: 4
+        { u: 1, v: 2, w: 3 }, // B-C: 3
+        { u: 2, v: 4, w: 2 }, // C-E: 2
+        { u: 3, v: 4, w: 5 }, // D-E: 5 (would form cycle — skip)
+        { u: 0, v: 2, w: 8 }, // A-C: 8 (skip)
+      ];
+
+      // Kruskal's steps (pre-computed: only valid edges added)
+      const MST_STEPS = [
+        {
+          u: 0,
+          v: 3,
+          w: 1,
+          add: true,
+          msg: "A—D (weight 1) — cheapest edge, no cycle → ADD ✓",
+        },
+        {
+          u: 2,
+          v: 4,
+          w: 2,
+          add: true,
+          msg: "C—E (weight 2) — no cycle → ADD ✓",
+        },
+        {
+          u: 1,
+          v: 3,
+          w: 2,
+          add: true,
+          msg: "B—D (weight 2) — no cycle → ADD ✓",
+        },
+        {
+          u: 1,
+          v: 2,
+          w: 3,
+          add: true,
+          msg: "B—C (weight 3) — no cycle → ADD ✓ — MST complete!",
+        },
+        {
+          u: 0,
+          v: 1,
+          w: 4,
+          add: false,
+          msg: "A—B (weight 4) — would form cycle → SKIP ✗",
+        },
+        {
+          u: 3,
+          v: 4,
+          w: 5,
+          add: false,
+          msg: "D—E (weight 5) — would form cycle → SKIP ✗",
+        },
+      ];
+
+      let mstAdded = []; // edges added to MST
+      let mstPhase = 0;
+      let mstCostTotal = 0;
+
+      const drawMstGraph = (highlightEdge = null) => {
+        const svg = document.getElementById("mstSvg");
+        svg.innerHTML = "";
+
+        // Draw all candidate edges first (grey)
+        ALL_MST_EDGES.forEach((e) => {
+          const pu = MST_POS[e.u],
+            pv = MST_POS[e.v];
+          drawEdge(svg, pu.x, pu.y, pv.x, pv.y, "#2a2a2a", 1.5, true);
+          drawEdgeLabel(svg, pu.x, pu.y, pv.x, pv.y, e.w, "#444");
+        });
+
+        // Draw MST edges on top (green)
+        mstAdded.forEach((e) => {
+          const pu = MST_POS[e.u],
+            pv = MST_POS[e.v];
+          drawEdge(svg, pu.x, pu.y, pv.x, pv.y, "#10b981", 3);
+          drawEdgeLabel(svg, pu.x, pu.y, pv.x, pv.y, e.w, "#10b981");
+        });
+
+        // Draw highlighted (current candidate) edge
+        if (highlightEdge) {
+          const pu = MST_POS[highlightEdge.u],
+            pv = MST_POS[highlightEdge.v];
+          const col = highlightEdge.add ? "#f43f5e" : "#ef4444";
+          drawEdge(svg, pu.x, pu.y, pv.x, pv.y, col, 2.5);
+          drawEdgeLabel(svg, pu.x, pu.y, pv.x, pv.y, highlightEdge.w, col);
+        }
+
+        // Draw nodes — green if in MST, else default
+        const inMst = new Set();
+        mstAdded.forEach((e) => {
+          inMst.add(e.u);
+          inMst.add(e.v);
+        });
+
+        MST_POS.forEach((p, i) => {
+          const fill = inMst.has(i) ? "#10b981" : "#1e1e1e";
+          drawNode(svg, p.x, p.y, 18, fill, p.lbl);
+        });
+      };
+
+      const mstStep = () => {
+        if (mstPhase >= MST_STEPS.length) {
+          document.getElementById("mstStatus").innerHTML =
+            "✅ MST complete — total cost = <span>" + mstCostTotal + "</span>";
+          return;
+        }
+
+        const step = MST_STEPS[mstPhase];
+        if (step.add) {
+          mstAdded.push(step);
+          mstCostTotal += step.w;
+        }
+        mstPhase++;
+
+        drawMstGraph(step);
+        document.getElementById("mstStatus").innerHTML = step.msg;
+        document.getElementById("mstCost").textContent = mstCostTotal;
+        document.getElementById("mstEdges").textContent = mstAdded.length;
+
+        if (mstAdded.length === 4) {
+          // V-1 = 4 edges for 5 nodes
+          document.getElementById("mstStatus").innerHTML =
+            "✅ MST complete! Total cost = <span>" +
+            mstCostTotal +
+            "</span> — minimum to connect all cities";
+        }
+      };
+
+      const mstReset = () => {
+        mstAdded = [];
+        mstPhase = 0;
+        mstCostTotal = 0;
+        drawMstGraph();
+        document.getElementById("mstStatus").innerHTML =
+          "Sort edges by weight — add cheapest non-cycle edge";
+        document.getElementById("mstCost").textContent = "0";
+        document.getElementById("mstEdges").textContent = "0";
+      };
+
+      mstReset();
+
+      // ── MODAL ──────────────────────────────────────────
+
+      const modal = document.getElementById("modal");
+      document
+        .getElementById("cancelBtn")
+        .addEventListener("click", () => modal.classList.remove("open"));
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) modal.classList.remove("open");
+      });
+    </script>
+  </body>
+</html>

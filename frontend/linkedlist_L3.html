@@ -1,0 +1,2557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linked List — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        --dark-bg: #0a0a0a;
+        --card-bg: #111111;
+        --card-bg2: #161616;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #222222;
+        --nav-bg: rgba(10, 10, 10, 0.95);
+        --code-bg: #0d1117;
+        --glow-green: rgba(16, 185, 129, 0.15);
+        --glow-cyan: rgba(6, 182, 212, 0.15);
+        --glow-purple: rgba(139, 92, 246, 0.15);
+      }
+      [data-theme="light"] {
+        --dark-bg: #f0f4f8;
+        --card-bg: #ffffff;
+        --card-bg2: #f8fafc;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border-color: #e2e8f0;
+        --nav-bg: rgba(240, 244, 248, 0.95);
+        --code-bg: #f1f5f9;
+        --glow-green: rgba(16, 185, 129, 0.08);
+        --glow-cyan: rgba(6, 182, 212, 0.08);
+        --glow-purple: rgba(139, 92, 246, 0.08);
+      }
+      [data-theme="blue"] {
+        --dark-bg: #010e1a;
+        --card-bg: #0a1628;
+        --card-bg2: #0d1d35;
+        --text-primary: #e2f0ff;
+        --text-secondary: #7ba3c8;
+        --border-color: #1a3050;
+        --nav-bg: rgba(1, 14, 26, 0.95);
+        --code-bg: #010e1a;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition:
+          background 0.3s,
+          color 0.3s;
+        overflow-x: hidden;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        height: 60px;
+      }
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: inherit;
+      }
+      .logo-icon {
+        width: 35px;
+        height: 35px;
+        background: transparent;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: #fff;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      .nav-links a:hover {
+        color: var(--primary-green);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .theme-toggle {
+        background: var(--border-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+      }
+      .theme-toggle:hover {
+        border-color: var(--primary-green);
+      }
+      .theme-toggle svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* hamburger */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+      }
+      .hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--text-primary);
+        border-radius: 2px;
+        transition: all 0.3s;
+      }
+      .mobile-menu {
+        display: none;
+        flex-direction: column;
+        background: var(--nav-bg);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid var(--border-color);
+      }
+      .mobile-menu.open {
+        display: flex;
+      }
+      .mobile-menu a {
+        padding: 0.8rem 2rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      /* ── HERO ── */
+      .hero {
+        padding: 120px 2rem 60px;
+        max-width: 1400px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 30px;
+        padding: 0.4rem 1.2rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--primary-green);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+      }
+      .hero h1 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+      .hero h1 .highlight {
+        background: linear-gradient(
+          135deg,
+          var(--primary-cyan),
+          var(--primary-green)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero p {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+      }
+      .breadcrumb-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        justify-content: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .breadcrumb-bar a {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+      .breadcrumb-bar a:hover {
+        color: var(--primary-cyan);
+      }
+      .breadcrumb-bar .sep {
+        opacity: 0.4;
+      }
+
+      /* ── SECTION ── */
+      .section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+      .section-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .section-title .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+      }
+      .section-sub {
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+        font-size: 1rem;
+      }
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border-color),
+          transparent
+        );
+        margin: 3rem 0;
+      }
+
+      /* ── APP GRID ── */
+      .app-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 1.5rem;
+      }
+      .app-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition:
+          transform 0.3s,
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+      .app-card:hover {
+        transform: translateY(-4px);
+      }
+      .app-card.green:hover {
+        border-color: var(--primary-green);
+        box-shadow: 0 8px 40px rgba(16, 185, 129, 0.12);
+      }
+      .app-card.cyan:hover {
+        border-color: var(--primary-cyan);
+        box-shadow: 0 8px 40px rgba(6, 182, 212, 0.12);
+      }
+      .app-card.purple:hover {
+        border-color: var(--primary-purple);
+        box-shadow: 0 8px 40px rgba(139, 92, 246, 0.12);
+      }
+      .app-card.orange:hover {
+        border-color: var(--primary-orange);
+        box-shadow: 0 8px 40px rgba(245, 158, 11, 0.12);
+      }
+      .app-card.red:hover {
+        border-color: var(--primary-red);
+        box-shadow: 0 8px 40px rgba(239, 68, 68, 0.12);
+      }
+      .card-header {
+        padding: 1.5rem 1.5rem 1rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+      .card-icon.green {
+        background: rgba(16, 185, 129, 0.15);
+      }
+      .card-icon.cyan {
+        background: rgba(6, 182, 212, 0.15);
+      }
+      .card-icon.purple {
+        background: rgba(139, 92, 246, 0.15);
+      }
+      .card-icon.orange {
+        background: rgba(245, 158, 11, 0.15);
+      }
+      .card-icon.red {
+        background: rgba(239, 68, 68, 0.15);
+      }
+      .card-title-wrap h3 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+      }
+      .card-title-wrap p {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      .card-demo {
+        padding: 0 1.5rem 1.5rem;
+      }
+      .demo-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-secondary);
+        margin-bottom: 0.7rem;
+      }
+
+      /* shared demo chrome */
+      .demo-box {
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 1rem;
+      }
+      .demo-btn {
+        padding: 0.32rem 0.75rem;
+        border-radius: 7px;
+        border: 1px solid var(--border-color);
+        background: transparent;
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "Inter", sans-serif;
+      }
+      .demo-btn:hover {
+        border-color: var(--primary-cyan);
+        color: var(--primary-cyan);
+      }
+      .demo-btn.active-btn {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: var(--primary-green);
+        color: var(--primary-green);
+      }
+      .demo-btn.del-btn {
+        background: rgba(239, 68, 68, 0.08);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: var(--primary-red);
+      }
+      .demo-btn.del-btn:hover {
+        background: rgba(239, 68, 68, 0.18);
+      }
+      .demo-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .demo-btn-row {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+      }
+      .peek-bar {
+        font-size: 0.73rem;
+        color: var(--text-secondary);
+        margin-top: 0.65rem;
+      }
+      .peek-bar span {
+        font-weight: 700;
+      }
+
+      /* ─── 1. MUSIC PLAYLIST (Circular LL) ─── */
+      .playlist-track {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.38rem 0.7rem;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid transparent;
+        transition: all 0.25s;
+        margin-bottom: 0.3rem;
+      }
+      .playlist-track.playing {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.35);
+        color: var(--primary-green);
+      }
+      .playlist-track.played {
+        opacity: 0.45;
+      }
+      .track-num {
+        width: 18px;
+        text-align: right;
+        font-size: 0.68rem;
+        color: var(--text-secondary);
+      }
+      .track-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border-color);
+        flex-shrink: 0;
+      }
+      .playlist-track.playing .track-dot {
+        background: var(--primary-green);
+        box-shadow: 0 0 6px var(--primary-green);
+        animation: pulse-dot 1.2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: scale(0.7);
+        }
+      }
+      .track-arrow {
+        margin-left: auto;
+        font-size: 0.65rem;
+        opacity: 0.4;
+      }
+
+      /* ─── 2. BROWSER HISTORY (Doubly LL) ─── */
+      .browser-url-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+      }
+      .browser-dots {
+        display: flex;
+        gap: 0.3rem;
+      }
+      .browser-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .url-display {
+        flex: 1;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.3rem 0.7rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+      .history-node {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.32rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.77rem;
+        font-family: "JetBrains Mono", monospace;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid transparent;
+        transition: all 0.25s;
+        margin-bottom: 0.28rem;
+      }
+      .history-node.curr {
+        background: rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.35);
+        color: var(--primary-cyan);
+      }
+      .history-node .arrow {
+        font-size: 0.65rem;
+        color: var(--primary-orange);
+        opacity: 0.7;
+      }
+      .history-node .back-arrow {
+        font-size: 0.65rem;
+        color: var(--primary-cyan);
+        opacity: 0.7;
+      }
+
+      /* ─── 3. IMAGE CAROUSEL (Circular LL) ─── */
+      .carousel-frame {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 1.2rem;
+        text-align: center;
+        margin-bottom: 0.8rem;
+        min-height: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.35s;
+      }
+      .carousel-emoji {
+        font-size: 2.4rem;
+        transition: all 0.3s;
+      }
+      .carousel-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .carousel-caption {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+      .carousel-dots {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: center;
+        margin-bottom: 0.7rem;
+      }
+      .cdot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border-color);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+      .cdot.active {
+        background: var(--primary-cyan);
+        width: 20px;
+        border-radius: 4px;
+      }
+      .node-chain {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        overflow-x: auto;
+        padding: 0.3rem 0;
+        flex-wrap: nowrap;
+      }
+      .chain-node {
+        padding: 0.2rem 0.55rem;
+        border-radius: 6px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.74rem;
+        font-weight: 700;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.04);
+        white-space: nowrap;
+        transition: all 0.25s;
+        flex-shrink: 0;
+      }
+      .chain-node.cur {
+        background: rgba(6, 182, 212, 0.15);
+        border-color: var(--primary-cyan);
+        color: var(--primary-cyan);
+      }
+      .chain-arrow {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+      .chain-loop {
+        font-size: 0.75rem;
+        color: var(--primary-green);
+        font-family: "JetBrains Mono", monospace;
+        flex-shrink: 0;
+      }
+
+      /* ─── 4. LRU CACHE (Doubly LL + concept) ─── */
+      .lru-cache-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.28rem;
+        margin-bottom: 0.7rem;
+      }
+      .lru-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.38rem 0.75rem;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        border: 1px solid var(--border-color);
+        background: rgba(255, 255, 255, 0.03);
+        transition: all 0.3s;
+      }
+      .lru-item.most-recent {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.35);
+        color: var(--primary-green);
+      }
+      .lru-item.evicted {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: var(--primary-red);
+        animation: fadeEvict 0.5s ease forwards;
+      }
+      @keyframes fadeEvict {
+        to {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+      }
+      .lru-tag {
+        margin-left: auto;
+        font-size: 0.65rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-weight: 700;
+      }
+      .lru-tag.head-tag {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--primary-green);
+      }
+      .lru-tag.tail-tag {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--primary-red);
+      }
+      .lru-tag.evict-soon {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--primary-orange);
+      }
+      .lru-input-row {
+        display: flex;
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+      }
+      .lru-input {
+        flex: 1;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.38rem 0.7rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.83rem;
+        color: var(--text-primary);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .lru-input:focus {
+        border-color: var(--primary-cyan);
+      }
+      .lru-get-btn {
+        padding: 0.38rem 0.9rem;
+        border-radius: 6px;
+        border: none;
+        background: var(--primary-cyan);
+        color: #000;
+        font-weight: 700;
+        font-size: 0.77rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .lru-put-btn {
+        padding: 0.38rem 0.9rem;
+        border-radius: 6px;
+        border: none;
+        background: var(--primary-green);
+        color: #000;
+        font-weight: 700;
+        font-size: 0.77rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      /* ─── 5. UNDO QUEUE / TASK MANAGER (Singly LL) ─── */
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.28rem;
+        margin-bottom: 0.7rem;
+        max-height: 130px;
+        overflow: hidden;
+      }
+      .task-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.38rem 0.7rem;
+        border-radius: 7px;
+        font-size: 0.78rem;
+        font-family: "JetBrains Mono", monospace;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s;
+      }
+      .task-item.head-task {
+        background: rgba(139, 92, 246, 0.1);
+        border-color: rgba(139, 92, 246, 0.35);
+        color: var(--primary-purple);
+      }
+      .task-item .next-ptr {
+        margin-left: auto;
+        font-size: 0.65rem;
+        color: var(--text-secondary);
+        opacity: 0.6;
+      }
+      .task-ptr {
+        font-size: 0.72rem;
+        color: var(--primary-green);
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 0.4rem;
+      }
+
+      /* ─── 6. TRAIN ROUTE (Singly LL) ─── */
+      .train-route {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.2rem;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        margin-bottom: 0.65rem;
+      }
+      .station-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        flex-shrink: 0;
+      }
+      .station {
+        padding: 0.3rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.77rem;
+        font-weight: 700;
+        font-family: "JetBrains Mono", monospace;
+        border: 1px solid;
+        transition: all 0.3s;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .station.origin {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: var(--primary-green);
+        color: var(--primary-green);
+      }
+      .station.stop {
+        background: rgba(6, 182, 212, 0.1);
+        border-color: rgba(6, 182, 212, 0.35);
+        color: var(--primary-cyan);
+      }
+      .station.selected {
+        background: rgba(245, 158, 11, 0.2);
+        border-color: var(--primary-orange);
+        color: var(--primary-orange);
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+      }
+      .station.removed {
+        animation: stationRemove 0.4s ease forwards;
+      }
+      @keyframes stationRemove {
+        to {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+      }
+      .track-line {
+        width: 20px;
+        height: 2px;
+        background: var(--border-color);
+      }
+      .train-icon {
+        font-size: 1rem;
+      }
+      .train-input-row {
+        display: flex;
+        gap: 0.4rem;
+        margin-bottom: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .train-input {
+        width: 110px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 0.36rem 0.6rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--text-primary);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .train-input:focus {
+        border-color: var(--primary-green);
+      }
+
+      /* ── COMPLEXITY TABLE ── */
+      .table-wrap {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .complexity-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      .complexity-table th {
+        background: var(--code-bg);
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+      }
+      .complexity-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .complexity-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .complexity-table .op {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .complexity-table .time {
+        color: var(--primary-green);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .complexity-table .space {
+        color: var(--primary-cyan);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .complexity-table .slow {
+        color: var(--primary-orange);
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+      }
+      .table-scroll {
+        overflow-x: auto;
+        border-radius: 14px;
+      }
+
+      /* ── PROS / CONS ── */
+      .procon-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .procon-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .procon-card.pros {
+        border-color: rgba(16, 185, 129, 0.2);
+      }
+      .procon-card.cons {
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+      .procon-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .procon-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding: 0.7rem;
+        border-radius: 8px;
+        transition: background 0.2s;
+      }
+      .procon-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .procon-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .procon-dot.pro {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--primary-green);
+      }
+      .procon-dot.con {
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--primary-red);
+      }
+      .procon-text h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+      .procon-text p {
+        font-size: 0.82rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      /* ── WHEN TO USE ── */
+      .when-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      .when-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .when-card.use {
+        border-color: rgba(16, 185, 129, 0.2);
+      }
+      .when-card.avoid {
+        border-color: rgba(239, 68, 68, 0.2);
+      }
+      .when-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .when-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 0.9rem;
+      }
+      .when-icon {
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .when-text h4 {
+        font-size: 0.88rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+      }
+      .when-text p {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+      .when-code {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.72rem;
+        background: var(--code-bg);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        color: var(--primary-cyan);
+      }
+
+      /* ── CTA ── */
+      .cta-section {
+        padding: 5rem 2rem;
+        text-align: center;
+      }
+      .cta-inner {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      .cta-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--primary-cyan);
+        margin-bottom: 1rem;
+      }
+      .cta-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        line-height: 1.15;
+        margin-bottom: 1rem;
+      }
+      .cta-title .glow {
+        color: var(--primary-green);
+        text-shadow: 0 0 40px rgba(16, 185, 129, 0.4);
+      }
+      .cta-sub {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+      }
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--primary-cyan)
+        );
+        color: #000;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 1.05rem;
+        font-weight: 800;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        cursor: pointer;
+      }
+      .cta-btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          var(--primary-cyan),
+          var(--primary-green)
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .cta-btn:hover::before {
+        opacity: 1;
+      }
+      .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+      }
+      .cta-btn span {
+        position: relative;
+        z-index: 1;
+      }
+      .cta-btn .arrow {
+        font-size: 1.3rem;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s;
+      }
+      .cta-btn:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      /* ── LL CTA VISUAL ── */
+      .cta-visual {
+        margin: 2.5rem auto;
+        width: 200px;
+        position: relative;
+      }
+      .ll-cta-chain {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+      }
+      .cta-ll-node {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        animation: floatNode 3s ease-in-out infinite;
+      }
+      .cta-ll-node:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .cta-ll-node:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      .cta-ll-node:nth-child(4) {
+        animation-delay: 0.6s;
+      }
+      .cta-ll-node:nth-child(5) {
+        animation-delay: 0.8s;
+      }
+      @keyframes floatNode {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(8px);
+        }
+      }
+      .cta-node-box {
+        display: flex;
+        border-radius: 7px;
+        overflow: hidden;
+        border: 1px solid;
+      }
+      .cta-node-data {
+        padding: 6px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      .cta-node-next {
+        padding: 6px 8px;
+        font-size: 0.7rem;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      .cta-node-ptr {
+        font-size: 0.8rem;
+        opacity: 0.5;
+        margin-top: 2px;
+      }
+      .cta-visual-label {
+        font-size: 0.65rem;
+        text-align: center;
+        color: var(--text-secondary);
+        margin-top: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .procon-grid,
+        .when-grid {
+          grid-template-columns: 1fr;
+        }
+        .app-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .section {
+          padding: 2rem 1rem;
+        }
+        .hero {
+          padding: 100px 1rem 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          </div>
+          <span>CODEANIME</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+          </button>
+          <button class="theme-toggle" id="themeToggle">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="topics.html">Topics</a>
+        <a href="prerequisite.html">Prerequisites</a>
+        <a href="codeeditor.html">Code Editor</a>
+      </div>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+      <div class="breadcrumb-bar">
+        <a href="topics.html">Topics</a><span class="sep">›</span>
+        <a href="linked_list.html">Linked List</a><span class="sep">›</span>
+        <span>Level 3 — Real World</span>
+      </div>
+      <div class="hero-badge">🔗 Level 3 of 3</div>
+      <h1>Linked Lists in the <span class="highlight">Real World</span></h1>
+      <p>
+        Music players, browsers, caches, GPS routes — linked lists are quietly
+        running all of them. Here's exactly how, with live demos.
+      </p>
+    </div>
+
+    <!-- ══════════════════════════════════
+     SECTION 1: REAL WORLD APPS
+══════════════════════════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(6, 182, 212, 0.15)">🌍</div>
+        Real World Applications
+      </div>
+      <p class="section-sub">
+        Six systems you interact with daily — all powered by linked list logic
+        under the hood.
+      </p>
+
+      <div class="app-grid">
+        <!-- 1. MUSIC PLAYLIST — Circular LL -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🎵</div>
+            <div class="card-title-wrap">
+              <h3>Music Playlist</h3>
+              <p>
+                Spotify, Apple Music, YouTube — playlists are circular linked
+                lists. Each song's node points to the next. Loop mode? That's
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >tail.next = head</code
+                >.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Interactive Demo — Control the playlist
+            </div>
+            <div class="demo-box">
+              <div id="playlistTracks"></div>
+              <div class="demo-btn-row" style="margin-top: 0.6rem">
+                <button class="demo-btn active-btn" onclick="playPrev()">
+                  ⏮ Prev
+                </button>
+                <button class="demo-btn active-btn" onclick="playNext()">
+                  Next ⏭
+                </button>
+                <button class="demo-btn" onclick="addSong()">+ Add Song</button>
+                <button class="demo-btn del-btn" onclick="removeSong()">
+                  ✖ Remove
+                </button>
+              </div>
+              <div class="peek-bar">
+                Playing:
+                <span id="playlist-now" style="color: var(--primary-green)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Type:
+                <span style="color: var(--primary-cyan)">Circular LL</span>
+                &nbsp;|&nbsp; Nodes:
+                <span id="playlist-count" style="color: var(--primary-orange)"
+                  >4</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. BROWSER HISTORY — Doubly LL -->
+        <div class="app-card cyan">
+          <div class="card-header">
+            <div class="card-icon cyan">🌐</div>
+            <div class="card-title-wrap">
+              <h3>Browser Back / Forward</h3>
+              <p>
+                Chrome's back and forward buttons use a doubly linked list. Each
+                page has
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >prev</code
+                >
+                and
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >next</code
+                >
+                pointers. Navigating = moving the current pointer.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Interact — Visit sites and go back/forward
+            </div>
+            <div class="demo-box">
+              <div class="browser-url-bar">
+                <div class="browser-dots">
+                  <span style="background: #ef4444"></span>
+                  <span style="background: #f59e0b"></span>
+                  <span style="background: #10b981"></span>
+                </div>
+                <div class="url-display" id="browserUrl2">google.com</div>
+              </div>
+              <div class="demo-btn-row">
+                <button
+                  class="demo-btn"
+                  id="btn-back2"
+                  onclick="browserBack2()"
+                >
+                  ← Back
+                </button>
+                <button class="demo-btn" id="btn-fwd2" onclick="browserFwd2()">
+                  Forward →
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('github.com')"
+                >
+                  github
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('leetcode.com')"
+                >
+                  leetcode
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('youtube.com')"
+                >
+                  youtube
+                </button>
+              </div>
+              <div class="demo-label" style="margin-bottom: 0.35rem">
+                Doubly LL — current node highlighted, ← prev | next →
+              </div>
+              <div id="historyNodes"></div>
+              <div class="peek-bar">
+                Prev:
+                <span id="hist-prev" style="color: var(--primary-orange)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Next:
+                <span id="hist-next" style="color: var(--primary-cyan)">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. IMAGE CAROUSEL — Circular LL -->
+        <div class="app-card purple">
+          <div class="card-header">
+            <div class="card-icon purple">🎠</div>
+            <div class="card-title-wrap">
+              <h3>Image Carousel</h3>
+              <p>
+                Every website slider — Instagram stories, landing page carousels
+                — is a circular linked list. The last image's next pointer goes
+                back to the first, making infinite looping O(1).
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Click the arrows to cycle through slides
+            </div>
+            <div class="demo-box">
+              <div class="carousel-frame" id="carouselFrame">
+                <div class="carousel-emoji" id="carouselEmoji">🏔️</div>
+                <div class="carousel-title" id="carouselTitle">Mountains</div>
+                <div class="carousel-caption" id="carouselCaption">
+                  node[0] → node[1]
+                </div>
+              </div>
+              <div class="carousel-dots" id="carouselDots"></div>
+              <div class="demo-btn-row">
+                <button class="demo-btn active-btn" onclick="carouselPrev()">
+                  ← Prev
+                </button>
+                <button class="demo-btn active-btn" onclick="carouselNext()">
+                  Next →
+                </button>
+              </div>
+              <div class="demo-label">Node chain (circular):</div>
+              <div class="node-chain" id="carouselChain"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. LRU CACHE — Doubly LL -->
+        <div class="app-card orange">
+          <div class="card-header">
+            <div class="card-icon orange">⚡</div>
+            <div class="card-title-wrap">
+              <h3>LRU Cache</h3>
+              <p>
+                Redis, CPU caches, browser cache — all use LRU eviction. A
+                doubly linked list keeps items ordered by recency.
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >get()</code
+                >
+                moves to head; when full, tail (least used) gets evicted.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 GET or PUT keys — watch eviction happen (capacity: 4)
+            </div>
+            <div class="demo-box">
+              <div class="lru-input-row">
+                <input
+                  class="lru-input"
+                  id="lru-key"
+                  type="text"
+                  placeholder="key (e.g. userA)"
+                  maxlength="8"
+                />
+                <button class="lru-get-btn" onclick="lruGet()">GET</button>
+                <button class="lru-put-btn" onclick="lruPut()">PUT</button>
+              </div>
+              <div class="demo-label" style="margin-bottom: 0.35rem">
+                Doubly LL (HEAD = most recent · TAIL = evict next)
+              </div>
+              <div id="lruList" class="lru-cache-list"></div>
+              <div class="peek-bar">
+                Cache size:
+                <span id="lru-size" style="color: var(--primary-cyan)">0</span
+                >/4 &nbsp;|&nbsp; Last action:
+                <span id="lru-action" style="color: var(--primary-orange)"
+                  >—</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. TASK QUEUE / OS SCHEDULER — Singly LL -->
+        <div class="app-card red">
+          <div class="card-header">
+            <div class="card-icon red">🖥️</div>
+            <div class="card-title-wrap">
+              <h3>OS Process Scheduler</h3>
+              <p>
+                Linux, Windows task schedulers maintain process queues as singly
+                linked lists. Each process node holds state + a next pointer.
+                Adding a process = inserting at tail. Completing = deleting
+                head.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Simulate a process queue — add and dispatch tasks
+            </div>
+            <div class="demo-box">
+              <div class="demo-btn-row">
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('render()')"
+                >
+                  + render()
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('fetchAPI()')"
+                >
+                  + fetchAPI()
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('saveFile()')"
+                >
+                  + saveFile()
+                </button>
+                <button class="demo-btn del-btn" onclick="dispatchTask()">
+                  ▶ Dispatch Head
+                </button>
+              </div>
+              <div class="task-ptr" id="task-head-ptr">HEAD → (empty)</div>
+              <div class="task-list" id="taskList"></div>
+              <div class="peek-bar">
+                Queued:
+                <span id="task-count" style="color: var(--primary-purple)"
+                  >0</span
+                >
+                &nbsp;|&nbsp; Head:
+                <span id="task-head-val" style="color: var(--primary-green)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Type:
+                <span style="color: var(--primary-cyan)">Singly LL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. TRAIN ROUTE — Singly LL -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🚆</div>
+            <div class="card-title-wrap">
+              <h3>GPS & Transit Routes</h3>
+              <p>
+                Metro rail routes, Google Maps waypoints — linked lists of stops
+                where each node contains station data and a pointer to the next
+                stop. Inserting a new stop mid-route is O(1) once positioned.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Build a train route — add, remove, and trace stops
+            </div>
+            <div class="demo-box">
+              <div class="train-input-row">
+                <input
+                  class="train-input"
+                  id="train-stop-input"
+                  type="text"
+                  placeholder="Station name"
+                  maxlength="10"
+                />
+                <button class="demo-btn active-btn" onclick="addStop()">
+                  + Add Stop
+                </button>
+                <button class="demo-btn del-btn" onclick="removeLastStop()">
+                  ✖ Remove Last
+                </button>
+              </div>
+              <div class="train-route" id="trainRoute"></div>
+              <div class="demo-btn-row">
+                <button class="demo-btn" onclick="traceRoute()">
+                  🔍 Trace Route
+                </button>
+                <button class="demo-btn" onclick="resetRoute()">↺ Reset</button>
+              </div>
+              <div class="peek-bar">
+                Stops:
+                <span id="train-count" style="color: var(--primary-green)"
+                  >2</span
+                >
+                &nbsp;|&nbsp;
+                <span id="train-status" style="color: var(--text-secondary)"
+                  >Click a station to highlight it</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════════════════
+     SECTION 2: COMPLEXITY TABLE
+══════════════════════════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(139, 92, 246, 0.15)">⚡</div>
+        Time & Space Complexity
+      </div>
+      <p class="section-sub">
+        Linked lists shine at dynamic insertion/deletion — but pay an access
+        cost. Know the tradeoffs cold.
+      </p>
+      <div class="table-scroll">
+        <div class="table-wrap">
+          <table class="complexity-table">
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Singly LL</th>
+                <th>Doubly LL</th>
+                <th>Circular LL</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="op">Insert at Head</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Redirect head pointer only
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Insert at Tail</td>
+                <td class="slow">O(n)</td>
+                <td class="time">O(1)*</td>
+                <td class="time">O(1)*</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  *O(1) with tail pointer maintained
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete at Head</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Move head to head.next
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete at Middle</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Must find node via traversal first
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete (with ptr)</td>
+                <td class="slow">O(n)</td>
+                <td class="time">O(1)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Doubly LL: use prev pointer directly
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Access by Index</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  No random access — must traverse
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Search</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Linear scan from head
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Space (total)</td>
+                <td class="space">O(n)</td>
+                <td class="space">O(n)</td>
+                <td class="space">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Doubly uses extra ptr per node
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════════════════
+     SECTION 3: PROS & CONS
+══════════════════════════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(16, 185, 129, 0.15)">⚖️</div>
+        Advantages &amp; Disadvantages
+      </div>
+      <p class="section-sub">
+        Every data structure is a tradeoff. Know when linked lists win — and
+        when they lose to arrays.
+      </p>
+      <div class="procon-grid">
+        <div class="procon-card pros">
+          <div class="procon-title" style="color: var(--primary-green)">
+            ✅ Advantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(1) insertion and deletion at head</h4>
+              <p>
+                No shifting like arrays. Prepending or removing the first node
+                just redirects a pointer.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Truly dynamic size</h4>
+              <p>
+                No pre-allocated capacity. Grows and shrinks exactly as needed —
+                no overflow risk, no wasted slots.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(1) middle insertion with a pointer</h4>
+              <p>
+                If you already have a reference to a node, inserting before or
+                after it is just pointer manipulation — no shifting needed.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Foundation for other structures</h4>
+              <p>
+                Stacks, queues, deques, adjacency lists, hash chaining — all
+                built on linked lists. Understand this, understand everything.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Efficient merging and splitting</h4>
+              <p>
+                Merge two sorted linked lists in O(n) without extra memory.
+                Split a list at any point in O(1) — just break a pointer.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="procon-card cons">
+          <div class="procon-title" style="color: var(--primary-red)">
+            ❌ Disadvantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>No random access — O(n) indexing</h4>
+              <p>
+                To reach the 10th element you must traverse nodes 1-9. Arrays
+                give you
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >arr[9]</code
+                >
+                in O(1). This is a real pain point.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Extra memory for pointers</h4>
+              <p>
+                Every node stores a pointer (8 bytes on 64-bit). A singly LL of
+                integers uses 2x memory. Doubly uses 3x compared to an array.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Poor cache performance</h4>
+              <p>
+                Array elements are contiguous in memory — the CPU can prefetch
+                them. Linked list nodes are scattered — each access is a cache
+                miss.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>No binary search</h4>
+              <p>
+                Even if the list is sorted, you can't binary search it — you
+                can't jump to the middle in O(1). Must use skip lists for that.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Reverse traversal (singly)</h4>
+              <p>
+                Singly linked lists can only go forward. Reversing requires
+                either a doubly LL or rebuilding the whole list — O(n) either
+                way.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════════════════
+     SECTION 4: WHEN TO USE
+══════════════════════════════════ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(245, 158, 11, 0.15)">🎯</div>
+        When to Use Linked List — and When to Avoid It
+      </div>
+      <p class="section-sub">
+        This is the real interview question: "Why a linked list here?" Have a
+        sharp answer.
+      </p>
+      <div class="when-grid">
+        <div class="when-card use">
+          <div class="when-title" style="color: var(--primary-green)">
+            ✅ Use Linked List When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">➕</div>
+            <div class="when-text">
+              <h4>Frequent insertions / deletions at head or middle</h4>
+              <p>
+                Prepend-heavy workloads, task schedulers, message queues —
+                arrays would shift millions of elements. LL does it in O(1).
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📏</div>
+            <div class="when-text">
+              <h4>Size is unknown at compile time</h4>
+              <p>
+                You don't know how many elements you'll get. Linked lists grow
+                on demand without reallocation or copying overhead.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔗</div>
+            <div class="when-text">
+              <h4>Implementing other structures</h4>
+              <p>
+                Building a stack, queue, deque, or adjacency list? Linked list
+                is your building block.
+                <span class="when-code">push = insertHead</span>,
+                <span class="when-code">pop = deleteHead</span>.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔄</div>
+            <div class="when-text">
+              <h4>Circular / round-robin patterns</h4>
+              <p>
+                OS round-robin scheduling, music loops, carousel slides —
+                circular LL gives infinite cycling with O(1) next operation.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">↔️</div>
+            <div class="when-text">
+              <h4>Need bidirectional traversal</h4>
+              <p>
+                Browser history, undo/redo — doubly LL lets you walk forward and
+                backward without rebuilding.
+                <span class="when-code">prev</span> +
+                <span class="when-code">next</span> pointers.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">✂️</div>
+            <div class="when-text">
+              <h4>Merging / splitting sequences</h4>
+              <p>
+                Merge sort on linked lists, polynomial addition, symbol tables —
+                pointer relinks beat any array approach for these.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="when-card avoid">
+          <div class="when-title" style="color: var(--primary-red)">
+            ❌ Avoid Linked List When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🎲</div>
+            <div class="when-text">
+              <h4>You need random access</h4>
+              <p>
+                Use an Array or ArrayList. If your code says
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >list.get(i)</code
+                >
+                frequently, you're paying O(n) every time. Switch to array —
+                it's O(1).
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔍</div>
+            <div class="when-text">
+              <h4>Frequent searching by value</h4>
+              <p>
+                Use a HashMap or TreeMap. Searching a linked list is always O(n)
+                — no shortcuts, no binary search, no hash lookup.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">💾</div>
+            <div class="when-text">
+              <h4>Memory is tight</h4>
+              <p>
+                Use a compact array. Every node carries pointer overhead (8+
+                bytes). An array of 1000 ints uses 4KB; a linked list uses
+                12–20KB for the same data.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">⚡</div>
+            <div class="when-text">
+              <h4>Cache performance matters</h4>
+              <p>
+                Use arrays or array-backed structures. Scattered memory =
+                constant cache misses. For read-heavy, performance-critical
+                loops, arrays are 5-10x faster in practice.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📊</div>
+            <div class="when-text">
+              <h4>You need to sort the data</h4>
+              <p>
+                Use sort() on an array. Sorting a linked list is possible (merge
+                sort) but awkward and has higher constant factors than an
+                in-place array sort.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔢</div>
+            <div class="when-text">
+              <h4>Small, fixed-size collections</h4>
+              <p>
+                Just use an array. The pointer overhead and cache miss cost
+                completely dominate for small n. Static arrays are almost always
+                faster for n &lt; 100.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- ══════════════════════════════════
+     CTA
+══════════════════════════════════ -->
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+        <div class="cta-title">
+          Crack the<br /><span class="glow">Linked List problems</span>
+        </div>
+        <p class="cta-sub">
+          You've seen playlists, browsers, caches, and schedulers built on
+          linked lists.<br />
+          Now go solve the actual interview questions using these exact pointer
+          patterns.
+        </p>
+
+        <div class="cta-visual">
+          <div class="ll-cta-chain">
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(6, 182, 212, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(6, 182, 212, 0.15);
+                    color: var(--primary-cyan);
+                  "
+                >
+                  Reverse LL
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-cyan)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(139, 92, 246, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(139, 92, 246, 0.15);
+                    color: var(--primary-purple);
+                  "
+                >
+                  Detect Cycle
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-purple)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(245, 158, 11, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(245, 158, 11, 0.15);
+                    color: var(--primary-orange);
+                  "
+                >
+                  Merge Sorted
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-orange)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(16, 185, 129, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(16, 185, 129, 0.15);
+                    color: var(--primary-green);
+                  "
+                >
+                  LRU Cache
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-green)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(239, 68, 68, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(239, 68, 68, 0.15);
+                    color: var(--primary-red);
+                  "
+                >
+                  Nth from End
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-red)">
+                  →
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cta-visual-label">↑ problems waiting for you</div>
+        </div>
+
+        <a href="practice.html?topic=linked-list" class="cta-btn">
+          <span>⚡ Crack the Linked List Problems</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/navbar.js"></script>
+    <script>
+      /* ══════════════════════════════════════
+   THEME
+══════════════════════════════════════ */
+      const themes = ["dark", "light", "blue"];
+      const themeIcons = {
+        dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+        light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+        blue: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>',
+      };
+      function applyTheme(t) {
+        document.body.setAttribute("data-theme", t);
+        document.getElementById("themeIcon").innerHTML = themeIcons[t];
+        localStorage.setItem("dsa-theme", t);
+      }
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const cur = localStorage.getItem("dsa-theme") || "dark";
+        applyTheme(themes[(themes.indexOf(cur) + 1) % 3]);
+      });
+      applyTheme(localStorage.getItem("dsa-theme") || "dark");
+
+      // hamburger
+      document.getElementById("hamburger").onclick = () =>
+        document.getElementById("mobileMenu").classList.toggle("open");
+
+      /* ══════════════════════════════════════
+   1. MUSIC PLAYLIST — Circular LL
+══════════════════════════════════════ */
+      let songs = ["Blinding Lights", "Levitating", "Shivers", "As It Was"];
+      let songIdx = 0;
+      let songCounter = 5;
+
+      function renderPlaylist() {
+        const el = document.getElementById("playlistTracks");
+        el.innerHTML = "";
+        songs.forEach((s, i) => {
+          const div = document.createElement("div");
+          div.className =
+            "playlist-track" +
+            (i === songIdx ? " playing" : i < songIdx ? " played" : "");
+          div.innerHTML = `
+      <span class="track-num">${i + 1}</span>
+      <span class="track-dot"></span>
+      <span style="flex:1">${s}</span>
+      <span class="track-arrow">${i === songIdx ? "▶ playing" : i === (songIdx + 1) % songs.length ? "· next" : ""}</span>`;
+          el.appendChild(div);
+        });
+        document.getElementById("playlist-now").textContent = songs[songIdx];
+        document.getElementById("playlist-count").textContent = songs.length;
+      }
+      function playNext() {
+        songIdx = (songIdx + 1) % songs.length; // circular: tail.next = head
+        renderPlaylist();
+      }
+      function playPrev() {
+        songIdx = (songIdx - 1 + songs.length) % songs.length;
+        renderPlaylist();
+      }
+      function addSong() {
+        songs.push("Track " + songCounter++);
+        renderPlaylist();
+      }
+      function removeSong() {
+        if (songs.length <= 1) return;
+        songs.splice(songIdx, 1);
+        songIdx = songIdx % songs.length;
+        renderPlaylist();
+      }
+      renderPlaylist();
+
+      /* ══════════════════════════════════════
+   2. BROWSER HISTORY — Doubly LL
+══════════════════════════════════════ */
+      // Doubly LL simulated as array with curr pointer
+      let hist2 = ["google.com"];
+      let histIdx2 = 0;
+
+      function renderHistory2() {
+        const el = document.getElementById("historyNodes");
+        el.innerHTML = "";
+        // show at most 5 nodes around current
+        const start = Math.max(0, histIdx2 - 2);
+        const end = Math.min(hist2.length - 1, histIdx2 + 2);
+        for (let i = start; i <= end; i++) {
+          const div = document.createElement("div");
+          div.className = "history-node" + (i === histIdx2 ? " curr" : "");
+          const hasPrev = i > 0;
+          const hasNext = i < hist2.length - 1;
+          div.innerHTML = `
+      <span class="back-arrow">${hasPrev ? "←" : "×"}</span>
+      <span style="flex:1">${hist2[i]}</span>
+      <span class="arrow">${hasNext ? "→" : "NULL"}</span>
+      ${i === histIdx2 ? '<span style="font-size:.65rem;color:var(--primary-cyan);margin-left:4px">curr</span>' : ""}`;
+          el.appendChild(div);
+        }
+        document.getElementById("browserUrl2").textContent = hist2[histIdx2];
+        document.getElementById("hist-prev").textContent =
+          histIdx2 > 0 ? hist2[histIdx2 - 1] : "NULL";
+        document.getElementById("hist-next").textContent =
+          histIdx2 < hist2.length - 1 ? hist2[histIdx2 + 1] : "NULL";
+        document.getElementById("btn-back2").disabled = histIdx2 <= 0;
+        document.getElementById("btn-fwd2").disabled =
+          histIdx2 >= hist2.length - 1;
+      }
+      function browserVisit2(url) {
+        // remove forward history
+        hist2 = hist2.slice(0, histIdx2 + 1);
+        hist2.push(url);
+        histIdx2++;
+        renderHistory2();
+      }
+      function browserBack2() {
+        if (histIdx2 > 0) {
+          histIdx2--;
+          renderHistory2();
+        }
+      }
+      function browserFwd2() {
+        if (histIdx2 < hist2.length - 1) {
+          histIdx2++;
+          renderHistory2();
+        }
+      }
+      renderHistory2();
+
+      /* ══════════════════════════════════════
+   3. IMAGE CAROUSEL — Circular LL
+══════════════════════════════════════ */
+      const carouselItems = [
+        { emoji: "🏔️", title: "Mountains", caption: "Majestic peaks" },
+        { emoji: "🌊", title: "Ocean", caption: "Rolling waves" },
+        { emoji: "🌇", title: "City", caption: "Urban skyline" },
+        { emoji: "🌸", title: "Sakura", caption: "Cherry blossoms" },
+        { emoji: "🏜️", title: "Desert", caption: "Golden dunes" },
+      ];
+      let carIdx = 0;
+
+      function renderCarousel() {
+        const item = carouselItems[carIdx];
+        document.getElementById("carouselEmoji").textContent = item.emoji;
+        document.getElementById("carouselTitle").textContent = item.title;
+        // show circular pointer info
+        const nextIdx = (carIdx + 1) % carouselItems.length;
+        document.getElementById("carouselCaption").textContent =
+          `node[${carIdx}] → node[${nextIdx}]${nextIdx === 0 ? " (HEAD)" : ""}`;
+
+        // dots
+        const dotsEl = document.getElementById("carouselDots");
+        dotsEl.innerHTML = "";
+        carouselItems.forEach((_, i) => {
+          const d = document.createElement("div");
+          d.className = "cdot" + (i === carIdx ? " active" : "");
+          d.onclick = () => {
+            carIdx = i;
+            renderCarousel();
+          };
+          dotsEl.appendChild(d);
+        });
+
+        // node chain
+        const chainEl = document.getElementById("carouselChain");
+        chainEl.innerHTML = "";
+        carouselItems.forEach((it, i) => {
+          const n = document.createElement("div");
+          n.className = "chain-node" + (i === carIdx ? " cur" : "");
+          n.textContent = it.emoji;
+          chainEl.appendChild(n);
+          if (i < carouselItems.length - 1) {
+            const a = document.createElement("div");
+            a.className = "chain-arrow";
+            a.textContent = "→";
+            chainEl.appendChild(a);
+          }
+        });
+        // circular arrow back to head
+        const loopEl = document.createElement("div");
+        loopEl.className = "chain-loop";
+        loopEl.textContent = "↩ HEAD";
+        chainEl.appendChild(loopEl);
+      }
+      function carouselNext() {
+        carIdx = (carIdx + 1) % carouselItems.length;
+        renderCarousel();
+      }
+      function carouselPrev() {
+        carIdx = (carIdx - 1 + carouselItems.length) % carouselItems.length;
+        renderCarousel();
+      }
+      renderCarousel();
+
+      /* ══════════════════════════════════════
+   4. LRU CACHE — Doubly LL
+══════════════════════════════════════ */
+      // Doubly LL: head = most recent, tail = evict next
+      const LRU_CAP = 4;
+      let lruList = []; // [{key, val}] — index 0 = head (most recent)
+
+      function renderLRU() {
+        const el = document.getElementById("lruList");
+        el.innerHTML = "";
+        lruList.forEach((item, i) => {
+          const div = document.createElement("div");
+          div.className = "lru-item" + (i === 0 ? " most-recent" : "");
+          let tag = "";
+          if (i === 0) tag = '<span class="lru-tag head-tag">HEAD · MRU</span>';
+          else if (i === lruList.length - 1)
+            tag = '<span class="lru-tag tail-tag">TAIL · LRU</span>';
+          else if (i === lruList.length - 2)
+            tag = '<span class="lru-tag evict-soon">evict soon</span>';
+          div.innerHTML = `
+      <span>${i === 0 ? "⬆" : "↓"}</span>
+      <span style="flex:1">${item.key}</span>
+      <span style="color:var(--primary-orange);margin-right:.5rem">${item.val}</span>
+      ${tag}`;
+          el.appendChild(div);
+        });
+        document.getElementById("lru-size").textContent = lruList.length;
+      }
+      function lruGet() {
+        const key = document.getElementById("lru-key").value.trim();
+        if (!key) return;
+        const idx = lruList.findIndex((x) => x.key === key);
+        if (idx === -1) {
+          document.getElementById("lru-action").textContent =
+            `MISS: "${key}" not found`;
+          document.getElementById("lru-action").style.color =
+            "var(--primary-red)";
+        } else {
+          const item = lruList.splice(idx, 1)[0];
+          lruList.unshift(item); // move to head
+          document.getElementById("lru-action").textContent =
+            `HIT: "${key}" moved to head`;
+          document.getElementById("lru-action").style.color =
+            "var(--primary-green)";
+        }
+        renderLRU();
+        document.getElementById("lru-key").value = "";
+      }
+      function lruPut() {
+        const key = document.getElementById("lru-key").value.trim();
+        if (!key) return;
+        const val = Math.floor(Math.random() * 900) + 100;
+        const idx = lruList.findIndex((x) => x.key === key);
+        if (idx !== -1) lruList.splice(idx, 1);
+        lruList.unshift({ key, val });
+        if (lruList.length > LRU_CAP) {
+          const evicted = lruList.pop();
+          document.getElementById("lru-action").textContent =
+            `PUT "${key}" — evicted "${evicted.key}"`;
+          document.getElementById("lru-action").style.color =
+            "var(--primary-orange)";
+        } else {
+          document.getElementById("lru-action").textContent =
+            `PUT "${key}" at head`;
+          document.getElementById("lru-action").style.color =
+            "var(--primary-green)";
+        }
+        renderLRU();
+        document.getElementById("lru-key").value = "";
+      }
+      // seed cache
+      ["userA", "userB", "userC"].forEach((k, i) =>
+        lruList.push({ key: k, val: 100 + i * 50 }),
+      );
+      renderLRU();
+
+      /* ══════════════════════════════════════
+   5. PROCESS SCHEDULER — Singly LL
+══════════════════════════════════════ */
+      let tasks = []; // head is tasks[0]
+
+      function renderTasks() {
+        const el = document.getElementById("taskList");
+        el.innerHTML = "";
+        tasks.forEach((t, i) => {
+          const div = document.createElement("div");
+          div.className = "task-item" + (i === 0 ? " head-task" : "");
+          div.innerHTML = `
+      <span>${i === 0 ? "▶" : " "}</span>
+      <span style="flex:1">${t}</span>
+      <span class="next-ptr">${i < tasks.length - 1 ? "next→" : "NULL"}</span>`;
+          el.appendChild(div);
+        });
+        const headPtr = document.getElementById("task-head-ptr");
+        headPtr.textContent = tasks.length
+          ? `HEAD → ${tasks[0]}`
+          : "HEAD → (empty)";
+        document.getElementById("task-count").textContent = tasks.length;
+        document.getElementById("task-head-val").textContent = tasks.length
+          ? tasks[0]
+          : "—";
+      }
+      function addTask(name) {
+        if (tasks.length >= 5) return;
+        tasks.push(name);
+        renderTasks();
+      }
+      function dispatchTask() {
+        if (!tasks.length) return;
+        tasks.shift(); // O(1) — just move head pointer
+        renderTasks();
+      }
+      renderTasks();
+
+      /* ══════════════════════════════════════
+   6. TRAIN ROUTE — Singly LL
+══════════════════════════════════════ */
+      let stops = ["Central", "Majestic"];
+      let selectedStop = null;
+      let tracing = false;
+
+      function renderRoute() {
+        const el = document.getElementById("trainRoute");
+        el.innerHTML = "";
+        if (!stops.length) {
+          el.innerHTML =
+            '<span style="color:var(--text-secondary);font-size:.8rem">No stops — add one above</span>';
+          document.getElementById("train-count").textContent = 0;
+          return;
+        }
+        stops.forEach((s, i) => {
+          const wrap = document.createElement("div");
+          wrap.className = "station-wrap";
+
+          const station = document.createElement("div");
+          const isOrigin = i === 0;
+          station.className = "station " + (isOrigin ? "origin" : "stop");
+          if (s === selectedStop) station.classList.add("selected");
+          station.textContent = s;
+          station.onclick = () => {
+            selectedStop = selectedStop === s ? null : s;
+            document.getElementById("train-status").textContent = selectedStop
+              ? `Selected: ${selectedStop} (node[${stops.indexOf(s)}])`
+              : "Click a station to highlight it";
+            renderRoute();
+          };
+          wrap.appendChild(station);
+
+          if (i < stops.length - 1) {
+            const line = document.createElement("div");
+            line.className = "track-line";
+            wrap.appendChild(line);
+            const arr = document.createElement("span");
+            arr.style.cssText = "font-size:.75rem;color:var(--text-secondary);";
+            arr.textContent = "→";
+            wrap.appendChild(arr);
+          }
+          el.appendChild(wrap);
+        });
+        document.getElementById("train-count").textContent = stops.length;
+      }
+      function addStop() {
+        const input = document.getElementById("train-stop-input");
+        const name = input.value.trim();
+        if (!name || stops.length >= 7) return;
+        stops.push(name);
+        input.value = "";
+        renderRoute();
+      }
+      function removeLastStop() {
+        if (stops.length <= 1) return;
+        stops.pop();
+        if (selectedStop && !stops.includes(selectedStop)) selectedStop = null;
+        renderRoute();
+      }
+      async function traceRoute() {
+        if (tracing) return;
+        tracing = true;
+        for (let i = 0; i < stops.length; i++) {
+          selectedStop = stops[i];
+          document.getElementById("train-status").textContent =
+            `Traversing → ${stops[i]} (step ${i + 1}/${stops.length})`;
+          renderRoute();
+          await new Promise((r) => setTimeout(r, 600));
+        }
+        selectedStop = null;
+        document.getElementById("train-status").textContent =
+          `Route traced — ${stops.length} stops visited`;
+        renderRoute();
+        tracing = false;
+      }
+      function resetRoute() {
+        stops = ["Central", "Majestic"];
+        selectedStop = null;
+        tracing = false;
+        document.getElementById("train-status").textContent =
+          "Click a station to highlight it";
+        renderRoute();
+      }
+      document
+        .getElementById("train-stop-input")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") addStop();
+        });
+      document.getElementById("lru-key").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") lruPut();
+      });
+      renderRoute();
+    </script>
+  </body>
+</html>

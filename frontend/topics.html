@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics - CODEANIME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --primary-cyan: #06b6d4;
+            --primary-purple: #8b5cf6;
+            --dark-bg: #0a0a0a;
+            --card-bg: #161616;
+            --sidebar-bg: #0d0d0d;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #262626;
+            --nav-bg: rgba(10, 10, 10, 0.8);
+        }
+        [data-theme="light"] {
+            --dark-bg: #f8fafc; --card-bg: #ffffff; --sidebar-bg: #f1f5f9;
+            --text-primary: #0f172a; --text-secondary: #475569;
+            --border-color: #e2e8f0; --nav-bg: rgba(248, 250, 252, 0.8);
+        }
+        [data-theme="blue"] {
+            --dark-bg: #0f172a; --card-bg: #1e293b; --sidebar-bg: #0b1120;
+            --text-primary: #f1f5f9; --text-secondary: #94a3b8;
+            --border-color: #334155; --nav-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--text-primary); transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: var(--nav-bg); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-container {
+            max-width: 1400px; margin: 0 auto; padding: 1.2rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 1.3rem; font-weight: 700; z-index: 2;
+            text-decoration: none; color: var(--text-primary);
+        }
+        .logo-icon {
+            width: 45px; height: 45px; background: transparent; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: "JetBrains Mono", monospace; font-size: 0.9rem; color: #fff;
+        }
+        .nav-right { display: flex; align-items: center; gap: 1rem; z-index: 2; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary-green); }
+        .nav-links a.active { color: var(--primary-green); }
+
+        /* hamburger */
+        .hamburger-btn {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; cursor: pointer; padding: 4px; z-index: 2;
+        }
+        .ham-line { display: block; width: 22px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: all 0.3s; }
+        .mobile-nav {
+            display: none; position: fixed; top: 65px; left: 0; width: 100%;
+            background: var(--nav-bg); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); z-index: 999;
+            flex-direction: column; padding: 0.5rem 0;
+        }
+        .mobile-nav.open { display: flex; }
+        .mobile-nav a { padding: 0.85rem 2rem; color: var(--text-primary); text-decoration: none; font-weight: 500; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .mobile-nav a:hover { background: rgba(16,185,129,0.1); color: var(--primary-green); }
+
+        .nav-user-container { position: relative; display: flex; align-items: center; }
+        .user-avatar {
+            width: 38px; height: 38px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-family: 'Inter', sans-serif; cursor: pointer;
+            border: 2px solid var(--border-color); transition: all 0.3s ease;
+        }
+        .user-avatar:hover { border-color: var(--primary-green); box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+        .user-dropdown {
+            position: absolute; top: calc(100% + 15px); right: 0;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; width: 180px; padding: 0.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            opacity: 0; transform: translateY(10px); pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 2000;
+        }
+        .nav-user-container:hover .user-dropdown { opacity: 1; transform: translateY(0); pointer-events: all; }
+        .dropdown-header { padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); margin-bottom: 0.5rem; }
+        .dropdown-header b { color: var(--text-primary); display: block; font-size: 0.95rem; }
+        .logout-item {
+            width: 100%; padding: 0.8rem 1rem; background: transparent; border: none;
+            color: #ef4444; font-weight: 700; font-size: 0.9rem; text-align: left;
+            border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s;
+        }
+        .logout-item:hover { background: rgba(239, 68, 68, 0.1); }
+        .theme-toggle {
+            background: var(--border-color); border: 1px solid var(--border-color);
+            color: var(--text-primary); cursor: pointer; width: 36px; height: 36px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        }
+        .theme-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* ── GREETING SECTION ── */
+        .greeting-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.8rem 4rem 0;
+        }
+        .greeting-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.4rem 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        /* subtle animated gradient line on left */
+        .greeting-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary-green), var(--primary-cyan), var(--primary-purple));
+            border-radius: 4px 0 0 4px;
+        }
+        .greeting-left { display: flex; align-items: center; gap: 1rem; }
+        .greeting-wave {
+            font-size: 1.8rem;
+            animation: waveHand 1.8s ease-in-out infinite;
+            transform-origin: 70% 80%;
+            display: inline-block;
+        }
+        @keyframes waveHand {
+            0%,100% { transform: rotate(0deg); }
+            15%      { transform: rotate(18deg); }
+            30%      { transform: rotate(-8deg); }
+            45%      { transform: rotate(14deg); }
+            60%      { transform: rotate(-4deg); }
+        }
+        .greeting-text-block {}
+        .greeting-headline {
+            font-size: 1.1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 0.2rem;
+        }
+        .greeting-headline .user-name-span {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .greeting-sub {
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .greeting-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .greeting-stat {
+            text-align: center;
+        }
+        .greeting-stat-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            display: block;
+        }
+        .greeting-stat-lbl {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .greeting-divider {
+            width: 1px;
+            height: 36px;
+            background: var(--border-color);
+        }
+
+        /* ── PAGE WRAPPER ── */
+        .page-wrapper { display: flex; margin-top: 65px; min-height: calc(100vh - 65px); }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem; position: fixed; height: calc(100vh - 65px);
+            overflow-y: auto; top: 65px;
+        }
+        .sidebar-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .sidebar-header h2 { font-size: 1.1rem; font-weight: 700; }
+        .overall-progress { margin-bottom: 2rem; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-secondary); }
+        .progress-bar-container { width: 100%; height: 6px; background: rgba(128,128,128,0.2); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-green); width: 0%; transition: width 0.5s ease; }
+        .xp-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+        .xp-info span { font-size: 0.75rem; color: var(--text-secondary); display: block; }
+        .xp-info b { font-size: 1.1rem; color: var(--primary-green); }
+        .topic-list { list-style: none; }
+        .topic-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid rgba(128,128,128,0.1); }
+        .topic-item:last-child { border-bottom: none; }
+        .level-dots { display: flex; gap: 4px; align-items: center; }
+        .level-dot { width: 10px; height: 10px; border-radius: 3px; background: rgba(128,128,128,0.2); border: 1px solid var(--border-color); transition: all 0.3s; }
+        .level-dot.done { background: var(--primary-green); border-color: var(--primary-green); }
+        .level-dot.partial { background: var(--primary-cyan); border-color: var(--primary-cyan); }
+
+        /* ── MAIN CONTENT ── */
+        .main-content { margin-left: 280px; flex: 1; padding: 2rem 4rem; max-width: 1200px; }
+
+        /* ── ACCORDIONS ── */
+        details { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 1.5rem; overflow: hidden; transition: all 0.3s ease; }
+        summary { padding: 1.2rem 1.5rem; cursor: pointer; font-weight: 700; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; list-style: none; user-select: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary:after { content: ''; width: 8px; height: 8px; border-right: 2px solid var(--text-secondary); border-bottom: 2px solid var(--text-secondary); transform: rotate(45deg); transition: transform 0.3s ease; }
+        details[open] summary:after { transform: rotate(-135deg); }
+        .accordion-content { padding: 0 1.5rem 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        .accordion-text { flex: 1; }
+
+        /* ── LEARNING PATH ── */
+        .learning-path { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .path-item { display: flex; gap: 1.5rem; padding-bottom: 2rem; position: relative; }
+        .path-item:last-child { padding-bottom: 0; }
+        .path-item:not(:last-child):before { content: ''; position: absolute; left: 10px; top: 25px; width: 2px; height: calc(100% - 10px); background: var(--border-color); }
+
+        /* cycle through colors by index */
+        .path-item:nth-child(3n+1) .step-dot { border-color: var(--primary-green);  color: var(--primary-green); }
+        .path-item:nth-child(3n+2) .step-dot { border-color: var(--primary-cyan);   color: var(--primary-cyan); }
+        .path-item:nth-child(3n+3) .step-dot { border-color: var(--primary-purple); color: var(--primary-purple); }
+
+        .step-dot { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: var(--sidebar-bg); border: 1px solid var(--border-color); z-index: 2; flex-shrink: 0; margin-top: 4px; font-size: 0.75rem; font-weight: 700; }
+        .step-info span { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; }
+        .step-info h4 { font-size: 1rem; font-weight: 700; margin-top: 2px; }
+
+        /* category header in path */
+        .path-category {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-secondary);
+            margin: 1.5rem 0 0.75rem; padding-left: 0;
+        }
+        .path-category:first-child { margin-top: 0; }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary-green), var(--primary-cyan)); color: white; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s; border: none; cursor: pointer; }
+        .btn-primary:hover { transform: scale(1.05); }
+
+        /* ── TOPIC GRID ── */
+        .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+        .topic-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; transition: 0.3s; position: relative; cursor: pointer; }
+        .topic-card:hover { transform: translateY(-5px); border-color: var(--primary-green); box-shadow: 0 8px 25px rgba(16,185,129,0.1); }
+        .topic-diff { position: absolute; top: 1.2rem; right: 1.2rem; font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; }
+        .diff-easy   { color: #10b981; background: rgba(16,185,129,0.1); }
+        .diff-medium { color: #f59e0b; background: rgba(245,158,11,0.1); }
+        .diff-hard   { color: #ef4444; background: rgba(239,68,68,0.1); }
+        .topic-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; padding-right: 60px; }
+        .topic-card p  { font-size: 0.85rem; color: var(--text-secondary); min-height: 2.5rem; margin-bottom: 1.2rem; }
+        .card-levels { display: flex; gap: 6px; margin-bottom: 0.8rem; }
+        .card-level-badge { font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border-color); color: var(--text-secondary); background: rgba(128,128,128,0.08); transition: all 0.3s; }
+        .card-level-badge.unlocked { color: var(--primary-green); border-color: var(--primary-green); background: rgba(16,185,129,0.1); }
+        .card-level-badge.current  { color: var(--primary-cyan);  border-color: var(--primary-cyan);  background: rgba(6,182,212,0.1); }
+        .card-xp { position: absolute; bottom: 1.2rem; right: 1.2rem; font-size: 0.7rem; font-weight: 700; color: var(--primary-green); }
+
+        .not-sure-section { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 3rem; text-align: center; margin-top: 4rem; }
+        .btn-green { background: var(--primary-green); color: #000; border: none; padding: 0.8rem 1.8rem; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.9rem; }
+        .btn-green:hover { opacity: 0.9; }
+
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--card-bg); border: 1px solid var(--primary-green); border-radius: 12px; padding: 1rem 1.5rem; font-size: 0.85rem; font-weight: 600; color: var(--primary-green); z-index: 9999; transform: translateY(100px); opacity: 0; transition: all 0.4s ease; pointer-events: none; box-shadow: 0 8px 25px rgba(16,185,129,0.2); }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* ════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════ */
+        @media (max-width: 1100px) {
+            .main-content { padding: 2rem 2.5rem; }
+            .greeting-section { padding: 1.8rem 2.5rem 0; }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 1.5rem 1.5rem; max-width: 100%; }
+            .greeting-section { padding: 1.5rem 1.5rem 0; }
+            .nav-links { display: none; }
+            .hamburger-btn { display: flex; }
+            .greeting-right { display: none; }
+            .greeting-card { padding: 1.2rem 1.4rem; }
+        }
+
+        @media (max-width: 600px) {
+            .topic-grid { grid-template-columns: 1fr; }
+            .main-content { padding: 1rem 1rem; }
+            .greeting-section { padding: 1rem 1rem 0; }
+            .greeting-headline { font-size: 1rem; }
+            .not-sure-section { padding: 2rem 1.5rem; }
+            .accordion-content { flex-direction: column; gap: 1rem; }
+            .accordion-content .btn-primary { align-self: flex-start; }
+            .nav-container { padding: 1rem 1.2rem; }
+        }
+
+        @media (max-width: 400px) {
+            .greeting-wave { font-size: 1.4rem; }
+            .greeting-sub { font-size: 0.78rem; }
+        }
+    </style>
+    <script src="js/guard.js"></script>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="index.html">
+            <img src="dsa.gif" alt="Logo" class="logo-icon">
+            <span>CODEANIME</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="topics.html" class="active">Topics</a></li>
+            <li><a href="prerequisite.html">Prerequisites</a></li>
+            <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+            <div id="nav-user-slot"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="topics.html">Topics</a>
+    <a href="prerequisite.html">Prerequisites</a>
+    <a href="codeeditor.html">Code Editor</a>
+</div>
+
+
+
+<div class="page-wrapper">
+    <aside class="sidebar">
+        <div class="sidebar-header">🏆 <h2>Your Progress</h2></div>
+        <div class="overall-progress">
+            <div class="progress-label"><span>Overall</span><span id="overallScore">0 / 54 Levels</span></div>
+            <div class="progress-bar-container"><div class="progress-fill" id="overallFill"></div></div>
+        </div>
+        <div class="xp-card">
+            <div class="xp-icon" style="font-size:1.5rem;">⚡</div>
+            <div class="xp-info"><span>Total XP Earned</span><b id="totalXP">0 XP</b></div>
+        </div>
+        <h3 style="font-size:0.75rem;font-weight:800;margin-bottom:1rem;color:var(--text-secondary);letter-spacing:1px;">⭐ TOPICS</h3>
+        <ul class="topic-list" id="sidebarTopicList"></ul>
+    </aside>
+
+    <main class="main-content">
+
+        <!-- ══════════════════════════════════
+     GREETING SECTION
+══════════════════════════════════ -->
+<div class="greeting-section" id="greetingSection" style="margin-bottom:65px;">
+    <div class="greeting-card">
+        <div class="greeting-left">
+            <span class="greeting-wave">👋</span>
+            <div class="greeting-text-block">
+                <div class="greeting-headline" id="greetingHeadline">
+                    Hey there, loading...
+                </div>
+                <div class="greeting-sub" id="greetingSub">
+                    Pick up where you left off.
+                </div>
+            </div>
+        </div>
+        <div class="greeting-right">
+            <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-levels">0</span>
+                <span class="greeting-stat-lbl">Levels Done</span>
+            </div>
+            <div class="greeting-divider"></div>
+            <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-xp">0</span>
+                <span class="greeting-stat-lbl">XP Earned</span>
+            </div>
+            <div class="greeting-divider"></div>
+            <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-topics">0</span>
+                <span class="greeting-stat-lbl">Topics Started</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <!-- ── RECOMMENDED PATH ── -->
+        <details>
+            <summary>Recommended Learning Path</summary>
+            <div class="accordion-content">
+                <div class="accordion-text">
+                    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem;">Follow this order for optimal understanding. Each category builds on the last.</p>
+
+                    <p class="path-category">📦 Data Structures — Linear</p>
+                    <div class="learning-path">
+                        <div class="path-item"><div class="step-dot">0</div><div class="step-info"><span>Step 0 • Foundation</span><h4>Array</h4></div></div>
+                        <div class="path-item"><div class="step-dot">1</div><div class="step-info"><span>Step 1 • Foundation</span><h4>String</h4></div></div>
+                        <div class="path-item"><div class="step-dot">2</div><div class="step-info"><span>Step 2 • Foundation</span><h4>Matrix</h4></div></div>
+                        <div class="path-item"><div class="step-dot">3</div><div class="step-info"><span>Step 3 • Linear</span><h4>Stack</h4></div></div>
+                        <div class="path-item"><div class="step-dot">4</div><div class="step-info"><span>Step 4 • Linear</span><h4>Queue</h4></div></div>
+                        <div class="path-item"><div class="step-dot">5</div><div class="step-info"><span>Step 5 • Linear</span><h4>Linked List</h4></div></div>
+                    </div>
+
+                    <p class="path-category">🧠 Core Concepts</p>
+                    <div class="learning-path">
+                        <div class="path-item"><div class="step-dot">6</div><div class="step-info"><span>Step 6 • Concept</span><h4>Recursion</h4></div></div>
+                        <div class="path-item"><div class="step-dot">7</div><div class="step-info"><span>Step 7 • Concept</span><h4>Hashing</h4></div></div>
+                    </div>
+
+                    <p class="path-category">🌳 Data Structures — Non-Linear</p>
+                    <div class="learning-path">
+                        <div class="path-item"><div class="step-dot">8</div><div class="step-info"><span>Step 8 • Non-Linear</span><h4>Tree</h4></div></div>
+                        <div class="path-item"><div class="step-dot">9</div><div class="step-info"><span>Step 9 • Non-Linear</span><h4>Heap</h4></div></div>
+                        <div class="path-item"><div class="step-dot">10</div><div class="step-info"><span>Step 10 • Non-Linear</span><h4>Graphs</h4></div></div>
+                    </div>
+
+                    <p class="path-category">🔍 Searching Algorithms</p>
+                    <div class="learning-path">
+                        <div class="path-item"><div class="step-dot">11</div><div class="step-info"><span>Step 11 • Search</span><h4>Linear Search</h4></div></div>
+                        <div class="path-item"><div class="step-dot">12</div><div class="step-info"><span>Step 12 • Search</span><h4>Binary Search</h4></div></div>
+                    </div>
+
+                    <p class="path-category">🔃 Sorting Algorithms</p>
+                    <div class="learning-path">
+                        <div class="path-item"><div class="step-dot">13</div><div class="step-info"><span>Step 13 • Sort</span><h4>Bubble Sort</h4></div></div>
+                        <div class="path-item"><div class="step-dot">14</div><div class="step-info"><span>Step 14 • Sort</span><h4>Selection Sort</h4></div></div>
+                        <div class="path-item"><div class="step-dot">15</div><div class="step-info"><span>Step 15 • Sort</span><h4>Insertion Sort</h4></div></div>
+                        <div class="path-item"><div class="step-dot">16</div><div class="step-info"><span>Step 16 • Sort</span><h4>Merge Sort</h4></div></div>
+                        <div class="path-item"><div class="step-dot">17</div><div class="step-info"><span>Step 17 • Sort</span><h4>Quick Sort</h4></div></div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- ── LANGUAGE PREREQS ── -->
+        <details>
+            <summary>Language Prerequisites</summary>
+            <div class="accordion-content">
+                <div class="accordion-text">
+                    <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6;">
+                        Before diving into algorithms, ensure you understand the following basics:<br><br>
+                        • Array declaration and indexing<br>
+                        • Basic control flow (Loops and If-Else)<br>
+                        • Function creation and parameter passing<br>
+                        • Concept of recursion
+                    </p>
+                </div>
+                <a href="prerequisite.html" class="btn-primary">→</a>
+            </div>
+        </details>
+
+        <div class="topic-grid" id="topicGrid"></div>
+
+        <div class="not-sure-section">
+            <span style="font-size:2.5rem;color:var(--primary-green);">❓</span>
+            <h2 style="margin-top:1rem;">Not Sure Where to Start?</h2>
+            <p style="font-size:0.9rem;color:var(--text-secondary);margin-top:1rem;">We recommend starting with Stack and Queue to understand memory management basics.</p>
+            <button class="btn-green" onclick="document.querySelector('details').setAttribute('open','')">View Recommended Path</button>
+        </div>
+
+        <footer style="margin-top:5rem;padding:2rem 0;border-top:1px solid var(--border-color);font-size:0.8rem;color:var(--text-secondary);">
+            © 2026 CODEANIME. Built for visual thinkers.
+        </footer>
+    </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="js/auth.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   ALGORITHM REGISTRY
+═══════════════════════════════════════════════════════ */
+const algorithms = [
+    { id:'array',         name:'Array',            page:'array_L1.html',          diff:'Easy',   diffClass:'diff-easy',   desc:'Contiguous memory, fixed size.',              time:'30 min', xp:100 },
+    { id:'matrix',        name:'Matrix',           page:'matrix_L1.html',         diff:'Medium', diffClass:'diff-medium', desc:'2D array for tabular data and grids.',         time:'45 min', xp:150 },
+    { id:'string',        name:'String',           page:'string_L1.html',         diff:'Easy',   diffClass:'diff-easy',   desc:'Immutable character array operations.',        time:'30 min', xp:100 },
+    { id:'hashing',       name:'Hashing',          page:'hashing_L1.html',        diff:'Medium', diffClass:'diff-medium', desc:'Key-value mapping using hash functions.',      time:'50 min', xp:150 },
+    { id:'recursion',     name:'Recursion',        page:'recursion_L1.html',      diff:'Medium', diffClass:'diff-medium', desc:'Function calling itself elegantly.',           time:'60 min', xp:150 },
+    { id:'stack',         name:'Stack',            page:'stack_L1.html',          diff:'Easy',   diffClass:'diff-easy',   desc:'LIFO principle with push/pop ops.',            time:'45 min', xp:100 },
+    { id:'queue',         name:'Queue',            page:'queueL1.html',           diff:'Easy',   diffClass:'diff-easy',   desc:'FIFO principle with enqueue/dequeue.',         time:'45 min', xp:100 },
+    { id:'linkedlist',    name:'Linked List',      page:'linkedlist_L1.html',     diff:'Easy',   diffClass:'diff-easy',   desc:'Nodes and pointers for dynamic arrays.',       time:'45 min', xp:100 },
+    { id:'tree',          name:'Tree',             page:'tree_L1.html',           diff:'Medium', diffClass:'diff-medium', desc:'Hierarchical structures and BST logic.',       time:'65 min', xp:150 },
+    { id:'heap',          name:'Heap',             page:'heap_L1.html',           diff:'Medium', diffClass:'diff-medium', desc:'Complete binary trees for priority queues.',   time:'55 min', xp:150 },
+    { id:'graphs',        name:'Graphs',           page:'graphs_L1.html',         diff:'Hard',   diffClass:'diff-hard',   desc:'Nodes and edges modeling complex networks.',   time:'90 min', xp:200 },
+    { id:'linearsearch',  name:'Linear Search',    page:'linearSearch_L1.html',   diff:'Easy',   diffClass:'diff-easy',   desc:'Step-by-step element scanning.',              time:'30 min', xp:100 },
+    { id:'binarysearch',  name:'Binary Search',    page:'binarySearch_L1.html',   diff:'Medium', diffClass:'diff-medium', desc:'Logarithmic search on sorted arrays.',        time:'60 min', xp:150 },
+    { id:'bubblesort',    name:'Bubble Sort',      page:'bubble_sort_L1.html',    diff:'Easy',   diffClass:'diff-easy',   desc:'Adjacent swap sorting, O(n²).',              time:'50 min', xp:100 },
+    { id:'selectionsort', name:'Selection Sort',   page:'selectionSort_L1.html',  diff:'Easy',   diffClass:'diff-easy',   desc:'Select minimum and swap.',                   time:'55 min', xp:100 },
+    { id:'mergesort',     name:'Merge Sort',       page:'mergeSort_L1.html',      diff:'Medium', diffClass:'diff-medium', desc:'Divide and conquer sorting.',                 time:'75 min', xp:150 },
+    { id:'quicksort',     name:'Quick Sort',       page:'quickSort_L1.html',      diff:'Hard',   diffClass:'diff-hard',   desc:'Pivot-based recursive sorting.',              time:'90 min', xp:200 },
+    { id:'insertionsort', name:'Insertion Sort',   page:'insertion_sort_L1.html', diff:'Easy',   diffClass:'diff-easy',   desc:'Build sorted array one item at a time.',      time:'50 min', xp:100 },
+];
+
+const TOTAL_POSSIBLE_LEVELS = algorithms.length * 3;
+
+/* ── Progress Reader ── */
+function getLevelsCompleted(id) {
+    const progress = JSON.parse(localStorage.getItem('progress') || "{}");
+    return progress[id] || 0;
+}
+
+/* ══════════════════════════════════════
+   GREETING LOGIC
+══════════════════════════════════════ */
+function buildGreeting(username, totalLevels, totalXP, topicsStarted) {
+    const hour = new Date().getHours();
+    let timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+    // Varied messages based on progress
+    let sub;
+    if (totalLevels === 0) {
+        const starters = [
+            "Your DSA journey starts today. Pick a topic and let's go! 🚀",
+            "Fresh start. Every expert was once a beginner. Dive in!",
+            "No levels done yet — your first unlock is one click away.",
+        ];
+        sub = starters[Math.floor(Math.random() * starters.length)];
+    } else if (totalLevels < 5) {
+        const early = [
+            `${totalLevels} level${totalLevels > 1 ? 's' : ''} down. The momentum is building — keep going!`,
+            "Good start. Consistency beats intensity every time. Next level?",
+            `${totalXP} XP in the bag. You're just getting warmed up.`,
+        ];
+        sub = early[Math.floor(Math.random() * early.length)];
+    } else if (totalLevels < 15) {
+        const mid = [
+            `${topicsStarted} topics started, ${totalLevels} levels cleared. Solid progress. 💪`,
+            `You've earned ${totalXP} XP — that's real work. Keep stacking.`,
+            "You're in the groove now. Linked lists? Trees? What's next?",
+        ];
+        sub = mid[Math.floor(Math.random() * mid.length)];
+    } else {
+        const advanced = [
+            `${totalLevels} levels done and ${totalXP} XP earned. You're built different. 🔥`,
+            `${topicsStarted}/${algorithms.length} topics unlocked. Almost at the top. Finish strong.`,
+            "At this point you're just showing off. Respect. 👑",
+        ];
+        sub = advanced[Math.floor(Math.random() * advanced.length)];
+    }
+
+    document.getElementById('greetingHeadline').innerHTML =
+        `${timeGreet}, <span class="user-name-span">${username}</span>!`;
+    document.getElementById('greetingSub').textContent = sub;
+    document.getElementById('g-levels').textContent  = totalLevels;
+    document.getElementById('g-xp').textContent      = totalXP;
+    document.getElementById('g-topics').textContent  = topicsStarted;
+}
+
+/* ── Main UI render ── */
+function updateUI() {
+    const sidebarList = document.getElementById('sidebarTopicList');
+    const topicGrid   = document.getElementById('topicGrid');
+    sidebarList.innerHTML = '';
+    topicGrid.innerHTML   = '';
+
+    let totalCompletedLevels = 0;
+    let totalEarnedXP        = 0;
+    let topicsStarted        = 0;
+
+    algorithms.forEach(algo => {
+        const completed = getLevelsCompleted(algo.id);
+        totalCompletedLevels += completed;
+        if (completed > 0) topicsStarted++;
+
+        const earnedXP = completed * algo.xp;
+        const maxXP    = 3 * algo.xp;
+        totalEarnedXP  += earnedXP;
+
+        const progressPercent = (completed / 3) * 100;
+
+        /* Sidebar dots */
+        const dots = [1,2,3].map(lvl => {
+            const status = completed >= lvl ? 'done' : '';
+            return `<div class="level-dot ${status}" title="Level ${lvl}"></div>`;
+        }).join('');
+        sidebarList.innerHTML += `
+            <li class="topic-item">
+                <span>${algo.name}</span>
+                <div class="level-dots">${dots}</div>
+            </li>`;
+
+        /* Card badges */
+        const badges = [1,2,3].map(lvl => {
+            let state = '';
+            if (completed >= lvl) state = 'unlocked';
+            else if (completed === lvl - 1 && lvl > 1) state = 'current';
+            const label = lvl === 1 ? 'L1 Basics' : lvl === 2 ? 'L2 Interactive' : 'L3 Advanced';
+            return `<span class="card-level-badge ${state}">${label}</span>`;
+        }).join('');
+
+        topicGrid.innerHTML += `
+            <div class="topic-card" onclick="goToTopic('${algo.page}')">
+                <span class="topic-diff ${algo.diffClass}">${algo.diff}</span>
+                <h3>${algo.name}</h3>
+                <p>${algo.desc}</p>
+                <div class="card-levels">${badges}</div>
+                <div class="progress-label" style="margin-bottom:0.4rem;">
+                    <span style="font-size:0.8rem;color:var(--text-secondary);">Completion</span>
+                    <span style="font-size:0.8rem;color:var(--text-secondary);">${completed}/3 Levels</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-fill" style="width:${progressPercent}%"></div>
+                </div>
+                <div style="margin-top:0.8rem;font-size:0.75rem;color:var(--text-secondary);display:flex;justify-content:space-between;align-items:center;">
+                    <span>🕒 ${algo.time}</span>
+                    <span style="color:${earnedXP > 0 ? 'var(--primary-green)' : 'var(--text-secondary)'}">
+                        ⚡ ${earnedXP}/${maxXP} XP
+                    </span>
+                </div>
+            </div>`;
+    });
+
+    /* Overall counters */
+    const scoreEl = document.getElementById('overallScore');
+    const xpEl    = document.getElementById('totalXP');
+    const barFill = document.getElementById('overallFill');
+    if (scoreEl) scoreEl.textContent = `${totalCompletedLevels} / ${TOTAL_POSSIBLE_LEVELS} Levels`;
+    if (xpEl)    xpEl.textContent    = `${totalEarnedXP} XP`;
+    if (barFill) barFill.style.width = `${(totalCompletedLevels / TOTAL_POSSIBLE_LEVELS) * 100}%`;
+
+    /* Greeting */
+    const username = localStorage.getItem('username') || 'Coder';
+    buildGreeting(username, totalCompletedLevels, totalEarnedXP, topicsStarted);
+}
+
+function goToTopic(page) { window.location.href = page; }
+
+/* ── Theme ── */
+const themeBtn   = document.getElementById('themeToggle');
+const themeIcon  = document.getElementById('themeIcon');
+const themeModes = ['dark','light','blue'];
+const icons      = {
+    dark:  '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>',
+    light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>',
+    blue:  '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"></line>'
+};
+function applyTheme(mode) {
+    document.body.setAttribute('data-theme', mode);
+    themeIcon.innerHTML = icons[mode];
+    localStorage.setItem('dsa-theme', mode);
+}
+themeBtn.addEventListener('click', () => {
+    const cur = localStorage.getItem('dsa-theme') || 'dark';
+    applyTheme(themeModes[(themeModes.indexOf(cur)+1)%3]);
+});
+
+/* ── Hamburger ── */
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.getElementById('mobileNav').classList.toggle('open');
+});
+
+/* ── Auth display ── */
+document.addEventListener('DOMContentLoaded', () => {
+    const username = localStorage.getItem('username');
+    const token    = localStorage.getItem('token');
+    const slot     = document.getElementById('nav-user-slot');
+
+    if (token && username && slot) {
+        const initial = username.charAt(0).toUpperCase();
+        slot.innerHTML = `
+            <div class="nav-user-container">
+                <div class="user-avatar" id="userInitial">${initial}</div>
+                <div class="user-dropdown">
+                    <div class="dropdown-header">
+                        Signed in as<br><b id="fullUsername">${username}</b>
+                    </div>
+                    <button class="logout-item" onclick="handleLogout()">🚪 Log Out</button>
+                </div>
+            </div>`;
+    }
+});
+
+function handleLogout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('progress');
+    setTimeout(() => { window.location.href = 'index.html'; }, 400);
+}
+
+/* ── Events ── */
+window.addEventListener('storage', () => updateUI());
+window.addEventListener('authSynced', () => {
+    const navName = document.getElementById('fullUsername');
+    if (navName) navName.textContent = localStorage.getItem('username') || 'Student';
+    updateUI();
+});
+
+/* ── Init ── */
+applyTheme(localStorage.getItem('dsa-theme') || 'dark');
+updateUI();
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

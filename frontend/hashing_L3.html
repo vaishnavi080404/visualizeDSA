@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hashing — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="hashing_L3.css" />
+  </head>
+  <body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+    <!-- MOBILE NAV DRAWER -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="index.html">Home</a>
+      <a href="topics.html">Topics</a>
+      <a href="prerequisite.html">Prerequisites</a>
+      <a href="hashing_l1.html">Hashing Level 1</a>
+      <a href="hashing_l2.html">Hashing Level 2</a>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="breadcrumb-bar">
+        <a href="topics.html">Topics</a><span class="sep">›</span>
+        <a href="hashing_l1.html">Hashing</a><span class="sep">›</span>
+        <span>Level 3 — Real World</span>
+      </div>
+      <div class="hero-badge">🔑 Level 3 of 3</div>
+      <h1>Hashing in the <span class="highlight">Real World</span></h1>
+      <p>
+        The data structure behind every fast lookup on the planet — powering
+        password security, database indexes, browser caches, frequency counters,
+        deduplication engines, and distributed systems at scale.
+      </p>
+    </div>
+
+    <!-- CONCEPT VISUALIZER -->
+    <div class="concept-section">
+      <div class="concept-box">
+        <div class="concept-title">
+          🧠 The Core Idea — O(1) Lookup via Hash Function
+        </div>
+        <p class="concept-desc">
+          A hash function maps an input key to an integer index in a fixed-size
+          table: <strong>idx = hash(key) mod capacity</strong>. With a good hash
+          function and low load factor, this gives
+          <strong>O(1) average-case insert, search, and delete</strong> — the
+          only data structure that achieves this. The trade-off: worst-case O(n)
+          when all keys collide, no ordering, and extra memory from empty slots.
+          Everything else — deduplication, caching, frequency counting, password
+          hashing — is built on this one property.
+        </p>
+        <div style="margin-bottom: 1.5rem">
+          <div
+            style="
+              font-size: 0.72rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.8px;
+              color: var(--text-secondary);
+              margin-bottom: 1.2rem;
+              text-align: center;
+            "
+          >
+            🎮 Step through hashing — watch how keys map to slots and how
+            collisions chain
+          </div>
+          <div class="ht-row" id="conceptCells"></div>
+          <div
+            style="
+              display: flex;
+              gap: 0.6rem;
+              justify-content: center;
+              flex-wrap: wrap;
+              margin: 1rem 0;
+            "
+          >
+            <button class="d-btn go" onclick="conceptStep()">
+              ▶ Hash Next Key
+            </button>
+            <button class="d-btn reset" onclick="conceptReset()">
+              ↺ Reset
+            </button>
+          </div>
+          <div
+            style="
+              text-align: center;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 0.8rem;
+              color: var(--text-secondary);
+            "
+            id="conceptStatus"
+          >
+            Click "Hash Next Key" — watch O(1) direct slot access
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.82rem;
+              color: var(--text-secondary);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 3px;
+                background: rgba(20, 184, 166, 0.15);
+                border: 2px solid var(--primary-teal);
+              "
+            ></div>
+            Current insert
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.82rem;
+              color: var(--text-secondary);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 3px;
+                background: rgba(245, 158, 11, 0.12);
+                border: 2px solid var(--primary-orange);
+              "
+            ></div>
+            Collision (chained)
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.82rem;
+              color: var(--text-secondary);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 3px;
+                background: rgba(16, 185, 129, 0.15);
+                border: 2px solid var(--primary-green);
+              "
+            ></div>
+            Found / occupied
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPS -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(20, 184, 166, 0.15)">🌍</div>
+        Real World Applications
+      </div>
+      <p class="section-sub">
+        Hash tables are the backbone of modern software infrastructure. Every
+        time you log in, search a database, send a packet, or stream a video —
+        hashing is working behind the scenes.
+      </p>
+      <div class="app-grid">
+        <!-- 1. Password Hashing -->
+        <div class="app-card teal">
+          <div class="card-header">
+            <div class="card-icon teal">🔐</div>
+            <div class="card-title-wrap">
+              <h3>Password Security — One-Way Hash Functions</h3>
+              <p>
+                Websites never store your password — they store
+                <strong>hash(password)</strong>. On login, the server hashes
+                your input and compares to the stored hash. Even if the database
+                is stolen, an attacker sees only hashes, not passwords.
+                Algorithms like
+                <code
+                  style="
+                    color: var(--primary-teal);
+                    background: var(--code-bg);
+                    padding: 0.1rem 0.3rem;
+                    border-radius: 3px;
+                    font-size: 0.8rem;
+                  "
+                  >bcrypt</code
+                >
+                and
+                <code
+                  style="
+                    color: var(--primary-teal);
+                    background: var(--code-bg);
+                    padding: 0.1rem 0.3rem;
+                    border-radius: 3px;
+                    font-size: 0.8rem;
+                  "
+                  >Argon2</code
+                >
+                add salt + intentional slowness to prevent brute force.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Hash passwords and compare — see why one-way means cracking is
+              hard
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="pwStep()">
+                  ▶ Hash Next Password
+                </button>
+                <button class="d-btn reset" onclick="pwReset()">↺ Reset</button>
+              </div>
+              <div class="mini-cells" id="pwCells"></div>
+              <div class="status-line" id="pwStatus">
+                Hash(password) mod 11 — one-way mapping
+              </div>
+              <div class="stat-row">
+                <div class="stat-pill sp-teal">
+                  Stored: <b id="pwStored">—</b>
+                </div>
+                <div class="stat-pill sp-green">
+                  Match: <b id="pwMatch">—</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Frequency Counter -->
+        <div class="app-card cyan">
+          <div class="card-header">
+            <div class="card-icon cyan">📊</div>
+            <div class="card-title-wrap">
+              <h3>Frequency Counter — Word Count / Analytics</h3>
+              <p>
+                Hash maps are the canonical way to count occurrences:
+                <strong>freq[word]++</strong> for every word in a document. Used
+                in search engines (term frequency), log analytics (error rates),
+                social media (trending topics), and A/B testing dashboards.
+                Process millions of events in O(n) with O(k) space where k is
+                unique items.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Count word frequencies — O(n) using a hash map
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="freqStep()">
+                  ▶ Process Next Word
+                </button>
+                <button class="d-btn reset" onclick="freqReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div
+                id="freqBuckets"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 3px;
+                  margin-bottom: 0.6rem;
+                "
+              ></div>
+              <div class="status-line" id="freqStatus">
+                Count word frequencies in "the cat sat on the mat"
+              </div>
+              <div class="step-info" id="freqInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Deduplication -->
+        <div class="app-card orange">
+          <div class="card-header">
+            <div class="card-icon orange">🔍</div>
+            <div class="card-title-wrap">
+              <h3>Deduplication — Remove Duplicates in O(n)</h3>
+              <p>
+                A hash set checks "have I seen this before?" in O(1). Used in
+                <strong>data pipelines</strong> (ETL dedup), email servers
+                (prevent duplicate sends), DNS caches (don't re-resolve seen
+                domains), and graph traversal (BFS/DFS visited set). Without
+                hashing, dedup takes O(n log n) with sorting or O(n²) with naive
+                comparison.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Deduplicate a stream — hash set tracks seen elements in O(1)
+              per item
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="dedupStep()">
+                  ▶ Process Next
+                </button>
+                <button class="d-btn reset" onclick="dedupReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin-bottom: 0.3rem;
+                  text-align: center;
+                "
+              >
+                Input Stream
+              </div>
+              <div class="mini-cells" id="dedupInput"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin: 0.4rem 0 0.3rem;
+                  text-align: center;
+                "
+              >
+                Hash Set (seen)
+              </div>
+              <div class="mini-cells" id="dedupSet"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin: 0.4rem 0 0.3rem;
+                  text-align: center;
+                "
+              >
+                Output (unique only)
+              </div>
+              <div class="mini-cells" id="dedupOutput"></div>
+              <div class="status-line" id="dedupStatus">
+                Process each element — O(1) lookup per item
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. LRU Cache -->
+        <div class="app-card indigo">
+          <div class="card-header">
+            <div class="card-icon indigo">⚡</div>
+            <div class="card-title-wrap">
+              <h3>LRU Cache — O(1) Hit/Miss with Hash Map + List</h3>
+              <p>
+                Least Recently Used caching combines a
+                <strong>hash map</strong> (O(1) key lookup) with a
+                <strong>doubly-linked list</strong> (O(1) eviction of least-used
+                item). Used in CPU L1/L2 caches, browser page caches, database
+                buffer pools, CDN edge servers, and Redis. This combo gives O(1)
+                get and put — impossible with either structure alone.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 LRU cache of size 4 — access pages and watch eviction
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="lruStep()">
+                  ▶ Access Next Page
+                </button>
+                <button class="d-btn reset" onclick="lruReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="lruCells"></div>
+              <div class="status-line" id="lruStatus">
+                LRU cache: capacity = 4. Most-recent → least-recent
+              </div>
+              <div class="stat-row">
+                <div class="stat-pill sp-green">
+                  Hits: <b id="lruHits">0</b>
+                </div>
+                <div class="stat-pill sp-orange">
+                  Misses: <b id="lruMiss">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Anagram Detection -->
+        <div class="app-card purple">
+          <div class="card-header">
+            <div class="card-icon purple">🔡</div>
+            <div class="card-title-wrap">
+              <h3>Anagram Detection — O(n) String Matching</h3>
+              <p>
+                Two strings are anagrams if they have the same character
+                frequency map. Build <strong>freq[char]++</strong> for one
+                string and <strong>freq[char]--</strong> for the other — if all
+                values are 0, they're anagrams. Used in spell-checkers, search
+                engines (synonym matching), and competitive programming. The
+                classic O(n) solution vs O(n log n) sort-and-compare.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Detect anagram — build frequency maps for both strings
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="anagramStep()">
+                  ▶ Next Character
+                </button>
+                <button class="d-btn reset" onclick="anagramReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin-bottom: 0.3rem;
+                  text-align: center;
+                "
+              >
+                String A: "listen"
+              </div>
+              <div class="mini-cells" id="anagramA"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin: 0.35rem 0 0.3rem;
+                  text-align: center;
+                "
+              >
+                String B: "silent"
+              </div>
+              <div class="mini-cells" id="anagramB"></div>
+              <div class="status-line" id="anagramStatus">
+                Build frequency maps — O(n) per string
+              </div>
+              <div class="step-info" id="anagramInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Two-Sum -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">➕</div>
+            <div class="card-title-wrap">
+              <h3>Two-Sum — O(n) with Hash Map vs O(n²) Naive</h3>
+              <p>
+                The classic interview problem: find two numbers that sum to a
+                target. Naive approach: nested loops O(n²). Hash map approach:
+                store each number as a key with its index as value, then for
+                each element check if <strong>target − element</strong> is in
+                the map — O(1) lookup gives O(n) total. Used in financial
+                reconciliation, pair-matching, and collision detection.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Two-Sum with hash map — O(n) using complement lookup
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="twoSumStep()">
+                  ▶ Next Element
+                </button>
+                <button class="d-btn reset" onclick="twoSumReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="twoSumArr"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                  color: var(--text-secondary);
+                  margin: 0.4rem 0 0.3rem;
+                  text-align: center;
+                "
+              >
+                Hash Map (value → index)
+              </div>
+              <div class="mini-cells" id="twoSumMap"></div>
+              <div class="status-line" id="twoSumStatus">
+                Find two numbers that sum to 9
+              </div>
+              <div class="step-info" id="twoSumInfo"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- COMPLEXITY TABLE -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(20, 184, 166, 0.15)">⚡</div>
+        Time & Space Complexity
+      </div>
+      <p class="section-sub">
+        Hash tables offer the best average-case for key-based operations but
+        have important worst-case caveats and inherent limitations you must
+        understand before choosing one.
+      </p>
+      <div class="table-wrap">
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Average Case</th>
+              <th>Worst Case</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op">Insert</td>
+              <td class="good">O(1)</td>
+              <td class="bad">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Worst case when all keys collide into one chain
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Search / Lookup</td>
+              <td class="good">O(1)</td>
+              <td class="bad">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Traverse entire chain at collided slot in worst case
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Delete</td>
+              <td class="good">O(1)</td>
+              <td class="bad">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Must find key in chain first — O(1) avg with good hash
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Iteration</td>
+              <td class="bad" colspan="2">O(n + capacity)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Must scan all slots including empty ones — avoid large sparse
+                tables
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Rehash</td>
+              <td class="ok">O(n)</td>
+              <td class="bad">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Re-insert all n keys — amortized O(1) per insert overall
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Minimum / Maximum</td>
+              <td class="bad" colspan="2">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Hash tables are unordered — use a BST for min/max in O(log n)
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Space</td>
+              <td class="ok" colspan="2">O(n)</td>
+              <td style="color: var(--text-secondary); font-size: 0.82rem">
+                Plus empty slots — load factor 0.75 means ~33% wasted capacity
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        style="
+          margin-top: 1rem;
+          padding: 1rem 1.2rem;
+          background: rgba(20, 184, 166, 0.05);
+          border: 1px solid rgba(20, 184, 166, 0.2);
+          border-radius: 10px;
+          font-size: 0.85rem;
+          color: var(--text-secondary);
+          line-height: 1.7;
+        "
+      >
+        💡 <strong style="color: var(--text-primary)">Key insight:</strong> Hash
+        tables achieve
+        <strong style="color: var(--primary-teal)"
+          >O(1) average for all three core operations</strong
+        >
+        — insert, search, and delete. No other general-purpose data structure
+        matches this. The cost: no ordering (can't do range queries or sorted
+        iteration), worst-case O(n) with pathological inputs, and extra memory
+        from empty slots. For read-heavy workloads with exact-key lookups,
+        hashing is almost always the right choice.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- PROS & CONS -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(16, 185, 129, 0.15)">⚖️</div>
+        Advantages &amp; Disadvantages
+      </div>
+      <p class="section-sub">
+        Hash tables are the go-to for fast lookups, but every advantage has a
+        paired trade-off. Understanding both is what lets you choose confidently
+        between hashing, trees, arrays, and tries.
+      </p>
+      <div class="procon-grid">
+        <div class="procon-card pros">
+          <div class="procon-title" style="color: var(--primary-green)">
+            ✅ Advantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(1) average for insert, search, delete — unmatched</h4>
+              <p>
+                No other general data structure achieves constant-time for all
+                three operations simultaneously. Arrays give O(1) access but
+                O(n) search (unsorted). BSTs give O(log n) for all three. Hash
+                tables uniquely offer O(1) average with a good hash function.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Handles arbitrary key types — strings, objects, tuples</h4>
+              <p>
+                Unlike arrays (integer indexes 0..n), hash tables accept any
+                hashable key: strings (Python dict), UUIDs (Java HashMap),
+                composite structs (C++ unordered_map with custom hash). This
+                makes them the universal lookup table for any domain.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Frequency counting and grouping in O(n)</h4>
+              <p>
+                The pattern
+                <code
+                  style="
+                    background: var(--code-bg);
+                    padding: 0.1rem 0.3rem;
+                    border-radius: 3px;
+                    font-size: 0.78rem;
+                    color: var(--primary-teal);
+                  "
+                  >count[x]++</code
+                >
+                — counting any feature, grouping any key — runs in O(n) for n
+                items. Without hashing, counting unique items requires O(n log
+                n) sorting. Hash maps turned O(n log n) problems into O(n)
+                problems across the entire industry.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Excellent real-world performance with low load factor</h4>
+              <p>
+                Hash tables with load factor ≤ 0.75 have very few collisions in
+                practice, making average-case O(1) a near-certainty. Python
+                dict, Java HashMap, and C++ unordered_map all maintain this
+                automatically with amortized O(1) rehashing.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Deduplication, membership testing, caching — trivial</h4>
+              <p>
+                "Have I seen this before?" is a single
+                <code
+                  style="
+                    background: var(--code-bg);
+                    padding: 0.1rem 0.3rem;
+                    border-radius: 3px;
+                    font-size: 0.78rem;
+                    color: var(--primary-teal);
+                  "
+                  >set.contains(x)</code
+                >
+                call — O(1). Building dedup pipelines, BFS/DFS visited sets, and
+                LRU caches all reduce to hash table operations. This simplicity
+                makes hashing the default choice for set membership at scale.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Foundation of databases, caches, and distributed systems</h4>
+              <p>
+                Database hash indexes, Redis key storage, Memcached, consistent
+                hashing in Cassandra and DynamoDB, DNS caches, HTTP header maps
+                — all rely on hash tables. Hashing is the most practically
+                important data structure in production software.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="procon-card cons">
+          <div class="procon-title" style="color: var(--primary-red)">
+            ❌ Disadvantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>No ordering — can't do range queries or sorted iteration</h4>
+              <p>
+                Hash tables are fundamentally unordered. "Find all keys between
+                100 and 200" requires scanning every slot — O(n + capacity). A
+                BST or sorted array answers range queries in O(log n + k).
+                Choose BST when sorted access matters.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Worst-case O(n) with hash collisions / DoS attacks</h4>
+              <p>
+                A malicious attacker who knows your hash function can craft
+                inputs that all map to one slot — turning O(1) operations into
+                O(n) traversal. Languages defend with randomized hash seeds
+                (Python since 3.3, Java since JDK 1.7). Never use predictable
+                hash functions on user input.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Poor cache performance at high load — pointer chasing</h4>
+              <p>
+                Chaining hash tables follow linked-list pointers that may
+                scatter across memory. At high load (many collisions), cache
+                misses accumulate. Open addressing avoids this but has its own
+                clustering issues. Arrays are 10–100× more cache-friendly for
+                sequential access.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Memory overhead — empty slots and pointer storage</h4>
+              <p>
+                A hash table at 75% load has 25% wasted slots. Chaining adds
+                pointer overhead per node. A hash map storing 1 million integer
+                pairs may use 3–5× the raw data memory. For very compact
+                storage, sorted arrays with binary search beat hash tables.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Resizing causes O(n) latency spikes</h4>
+              <p>
+                When load factor exceeds threshold, a full rehash copies all n
+                entries into a new 2× table — one very slow O(n) operation.
+                Real-time systems (game engines, trading systems, embedded OS)
+                can't afford unpredictable latency spikes. Use pre-allocated
+                fixed-size tables instead.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Keys must be hashable and immutable</h4>
+              <p>
+                You can't use a mutable list as a hash map key (Python raises
+                TypeError). Floating-point keys are dangerous (0.1 + 0.2 ≠ 0.3
+                in hash). Custom objects need careful __hash__ + __eq__
+                implementation. Arrays, BSTs, and tries don't have key-type
+                constraints.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- WHEN TO USE -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(245, 158, 11, 0.15)">🎯</div>
+        When to Use Hashing — and When to Avoid It
+      </div>
+      <p class="section-sub">
+        Hash tables are the right default for most key-lookup problems. But
+        knowing exactly when a BST, sorted array, trie, or bloom filter beats
+        them is what separates good engineers from great ones.
+      </p>
+      <div class="when-grid">
+        <div class="when-card use">
+          <div class="when-title" style="color: var(--primary-green)">
+            ✅ Use Hashing When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔍</div>
+            <div class="when-text">
+              <h4>You need O(1) exact-key lookup</h4>
+              <p>
+                If the primary operation is "get value for this key" or "does
+                this key exist?", hash tables are unbeatable. No other
+                general-purpose structure matches O(1) average lookup by
+                arbitrary key.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📊</div>
+            <div class="when-text">
+              <h4>Counting frequencies / grouping by key</h4>
+              <p>
+                <span class="wcode">count[word]++</span>,
+                <span class="wcode">groups[category].append(item)</span> — these
+                patterns are idiomatic hash map usage. O(n) to count any feature
+                across any dataset. The go-to for analytics, log processing, and
+                competitive programming.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔄</div>
+            <div class="when-text">
+              <h4>Deduplication / membership testing at scale</h4>
+              <p>
+                Hash sets are the canonical dedup structure. BFS/DFS visited
+                sets, email dedup, URL normalization, "first unique character" —
+                all reduce to <span class="wcode">seen.add(x)</span> and
+                <span class="wcode">x in seen</span>. O(1) per item, O(k) total
+                space for k unique items.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">⚡</div>
+            <div class="when-text">
+              <h4>Caching / memoization</h4>
+              <p>
+                LRU caches, function memoization (dict in Python), database
+                query caches — all use hash maps as the lookup structure. O(1)
+                cache hit check is the key property that makes caching viable at
+                scale.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔗</div>
+            <div class="when-text">
+              <h4>Two-pointer problems reducible to complement lookup</h4>
+              <p>
+                Two-sum, subarray with target sum, pair-matching — when "have I
+                seen target−x before?" is the key question, a hash map converts
+                O(n²) or O(n log n) solutions to O(n) in one pass. Canonical
+                interview pattern.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🌐</div>
+            <div class="when-text">
+              <h4>Non-integer / string keys</h4>
+              <p>
+                Arrays require integer indexes 0..n. For string keys, UUID keys,
+                or composite keys, hash maps are the natural choice.
+                <span class="wcode">userMap[userId]</span>,
+                <span class="wcode">cache[url]</span>,
+                <span class="wcode">config[featureFlag]</span> — all standard
+                hash map usage.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="when-card avoid">
+          <div class="when-title" style="color: var(--primary-red)">
+            ❌ Avoid Hashing When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📈</div>
+            <div class="when-text">
+              <h4>You need sorted iteration or range queries</h4>
+              <p>
+                If you need "all keys between A and B" or sorted traversal, use
+                a BST (TreeMap/TreeSet in Java, SortedDict in Python). Hash
+                tables can't answer range queries without a full O(n) scan —
+                they're fundamentally unordered.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🏔️</div>
+            <div class="when-text">
+              <h4>Floor / ceiling / predecessor queries</h4>
+              <p>
+                "Find the largest key ≤ x" requires ordered data. Self-balancing
+                BSTs (AVL, Red-Black) answer these in O(log n). Hash tables have
+                no concept of ordering — you'd need to sort all keys first,
+                destroying the O(1) advantage.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">⏱️</div>
+            <div class="when-text">
+              <h4>Hard real-time constraints (no GC pauses / resize spikes)</h4>
+              <p>
+                Game engines, HFT systems, and embedded OS kernels can't accept
+                O(n) rehash pauses. Use fixed-size open-addressed tables or
+                robin-hood hashing with tombstones that never resize. Or use
+                arrays with pre-computed indexes.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔠</div>
+            <div class="when-text">
+              <h4>Prefix / autocomplete queries on strings</h4>
+              <p>
+                "All words starting with 'pre'" requires a Trie —
+                O(prefix_length) per query. A hash map storing the full word can
+                only do exact-match lookup; it has no concept of prefix sharing
+                or partial key matching.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">💾</div>
+            <div class="when-text">
+              <h4>Extremely memory-constrained environments</h4>
+              <p>
+                Empty hash table slots and chain pointers waste memory. For
+                billions of boolean flags (e.g., "is this IP address seen?"), a
+                Bloom Filter uses 10 bits/element with zero false negatives up
+                to a configurable false-positive rate. A hash set uses ~100×
+                more memory for the same task.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔒</div>
+            <div class="when-text">
+              <h4>Security-critical hash functions (don't roll your own)</h4>
+              <p>
+                Never use simple modular hash functions (sum of chars % size)
+                for security. An attacker can trivially craft collisions. Use
+                cryptographic hashes (SHA-256, bcrypt, Argon2) for passwords,
+                file integrity, and digital signatures. General-purpose hash
+                tables use non-cryptographic hashes for speed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+        <div class="cta-title">
+          Challenge yourself with<br /><span class="glow"
+            >real Hashing problems</span
+          >
+        </div>
+        <p class="cta-sub">
+          You've seen how hash tables power password security, frequency
+          counting, deduplication, LRU caches, anagram detection, and
+          two-sum.<br />Now prove you can apply these patterns to classic
+          interview and competitive programming problems.
+        </p>
+        <div class="hash-cta-viz">
+          <div
+            class="hcell"
+            style="
+              background: rgba(20, 184, 166, 0.12);
+              border-color: rgba(20, 184, 166, 0.35);
+              color: var(--primary-teal);
+            "
+          >
+            0
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(6, 182, 212, 0.1);
+              border-color: rgba(6, 182, 212, 0.3);
+              color: var(--primary-cyan);
+            "
+          >
+            →k
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(20, 184, 166, 0.18);
+              border-color: rgba(20, 184, 166, 0.5);
+              color: var(--primary-teal);
+            "
+          >
+            3
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(16, 185, 129, 0.1);
+              border-color: rgba(16, 185, 129, 0.3);
+              color: var(--primary-green);
+            "
+          >
+            ✓
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(20, 184, 166, 0.12);
+              border-color: rgba(20, 184, 166, 0.35);
+              color: var(--primary-teal);
+            "
+          >
+            6
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(245, 158, 11, 0.1);
+              border-color: rgba(245, 158, 11, 0.3);
+              color: var(--primary-orange);
+            "
+          >
+            col
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(20, 184, 166, 0.18);
+              border-color: rgba(20, 184, 166, 0.5);
+              color: var(--primary-teal);
+            "
+          >
+            2
+          </div>
+          <div
+            class="hcell"
+            style="
+              background: rgba(6, 182, 212, 0.1);
+              border-color: rgba(6, 182, 212, 0.3);
+              color: var(--primary-cyan);
+            "
+          >
+            O(1)
+          </div>
+        </div>
+        <a href="practice.html?topic=hashing" class="cta-btn">
+          <span>🔑 Solve Hashing Problems</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <script src="hashing_L3.js"></script>
+  <link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

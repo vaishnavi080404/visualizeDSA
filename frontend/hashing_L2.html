@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashing - Level 2 | DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        --dark-bg: #0a0a0a;
+        --card-bg: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a2a;
+        --nav-bg: rgba(10,10,10,0.95);
+        --code-bg: #0d1117;
+        --terminal-bg: #0d1117;
+        --nav-height: 64px;
+    }
+    [data-theme="light"] {
+        --dark-bg: #f8fafc; --card-bg: #ffffff; --text-primary: #0f172a;
+        --text-secondary: #475569; --border-color: #e2e8f0;
+        --nav-bg: rgba(248,250,252,0.95); --code-bg: #f1f5f9;
+        --terminal-bg: #f1f5f9; --primary-cyan: #0891b2; --primary-green: #059669;
+    }
+    [data-theme="blue"] {
+        --dark-bg: #011425; --card-bg: #1e293b; --text-primary: #ffffff;
+        --text-secondary: #94a3b8; --border-color: #242424;
+        --nav-bg: rgba(1,20,37,0.95); --code-bg: #011425; --terminal-bg: #011425;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--dark-bg); color: var(--text-primary);
+        line-height: 1.6; transition: background 0.3s ease, color 0.3s ease;
+        overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+        position: fixed; top: 0; left: 0; right: 0; width: 100%;
+        z-index: 10000; background: var(--nav-bg);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color); height: var(--nav-height);
+    }
+    .nav-container {
+        max-width: 1400px; margin: 0 auto; padding: 0 1.5rem;
+        height: 100%; display: flex; justify-content: space-between;
+        align-items: center; gap: 1rem;
+    }
+    .logo {
+        display: flex; align-items: center; gap: 0.5rem;
+        font-size: 1.1rem; font-weight: 700; text-decoration: none;
+        color: var(--text-primary); flex-shrink: 0;
+    }
+    .logo-icon {
+        width: 36px; height: 36px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; flex-shrink: 0;
+    }
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+        color: var(--text-secondary); text-decoration: none;
+        font-size: 0.9rem; font-weight: 500; transition: color 0.2s; white-space: nowrap;
+    }
+    .nav-links a:hover { color: var(--primary-green); }
+
+    /* nav-right: hamburger + theme toggle + user slot */
+    .nav-right {
+        display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0;
+    }
+    .theme-toggle {
+        background: var(--card-bg); border: 1px solid var(--border-color);
+        color: var(--text-primary); cursor: pointer; width: 38px; height: 38px;
+        border-radius: 10px; display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; flex-shrink: 0;
+    }
+    .theme-toggle:hover { border-color: var(--primary-green); color: var(--primary-green); }
+    .theme-toggle svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .hamburger-btn {
+        display: none; background: var(--card-bg); border: 1px solid var(--border-color);
+        color: var(--text-primary); cursor: pointer; width: 38px; height: 38px;
+        border-radius: 10px; flex-direction: column; align-items: center;
+        justify-content: center; gap: 5px; transition: all 0.2s; flex-shrink: 0;
+    }
+    .ham-line {
+        width: 18px; height: 2px; background: currentColor;
+        border-radius: 2px; transition: all 0.2s; display: block;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+        max-width: 1200px; margin: 0 auto;
+        padding: calc(var(--nav-height) + 2rem) 1.25rem 4rem;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb {
+        display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1.5rem;
+        font-size: 0.85rem; color: var(--text-secondary); flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--primary-cyan); }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header { margin-bottom: 2rem; }
+    .page-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800;
+        margin-bottom: 0.4rem; line-height: 1.15;
+    }
+    .content-text { color: var(--text-secondary); font-size: clamp(0.9rem, 2vw, 1.05rem); margin-bottom: 1rem; }
+    .level-tabs { display: flex; gap: 0.6rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .level-tab {
+        padding: 0.5rem 1.25rem; background: var(--card-bg);
+        border: 1px solid var(--border-color); border-radius: 50px;
+        color: var(--text-secondary); font-weight: 600; font-size: 0.82rem; white-space: nowrap;
+    }
+    .level-tab.active { background: var(--primary-cyan); color: white; border-color: var(--primary-cyan); }
+
+    /* ===== IMPLEMENTATION SELECTOR ===== */
+    .implementation-selector {
+        display: flex; gap: 0.75rem; margin: 1.5rem 0; padding: 0.75rem;
+        background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color);
+        justify-content: center; flex-wrap: wrap;
+    }
+    .impl-option {
+        padding: 0.9rem 1.5rem; background: var(--code-bg);
+        border: 2px solid var(--border-color); border-radius: 12px;
+        cursor: pointer; transition: all 0.3s; text-align: center;
+        min-width: 150px; flex: 1;
+    }
+    .impl-option:hover { border-color: var(--primary-cyan); transform: translateY(-2px); }
+    .impl-option.active {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        border-color: var(--primary-cyan); color: white;
+        box-shadow: 0 4px 15px rgba(6,182,212,0.3);
+    }
+    .impl-option-icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .impl-option-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .impl-option-desc { font-size: 0.78rem; color: var(--text-secondary); }
+    .impl-option.active .impl-option-desc { color: rgba(255,255,255,0.8); }
+
+    /* ===== VISUALIZER GRID ===== */
+    .visualizer-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start; }
+    .pseudo-code-container {
+        background: var(--card-bg); border-radius: 14px; padding: 1.25rem;
+        border: 1px solid var(--border-color); max-height: 520px;
+        overflow-y: auto; position: sticky; top: calc(var(--nav-height) + 1rem);
+    }
+    .pseudo-code-container h5 {
+        color: var(--primary-orange); font-weight: 700; margin-bottom: 1rem;
+        text-align: center; font-family: 'Space Grotesk', sans-serif;
+        font-size: 1rem; letter-spacing: 1px;
+    }
+    .pseudo-step {
+        background: var(--code-bg); padding: 0.75rem 1rem; margin: 0.5rem 0;
+        border-radius: 8px; color: var(--text-secondary);
+        border-left: 3px solid transparent; transition: all 0.3s;
+        font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.6;
+    }
+    .pseudo-step.active {
+        background: linear-gradient(90deg, var(--primary-cyan), #00a8a8);
+        color: #000; border-left-color: var(--primary-orange);
+        transform: translateX(4px); box-shadow: 0 4px 12px rgba(6,182,212,0.3); font-weight: 600;
+    }
+    .pseudo-step strong { color: var(--primary-cyan); }
+    .pseudo-step.active strong { color: #000; font-weight: 800; }
+
+    /* ===== VISUALIZATION CARD ===== */
+    .visualization-card {
+        background: var(--card-bg); border-radius: 18px;
+        border: 1px solid var(--border-color); overflow: hidden;
+    }
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        padding: 1rem 1.5rem;
+    }
+    .card-header h5 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(0.9rem, 2vw, 1.1rem); font-weight: 700; color: white; margin: 0;
+    }
+    .card-body { background: var(--code-bg); padding: 1.5rem; min-height: 300px; }
+    .card-footer { background: var(--card-bg); padding: 1rem 1.25rem; border-top: 2px solid var(--border-color); }
+
+    /* ===== HASH TABLE VISUAL ===== */
+    .hash-vis-container {
+        display: flex; flex-direction: column; align-items: center; gap: 1rem; width: 100%;
+    }
+    .hash-table-grid {
+        display: flex; flex-direction: column; gap: 4px;
+        width: 100%; max-width: 500px;
+    }
+    .hash-row {
+        display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace;
+    }
+    .hash-idx {
+        width: 36px; height: 36px; background: var(--dark-bg);
+        border: 1px solid var(--border-color); border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); flex-shrink: 0;
+    }
+    .hash-bucket {
+        flex: 1; min-height: 36px; background: var(--dark-bg);
+        border: 1px solid var(--border-color); border-radius: 6px;
+        display: flex; align-items: center; padding: 4px 10px; gap: 6px;
+        flex-wrap: wrap; transition: all 0.3s;
+    }
+    .hash-bucket.active { border-color: var(--primary-cyan); background: rgba(6,182,212,0.06); }
+    .hash-bucket.collision { border-color: var(--primary-orange); background: rgba(245,158,11,0.06); }
+    .bucket-item {
+        padding: 3px 10px; border-radius: 5px; font-size: 0.78rem;
+        font-weight: 700; animation: popIn 0.35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn { from { opacity:0; transform:scale(0.6); } to { opacity:1; transform:scale(1); } }
+    .bucket-item.map-item { background: rgba(16,185,129,0.2); color: var(--primary-green); border: 1px solid var(--primary-green); }
+    .bucket-item.set-item { background: rgba(139,92,246,0.2); color: var(--primary-purple); border: 1px solid var(--primary-purple); }
+    .bucket-item.removing { animation: fadeOut 0.35s ease forwards; }
+    @keyframes fadeOut { to { opacity:0; transform:scale(0.6); } }
+    .bucket-empty { color: var(--border-color); font-size: 0.72rem; }
+    .arrow-chain { color: var(--primary-cyan); font-size: 0.75rem; font-weight: 700; }
+
+    /* ===== MSG BOX ===== */
+    #msg_show {
+        text-align: center; margin-top: 0.75rem; font-size: 0.88rem;
+        padding: 0.7rem 1rem; border-radius: 8px; min-height: 40px;
+        display: none; width: 100%; font-family: 'JetBrains Mono', monospace;
+    }
+    .alert-success { background: rgba(16,185,129,0.12); border: 1.5px solid var(--primary-green); color: var(--primary-green); }
+    .alert-danger  { background: rgba(239,68,68,0.12);  border: 1.5px solid var(--primary-red);   color: var(--primary-red); }
+    .alert-info    { background: rgba(6,182,212,0.12);  border: 1.5px solid var(--primary-cyan);  color: var(--primary-cyan); }
+    .alert-warn    { background: rgba(245,158,11,0.12); border: 1.5px solid var(--primary-orange);color: var(--primary-orange); }
+
+    /* ===== FOOTER CONTROLS ===== */
+    .footer-top { display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; margin-bottom: 0.75rem; align-items: center; }
+    .footer-top-left { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .footer-bottom-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+    .form-control {
+        background: var(--dark-bg); border: 2px solid var(--border-color);
+        color: var(--text-primary); border-radius: 8px; padding: 0.55rem 0.9rem;
+        font-family: 'Inter', sans-serif; font-size: 0.88rem; outline: none;
+        transition: border-color 0.2s; flex: 1; min-width: 100px;
+    }
+    .form-control:focus { border-color: var(--primary-cyan); }
+    .form-control::placeholder { color: var(--text-secondary); opacity: 0.6; }
+    .btn {
+        border: none; font-weight: 700; padding: 0.55rem 1rem; border-radius: 8px;
+        transition: all 0.2s; cursor: pointer; font-family: 'Inter', sans-serif;
+        font-size: 0.85rem; white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-success { background: linear-gradient(135deg, var(--primary-green), #059669); color: #fff; }
+    .btn-danger  { background: linear-gradient(135deg, var(--primary-red), #dc2626);   color: #fff; }
+    .btn-primary { background: linear-gradient(135deg, var(--primary-cyan), #0891b2);  color: #fff; }
+    .btn-info    { background: linear-gradient(135deg, #3b82f6, #2563eb);              color: #fff; }
+    .btn-warning { background: linear-gradient(135deg, var(--primary-orange), #d97706);color: #fff; }
+
+    /* ===== SECTION CARD ===== */
+    .section-card {
+        background: var(--card-bg); border: 1px solid var(--border-color);
+        border-radius: 20px; padding: clamp(1.25rem, 4vw, 2.5rem); margin-bottom: 2rem;
+    }
+    .section-header {
+        display: flex; align-items: center; gap: 0.9rem;
+        margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .section-icon {
+        width: 46px; height: 46px; min-width: 46px;
+        background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+        border-radius: 12px; display: flex; align-items: center;
+        justify-content: center; font-size: 1.25rem; color: white;
+    }
+    .section-title { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; }
+    .content-title {
+        font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 600;
+        margin-bottom: 0.75rem; color: var(--primary-cyan);
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* ===== SCENARIO SECTION ===== */
+    .scenario-tabs {
+        display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.75rem;
+        margin-bottom: 1.25rem; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .scenario-tabs::-webkit-scrollbar { display: none; }
+    .scenario-tab {
+        white-space: nowrap; padding: 0.5rem 1.1rem; border-radius: 50px;
+        border: 1px solid var(--border-color); background: var(--card-bg);
+        color: var(--text-secondary); cursor: pointer; font-weight: 600;
+        font-size: 0.82rem; transition: all 0.2s; flex-shrink: 0;
+    }
+    .scenario-tab:hover { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+    .scenario-tab.active-insert  { background: var(--primary-green);  border-color: var(--primary-green);  color: #fff; }
+    .scenario-tab.active-search  { background: var(--primary-cyan);   border-color: var(--primary-cyan);   color: #fff; }
+    .scenario-tab.active-delete  { background: var(--primary-red);    border-color: var(--primary-red);    color: #fff; }
+    .scenario-tab.active-collide { background: var(--primary-orange);  border-color: var(--primary-orange); color: #fff; }
+    .scenario-tab.active-custom  { background: var(--primary-purple);  border-color: var(--primary-purple); color: #fff; }
+
+    .scenario-panel  { display: none; }
+    .scenario-panel.active { display: block; }
+    .scenario-inner {
+        background: var(--code-bg); border: 1px solid var(--border-color);
+        border-radius: 14px; padding: clamp(1rem, 3vw, 1.8rem);
+    }
+    .scenario-inner h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .scenario-inner p  { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.1rem; line-height: 1.6; }
+    .scenario-divider  { border: none; border-top: 1px solid var(--border-color); margin: 0.9rem 0 1.1rem; }
+    .input-label {
+        display: flex; align-items: center; gap: 0.5rem;
+        color: var(--text-secondary); font-size: 0.82rem; font-weight: 600;
+        margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* ===== HASH STAGE (scenarios) ===== */
+    .hash-stage { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem; }
+    .ht-panel {
+        background: var(--terminal-bg); border: 1px solid var(--border-color);
+        border-radius: 12px; padding: 1rem;
+    }
+    .ht-panel-title {
+        font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 1px; color: var(--primary-cyan);
+        margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .ht-rows, .hash-table-grid { display: flex; flex-direction: column; gap: 3px; }
+    .ht-row { display: flex; align-items: center; gap: 6px; min-height: 30px; }
+    .ht-idx {
+        width: 28px; height: 28px; background: var(--dark-bg); border: 1px solid var(--border-color);
+        border-radius: 5px; display: flex; align-items: center; justify-content: center;
+        font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); flex-shrink: 0;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    .ht-bucket {
+        flex: 1; min-height: 28px; background: var(--dark-bg);
+        border: 1px solid var(--border-color); border-radius: 5px;
+        display: flex; align-items: center; padding: 3px 8px; gap: 5px;
+        flex-wrap: wrap; transition: all 0.3s; font-family: 'JetBrains Mono', monospace;
+    }
+    .ht-bucket.ht-active  { border-color: var(--primary-cyan); background: rgba(6,182,212,0.08); }
+    .ht-bucket.ht-found   { border-color: var(--primary-green); background: rgba(16,185,129,0.1); }
+    .ht-bucket.ht-delete  { border-color: var(--primary-red); background: rgba(239,68,68,0.08); }
+    .ht-bucket.ht-collide { border-color: var(--primary-orange); background: rgba(245,158,11,0.08); }
+    .ht-chip {
+        padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;
+        animation: popIn 0.35s both;
+    }
+    .chip-map { background: rgba(16,185,129,0.2); color: var(--primary-green); border: 1px solid var(--primary-green); }
+    .chip-set { background: rgba(139,92,246,0.2); color: var(--primary-purple); border: 1px solid var(--primary-purple); }
+    .chip-highlight { background: rgba(6,182,212,0.25); color: var(--primary-cyan); border: 1px solid var(--primary-cyan); }
+    .chip-del { background: rgba(239,68,68,0.2); color: var(--primary-red); border: 1px solid var(--primary-red); animation: fadeOut 0.4s ease forwards; }
+    .chip-collide { background: rgba(245,158,11,0.2); color: var(--primary-orange); border: 1px solid var(--primary-orange); }
+    .ht-empty { color: var(--border-color); font-size: 0.65rem; }
+
+    /* ===== LOG PANEL ===== */
+    .log-panel {
+        background: var(--terminal-bg); border: 1px solid var(--border-color);
+        border-radius: 10px; padding: 0.9rem 1rem;
+        font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+        min-height: 160px; max-height: 230px; overflow-y: auto;
+    }
+    .log-title { color: var(--primary-cyan); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem; font-weight: 700; }
+    .log-entry { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04); animation: fadeLog 0.3s ease both; line-height: 1.5; }
+    @keyframes fadeLog { from { opacity:0; transform:translateX(-6px); } to { opacity:1; transform:translateX(0); } }
+    .log-insert { color: var(--primary-green); }
+    .log-search { color: var(--primary-cyan); }
+    .log-delete { color: var(--primary-red); }
+    .log-info   { color: var(--text-secondary); }
+    .log-warn   { color: var(--primary-orange); }
+    .log-result { color: var(--primary-purple); font-weight: 700; }
+
+    /* ===== CTL BUTTONS ===== */
+    .ctl-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.9rem; flex-wrap: wrap; }
+    .ctl-btn {
+        padding: 7px 16px; border-radius: 7px; border: none; font-weight: 700;
+        font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+        font-family: 'Inter', sans-serif; white-space: nowrap; flex-shrink: 0;
+    }
+    .ctl-btn:hover { transform: translateY(-1px); }
+    .ctl-btn-green  { background: var(--primary-green); color: #fff; }
+    .ctl-btn-green:hover  { box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+    .ctl-btn-red    { background: var(--primary-red);   color: #fff; }
+    .ctl-btn-red:hover    { box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+    .ctl-btn-cyan   { background: var(--primary-cyan);  color: #000; }
+    .ctl-btn-cyan:hover   { box-shadow: 0 4px 12px rgba(6,182,212,0.4); }
+    .ctl-btn-orange { background: var(--primary-orange);color: #000; }
+    .ctl-btn-orange:hover { box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+    .ctl-btn-purple { background: var(--primary-purple);color: #fff; }
+    .ctl-btn-purple:hover { box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+    .ctl-btn-ghost  { background: var(--code-bg); color: var(--text-secondary); border: 1.5px solid var(--border-color); }
+    .ctl-btn-ghost:hover  { border-color: var(--primary-cyan); color: var(--primary-cyan); }
+    .ctl-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+    .custom-input-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.9rem; }
+    .custom-val-input {
+        width: 100px; padding: 7px 10px; background: var(--code-bg);
+        border: 2px solid var(--border-color); border-radius: 8px;
+        color: var(--text-primary); font-family: 'JetBrains Mono', monospace;
+        font-size: 0.88rem; outline: none; transition: border-color 0.2s; flex-shrink: 0;
+    }
+    .custom-val-input:focus { border-color: var(--primary-cyan); }
+
+    /* ===== COMPLEXITY CARDS ===== */
+    .cc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem; margin-bottom: 0.85rem; }
+    .cc-card {
+        background: rgba(0,0,0,0.28); border: 1.5px solid rgba(0,255,255,0.1);
+        border-radius: 10px; padding: 0.8rem 0.9rem; transition: all 0.25s; text-align: center;
+    }
+    .cc-card.cc-active { border-color: var(--primary-cyan); box-shadow: 0 0 14px rgba(6,182,212,0.25); transform: translateY(-2px); }
+    .cc-op   { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.4rem; }
+    .cc-val  { font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; font-weight: 700; }
+    .cc-green  { color: var(--primary-green); }
+    .cc-orange { color: var(--primary-orange); }
+    .cc-red    { color: var(--primary-red); }
+    .cc-label  { font-size: 0.65rem; color: var(--text-secondary); margin-top: 0.2rem; }
+
+    .cc-toast {
+        display: none; align-items: center; gap: 0.5rem; padding: 0.45rem 0.9rem;
+        border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+        font-weight: 700; letter-spacing: 0.4px; margin-bottom: 0.35rem;
+        animation: toastIn 0.3s ease both; border: 1.5px solid; flex-wrap: wrap;
+    }
+    .cc-toast.show { display: flex; }
+    .cc-toast.toast-insert { background: rgba(16,185,129,0.08); border-color: var(--primary-green); color: var(--primary-green); }
+    .cc-toast.toast-search { background: rgba(6,182,212,0.08); border-color: var(--primary-cyan); color: var(--primary-cyan); }
+    .cc-toast.toast-delete { background: rgba(239,68,68,0.08); border-color: var(--primary-red); color: var(--primary-red); }
+    .cc-toast.toast-warn   { background: rgba(245,158,11,0.08); border-color: var(--primary-orange); color: var(--primary-orange); }
+    @keyframes toastIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ===== CODE EDITOR ===== */
+    .lang-tabs {
+        display: flex; gap: 0.35rem; margin-bottom: 0.75rem;
+        overflow-x: auto; -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; padding-bottom: 2px;
+    }
+    .lang-tabs::-webkit-scrollbar { display: none; }
+    .lang-tab {
+        padding: 0.45rem 0.9rem; border-radius: 8px; border: none;
+        background: var(--border-color); color: var(--text-secondary);
+        cursor: pointer; font-size: 0.78rem; font-weight: 600;
+        white-space: nowrap; flex-shrink: 0; transition: all 0.2s;
+    }
+    .lang-tab.active { background: var(--primary-cyan); color: white; }
+    .editor-wrapper { border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; }
+    .editor-header {
+        background: rgba(6,182,212,0.08); padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .lang-display { font-size: 0.85rem; font-weight: 600; }
+    .code-copy {
+        width: 44px; height: 36px; background: var(--primary-purple);
+        border: none; border-radius: 8px; display: flex; align-items: center;
+        justify-content: center; cursor: pointer; color: white;
+        font-size: 0.8rem; font-weight: 600; transition: all 0.2s;
+    }
+    .code-copy:hover { background: #7c3aed; }
+    .run-code-btn {
+        background: linear-gradient(90deg, var(--primary-green), #059669);
+        color: white; border: none; padding: 0.7rem 1.5rem; border-radius: 8px;
+        font-weight: 700; cursor: pointer; margin-top: 0.9rem; transition: all 0.2s;
+        font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .run-code-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16,185,129,0.3); }
+    .output-container {
+        background: var(--terminal-bg); padding: 1rem; border-radius: 10px;
+        margin-top: 0.9rem; font-family: 'JetBrains Mono', monospace;
+        font-size: 0.82rem; border: 1px solid var(--border-color);
+    }
+    .output-container h6 { color: var(--primary-cyan); margin-bottom: 0.6rem; font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; }
+    .input-prompt {
+        background: var(--card-bg); padding: 0.9rem; border-radius: 8px;
+        margin-top: 0.75rem; border: 1px solid var(--border-color);
+        display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .input-prompt input {
+        background: var(--dark-bg); border: 2px solid var(--border-color);
+        color: var(--text-primary); border-radius: 6px; padding: 7px 11px;
+        font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+        outline: none; flex: 1; min-width: 100px;
+    }
+    .input-prompt button {
+        background: var(--primary-cyan); color: white; border: none;
+        padding: 7px 14px; border-radius: 6px; cursor: pointer;
+        font-weight: 600; font-size: 0.85rem; transition: all 0.2s;
+    }
+    /* CodeMirror sizing */
+    .CodeMirror {
+        height: clamp(240px, 45vw, 360px) !important;
+        font-size: clamp(12px, 1.8vw, 14px) !important;
+        border-radius: 0 0 12px 12px;
+    }
+
+    /* ===== LEVEL NAV ===== */
+    .level-wrapper {
+        display: flex; align-items: center; justify-content: space-between;
+        position: relative; padding: 0 10px; height: 90px;
+        max-width: 600px; margin: 0 auto;
+    }
+    .level-wrapper button {
+        position: relative; z-index: 20; width: clamp(80px, 22vw, 130px);
+        padding: 0.75rem 0.5rem; border-radius: 12px; border: 2px solid var(--border-color);
+        background: var(--dark-bg); color: var(--text-primary); font-weight: 800;
+        cursor: pointer; transition: all 0.3s; font-family: 'Inter', sans-serif;
+        font-size: clamp(0.72rem, 2vw, 0.9rem); text-align: center;
+    }
+    .level-wrapper button:hover { border-color: var(--primary-cyan); }
+    #l2 { border-color: var(--primary-cyan); background: rgba(6,182,212,0.12); color: var(--primary-cyan) !important; box-shadow: 0 0 14px rgba(6,182,212,0.2); }
+    .slider {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        height: 4px; background: var(--border-color); z-index: 1; pointer-events: none;
+    }
+    #slider1 { left: calc(clamp(80px, 22vw, 130px) + 10px); right: calc(50% + clamp(40px, 11vw, 65px)); }
+    #slider2 { left: calc(50% + clamp(40px, 11vw, 65px)); right: calc(clamp(80px, 22vw, 130px) + 10px); }
+    .slider.active { background: linear-gradient(90deg, var(--primary-cyan), var(--primary-purple)); box-shadow: 0 0 14px var(--primary-cyan); }
+
+    /* ===== MODAL ===== */
+    .level-modal {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); backdrop-filter: blur(15px);
+        z-index: 100000; justify-content: center; align-items: center; padding: 1rem;
+    }
+    .level-modal-content {
+        background: var(--card-bg); border: 2px solid var(--primary-purple);
+        padding: clamp(1.5rem, 5vw, 3rem); border-radius: 24px;
+        max-width: 420px; width: 100%; text-align: center;
+        box-shadow: 0 0 50px rgba(139,92,246,0.35);
+    }
+    .level-modal-buttons { display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+    #startQuiz {
+        background: var(--primary-cyan); color: white; min-width: 80px; height: 38px;
+        border-radius: 20px; border: none; cursor: pointer; font-weight: 700;
+        font-size: 0.88rem; padding: 0 1.25rem; transition: all 0.2s;
+    }
+    #startQuiz:hover { box-shadow: 0 0 14px var(--primary-cyan); }
+    #cancelBtn {
+        background: var(--border-color); color: var(--text-primary); min-width: 80px;
+        height: 38px; border-radius: 20px; border: none; cursor: pointer;
+        font-weight: 700; font-size: 0.88rem; padding: 0 1.25rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+        .visualizer-grid { grid-template-columns: 1fr; }
+        .pseudo-code-container { position: static; order: 2; max-height: 280px; }
+    }
+    @media (max-width: 768px) {
+        :root { --nav-height: 60px; }
+        .nav-links { display: none; }
+        .hamburger-btn { display: flex; }
+        .implementation-selector { flex-direction: column; }
+        .impl-option { min-width: 0; flex: none; }
+        .hash-stage { grid-template-columns: 1fr; }
+        .cc-grid { grid-template-columns: repeat(2, 1fr); }
+        .footer-top { grid-template-columns: 1fr; }
+        .footer-bottom-btns { grid-template-columns: repeat(3, 1fr); }
+        .ctl-row { flex-wrap: wrap; }
+        .ctl-btn { flex: 1; min-width: 80px; text-align: center; }
+    }
+    @media (max-width: 480px) {
+        :root { --nav-height: 56px; }
+        .section-card { padding: 1rem; }
+        .cc-grid { grid-template-columns: repeat(2, 1fr); }
+        .footer-bottom-btns { grid-template-columns: 1fr 1fr; }
+        .run-code-btn { width: 100%; justify-content: center; }
+    }
+    </style>
+</head>
+<body data-theme="dark">
+
+<!-- ===== NAVBAR — same pattern as hashing_basics (file 2) ===== -->
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="index.html">
+            <div class="logo-icon">
+                <img src="dsa.gif" alt="Logo" onerror="this.style.display='none'">
+            </div>
+            <span>DSA Visualizer</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="prerequisite.html">Prerequisites</a></li>
+            <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+            </button>
+            <div id="nav-user-slot"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="container">
+
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a>
+        <span>›</span>
+        <a href="hashing_basics.html">Hashing</a>
+        <span>›</span>
+        <span>Level 2</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Hashing — Interactive Visualizer</h1>
+        <p class="content-text">Visualize Hash Map and Hash Set operations in real-time — insert, search, delete and collision handling.</p>
+        <div class="level-tabs">
+            <div class="level-tab">Level 1 of 3 | Basics</div>
+            <div class="level-tab active">Level 2 of 3 | Interactive</div>
+        </div>
+    </div>
+
+    <!-- Implementation Selector -->
+    <div class="implementation-selector">
+        <div class="impl-option active" data-type="hashmap" onclick="switchImpl('hashmap')">
+            <div class="impl-option-icon">🗂️</div>
+            <div class="impl-option-title">Hash Map</div>
+            <div class="impl-option-desc">Key → Value pairs</div>
+        </div>
+        <div class="impl-option" data-type="hashset" onclick="switchImpl('hashset')">
+            <div class="impl-option-icon">🔑</div>
+            <div class="impl-option-title">Hash Set</div>
+            <div class="impl-option-desc">Unique keys only</div>
+        </div>
+    </div>
+
+    <!-- Visualizer Grid -->
+    <div class="visualizer-grid">
+        <!-- Pseudocode -->
+        <div class="pseudo-code-container">
+            <h5>📋 PSEUDO CODE</h5>
+            <div class="pseudo-step" data-step="insert">
+                <strong>INSERT:</strong> Add key to table<br>
+                <span id="pseudo-insert-text">idx = hash(key) mod size<br>table[idx].add(key→val)</span>
+            </div>
+            <div class="pseudo-step" data-step="search">
+                <strong>SEARCH:</strong> Lookup by key<br>
+                <span id="pseudo-search-text">idx = hash(key) mod size<br>return table[idx].find(key)</span>
+            </div>
+            <div class="pseudo-step" data-step="delete">
+                <strong>DELETE:</strong> Remove key<br>
+                <span id="pseudo-delete-text">idx = hash(key) mod size<br>table[idx].remove(key)</span>
+            </div>
+            <div class="pseudo-step" data-step="contains">
+                <strong>CONTAINS:</strong> Check key exists<br>
+                <span id="pseudo-contains-text">idx = hash(key) mod size<br>return key in table[idx]</span>
+            </div>
+            <div class="pseudo-step" data-step="size">
+                <strong>SIZE:</strong> Count of entries<br>
+                <span id="pseudo-size-text">return total entries</span>
+            </div>
+        </div>
+
+        <!-- Main Visualizer -->
+        <div>
+            <div class="visualization-card">
+                <div class="card-header">
+                    <h5 id="visualizer-title">Hash Map Visualizer — Chaining (size = 7)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="hash-vis-container">
+                        <div class="hash-table-grid" id="mainHashTable"></div>
+                        <div id="msg_show"></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="footer-top">
+                        <div class="footer-top-left">
+                            <input type="text" id="keyInput" class="form-control" placeholder="Key (e.g. apple)">
+                            <input type="text" id="valInput" class="form-control" placeholder="Value (optional)">
+                            <button class="btn btn-success" onclick="mainInsert()">Insert</button>
+                        </div>
+                        <button class="btn btn-danger" onclick="mainDelete()">Delete</button>
+                    </div>
+                    <div class="footer-bottom-btns">
+                        <button class="btn btn-primary" onclick="mainSearch()">Search</button>
+                        <button class="btn btn-info"    onclick="mainContains()">Contains</button>
+                        <button class="btn btn-warning" onclick="mainSize()">Size</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCENARIOS ===== -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🧪</div>
+            <h2 class="section-title">Try Different Scenarios</h2>
+        </div>
+
+        <div class="scenario-tabs">
+            <button class="scenario-tab active-insert" id="stab-insert" onclick="switchScenario('insert')">⬆ Insert</button>
+            <button class="scenario-tab" id="stab-search" onclick="switchScenario('search')">🔍 Search</button>
+            <button class="scenario-tab" id="stab-delete" onclick="switchScenario('delete')">🗑 Delete</button>
+            <button class="scenario-tab" id="stab-collide" onclick="switchScenario('collide')">💥 Collision</button>
+            <button class="scenario-tab" id="stab-custom" onclick="switchScenario('custom')">✏ Custom</button>
+        </div>
+
+        <div class="scenario-panels">
+
+            <!-- INSERT -->
+            <div class="scenario-panel active" id="spanel-insert">
+                <div class="scenario-inner">
+                    <h4>Insert Operation — O(1) Average</h4>
+                    <p>Watch how a key is hashed, the bucket index is computed, and the entry is added to the chain at that slot.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Inserting preset entries step by step</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="ins-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-insert"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-green"  onclick="insStep()" id="ins-step-btn">▶ Next Insert</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="insAuto()" id="ins-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetInsert()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="scenario-panel" id="spanel-search">
+                <div class="scenario-inner">
+                    <h4>Search Operation — O(1) Average</h4>
+                    <p>The key is hashed to find its bucket, then the chain is scanned for the exact key match. Watch each step.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Table pre-loaded — searching for <span style="color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;" id="srch-target-label">"grape"</span></div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="srch-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-search"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-cyan"   onclick="srchStep()" id="srch-step-btn">▶ Next Step</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="srchAuto()" id="srch-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetSearch()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE -->
+            <div class="scenario-panel" id="spanel-delete">
+                <div class="scenario-inner">
+                    <h4>Delete Operation — O(1) Average</h4>
+                    <p>Deletion locates the bucket, traverses the chain, and removes the matching node. Observe the chain update.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Deleting entries one by one</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="del-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-delete"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-red"    onclick="delStep()" id="del-step-btn">▶ Next Delete</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="delAuto()" id="del-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetDelete()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLLISION -->
+            <div class="scenario-panel" id="spanel-collide">
+                <div class="scenario-inner">
+                    <h4>Collision — Chaining Resolution</h4>
+                    <p>Multiple keys can hash to the same bucket. With chaining, a linked list at that slot stores all of them — still O(1) average.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Keys that collide at the same index</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="col-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-collide"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-orange" onclick="colStep()" id="col-step-btn">▶ Insert Next</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="colAuto()" id="col-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetCollide()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM -->
+            <div class="scenario-panel" id="spanel-custom">
+                <div class="scenario-inner">
+                    <h4>Custom Input</h4>
+                    <p>Build your own hash map or hash set from scratch. Switch between both types and experiment freely.</p>
+                    <hr class="scenario-divider">
+
+                    <div class="cc-grid">
+                        <div class="cc-card" id="ccc-insert"><div class="cc-op">⬆ Insert</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-search"><div class="cc-op">🔍 Search</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-delete"><div class="cc-op">🗑 Delete</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-worst"><div class="cc-op">⚠ Worst</div><div class="cc-val cc-red">O(N)</div><div class="cc-label">all collide</div></div>
+                    </div>
+                    <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+                    <div class="input-label" style="margin-top:1rem;">🗄 Your Hash Structure</div>
+                    <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+                        <button class="ctl-btn ctl-btn-cyan"   onclick="cSwitchType('hashmap')"  id="ctype-map">🗂 Hash Map</button>
+                        <button class="ctl-btn ctl-btn-ghost"  onclick="cSwitchType('hashset')"  id="ctype-set">🔑 Hash Set</button>
+                    </div>
+
+                    <div class="custom-input-row">
+                        <input type="text" class="custom-val-input" id="c-key" placeholder="Key">
+                        <input type="text" class="custom-val-input" id="c-val" placeholder="Value (map)">
+                        <button class="ctl-btn ctl-btn-green"  onclick="customInsert()">⬆ Insert</button>
+                        <button class="ctl-btn ctl-btn-red"    onclick="customDelete()">🗑 Delete</button>
+                        <button class="ctl-btn ctl-btn-cyan"   onclick="customSearch()">🔍 Search</button>
+                        <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+                    </div>
+
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title" id="custom-panel-title">📋 Hash Map (size 7)</div>
+                                <div class="ht-rows" id="custom-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== CODE EDITOR ===== -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon"><i class="fas fa-code"></i></div>
+            <h2 class="section-title">Interactive Code Editor</h2>
+        </div>
+
+        <div class="lang-tabs" data-group="code-editor">
+            <button class="lang-tab active" data-lang="cpp">C++</button>
+            <button class="lang-tab" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="java">Java</button>
+            <button class="lang-tab" data-lang="c">C</button>
+            <button class="lang-tab" data-lang="javascript">JS</button>
+        </div>
+
+        <div class="editor-wrapper">
+            <div class="editor-header">
+                <span class="lang-display" id="lang-display-label">C++</span>
+                <button class="code-copy" onclick="copyCode()">Copy</button>
+            </div>
+            <textarea id="code-editor"></textarea>
+        </div>
+
+        <button class="run-code-btn" onclick="runCode()">
+            <i class="fas fa-play"></i> Run Code
+        </button>
+
+        <div class="output-container">
+            <h6>📤 Output:</h6>
+            <div id="codeOutput">Click "Run Code" to execute...</div>
+            <div id="inputPrompt" style="display:none;" class="input-prompt">
+                <span id="promptText"></span>
+                <input type="text" id="userInput" placeholder="Enter value">
+                <button onclick="submitInput()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LEVEL NAV ===== -->
+    <h3 class="content-title" style="justify-content:center;margin-bottom:2rem;">Ready to Test Your Knowledge? →</h3>
+    <div class="level-wrapper">
+        <button id="l1" onclick="window.location.href='hashing_basics.html'">Level 1</button>
+        <div class="slider active" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size:3rem;margin-bottom:0.75rem;">🔒</div>
+        <h3 style="color:var(--primary-purple);font-family:'Space Grotesk',sans-serif;font-size:1.75rem;margin-bottom:0.5rem;">Level Locked</h3>
+        <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;" id="modalMsg">Pass the Level 2 Quiz to unlock Level 3.</p>
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script>
+/* =====================================================
+   HASHING LEVEL 2 — FULL INTERACTIVE SCRIPT
+===================================================== */
+
+const TABLE_SIZE = 7;
+let currentImpl = 'hashmap';
+let mainTable   = Array.from({length: TABLE_SIZE}, () => []);
+let codeEditor;
+let currentLang = 'cpp';
+let currentInputResolver = null;
+
+/* ── HASH FUNCTION ── */
+function hashKey(key) {
+    let h = 0;
+    for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) % TABLE_SIZE;
+    return h;
+}
+
+/* ── THEME ── */
+const themeIcons = {
+    dark:  '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+    light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+    blue:  '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+
+function getCMTheme(t) { return t === 'light' ? 'eclipse' : t === 'blue' ? 'nord' : 'material-ocean'; }
+
+function applyTheme(t) {
+    document.body.setAttribute('data-theme', t);
+    document.getElementById('themeIcon').innerHTML = themeIcons[t];
+    localStorage.setItem('dsa-theme', t);
+    if (codeEditor) codeEditor.setOption('theme', getCMTheme(t));
+}
+
+document.getElementById('themeToggle').onclick = () => {
+    const themes = ['dark', 'light', 'blue'];
+    const cur = document.body.getAttribute('data-theme') || 'dark';
+    applyTheme(themes[(themes.indexOf(cur) + 1) % 3]);
+};
+
+/* ── HELPERS ── */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function addLog(logId, text, cls = 'log-info') {
+    const log = document.getElementById(logId);
+    const e = document.createElement('div');
+    e.className = 'log-entry ' + cls;
+    e.textContent = '> ' + text;
+    log.appendChild(e);
+    log.scrollTop = log.scrollHeight;
+}
+
+function showMsg(text, type) {
+    const el = document.getElementById('msg_show');
+    el.style.display = 'block';
+    el.className = 'alert-' + type;
+    el.innerHTML = text;
+}
+
+function highlightStep(step) {
+    document.querySelectorAll('.pseudo-step').forEach(s => s.classList.remove('active'));
+    const el = document.querySelector(`.pseudo-step[data-step="${step}"]`);
+    if (el) el.classList.add('active');
+}
+
+/* ── BUILD TABLE HTML ── */
+function buildTableEl(containerId, tableData, chipClass, highlightIdx = -1, mode = '') {
+    const cont = document.getElementById(containerId);
+    cont.innerHTML = '';
+    for (let i = 0; i < TABLE_SIZE; i++) {
+        const row = document.createElement('div');
+        row.className = 'ht-row';
+
+        const idx = document.createElement('div');
+        idx.className = 'ht-idx';
+        idx.textContent = i;
+        row.appendChild(idx);
+
+        const bucket = document.createElement('div');
+        let bucketClass = 'ht-bucket';
+        if (i === highlightIdx) {
+            if      (mode === 'found') bucketClass += ' ht-found';
+            else if (mode === 'del')   bucketClass += ' ht-delete';
+            else if (mode === 'col')   bucketClass += ' ht-collide';
+            else                       bucketClass += ' ht-active';
+        }
+        bucket.className = bucketClass;
+
+        if (!tableData[i] || tableData[i].length === 0) {
+            const emp = document.createElement('span');
+            emp.className = 'ht-empty';
+            emp.textContent = '—';
+            bucket.appendChild(emp);
+        } else {
+            tableData[i].forEach((item, idx2) => {
+                if (idx2 > 0) {
+                    const ar = document.createElement('span');
+                    ar.className = 'arrow-chain';
+                    ar.textContent = '→';
+                    bucket.appendChild(ar);
+                }
+                const chip = document.createElement('span');
+                chip.className = 'ht-chip ' + chipClass;
+                chip.textContent = item;
+                bucket.appendChild(chip);
+            });
+        }
+        row.appendChild(bucket);
+        cont.appendChild(row);
+    }
+}
+
+/* ═══════════════════════════════════════════
+   MAIN VISUALIZER
+═══════════════════════════════════════════ */
+const pseudoTexts = {
+    hashmap: {
+        insert:   'idx = hash(key) mod 7\ntable[idx].add(key→val)',
+        search:   'idx = hash(key) mod 7\nreturn table[idx].find(key)',
+        delete:   'idx = hash(key) mod 7\ntable[idx].remove(key)',
+        contains: 'idx = hash(key) mod 7\nreturn key in table[idx]',
+        size:     'return total entries stored'
+    },
+    hashset: {
+        insert:   'idx = hash(key) mod 7\ntable[idx].add(key)',
+        search:   'idx = hash(key) mod 7\nreturn key in table[idx]',
+        delete:   'idx = hash(key) mod 7\ntable[idx].remove(key)',
+        contains: 'idx = hash(key) mod 7\nreturn key in table[idx]',
+        size:     'return total keys stored'
+    }
+};
+
+function switchImpl(type) {
+    currentImpl = type;
+    mainTable = Array.from({length: TABLE_SIZE}, () => []);
+    document.querySelectorAll('.impl-option').forEach(o => o.classList.remove('active'));
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    const isMap = type === 'hashmap';
+    document.getElementById('visualizer-title').textContent = `Hash ${isMap ? 'Map' : 'Set'} Visualizer — Chaining (size = 7)`;
+    document.getElementById('valInput').style.display = isMap ? '' : 'none';
+    const pt = pseudoTexts[type];
+    document.getElementById('pseudo-insert-text').textContent   = pt.insert;
+    document.getElementById('pseudo-search-text').textContent   = pt.search;
+    document.getElementById('pseudo-delete-text').textContent   = pt.delete;
+    document.getElementById('pseudo-contains-text').textContent = pt.contains;
+    document.getElementById('pseudo-size-text').textContent     = pt.size;
+    renderMain();
+
+    // update editor if ready
+    if (codeEditor) {
+        codeEditor.setValue(codeTemplates[type][currentLang]);
+        setTimeout(() => codeEditor.refresh(), 50);
+    }
+}
+
+function renderMain(highlightIdx = -1, mode = '') {
+    const chipClass = currentImpl === 'hashmap' ? 'chip-map' : 'chip-set';
+    buildTableEl('mainHashTable', mainTable, chipClass, highlightIdx, mode);
+}
+
+function mainInsert() {
+    const key = document.getElementById('keyInput').value.trim();
+    const val = document.getElementById('valInput').value.trim();
+    if (!key) { showMsg('Enter a key first!', 'warn'); return; }
+    highlightStep('insert');
+    const idx = hashKey(key);
+    const entry = currentImpl === 'hashmap' ? (val ? `${key}→${val}` : `${key}→?`) : key;
+    const exists = mainTable[idx].some(e => e.split('→')[0] === key);
+    if (exists) { showMsg(`⚠ Key "${key}" already exists at index ${idx}`, 'warn'); return; }
+    mainTable[idx].push(entry);
+    renderMain(idx);
+    showMsg(`✓ Inserted "${entry}" at index ${idx}`, 'success');
+    document.getElementById('keyInput').value = '';
+    document.getElementById('valInput').value = '';
+}
+
+function mainSearch() {
+    const key = document.getElementById('keyInput').value.trim();
+    if (!key) { showMsg('Enter a key to search!', 'warn'); return; }
+    highlightStep('search');
+    const idx = hashKey(key);
+    const found = mainTable[idx].find(e => e.split('→')[0] === key);
+    if (found) { renderMain(idx, 'found'); showMsg(`✓ Found "${found}" at index ${idx}`, 'success'); }
+    else        { renderMain(idx);         showMsg(`✗ Key "${key}" not found (checked index ${idx})`, 'danger'); }
+}
+
+function mainDelete() {
+    const key = document.getElementById('keyInput').value.trim();
+    if (!key) { showMsg('Enter a key to delete!', 'warn'); return; }
+    highlightStep('delete');
+    const idx = hashKey(key);
+    const before = mainTable[idx].length;
+    mainTable[idx] = mainTable[idx].filter(e => e.split('→')[0] !== key);
+    if (mainTable[idx].length < before) { renderMain(idx, 'del'); showMsg(`🗑 Deleted "${key}" from index ${idx}`, 'danger'); }
+    else { renderMain(idx); showMsg(`✗ Key "${key}" not found`, 'danger'); }
+}
+
+function mainContains() {
+    const key = document.getElementById('keyInput').value.trim();
+    if (!key) { showMsg('Enter a key!', 'warn'); return; }
+    highlightStep('contains');
+    const idx = hashKey(key);
+    const has = mainTable[idx].some(e => e.split('→')[0] === key);
+    renderMain(idx, has ? 'found' : '');
+    showMsg(has ? `✓ Contains "${key}" → TRUE` : `✗ Contains "${key}" → FALSE`, has ? 'success' : 'info');
+}
+
+function mainSize() {
+    highlightStep('size');
+    const total = mainTable.reduce((s, b) => s + b.length, 0);
+    renderMain();
+    showMsg(`📊 Size = ${total} entries`, 'info');
+}
+
+/* ═══════════════════════════════════════════
+   SCENARIO TAB SWITCH
+═══════════════════════════════════════════ */
+const TAB_ACTIVE = {
+    insert: 'active-insert', search: 'active-search',
+    delete: 'active-delete', collide: 'active-collide', custom: 'active-custom'
+};
+
+function switchScenario(name) {
+    document.querySelectorAll('.scenario-tab').forEach(t => t.className = 'scenario-tab');
+    document.getElementById('stab-' + name).classList.add(TAB_ACTIVE[name]);
+    document.querySelectorAll('.scenario-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('spanel-' + name).classList.add('active');
+}
+
+/* ═══════════════════════════════════════════
+   INSERT SCENARIO
+═══════════════════════════════════════════ */
+const INS_ITEMS = [
+    {k:'apple',  v:'5'}, {k:'banana', v:'3'}, {k:'cherry', v:'8'},
+    {k:'date',   v:'2'}, {k:'elderberry', v:'7'}, {k:'fig', v:'1'}
+];
+let insState = [], insIdx = 0, insAutoTimer = null;
+
+function initInsert() {
+    insState = Array.from({length: TABLE_SIZE}, () => []);
+    insIdx = 0;
+    clearTimeout(insAutoTimer);
+    buildTableEl('ins-table', insState, 'chip-map');
+    const log = document.getElementById('log-insert');
+    log.innerHTML = '<div class="log-title">📋 Operation Log</div>';
+    document.getElementById('ins-step-btn').disabled = false;
+    document.getElementById('ins-auto-btn').disabled = false;
+    addLog('log-insert', `Table size = 7, hash = sum(charCode) mod 7`, 'log-info');
+    addLog('log-insert', `Ready to insert ${INS_ITEMS.length} entries`, 'log-info');
+}
+
+function insStep() {
+    if (insIdx >= INS_ITEMS.length) { addLog('log-insert', 'All entries inserted!', 'log-result'); return; }
+    const {k, v} = INS_ITEMS[insIdx];
+    const idx = hashKey(k);
+    insState[idx].push(`${k}→${v}`);
+    buildTableEl('ins-table', insState, 'chip-map', idx);
+    addLog('log-insert', `hash("${k}") = ${idx}`, 'log-info');
+    addLog('log-insert', `insert("${k}"→${v}) at index ${idx}  ✓ O(1)`, 'log-insert');
+    insIdx++;
+    if (insIdx >= INS_ITEMS.length) {
+        addLog('log-insert', `All ${INS_ITEMS.length} entries inserted!`, 'log-result');
+        document.getElementById('ins-step-btn').disabled = true;
+        document.getElementById('ins-auto-btn').disabled = true;
+        clearTimeout(insAutoTimer);
+    }
+}
+
+function insAuto() {
+    if (insIdx >= INS_ITEMS.length) return;
+    document.getElementById('ins-auto-btn').disabled = true;
+    function next() { if (insIdx >= INS_ITEMS.length) return; insStep(); insAutoTimer = setTimeout(next, 900); }
+    next();
+}
+
+function resetInsert() { clearTimeout(insAutoTimer); initInsert(); addLog('log-insert', '↺ Reset', 'log-info'); }
+
+/* ═══════════════════════════════════════════
+   SEARCH SCENARIO
+═══════════════════════════════════════════ */
+const SRCH_DATA   = [{k:'apple',v:'5'},{k:'banana',v:'3'},{k:'cherry',v:'8'},{k:'date',v:'2'},{k:'grape',v:'9'}];
+const SRCH_TARGET = 'grape';
+let srchState = [], srchPhase = 0, srchAutoTimer = null;
+
+function initSearch() {
+    srchState = Array.from({length: TABLE_SIZE}, () => []);
+    SRCH_DATA.forEach(({k, v}) => srchState[hashKey(k)].push(`${k}→${v}`));
+    srchPhase = 0;
+    clearTimeout(srchAutoTimer);
+    buildTableEl('srch-table', srchState, 'chip-map');
+    const log = document.getElementById('log-search');
+    log.innerHTML = '<div class="log-title">📋 Operation Log</div>';
+    document.getElementById('srch-step-btn').disabled = false;
+    document.getElementById('srch-auto-btn').disabled = false;
+    addLog('log-search', `Table pre-loaded with ${SRCH_DATA.length} entries`, 'log-info');
+    addLog('log-search', `Searching for key: "${SRCH_TARGET}"`, 'log-info');
+}
+
+function srchStep() {
+    if (srchPhase === 0) {
+        const idx = hashKey(SRCH_TARGET);
+        addLog('log-search', `Step 1: hash("${SRCH_TARGET}") = ${idx}`, 'log-info');
+        addLog('log-search', `Go to bucket index ${idx}`, 'log-search');
+        buildTableEl('srch-table', srchState, 'chip-map', idx);
+        srchPhase = 1;
+    } else if (srchPhase === 1) {
+        const idx = hashKey(SRCH_TARGET);
+        const found = srchState[idx].find(e => e.split('→')[0] === SRCH_TARGET);
+        if (found) {
+            addLog('log-search', `Step 2: Scan chain at [${idx}] → Found "${found}" ✓`, 'log-insert');
+            addLog('log-search', `✓ Search complete — O(1)`, 'log-result');
+            buildTableEl('srch-table', srchState, 'chip-map', idx, 'found');
+        } else {
+            addLog('log-search', `Step 2: Key not in bucket [${idx}] ✗`, 'log-delete');
+            addLog('log-search', `Result: NOT FOUND`, 'log-result');
+        }
+        srchPhase = 2;
+        document.getElementById('srch-step-btn').disabled = true;
+        document.getElementById('srch-auto-btn').disabled = true;
+        clearTimeout(srchAutoTimer);
+    }
+}
+
+function srchAuto() {
+    if (srchPhase >= 2) return;
+    document.getElementById('srch-auto-btn').disabled = true;
+    function next() { if (srchPhase >= 2) return; srchStep(); srchAutoTimer = setTimeout(next, 1100); }
+    next();
+}
+
+function resetSearch() { clearTimeout(srchAutoTimer); initSearch(); addLog('log-search', '↺ Reset', 'log-info'); }
+
+/* ═══════════════════════════════════════════
+   DELETE SCENARIO
+═══════════════════════════════════════════ */
+const DEL_DATA  = [{k:'apple',v:'5'},{k:'banana',v:'3'},{k:'cherry',v:'8'},{k:'date',v:'2'},{k:'elderberry',v:'7'}];
+const DEL_QUEUE = ['cherry', 'apple', 'date'];
+let delState = [], delIdx = 0, delAutoTimer = null;
+
+function initDelete() {
+    delState = Array.from({length: TABLE_SIZE}, () => []);
+    DEL_DATA.forEach(({k, v}) => delState[hashKey(k)].push(`${k}→${v}`));
+    delIdx = 0;
+    clearTimeout(delAutoTimer);
+    buildTableEl('del-table', delState, 'chip-map');
+    const log = document.getElementById('log-delete');
+    log.innerHTML = '<div class="log-title">📋 Operation Log</div>';
+    document.getElementById('del-step-btn').disabled = false;
+    document.getElementById('del-auto-btn').disabled = false;
+    addLog('log-delete', `Table pre-loaded with ${DEL_DATA.length} entries`, 'log-info');
+    addLog('log-delete', `Deleting: ${DEL_QUEUE.join(', ')}`, 'log-info');
+}
+
+function delStep() {
+    if (delIdx >= DEL_QUEUE.length) return;
+    const key = DEL_QUEUE[delIdx];
+    const idx  = hashKey(key);
+    delState[idx] = delState[idx].filter(e => e.split('→')[0] !== key);
+    buildTableEl('del-table', delState, 'chip-map', idx, 'del');
+    addLog('log-delete', `hash("${key}") = ${idx}`, 'log-info');
+    addLog('log-delete', `delete("${key}") from index ${idx}  ✓ O(1)`, 'log-delete');
+    delIdx++;
+    if (delIdx >= DEL_QUEUE.length) {
+        addLog('log-delete', 'All target keys deleted!', 'log-result');
+        document.getElementById('del-step-btn').disabled = true;
+        document.getElementById('del-auto-btn').disabled = true;
+        clearTimeout(delAutoTimer);
+    }
+}
+
+function delAuto() {
+    if (delIdx >= DEL_QUEUE.length) return;
+    document.getElementById('del-auto-btn').disabled = true;
+    function next() { if (delIdx >= DEL_QUEUE.length) return; delStep(); delAutoTimer = setTimeout(next, 900); }
+    next();
+}
+
+function resetDelete() { clearTimeout(delAutoTimer); initDelete(); addLog('log-delete', '↺ Reset', 'log-info'); }
+
+/* ═══════════════════════════════════════════
+   COLLISION SCENARIO
+═══════════════════════════════════════════ */
+const COL_ITEMS = (function() {
+    const items = [];
+    const candidates = ['ab','hi','op','ab0','xyz','m','jk','ba','cf','gh'];
+    const buckets = {};
+    for (const k of candidates) {
+        const h = hashKey(k);
+        if (!buckets[h]) buckets[h] = [];
+        buckets[h].push(k);
+    }
+    const sorted = Object.entries(buckets).sort((a, b) => b[1].length - a[1].length);
+    const colBucket = sorted[0][1];
+    colBucket.slice(0, 3).forEach(k => items.push({k, v: String(k.charCodeAt(0))}));
+    ['date', 'fig'].forEach(k => items.push({k, v: String(k.length)}));
+    return items;
+}());
+
+let colState = [], colIdx = 0, colAutoTimer = null;
+
+function initCollide() {
+    colState = Array.from({length: TABLE_SIZE}, () => []);
+    colIdx = 0;
+    clearTimeout(colAutoTimer);
+    buildTableEl('col-table', colState, 'chip-collide');
+    const log = document.getElementById('log-collide');
+    log.innerHTML = '<div class="log-title">📋 Operation Log</div>';
+    document.getElementById('col-step-btn').disabled = false;
+    document.getElementById('col-auto-btn').disabled = false;
+    addLog('log-collide', 'Watch collisions → chaining resolves them', 'log-info');
+}
+
+function colStep() {
+    if (colIdx >= COL_ITEMS.length) return;
+    const {k, v} = COL_ITEMS[colIdx];
+    const idx = hashKey(k);
+    const isCollision = colState[idx].length > 0;
+    colState[idx].push(`${k}→${v}`);
+    buildTableEl('col-table', colState, 'chip-collide', idx, 'col');
+    addLog('log-collide', `hash("${k}") = ${idx}`, 'log-info');
+    if (isCollision) {
+        addLog('log-collide', `💥 COLLISION at [${idx}]! Chain length = ${colState[idx].length}`, 'log-warn');
+        addLog('log-collide', `Appended to chain → still O(1) avg`, 'log-result');
+    } else {
+        addLog('log-collide', `Inserted "${k}→${v}" at [${idx}]  ✓`, 'log-insert');
+    }
+    colIdx++;
+    if (colIdx >= COL_ITEMS.length) {
+        addLog('log-collide', 'Chaining resolved all collisions! ✓', 'log-result');
+        document.getElementById('col-step-btn').disabled = true;
+        document.getElementById('col-auto-btn').disabled = true;
+        clearTimeout(colAutoTimer);
+    }
+}
+
+function colAuto() {
+    if (colIdx >= COL_ITEMS.length) return;
+    document.getElementById('col-auto-btn').disabled = true;
+    function next() { if (colIdx >= COL_ITEMS.length) return; colStep(); colAutoTimer = setTimeout(next, 900); }
+    next();
+}
+
+function resetCollide() { clearTimeout(colAutoTimer); initCollide(); addLog('log-collide', '↺ Reset', 'log-info'); }
+
+/* ═══════════════════════════════════════════
+   CUSTOM SCENARIO
+═══════════════════════════════════════════ */
+let customState = Array.from({length: TABLE_SIZE}, () => []);
+let customType  = 'hashmap';
+let ccTimer     = null;
+
+function cSwitchType(type) {
+    customType = type;
+    customState = Array.from({length: TABLE_SIZE}, () => []);
+    document.getElementById('ctype-map').className = type === 'hashmap' ? 'ctl-btn ctl-btn-cyan' : 'ctl-btn ctl-btn-ghost';
+    document.getElementById('ctype-set').className = type === 'hashset' ? 'ctl-btn ctl-btn-cyan' : 'ctl-btn ctl-btn-ghost';
+    document.getElementById('c-val').style.display = type === 'hashmap' ? '' : 'none';
+    document.getElementById('custom-panel-title').textContent = `📋 Hash ${type === 'hashmap' ? 'Map' : 'Set'} (size 7)`;
+    renderCustom();
+    addLog('log-custom', `Switched to Hash ${type === 'hashmap' ? 'Map' : 'Set'}`, 'log-info');
+}
+
+function renderCustom(highlightIdx = -1, mode = '') {
+    const chipClass = customType === 'hashmap' ? 'chip-map' : 'chip-set';
+    buildTableEl('custom-table', customState, chipClass, highlightIdx, mode);
+}
+
+function highlightCC(type) {
+    ['insert','search','delete','worst'].forEach(t => document.getElementById('ccc-' + t).classList.remove('cc-active'));
+    const card = document.getElementById('ccc-' + type);
+    if (card) { card.classList.add('cc-active'); ccTimer = setTimeout(() => card.classList.remove('cc-active'), 1800); }
+}
+
+function showToast(type, msg) {
+    const toast = document.getElementById('cc-toast');
+    const icons = { insert: '⬆', search: '🔍', delete: '🗑', warn: '⚠' };
+    document.getElementById('cc-toast-icon').textContent = icons[type] || '⚡';
+    document.getElementById('cc-toast-text').textContent = msg;
+    toast.className = 'cc-toast show toast-' + type;
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.className = 'cc-toast'; }, 2500);
+}
+
+function initCustom() {
+    customState = Array.from({length: TABLE_SIZE}, () => []);
+    renderCustom();
+    const log = document.getElementById('log-custom');
+    log.innerHTML = '<div class="log-title">📋 Operation Log</div>';
+    addLog('log-custom', 'Custom structure ready!', 'log-info');
+}
+
+function customInsert() {
+    const key = document.getElementById('c-key').value.trim();
+    const val = document.getElementById('c-val').value.trim();
+    if (!key) { showToast('warn', 'Enter a key!'); return; }
+    const idx = hashKey(key);
+    const exists = customState[idx].some(e => e.split('→')[0] === key);
+    if (exists) { showToast('warn', `"${key}" already in table!`); addLog('log-custom', `"${key}" already exists at [${idx}]`, 'log-warn'); return; }
+    const entry = customType === 'hashmap' ? (val ? `${key}→${val}` : `${key}→?`) : key;
+    customState[idx].push(entry);
+    renderCustom(idx);
+    highlightCC('insert');
+    showToast('insert', `insert("${key}")  →  O(1)`);
+    addLog('log-custom', `insert("${entry}") at [${idx}]  ✓ O(1)`, 'log-insert');
+    document.getElementById('c-key').value = '';
+    document.getElementById('c-val').value = '';
+}
+
+function customDelete() {
+    const key = document.getElementById('c-key').value.trim();
+    if (!key) { showToast('warn', 'Enter a key!'); return; }
+    const idx = hashKey(key);
+    const before = customState[idx].length;
+    customState[idx] = customState[idx].filter(e => e.split('→')[0] !== key);
+    if (customState[idx].length < before) {
+        renderCustom(idx, 'del');
+        highlightCC('delete');
+        showToast('delete', `delete("${key}")  →  O(1)`);
+        addLog('log-custom', `delete("${key}") from [${idx}]  ✓ O(1)`, 'log-delete');
+    } else {
+        showToast('warn', `"${key}" not found!`);
+        addLog('log-custom', `"${key}" not found at [${idx}]`, 'log-warn');
+    }
+}
+
+function customSearch() {
+    const key = document.getElementById('c-key').value.trim();
+    if (!key) { showToast('warn', 'Enter a key!'); return; }
+    const idx = hashKey(key);
+    const found = customState[idx].find(e => e.split('→')[0] === key);
+    if (found) {
+        renderCustom(idx, 'found');
+        highlightCC('search');
+        showToast('search', `found "${found}"  →  O(1)`);
+        addLog('log-custom', `search("${key}") → FOUND "${found}" at [${idx}]  ✓`, 'log-search');
+    } else {
+        renderCustom(idx);
+        showToast('warn', `"${key}" not found`);
+        addLog('log-custom', `search("${key}") → NOT FOUND  [${idx}]`, 'log-warn');
+    }
+}
+
+function resetCustom() { initCustom(); addLog('log-custom', '↺ Cleared', 'log-info'); }
+
+document.getElementById('c-key').addEventListener('keydown', e => { if (e.key === 'Enter') customInsert(); });
+
+/* ═══════════════════════════════════════════
+   CODE TEMPLATES
+═══════════════════════════════════════════ */
+const codeTemplates = {
+    hashmap: {
+        cpp: `#include <iostream>
+#include <unordered_map>
+using namespace std;
+
+int main() {
+    unordered_map<string, int> hashMap;
+
+    // Insert
+    hashMap["apple"]  = 5;
+    hashMap["banana"] = 3;
+    hashMap["cherry"] = 8;
+    hashMap.insert({"date", 2});
+    cout << "Inserted 4 entries\\n";
+
+    // Search
+    auto it = hashMap.find("apple");
+    if (it != hashMap.end())
+        cout << "Found apple: " << it->second << "\\n";
+
+    // Contains check
+    cout << "Contains banana: " << hashMap.count("banana") << "\\n";
+
+    // Delete
+    hashMap.erase("cherry");
+    cout << "Deleted cherry\\n";
+
+    // Size
+    cout << "Size: " << hashMap.size() << "\\n";
+
+    // Iterate
+    for (auto& [k, v] : hashMap)
+        cout << k << " -> " << v << "\\n";
+
+    return 0;
+}`,
+        python: `# Python dict — built-in hash map
+hash_map = {}
+
+# Insert
+hash_map["apple"]  = 5
+hash_map["banana"] = 3
+hash_map["cherry"] = 8
+hash_map.update({"date": 2})
+print(f"Inserted {len(hash_map)} entries")
+
+# Search
+val = hash_map.get("apple", -1)
+print(f"apple -> {val}")
+
+# Contains
+print(f"Contains banana: {'banana' in hash_map}")
+
+# Delete
+del hash_map["cherry"]
+print("Deleted cherry")
+
+# Size
+print(f"Size: {len(hash_map)}")
+
+# Iterate
+for key, val in hash_map.items():
+    print(f"{key} -> {val}")`,
+        java: `import java.util.*;
+
+public class HashMapDemo {
+    public static void main(String[] args) {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        // Insert
+        map.put("apple",  5);
+        map.put("banana", 3);
+        map.put("cherry", 8);
+        map.put("date",   2);
+        System.out.println("Inserted " + map.size() + " entries");
+
+        // Search
+        System.out.println("apple -> " + map.get("apple"));
+
+        // Contains
+        System.out.println("Contains banana: " + map.containsKey("banana"));
+
+        // Delete
+        map.remove("cherry");
+        System.out.println("Deleted cherry");
+
+        // Size
+        System.out.println("Size: " + map.size());
+
+        // Iterate
+        for (Map.Entry<String,Integer> e : map.entrySet())
+            System.out.println(e.getKey() + " -> " + e.getValue());
+    }
+}`,
+        c: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SIZE 7
+
+typedef struct Node {
+    char key[50]; int value; struct Node* next;
+} Node;
+
+Node* table[SIZE];
+
+int hash(const char* key) {
+    int h = 0;
+    for (int i = 0; key[i]; i++) h = (h * 31 + key[i]) % SIZE;
+    return h;
+}
+
+void insert(const char* key, int val) {
+    int idx = hash(key);
+    Node* n = malloc(sizeof(Node));
+    strcpy(n->key, key); n->value = val; n->next = table[idx];
+    table[idx] = n;
+    printf("insert(%s,%d) at [%d]\\n", key, val, idx);
+}
+
+int search(const char* key) {
+    Node* cur = table[hash(key)];
+    while (cur) { if (!strcmp(cur->key, key)) return cur->value; cur = cur->next; }
+    return -1;
+}
+
+int main() {
+    insert("apple", 5); insert("banana", 3);
+    insert("cherry", 8); insert("date", 2);
+    printf("apple -> %d\\n", search("apple"));
+    printf("grape -> %d (not found)\\n", search("grape"));
+    return 0;
+}`,
+        javascript: `// JavaScript Map — built-in hash map
+const hashMap = new Map();
+
+// Insert
+hashMap.set("apple",  5);
+hashMap.set("banana", 3);
+hashMap.set("cherry", 8);
+hashMap.set("date",   2);
+console.log("Inserted", hashMap.size, "entries");
+
+// Search
+console.log("apple ->", hashMap.get("apple"));
+
+// Contains
+console.log("Contains banana:", hashMap.has("banana"));
+
+// Delete
+hashMap.delete("cherry");
+console.log("Deleted cherry");
+
+// Size
+console.log("Size:", hashMap.size);
+
+// Iterate
+for (const [key, val] of hashMap)
+    console.log(key, "->", val);`
+    },
+    hashset: {
+        cpp: `#include <iostream>
+#include <unordered_set>
+using namespace std;
+
+int main() {
+    unordered_set<string> hashSet;
+
+    // Insert
+    hashSet.insert("apple");
+    hashSet.insert("banana");
+    hashSet.insert("cherry");
+    hashSet.insert("apple"); // duplicate — ignored
+    cout << "Size: " << hashSet.size() << "\\n"; // 3
+
+    // Contains / search
+    cout << "Contains apple: " << hashSet.count("apple") << "\\n";
+    cout << "Contains grape: " << hashSet.count("grape") << "\\n";
+
+    // Delete
+    hashSet.erase("banana");
+    cout << "Deleted banana\\n";
+
+    // Iterate
+    for (const auto& k : hashSet)
+        cout << k << "\\n";
+
+    return 0;
+}`,
+        python: `# Python set — built-in hash set
+hash_set = set()
+
+# Insert
+hash_set.add("apple")
+hash_set.add("banana")
+hash_set.add("cherry")
+hash_set.add("apple")   # duplicate — ignored
+print(f"Size: {len(hash_set)}")  # 3
+
+# Contains
+print(f"Contains apple: {'apple' in hash_set}")
+print(f"Contains grape: {'grape' in hash_set}")
+
+# Delete
+hash_set.discard("banana")
+print("Deleted banana")
+
+# Size
+print(f"Size now: {len(hash_set)}")
+
+# Iterate
+for key in hash_set:
+    print(key)
+
+# Set operations
+s1 = {"a", "b", "c"}
+s2 = {"b", "c", "d"}
+print("Union:",        s1 | s2)
+print("Intersection:", s1 & s2)
+print("Difference:",   s1 - s2)`,
+        java: `import java.util.*;
+
+public class HashSetDemo {
+    public static void main(String[] args) {
+        HashSet<String> hashSet = new HashSet<>();
+
+        // Insert
+        hashSet.add("apple");
+        hashSet.add("banana");
+        hashSet.add("cherry");
+        hashSet.add("apple");  // duplicate — ignored
+        System.out.println("Size: " + hashSet.size()); // 3
+
+        // Contains
+        System.out.println("Contains apple: " + hashSet.contains("apple"));
+        System.out.println("Contains grape: " + hashSet.contains("grape"));
+
+        // Delete
+        hashSet.remove("banana");
+        System.out.println("Deleted banana");
+
+        // Iterate
+        for (String key : hashSet)
+            System.out.println(key);
+    }
+}`,
+        c: `#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define SIZE 7
+
+typedef struct Node { char key[50]; struct Node* next; } Node;
+Node* table[SIZE];
+
+int hash(const char* key) {
+    int h = 0;
+    for (int i = 0; key[i]; i++) h = (h*31 + key[i]) % SIZE;
+    return h;
+}
+
+void insert(const char* key) {
+    int idx = hash(key);
+    for (Node* c=table[idx]; c; c=c->next)
+        if (!strcmp(c->key,key)) { printf("%s already in set\\n",key); return; }
+    Node* n = malloc(sizeof(Node)); strcpy(n->key,key); n->next=table[idx]; table[idx]=n;
+    printf("insert(%s) at [%d]\\n", key, idx);
+}
+
+int contains(const char* key) {
+    for (Node* c=table[hash(key)]; c; c=c->next)
+        if (!strcmp(c->key,key)) return 1;
+    return 0;
+}
+
+int main() {
+    insert("apple"); insert("banana"); insert("cherry"); insert("apple");
+    printf("apple in set: %d\\n", contains("apple"));
+    printf("grape in set: %d\\n", contains("grape"));
+    return 0;
+}`,
+        javascript: `// JavaScript Set — built-in hash set
+const hashSet = new Set();
+
+// Insert
+hashSet.add("apple");
+hashSet.add("banana");
+hashSet.add("cherry");
+hashSet.add("apple");   // duplicate — ignored
+console.log("Size:", hashSet.size);  // 3
+
+// Contains
+console.log("Contains apple:", hashSet.has("apple"));
+console.log("Contains grape:", hashSet.has("grape"));
+
+// Delete
+hashSet.delete("banana");
+console.log("Deleted banana");
+console.log("Size now:", hashSet.size);
+
+// Iterate
+for (const key of hashSet)
+    console.log(key);
+
+// Set operations (manual)
+const s1 = new Set(["a","b","c"]);
+const s2 = new Set(["b","c","d"]);
+const union        = new Set([...s1, ...s2]);
+const intersection = new Set([...s1].filter(x => s2.has(x)));
+const difference   = new Set([...s1].filter(x => !s2.has(x)));
+console.log("Union:",        [...union]);
+console.log("Intersection:", [...intersection]);
+console.log("Difference:",   [...difference]);`
+    }
+};
+
+/* ── CODEMIRROR INIT ── */
+function initEditor() {
+    const t = document.body.getAttribute('data-theme') || 'dark';
+    codeEditor = CodeMirror.fromTextArea(document.getElementById('code-editor'), {
+        mode: 'text/x-c++src',
+        theme: getCMTheme(t),
+        lineNumbers: true,
+        indentUnit: 4,
+        lineWrapping: true
+    });
+    // don't set value here — switchImpl handles it right after
+}
+
+/* lang tab clicks */
+document.querySelectorAll('.lang-tab').forEach(btn => {
+    btn.onclick = () => {
+        const lang = btn.dataset.lang;
+        btn.parentElement.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        const modeMap = {
+            cpp: 'text/x-c++src', python: 'text/x-python',
+            java: 'text/x-java', c: 'text/x-csrc', javascript: 'text/javascript'
+        };
+        const display = { cpp: 'C++', python: 'Python', java: 'Java', c: 'C', javascript: 'JavaScript' };
+        currentLang = lang;
+        document.getElementById('lang-display-label').textContent = display[lang];
+        if (codeEditor) {
+            codeEditor.setOption('mode', modeMap[lang]);
+            codeEditor.setValue(codeTemplates[currentImpl][lang]);
+            setTimeout(() => codeEditor.refresh(), 50);
+        }
+    };
+});
+
+function copyCode() {
+    if (!codeEditor) return;
+    navigator.clipboard.writeText(codeEditor.getValue()).then(() => {
+        const btn = document.querySelector('.code-copy');
+        const orig = btn.textContent;
+        btn.textContent = '✓'; btn.style.background = 'var(--primary-green)';
+        setTimeout(() => { btn.textContent = orig; btn.style.background = 'var(--primary-purple)'; }, 2000);
+    });
+}
+
+/* ── RUN CODE ── */
+async function runCode() {
+    const outputDiv = document.getElementById('codeOutput');
+    outputDiv.innerHTML = '<span style="color:#fbbf24;">🔄 Executing...</span><br><br>';
+    const isMap = currentImpl === 'hashmap';
+    const lang  = currentLang === 'python' ? 'Python' : currentLang === 'javascript' ? 'JavaScript' : 'C++';
+    outputDiv.innerHTML += `<span style="color:#06b6d4;">Hash ${isMap ? 'Map' : 'Set'} Demo — ${lang}</span><br><br>`;
+
+    const data = isMap
+        ? [{k:'apple',v:5},{k:'banana',v:3},{k:'cherry',v:8},{k:'date',v:2}]
+        : [{k:'apple'},{k:'banana'},{k:'cherry'},{k:'apple'}];
+
+    if (isMap) {
+        data.forEach(({k, v}) => { outputDiv.innerHTML += `<span style="color:#10b981;">insert("${k}", ${v})</span><br>`; });
+        outputDiv.innerHTML += `<br><span style="color:#06b6d4;">Size: ${data.length}</span><br>`;
+        outputDiv.innerHTML += `<span style="color:#06b6d4;">apple → ${data.find(d => d.k === 'apple').v}</span><br>`;
+        outputDiv.innerHTML += `<span style="color:#06b6d4;">Contains banana: true</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:#ef4444;">delete("cherry")</span><br>`;
+        outputDiv.innerHTML += `<span style="color:#06b6d4;">Size after delete: ${data.length - 1}</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:#a0a0a0;">Entries:</span><br>`;
+        data.filter(d => d.k !== 'cherry').forEach(({k, v}) => {
+            outputDiv.innerHTML += `<span style="color:#10b981;">${k} → ${v}</span><br>`;
+        });
+    } else {
+        const unique = [...new Set(data.map(d => d.k))];
+        data.forEach(({k}) => { outputDiv.innerHTML += `<span style="color:#8b5cf6;">add("${k}")</span><br>`; });
+        outputDiv.innerHTML += `<br><span style="color:#06b6d4;">Size: ${unique.length} (1 duplicate ignored)</span><br>`;
+        outputDiv.innerHTML += `<span style="color:#06b6d4;">Contains apple: true</span><br>`;
+        outputDiv.innerHTML += `<span style="color:#06b6d4;">Contains grape: false</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:#ef4444;">remove("banana")</span><br>`;
+        outputDiv.innerHTML += `<br><span style="color:#a0a0a0;">Remaining entries:</span><br>`;
+        unique.filter(k => k !== 'banana').forEach(k => { outputDiv.innerHTML += `<span style="color:#8b5cf6;">${k}</span><br>`; });
+    }
+    outputDiv.innerHTML += '<br><span style="color:#10b981;">✓ Execution complete!</span>';
+}
+
+function submitInput() {
+    const v = document.getElementById('userInput').value.trim();
+    if (v && currentInputResolver) {
+        document.getElementById('inputPrompt').style.display = 'none';
+        currentInputResolver(v);
+        currentInputResolver = null;
+    }
+}
+document.getElementById('userInput').addEventListener('keypress', e => { if (e.key === 'Enter') submitInput(); });
+
+/* ── LEVEL BUTTONS ── */
+const ALGO_KEY = 'hashing';
+const L3_KEY   = `${ALGO_KEY}_l3_unlocked`;
+const modal    = document.getElementById('quizModal');
+
+function updateLevelButtons() {
+    if (localStorage.getItem(L3_KEY) === 'true') {
+        const b = document.getElementById('l3');
+        b.style.cssText = 'border-color:var(--primary-green);background:rgba(16,185,129,0.12);color:var(--primary-green)';
+    }
+}
+
+document.getElementById('l3').onclick = () => {
+    if (localStorage.getItem(L3_KEY) === 'true') { window.location.href = 'hashing_l3.html'; return; }
+    document.getElementById('modalMsg').textContent = 'Pass the Level 2 Quiz to unlock Level 3 and complete your Hashing journey.';
+    modal.style.display = 'flex';
+    document.getElementById('startQuiz').onclick = () => window.location.href = 'quiz.html?id=hashing-l2';
+};
+
+document.getElementById('cancelBtn').onclick = () => modal.style.display = 'none';
+window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
+
+/* ═══════════════════════════════════════════
+   INIT — correct order fixes the blank editor
+═══════════════════════════════════════════ */
+window.addEventListener('load', () => {
+    // 1. theme first so CodeMirror gets right theme on init
+    const saved = localStorage.getItem('dsa-theme') || 'dark';
+    applyTheme(saved);
+
+    // 2. init CM instance (no value set yet)
+    initEditor();
+
+    // 3. switchImpl sets value + refreshes CM
+    switchImpl('hashmap');
+
+    // 4. everything else
+    renderMain();
+    updateLevelButtons();
+    initInsert();
+    initSearch();
+    initDelete();
+    initCollide();
+    initCustom();
+
+    // 5. safety refresh in case CM painted before layout settled
+    setTimeout(() => { if (codeEditor) codeEditor.refresh(); }, 150);
+});
+</script>
+
+<!-- shared navbar component — same as hashing_basics -->
+<script src="js/navbar.js"></script>
+</body>
+</html>

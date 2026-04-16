@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queue — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-pink:#ec4899;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--card-bg2:#161616;
+  --text-primary:#ffffff;--text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{
+  --dark-bg:#f0f4f8;--card-bg:#ffffff;--card-bg2:#f8fafc;
+  --text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;
+  --nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;
+}
+[data-theme="blue"]{
+  --dark-bg:#010e1a;--card-bg:#0a1628;--card-bg2:#0d1d35;
+  --text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;
+  --nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-green);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-orange);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* HERO */
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-orange),var(--primary-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-orange);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+/* QUEUE CONCEPT VISUAL */
+.queue-concept{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;text-align:center;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.queue-visual{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:1.5rem;overflow-x:auto;padding:.5rem 0;}
+.q-arrow{font-size:1.2rem;color:var(--primary-orange);padding:0 .3rem;flex-shrink:0;}
+.q-end-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:.3rem .8rem;border-radius:6px;flex-shrink:0;}
+.q-enqueue{background:rgba(16,185,129,.15);color:var(--primary-green);border:1px solid rgba(16,185,129,.3);}
+.q-dequeue{background:rgba(239,68,68,.15);color:var(--primary-red);border:1px solid rgba(239,68,68,.3);}
+.q-cell{width:72px;height:52px;border:2px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:var(--text-primary);background:var(--code-bg);flex-shrink:0;transition:all .3s;}
+.q-cell:first-of-type{border-radius:8px 0 0 8px;}
+.q-cell:last-of-type{border-radius:0 8px 8px 0;}
+.q-cell.front{border-color:var(--primary-red);color:var(--primary-red);background:rgba(239,68,68,.08);}
+.q-cell.rear{border-color:var(--primary-green);color:var(--primary-green);background:rgba(16,185,129,.08);}
+.concept-labels{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;}
+.concept-label{display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary);}
+.concept-dot{width:10px;height:10px;border-radius:50%;}
+
+/* SECTION */
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+/* QUEUE TYPES */
+.types-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-bottom:2rem;}
+.type-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;padding:1.3rem;}
+.type-icon{font-size:1.6rem;margin-bottom:.6rem;}
+.type-name{font-family:'Space Grotesk',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.4rem;}
+.type-desc{font-size:.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:.7rem;}
+.type-tag{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .6rem;border-radius:6px;font-family:'JetBrains Mono',monospace;}
+
+/* APP CARDS */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.red:hover{border-color:var(--primary-red);box-shadow:0 8px 40px rgba(239,68,68,.12);}
+.app-card.pink:hover{border-color:var(--primary-pink);box-shadow:0 8px 40px rgba(236,72,153,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.red{background:rgba(239,68,68,.15);}
+.card-icon.pink{background:rgba(236,72,153,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;}
+
+/* SHARED DEMO STYLES */
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-orange);color:var(--primary-orange);}
+.d-btn.enq{background:rgba(16,185,129,.12);border-color:var(--primary-green);color:var(--primary-green);}
+.d-btn.deq{background:rgba(239,68,68,.12);border-color:var(--primary-red);color:var(--primary-red);}
+.d-btn.pri{background:rgba(139,92,246,.12);border-color:var(--primary-purple);color:var(--primary-purple);}
+.d-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* Queue row visualization */
+.q-row{display:flex;align-items:center;gap:3px;min-height:44px;overflow-x:auto;padding:.2rem 0;margin-bottom:.6rem;}
+.q-item{min-width:44px;height:40px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;border:1px solid;flex-shrink:0;transition:all .3s;animation:slideRight .25s ease;}
+@keyframes slideRight{from{transform:translateX(12px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideOut{from{opacity:1;transform:scale(1);}to{opacity:0;transform:scale(0.7);}}
+.q-front-tag{font-size:.6rem;font-weight:700;text-align:center;color:var(--primary-red);margin-top:.2rem;}
+.q-rear-tag{font-size:.6rem;font-weight:700;text-align:center;color:var(--primary-green);margin-top:.2rem;}
+.q-item-wrap{display:flex;flex-direction:column;align-items:center;}
+.q-status{font-size:.75rem;color:var(--text-secondary);}
+.q-status span{color:var(--primary-orange);font-weight:700;}
+
+/* ── 1. OS Printer Queue ── */
+.printer-visual{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;}
+.printer-icon-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;padding:.6rem 1rem;font-size:1.4rem;flex-shrink:0;}
+.print-arrow{color:var(--primary-green);font-size:1rem;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ── 2. BFS Demo ── */
+.bfs-grid{display:grid;grid-template-columns:repeat(5,36px);grid-template-rows:repeat(4,36px);gap:4px;margin-bottom:.7rem;}
+.bfs-cell{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;transition:all .3s;}
+.bfs-cell.wall{background:rgba(255,255,255,.08);cursor:not-allowed;}
+.bfs-cell.start{background:rgba(16,185,129,.25);border-color:var(--primary-green);color:var(--primary-green);}
+.bfs-cell.end{background:rgba(239,68,68,.25);border-color:var(--primary-red);color:var(--primary-red);}
+.bfs-cell.visited{background:rgba(6,182,212,.15);border-color:rgba(6,182,212,.4);color:var(--primary-cyan);}
+.bfs-cell.path{background:rgba(245,158,11,.25);border-color:var(--primary-orange);color:var(--primary-orange);}
+.bfs-cell.queued{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.4);color:var(--primary-purple);}
+.bfs-queue-show{display:flex;gap:.25rem;flex-wrap:wrap;min-height:28px;margin-bottom:.5rem;}
+.bfs-q-item{padding:.15rem .4rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:rgba(139,92,246,.15);color:var(--primary-purple);border:1px solid rgba(139,92,246,.3);animation:popIn .2s ease;}
+@keyframes popIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* ── 3. Priority Queue ── */
+.pq-list{display:flex;flex-direction:column;gap:.3rem;margin-bottom:.6rem;}
+.pq-item{display:flex;align-items:center;gap:.6rem;padding:.4rem .7rem;border-radius:7px;border:1px solid var(--border-color);background:rgba(255,255,255,.02);font-size:.78rem;animation:slideRight .25s ease;}
+.pq-priority{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.pq-name{flex:1;font-weight:600;}
+.pq-badge{font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;text-transform:uppercase;letter-spacing:.3px;}
+
+/* ── 4. Chat Message Queue ── */
+.chat-demo{display:flex;flex-direction:column;gap:.4rem;max-height:140px;overflow-y:auto;margin-bottom:.6rem;padding:.3rem;}
+.chat-msg{padding:.5rem .8rem;border-radius:10px;font-size:.78rem;animation:fadeUp .3s ease;max-width:90%;}
+@keyframes fadeUp{from{transform:translateY(8px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.chat-msg.incoming{background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.25);color:var(--text-primary);align-self:flex-start;}
+.chat-msg.processing{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:var(--primary-green);align-self:flex-start;}
+.chat-msg.meta{font-size:.7rem;color:var(--text-secondary);background:transparent;border:none;padding:.2rem .4rem;}
+
+/* ── 5. Ticket Counter ── */
+.ticket-demo{display:flex;gap:.8rem;align-items:flex-start;}
+.ticket-counter{flex:1;}
+.ticket-display{background:var(--card-bg);border:1px solid var(--border-color);border-radius:8px;padding:.8rem;text-align:center;margin-bottom:.5rem;}
+.ticket-num{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--primary-orange);line-height:1;}
+.ticket-lbl{font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;}
+.waiting-line{flex:1;}
+.waiting-title{font-size:.68rem;color:var(--text-secondary);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.4rem;}
+.waiting-persons{display:flex;gap:.25rem;flex-wrap:wrap;}
+.person-chip{padding:.2rem .5rem;border-radius:5px;font-size:.72rem;font-weight:600;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--primary-orange);animation:popIn .2s ease;}
+
+/* ── 6. CPU Scheduling ── */
+.cpu-demo{display:flex;flex-direction:column;gap:.5rem;}
+.cpu-bar{display:flex;align-items:center;gap:.5rem;}
+.cpu-label{font-size:.7rem;color:var(--text-secondary);min-width:40px;text-align:right;font-family:'JetBrains Mono',monospace;}
+.cpu-track{flex:1;height:28px;background:rgba(255,255,255,.04);border-radius:5px;border:1px solid var(--border-color);overflow:hidden;position:relative;}
+.cpu-fill{height:100%;border-radius:4px;transition:width .5s ease;display:flex;align-items:center;padding:0 .5rem;font-size:.7rem;font-weight:700;color:#000;white-space:nowrap;overflow:hidden;}
+.cpu-time{font-size:.68rem;color:var(--text-secondary);min-width:30px;font-family:'JetBrains Mono',monospace;}
+
+/* ═══ TYPES SECTION ═══ */
+.types-section{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;margin-bottom:2rem;}
+.types-section-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;color:var(--primary-orange);}
+.type-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+.type-item{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.type-item-icon{font-size:1.3rem;margin-bottom:.4rem;}
+.type-item-name{font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:.3rem;}
+.type-item-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.type-item-tag{font-family:'JetBrains Mono',monospace;font-size:.7rem;margin-top:.5rem;font-weight:700;}
+
+/* ═══ PRO/CON ═══ */
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+/* ═══ WHEN TO USE ═══ */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-orange);}
+
+/* ═══ STACK vs QUEUE ═══ */
+.compare-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.compare-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.compare-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.compare-table tr:hover td{background:rgba(255,255,255,.02);}
+.compare-table .op{font-weight:600;}
+.compare-table .q-val{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.compare-table .s-val{color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+/* ═══ COMPLEXITY TABLE ═══ */
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .time{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .space{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+
+/* ═══ CTA ═══ */
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-orange);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-orange);text-shadow:0 0 40px rgba(245,158,11,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-orange),var(--primary-pink));color:#000;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-pink),var(--primary-orange));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(245,158,11,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+.cta-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;}
+.cta-stat{text-align:center;}
+.cta-stat-val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--primary-orange);}
+.cta-stat-lbl{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-top:.2rem;}
+
+/* Queue lane CTA visual */
+.queue-lane{display:flex;align-items:center;justify-content:center;gap:4px;margin:2rem auto;max-width:400px;}
+.lane-block{height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;border:1px solid;flex:1;animation:floatQ 3s ease-in-out infinite;}
+.lane-block:nth-child(2){animation-delay:.1s;}
+.lane-block:nth-child(3){animation-delay:.2s;}
+.lane-block:nth-child(4){animation-delay:.3s;}
+.lane-block:nth-child(5){animation-delay:.4s;}
+@keyframes floatQ{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.lane-arrow{color:var(--primary-orange);font-size:1.1rem;flex-shrink:0;}
+
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.cta-stats{gap:1.5rem;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="queue_L1.html">Queue</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Queue in the <span class="highlight">Real World</span></h1>
+  <p>Every time you wait in line — digitally — a queue is managing the order. From OS task scheduling to WhatsApp messages, FIFO is everywhere.</p>
+</div>
+
+
+
+<!-- REAL WORLD APPLICATIONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">These aren't textbook examples — these are the actual queues running in systems you use every day.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. OS Print Queue -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🖨️</div>
+        <div class="card-title-wrap">
+          <h3>OS Printer Queue</h3>
+          <p>When multiple apps send print jobs, the OS stores them in a queue. Documents print in the exact order they were submitted — classic FIFO.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add print jobs and watch them process</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="addPrintJob('Report.pdf')">+ Report.pdf</button>
+            <button class="d-btn enq" onclick="addPrintJob('Invoice.doc')">+ Invoice.doc</button>
+            <button class="d-btn enq" onclick="addPrintJob('Photo.png')">+ Photo.png</button>
+            <button class="d-btn deq" onclick="printNext()">🖨️ Print Next</button>
+          </div>
+          <div class="printer-visual">
+            <div class="printer-icon-box">🖨️</div>
+            <div class="print-arrow">←</div>
+            <div style="flex:1">
+              <div class="demo-label" style="margin-bottom:.3rem">Print Queue (FIFO — first added = first printed)</div>
+              <div class="q-row" id="printQueue"></div>
+            </div>
+          </div>
+          <div class="q-status" id="printStatus">Queue is empty — add some print jobs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BFS Pathfinder -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>BFS Shortest Path</h3>
+          <p>Breadth-First Search uses a queue to explore level by level. Every GPS app, social network "degrees of separation", and game AI uses BFS.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch BFS explore the grid level by level using a queue</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="bfsStart()">▶ Start BFS</button>
+            <button class="d-btn deq" onclick="bfsReset()">↺ Reset</button>
+          </div>
+          <div class="demo-label" style="margin-bottom:.4rem">BFS Queue (cells waiting to be explored):</div>
+          <div class="bfs-queue-show" id="bfsQueueShow"></div>
+          <div class="bfs-grid" id="bfsGrid"></div>
+          <div class="q-status" id="bfsStatus"><span style="color:var(--primary-green)">S</span>=Start &nbsp;<span style="color:var(--primary-red)">E</span>=End &nbsp;<span style="color:var(--primary-purple)">■</span>=In Queue &nbsp;<span style="color:var(--primary-cyan)">■</span>=Visited &nbsp;<span style="color:var(--primary-orange)">■</span>=Path</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Priority Queue — Hospital ER -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🏥</div>
+        <div class="card-title-wrap">
+          <h3>Hospital ER Priority Queue</h3>
+          <p>Emergency rooms don't serve patients in arrival order — they use priority. Critical patients jump to the front. That's a priority queue.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add patients — critical ones get seen first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn pri" onclick="addPatient('Alice','Critical',1)">+ Critical</button>
+            <button class="d-btn" style="border-color:var(--primary-orange);color:var(--primary-orange)" onclick="addPatient('Bob','Urgent',2)">+ Urgent</button>
+            <button class="d-btn" onclick="addPatient('Carol','Normal',3)">+ Normal</button>
+            <button class="d-btn deq" onclick="treatNext()">🩺 Treat Next</button>
+          </div>
+          <div class="pq-list" id="patientQueue"></div>
+          <div class="q-status" id="patientStatus">Queue empty — add patients</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. WhatsApp Message Queue -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">💬</div>
+        <div class="card-title-wrap">
+          <h3>Message Queue (WhatsApp / Kafka)</h3>
+          <p>When you send messages, they go into a queue. If you're offline, messages wait. When you reconnect, they deliver in order. WhatsApp, Kafka, RabbitMQ — all queues.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Send messages while "offline" — they queue up, then deliver</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="sendMsg('Hey, you there?')">Send "Hey"</button>
+            <button class="d-btn enq" onclick="sendMsg('Meeting at 3pm?')">Send "Meeting"</button>
+            <button class="d-btn enq" onclick="sendMsg('I sent the file!')">Send "File"</button>
+            <button class="d-btn" style="border-color:var(--primary-cyan);color:var(--primary-cyan)" onclick="deliverMsgs()" id="deliverBtn">📶 Go Online & Deliver</button>
+          </div>
+          <div class="chat-demo" id="chatDemo"></div>
+          <div class="q-status" id="msgStatus">Offline — messages will queue up</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Ticket Counter -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">🎟️</div>
+        <div class="card-title-wrap">
+          <h3>Token / Ticket Counter System</h3>
+          <p>Banks, hospitals, and govt offices use token systems. You take a ticket and wait for your number — pure FIFO queue in real life.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Simulate a real ticket counter</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="takeTicket()">🎟️ Take Ticket</button>
+            <button class="d-btn deq" onclick="callNext()">📢 Call Next</button>
+          </div>
+          <div class="ticket-demo">
+            <div class="ticket-counter">
+              <div class="ticket-display">
+                <div class="ticket-num" id="nowServing">—</div>
+                <div class="ticket-lbl">Now Serving</div>
+              </div>
+              <div class="ticket-display" style="margin-top:.3rem">
+                <div class="ticket-num" id="nextTicket" style="font-size:1.1rem;color:var(--text-secondary)">001</div>
+                <div class="ticket-lbl">Next ticket no.</div>
+              </div>
+            </div>
+            <div class="waiting-line">
+              <div class="waiting-title">Waiting line</div>
+              <div class="waiting-persons" id="waitingLine"></div>
+            </div>
+          </div>
+          <div class="q-status" id="ticketStatus">No one waiting</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CPU Round Robin -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🖥️</div>
+        <div class="card-title-wrap">
+          <h3>CPU Round-Robin Scheduling</h3>
+          <p>Operating systems use a circular queue to give each process a time slice. When a process's time is up, it goes back to the rear of the queue.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch CPU time slices cycle through processes</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" id="cpuStartBtn" onclick="cpuStart()">▶ Start Scheduler</button>
+            <button class="d-btn deq" onclick="cpuReset()">↺ Reset</button>
+          </div>
+          <div class="cpu-demo" id="cpuDemo"></div>
+          <div class="q-row" id="cpuQueue" style="margin-top:.5rem"></div>
+          <div class="q-status" id="cpuStatus">Processes waiting in circular queue</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Queue operations are all O(1) when implemented with a linked list or circular array — that's the beauty of it.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Time (Linked List)</th><th>Time (Array)</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">enqueue(val)</td><td class="time">O(1)</td><td class="time">O(1)*</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Add to rear — just update pointer</td></tr>
+        <tr><td class="op">dequeue()</td><td class="time">O(1)</td><td class="time">O(1)*</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Remove from front — no shifting with circular array</td></tr>
+        <tr><td class="op">peek() / front()</td><td class="time">O(1)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Read front without removing</td></tr>
+        <tr><td class="op">isEmpty()</td><td class="time">O(1)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Check front == rear (circular) or size == 0</td></tr>
+        <tr><td class="op">search(val)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must scan all elements — use a HashMap instead</td></tr>
+        <tr><td class="op">Space (total)</td><td class="time">—</td><td class="time">—</td><td class="space">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n = number of elements stored</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.78rem;color:var(--text-secondary);margin-top:.7rem">* O(1) amortized for dynamic arrays. Plain array without circular indexing costs O(n) for dequeue due to shifting.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- QUEUE vs STACK comparison -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(6,182,212,.15)">⚖️</div>
+    Queue vs Stack — Key Differences
+  </div>
+  <p class="section-sub">They look similar but behave oppositely. Knowing when to use each is critical in interviews.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Property</th><th style="color:var(--primary-orange)">Queue</th><th style="color:var(--primary-cyan)">Stack</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Order</td><td class="q-val">FIFO</td><td class="s-val">LIFO</td></tr>
+        <tr><td class="op">Insert at</td><td class="q-val">Rear</td><td class="s-val">Top</td></tr>
+        <tr><td class="op">Remove from</td><td class="q-val">Front</td><td class="s-val">Top</td></tr>
+        <tr><td class="op">Operation names</td><td class="q-val">enqueue / dequeue</td><td class="s-val">push / pop</td></tr>
+        <tr><td class="op">Real-world analogy</td><td class="q-val">Queue at a bank</td><td class="s-val">Stack of plates</td></tr>
+        <tr><td class="op">Traversal algorithm</td><td class="q-val">BFS (level-by-level)</td><td class="s-val">DFS (depth-first)</td></tr>
+        <tr><td class="op">Use for</td><td class="q-val">Scheduling, BFS, streaming</td><td class="s-val">Undo, backtracking, parsing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Every data structure is a tradeoff. Here's the full honest picture of Queue.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) enqueue and dequeue</h4><p>Both core operations are constant time with linked list or circular array — no looping, no shifting.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Fair ordering guaranteed</h4><p>FIFO ensures no starvation — every item is processed in the order it arrived. Perfect for fair scheduling.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Essential for BFS</h4><p>Breadth-first search requires a queue. Shortest path, social networks, web crawlers — all depend on queue-based BFS.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Decouples producers and consumers</h4><p>Message queues (Kafka, RabbitMQ) let producers and consumers run at different speeds without blocking each other.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Handles async workloads</h4><p>Background job processing, event loops, task schedulers — queues are the backbone of asynchronous system design.</p></div>
+      </div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No random access</h4><p>You can only see the front element. To access the 5th item, you must dequeue 4 items first — destructive operation.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Memory waste in simple arrays</h4><p>A plain array queue leaves empty slots at the front after dequeue. Need circular array or linked list to fix this.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No priority without extra complexity</h4><p>Basic queue treats all items equally. If you need priority, you must upgrade to a priority queue (heap-based), which is more complex.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Searching is O(n)</h4><p>Finding a specific element requires scanning everything from front to rear. Use a HashMap if you need lookups.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Wrong order for LIFO problems</h4><p>If you need the most recent thing first (undo, backtracking, DFS), queue gives you the wrong order — use a Stack instead.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Queue — and When to Avoid It
+  </div>
+  <p class="section-sub">The right tool for the right job. Here's the decision framework every developer needs.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Queue When...</div>
+      <div class="when-item">
+        <div class="when-icon">🚶</div>
+        <div class="when-text"><h4>You need FIFO order</h4><p>Order of arrival must be preserved. Print jobs, customer service tickets, task queues — anything where fairness matters.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🗺️</div>
+        <div class="when-text"><h4>BFS / Level-order traversal</h4><p>Shortest path in unweighted graphs, social networks "mutual friends", web crawlers — all need <span class="when-code">queue.enqueue(neighbor)</span>.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📡</div>
+        <div class="when-text"><h4>Async message passing</h4><p>Producer sends data, consumer reads later. Kafka, RabbitMQ, SQS — decoupled systems where speed difference exists between sender and receiver.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🖥️</div>
+        <div class="when-text"><h4>CPU / IO scheduling</h4><p>Round-robin, FCFS scheduling. Give each process a time slice, rotate back to rear. Operating systems are built on this.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🪟</div>
+        <div class="when-text"><h4>Sliding window problems</h4><p>Use a <span class="when-code">Deque</span> for sliding window maximum/minimum. Efficiently track which element is valid as the window moves.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌊</div>
+        <div class="when-text"><h4>Stream / buffer processing</h4><p>Network packets, video frames, audio samples — arrive in order, must be processed in order. Classic circular queue buffer.</p></div>
+      </div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Queue When...</div>
+      <div class="when-item">
+        <div class="when-icon">↩️</div>
+        <div class="when-text"><h4>You need LIFO / undo behavior</h4><p>Use a Stack. Undo/Redo, function call management, backtracking — the last thing added must leave first, not the first.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text"><h4>You need to search or lookup elements</h4><p>Use a HashMap or Set. Searching a queue is O(n) and you can't do it without destroying the queue's order.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎲</div>
+        <div class="when-text"><h4>You need random access</h4><p>Use an Array or ArrayList. If you need the 3rd or 10th element without removing items before it, queue is the wrong choice.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">⭐</div>
+        <div class="when-text"><h4>Items need priority ordering</h4><p>Use a Priority Queue (heap). Basic queue treats everyone equally — if "critical" items should jump the line, you need a heap-based PQ.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌀</div>
+        <div class="when-text"><h4>DFS / depth-first exploration</h4><p>Use a Stack. DFS goes deep before wide — that's inherently LIFO. Using a queue for DFS gives you BFS behavior instead.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text"><h4>You need to sort the data</h4><p>Use Arrays with built-in sort. Sorting a queue requires dequeuing all elements, sorting, then re-enqueueing — very inefficient.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Queue problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how queues power BFS, OS scheduling, message systems, and emergency rooms.<br>
+      Now prove you can implement these patterns under interview pressure.
+    </p>
+    <div class="queue-lane">
+      <span class="lane-block" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--primary-red);">Sliding Win</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-purple);">BFS Grid</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);">Circular Q</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--primary-green);">Design Hit</span>
+    </div>
+    <a href="practice.html?topic=queue" class="cta-btn">
+      <span>🎯 Tackle the Queue Problems</span>
+      <span class="arrow">→</span>
+    </a>
+    <div class="cta-stats">
+      <div class="cta-stat"><div class="cta-stat-val">4</div><div class="cta-stat-lbl">Languages</div></div>
+      <div class="cta-stat"><div class="cta-stat-lbl" style="font-size:.9rem;color:var(--primary-orange);font-weight:700;margin-top:.5rem">C++ · Python · Java · JS</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══ THEME ═══ */
+const themes=['dark','light','blue'];
+const themeIcons={
+  dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+function applyTheme(t){
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('themeIcon').innerHTML=themeIcons[t];
+  localStorage.setItem('dsa-theme',t);
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const cur=localStorage.getItem('dsa-theme')||'dark';
+  applyTheme(themes[(themes.indexOf(cur)+1)%3]);
+});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ═══ 1. PRINT QUEUE ═══ */
+let printQ=[];
+const printColors=['rgba(245,158,11,.15)','rgba(6,182,212,.15)','rgba(139,92,246,.15)','rgba(16,185,129,.15)','rgba(239,68,68,.15)'];
+const printBorderColors=['rgba(245,158,11,.4)','rgba(6,182,212,.4)','rgba(139,92,246,.4)','rgba(16,185,129,.4)','rgba(239,68,68,.4)'];
+const printTextColors=['var(--primary-orange)','var(--primary-cyan)','var(--primary-purple)','var(--primary-green)','var(--primary-red)'];
+
+function renderPrintQ(){
+  const el=document.getElementById('printQueue');
+  el.innerHTML='';
+  if(printQ.length===0){el.innerHTML='<span style="color:var(--text-secondary);font-size:.78rem">Empty queue</span>';return;}
+  printQ.forEach((job,i)=>{
+    const wrap=document.createElement('div');wrap.className='q-item-wrap';
+    const item=document.createElement('div');item.className='q-item';
+    item.style.cssText=`background:${printColors[i%5]};border-color:${printBorderColors[i%5]};color:${printTextColors[i%5]};padding:0 .5rem;`;
+    item.textContent=job;
+    wrap.appendChild(item);
+    if(i===0){const t=document.createElement('div');t.className='q-front-tag';t.textContent='FRONT';wrap.appendChild(t);}
+    if(i===printQ.length-1){const t=document.createElement('div');t.className='q-rear-tag';t.textContent='REAR';wrap.appendChild(t);}
+    el.appendChild(wrap);
+  });
+}
+function addPrintJob(name){
+  if(printQ.length>=5){document.getElementById('printStatus').textContent='Queue full! Print something first.';return;}
+  printQ.push(name);
+  document.getElementById('printStatus').innerHTML=`<span>${printQ.length}</span> job(s) waiting`;
+  renderPrintQ();
+}
+function printNext(){
+  if(printQ.length===0){document.getElementById('printStatus').textContent='No jobs to print!';return;}
+  const job=printQ.shift();
+  document.getElementById('printStatus').innerHTML=`🖨️ Printing: <span>${job}</span> — ${printQ.length} remaining`;
+  renderPrintQ();
+}
+renderPrintQ();
+
+/* ═══ 2. BFS DEMO ═══ */
+const GRID_ROWS=4,GRID_COLS=5;
+const WALLS=new Set([1,3,6,11,13,16]);
+const START=0,END=19;
+let bfsVisited=new Set(),bfsQueue=[],bfsParent={},bfsTimer=null,bfsRunning=false;
+
+function initBfsGrid(){
+  const g=document.getElementById('bfsGrid');g.innerHTML='';
+  for(let i=0;i<GRID_ROWS*GRID_COLS;i++){
+    const c=document.createElement('div');c.className='bfs-cell';c.id='bc'+i;
+    if(WALLS.has(i)){c.className+=' wall';c.textContent='█';}
+    else if(i===START){c.className+=' start';c.textContent='S';}
+    else if(i===END){c.className+=' end';c.textContent='E';}
+    g.appendChild(c);
+  }
+}
+function bfsNeighbors(i){
+  const r=Math.floor(i/GRID_COLS),c=i%GRID_COLS,nb=[];
+  if(r>0)nb.push(i-GRID_COLS);if(r<GRID_ROWS-1)nb.push(i+GRID_COLS);
+  if(c>0)nb.push(i-1);if(c<GRID_COLS-1)nb.push(i+1);
+  return nb.filter(n=>!WALLS.has(n));
+}
+function renderBfsQueue(){
+  const el=document.getElementById('bfsQueueShow');el.innerHTML='';
+  bfsQueue.forEach(idx=>{
+    const s=document.createElement('span');s.className='bfs-q-item';
+    s.textContent=idx===START?'S':idx===END?'E':idx;
+    el.appendChild(s);
+  });
+  if(bfsQueue.length===0)el.innerHTML='<span style="color:var(--text-secondary);font-size:.72rem">Queue empty</span>';
+}
+function bfsStart(){
+  if(bfsRunning)return;
+  bfsReset();bfsRunning=true;
+  bfsQueue=[START];bfsVisited.add(START);bfsParent={};
+  renderBfsQueue();
+  document.getElementById('bfsStatus').innerHTML='<span style="color:var(--primary-purple)">BFS running — exploring level by level...</span>';
+  bfsTimer=setInterval(bfsStep,600);
+}
+function bfsStep(){
+  if(bfsQueue.length===0){clearInterval(bfsTimer);bfsRunning=false;document.getElementById('bfsStatus').textContent='No path found!';return;}
+  const cur=bfsQueue.shift();
+  if(cur!==START&&cur!==END){document.getElementById('bc'+cur).className='bfs-cell visited';document.getElementById('bc'+cur).textContent='·';}
+  if(cur===END){
+    clearInterval(bfsTimer);bfsRunning=false;
+    // trace path
+    let p=END;
+    while(p!==undefined&&p!==START){
+      if(p!==END){document.getElementById('bc'+p).className='bfs-cell path';document.getElementById('bc'+p).textContent='●';}
+      p=bfsParent[p];
+    }
+    document.getElementById('bfsStatus').innerHTML='<span style="color:var(--primary-orange)">✓ Shortest path found!</span>';
+    document.getElementById('bfsQueueShow').innerHTML='<span style="color:var(--primary-green);font-size:.72rem">Done ✓</span>';
+    return;
+  }
+  bfsNeighbors(cur).forEach(nb=>{
+    if(!bfsVisited.has(nb)){
+      bfsVisited.add(nb);bfsQueue.push(nb);bfsParent[nb]=cur;
+      if(nb!==END){document.getElementById('bc'+nb).className='bfs-cell queued';}
+    }
+  });
+  renderBfsQueue();
+}
+function bfsReset(){
+  clearInterval(bfsTimer);bfsRunning=false;
+  bfsVisited=new Set();bfsQueue=[];bfsParent={};
+  initBfsGrid();
+  document.getElementById('bfsQueueShow').innerHTML='<span style="color:var(--text-secondary);font-size:.72rem">Queue empty</span>';
+  document.getElementById('bfsStatus').innerHTML='<span style="color:var(--primary-green)">S</span>=Start &nbsp;<span style="color:var(--primary-red)">E</span>=End &nbsp;<span style="color:var(--primary-purple)">■</span>=In Queue &nbsp;<span style="color:var(--primary-cyan)">■</span>=Visited &nbsp;<span style="color:var(--primary-orange)">■</span>=Path';
+}
+initBfsGrid();
+
+/* ═══ 3. PRIORITY QUEUE (HOSPITAL) ═══ */
+let patients=[];let patientId=1;
+const priColors={1:{bg:'rgba(239,68,68,.15)',border:'rgba(239,68,68,.3)',text:'var(--primary-red)',badge:'🔴'},
+  2:{bg:'rgba(245,158,11,.15)',border:'rgba(245,158,11,.3)',text:'var(--primary-orange)',badge:'🟡'},
+  3:{bg:'rgba(16,185,129,.15)',border:'rgba(16,185,129,.3)',text:'var(--primary-green)',badge:'🟢'}};
+const names=['Alice','Bob','Carol','Dave','Eve','Frank','Grace','Henry'];
+
+function addPatient(name,level,pri){
+  const realName=names[(patientId-1)%names.length];
+  patients.push({name:realName,level,pri,id:patientId++});
+  patients.sort((a,b)=>a.pri-b.pri);
+  renderPatients();
+}
+function renderPatients(){
+  const el=document.getElementById('patientQueue');el.innerHTML='';
+  if(patients.length===0){document.getElementById('patientStatus').textContent='Queue empty — add patients';return;}
+  patients.forEach((p,i)=>{
+    const c=priColors[p.pri];
+    const div=document.createElement('div');div.className='pq-item';
+    div.style.cssText=`background:${c.bg};border-color:${c.border};`;
+    div.innerHTML=`<div class="pq-priority" style="background:${c.bg};border:1px solid ${c.border};color:${c.text}">${p.pri}</div>
+      <div class="pq-name" style="color:${c.text}">${p.name}</div>
+      <div class="pq-badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}">${c.badge} ${p.level}</div>
+      ${i===0?'<div style="font-size:.65rem;color:'+c.text+';font-weight:700">← NEXT</div>':''}`;
+    el.appendChild(div);
+  });
+  document.getElementById('patientStatus').innerHTML=`<span>${patients.length}</span> patient(s) waiting — sorted by priority`;
+}
+function treatNext(){
+  if(patients.length===0){document.getElementById('patientStatus').textContent='No patients waiting';return;}
+  const p=patients.shift();
+  document.getElementById('patientStatus').innerHTML=`🩺 Treating: <span>${p.name}</span> (${p.level}) — ${patients.length} remaining`;
+  renderPatients();
+}
+
+/* ═══ 4. MESSAGE QUEUE ═══ */
+let msgQueue=[];let isOnline=false;
+
+function sendMsg(text){
+  msgQueue.push(text);
+  const el=document.getElementById('chatDemo');
+  const div=document.createElement('div');div.className='chat-msg incoming';
+  div.innerHTML=`📤 Queued: "${text}"`;el.appendChild(div);el.scrollTop=el.scrollHeight;
+  document.getElementById('msgStatus').innerHTML=`Offline — <span>${msgQueue.length}</span> message(s) queued`;
+}
+async function deliverMsgs(){
+  if(msgQueue.length===0){document.getElementById('msgStatus').textContent='No messages queued';return;}
+  const btn=document.getElementById('deliverBtn');
+  btn.disabled=true;
+  document.getElementById('msgStatus').innerHTML='📶 Online! Delivering in order...';
+  const el=document.getElementById('chatDemo');
+  const meta=document.createElement('div');meta.className='chat-msg meta';meta.textContent='— Connected —';el.appendChild(meta);
+  while(msgQueue.length>0){
+    await new Promise(r=>setTimeout(r,700));
+    const msg=msgQueue.shift();
+    const div=document.createElement('div');div.className='chat-msg processing';
+    div.innerHTML=`✅ Delivered: "${msg}"`;el.appendChild(div);el.scrollTop=el.scrollHeight;
+    document.getElementById('msgStatus').innerHTML=`Delivering... <span>${msgQueue.length}</span> remaining`;
+  }
+  document.getElementById('msgStatus').innerHTML='<span>✓</span> All messages delivered in order!';
+  btn.disabled=false;
+}
+
+/* ═══ 5. TICKET COUNTER ═══ */
+let ticketQueue=[];let ticketCounter=1;let servingNum='—';
+
+function takeTicket(){
+  const num=String(ticketCounter).padStart(3,'0');
+  ticketCounter++;
+  ticketQueue.push(num);
+  document.getElementById('nextTicket').textContent=String(ticketCounter).padStart(3,'0');
+  renderWaiting();
+  document.getElementById('ticketStatus').innerHTML=`Ticket <span>${num}</span> issued — ${ticketQueue.length} waiting`;
+}
+function callNext(){
+  if(ticketQueue.length===0){document.getElementById('ticketStatus').textContent='No one waiting!';return;}
+  servingNum=ticketQueue.shift();
+  document.getElementById('nowServing').textContent=servingNum;
+  renderWaiting();
+  document.getElementById('ticketStatus').innerHTML=`<span>Now serving #${servingNum}</span> — ${ticketQueue.length} still waiting`;
+}
+function renderWaiting(){
+  const el=document.getElementById('waitingLine');el.innerHTML='';
+  if(ticketQueue.length===0){el.innerHTML='<span style="color:var(--text-secondary);font-size:.78rem">No one waiting</span>';return;}
+  ticketQueue.forEach(n=>{
+    const d=document.createElement('div');d.className='person-chip';d.textContent='#'+n;el.appendChild(d);
+  });
+}
+renderWaiting();
+
+/* ═══ 6. CPU ROUND ROBIN ═══ */
+const cpuProcesses=[
+  {name:'Chrome',color:'rgba(6,182,212,.15)',border:'rgba(6,182,212,.4)',text:'var(--primary-cyan)',total:5,done:0},
+  {name:'VSCode',color:'rgba(16,185,129,.15)',border:'rgba(16,185,129,.4)',text:'var(--primary-green)',total:3,done:0},
+  {name:'Spotify',color:'rgba(139,92,246,.15)',border:'rgba(139,92,246,.4)',text:'var(--primary-purple)',total:4,done:0},
+  {name:'Slack',color:'rgba(245,158,11,.15)',border:'rgba(245,158,11,.4)',text:'var(--primary-orange)',total:2,done:0},
+];
+let cpuQueue=[];let cpuInterval=null;let cpuRunning=false;
+
+function cpuStart(){
+  if(cpuRunning)return;
+  cpuRunning=true;
+  cpuQueue=[...cpuProcesses.map(p=>({...p,done:0}))];
+  document.getElementById('cpuStartBtn').textContent='⏸ Running...';
+  renderCpuBars();renderCpuQueue();
+  cpuInterval=setInterval(cpuTick,800);
+}
+function cpuTick(){
+  if(cpuQueue.length===0){clearInterval(cpuInterval);cpuRunning=false;document.getElementById('cpuStatus').innerHTML='<span>✓</span> All processes completed!';document.getElementById('cpuStartBtn').textContent='▶ Start Scheduler';return;}
+  const proc=cpuQueue.shift();
+  proc.done=Math.min(proc.done+1,proc.total);
+  document.getElementById('cpuStatus').innerHTML=`⚙️ Running: <span>${proc.name}</span> (slot ${proc.done}/${proc.total})`;
+  if(proc.done<proc.total){cpuQueue.push(proc);}
+  else{document.getElementById('cpuStatus').innerHTML=`✅ <span>${proc.name}</span> finished! ${cpuQueue.length} remaining`;}
+  renderCpuBars();renderCpuQueue();
+}
+function renderCpuBars(){
+  const el=document.getElementById('cpuDemo');el.innerHTML='';
+  cpuProcesses.forEach(p=>{
+    const cur=cpuQueue.find(q=>q.name===p.name);
+    const done=cur?cur.done:p.total;
+    const pct=Math.round((done/p.total)*100);
+    const div=document.createElement('div');div.className='cpu-bar';
+    div.innerHTML=`<div class="cpu-label">${p.name}</div>
+      <div class="cpu-track"><div class="cpu-fill" style="width:${pct}%;background:${p.text.includes('cyan')?'#06b6d4':p.text.includes('green')?'#10b981':p.text.includes('purple')?'#8b5cf6':'#f59e0b'}">${pct>15?p.name+' '+pct+'%':''}</div></div>
+      <div class="cpu-time">${done}/${p.total}</div>`;
+    el.appendChild(div);
+  });
+}
+function renderCpuQueue(){
+  const el=document.getElementById('cpuQueue');el.innerHTML='';
+  if(cpuQueue.length===0){el.innerHTML='<span style="color:var(--text-secondary);font-size:.78rem">Circular queue empty</span>';return;}
+  cpuQueue.forEach((p,i)=>{
+    const wrap=document.createElement('div');wrap.className='q-item-wrap';
+    const item=document.createElement('div');item.className='q-item';
+    item.style.cssText=`background:${p.color};border-color:${p.border};color:${p.text};padding:0 .6rem;`;
+    item.textContent=p.name;
+    wrap.appendChild(item);
+    if(i===0){const t=document.createElement('div');t.className='q-front-tag';t.textContent='NEXT';wrap.appendChild(t);}
+    el.appendChild(wrap);
+  });
+}
+function cpuReset(){
+  clearInterval(cpuInterval);cpuRunning=false;
+  cpuQueue=[];
+  cpuProcesses.forEach(p=>p.done=0);
+  document.getElementById('cpuStartBtn').textContent='▶ Start Scheduler';
+  document.getElementById('cpuStatus').textContent='Processes waiting in circular queue';
+  renderCpuBars();
+  document.getElementById('cpuQueue').innerHTML='<span style="color:var(--text-secondary);font-size:.78rem">Press Start to begin</span>';
+}
+renderCpuBars();
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

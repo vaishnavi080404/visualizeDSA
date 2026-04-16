@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bubble Sort — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--primary-sky:#0ea5e9;
+  --dark-bg:#0a0a0a;--card-bg:#111111;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;
+  --nav-bg:rgba(10,10,10,0.95);--code-bg:#0d1117;
+}
+[data-theme="light"]{--dark-bg:#f0f4f8;--card-bg:#ffffff;--text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;--nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;}
+[data-theme="blue"]{--dark-bg:#010e1a;--card-bg:#0a1628;--text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;--nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-sky);}
+.nav-right{display:flex;align-items:center;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-sky);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-sky);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-sky),var(--primary-cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-sky);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+.concept-section{max-width:1400px;margin:0 auto;padding:0 2rem 3rem;}
+.concept-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:2rem;}
+.concept-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:var(--primary-sky);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;}
+.concept-desc{color:var(--text-secondary);font-size:.92rem;line-height:1.75;margin-bottom:1.5rem;}
+.concept-desc strong{color:var(--text-primary);}
+
+/* Bubble bars */
+.sort-bars{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:100px;margin-bottom:1.2rem;}
+.bar{border-radius:6px 6px 0 0;transition:all .35s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;min-width:38px;border:2px solid transparent;}
+.bar.def{background:rgba(255,255,255,.08);border-color:var(--border-color);color:var(--text-secondary);}
+.bar.compare{background:rgba(14,165,233,.15);border-color:var(--primary-sky);color:var(--primary-sky);}
+.bar.swapping{background:rgba(139,92,246,.2);border-color:var(--primary-purple);color:var(--primary-purple);}
+.bar.bubbled{background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);}
+.bar.sorted{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.sky:hover{border-color:var(--primary-sky);box-shadow:0 8px 40px rgba(14,165,233,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.red:hover{border-color:var(--primary-red);box-shadow:0 8px 40px rgba(239,68,68,.12);}
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.sky{background:rgba(14,165,233,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.red{background:rgba(239,68,68,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+
+.demo-box{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.demo-btns{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.d-btn{padding:.3rem .75rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.74rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.d-btn:hover{border-color:var(--primary-sky);color:var(--primary-sky);}
+.d-btn.go{background:rgba(14,165,233,.1);border-color:var(--primary-sky);color:var(--primary-sky);}
+.d-btn.reset{background:rgba(239,68,68,.08);border-color:var(--primary-red);color:var(--primary-red);}
+.d-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+.mini-bars{display:flex;gap:3px;align-items:flex-end;height:60px;margin-bottom:.6rem;}
+.mbar{border-radius:4px 4px 0 0;transition:all .3s;min-width:22px;border:1px solid transparent;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;}
+.mbar.def{background:rgba(255,255,255,.07);border-color:var(--border-color);color:var(--text-secondary);}
+.mbar.cmp{background:rgba(14,165,233,.15);border-color:var(--primary-sky);color:var(--primary-sky);}
+.mbar.swp{background:rgba(139,92,246,.2);border-color:var(--primary-purple);color:var(--primary-purple);}
+.mbar.bub{background:rgba(245,158,11,.18);border-color:var(--primary-orange);color:var(--primary-orange);}
+.mbar.done{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+
+.status-line{font-size:.75rem;color:var(--text-secondary);padding:.4rem .6rem;background:rgba(255,255,255,.03);border-radius:6px;border:1px solid var(--border-color);font-family:'JetBrains Mono',monospace;line-height:1.5;}
+.status-line span{color:var(--primary-sky);font-weight:700;}
+.step-info{font-size:.7rem;color:var(--text-secondary);margin-top:.4rem;}
+.step-info b{color:var(--primary-orange);}
+
+.list-item{display:flex;align-items:center;gap:.6rem;padding:.35rem .6rem;border-radius:6px;font-size:.78rem;border:1px solid transparent;margin-bottom:.22rem;transition:all .2s;}
+.list-item.active{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.25);color:var(--primary-sky);}
+.list-item.swap{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25);color:var(--primary-purple);}
+.list-item.done{background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.2);color:var(--primary-green);}
+.list-item.idle{color:var(--text-secondary);}
+
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .good{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .ok{color:var(--primary-orange);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .bad{color:var(--primary-red);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-sky);}
+
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-sky);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-sky);text-shadow:0 0 40px rgba(14,165,233,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:linear-gradient(135deg,var(--primary-sky),var(--primary-cyan));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-sky));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(14,165,233,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+.bubble-viz{display:flex;gap:5px;align-items:flex-end;justify-content:center;height:70px;margin:2rem auto;max-width:280px;}
+.bvbar{border-radius:5px 5px 0 0;min-width:30px;border:1px solid;animation:bubbleFloat 2s ease-in-out infinite;}
+.bvbar:nth-child(1){animation-delay:0s;}.bvbar:nth-child(2){animation-delay:.1s;}.bvbar:nth-child(3){animation-delay:.2s;}.bvbar:nth-child(4){animation-delay:.3s;}.bvbar:nth-child(5){animation-delay:.4s;}.bvbar:nth-child(6){animation-delay:.5s;}
+@keyframes bubbleFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@media(max-width:768px){.app-grid{grid-template-columns:1fr;}.nav-links{display:none;}.procon-grid,.when-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="bubblesort_L1.html">Bubble Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Bubble Sort in the <span class="highlight">Real World</span></h1>
+  <p>The simplest sort that gets a bad reputation — but its early-exit optimization and stability make it genuinely useful in the right situations.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Repeatedly Bubble the Largest Element to the End</div>
+    <p class="concept-desc">Bubble sort makes repeated passes through the array. Each pass: <strong>compare adjacent pairs</strong> and <strong>swap if out of order</strong>. After each pass, the <strong>largest unsorted element "bubbles up"</strong> to its correct position at the right. The key optimization: if <strong>no swaps happen in a pass</strong>, the array is already sorted — stop early. This makes it O(n) on already-sorted data.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through bubble sort — watch the largest bubble to the right each pass</div>
+      <div class="sort-bars" id="conceptBars"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Pass</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Pass" to step through bubble sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.2);border:2px solid var(--primary-green)"></div>Sorted</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.18);border:2px solid var(--primary-orange)"></div>Bubbled to position</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(14,165,233,.15);border:2px solid var(--primary-sky)"></div>Comparing pair</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.2);border:2px solid var(--primary-purple)"></div>Swapping</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(14,165,233,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Bubble sort's early-exit and stability make it genuinely useful in specific scenarios — especially nearly-sorted data and teaching.</p>
+  <div class="app-grid">
+
+    <!-- 1. Live Leaderboard -->
+    <div class="app-card sky">
+      <div class="card-header">
+        <div class="card-icon sky">🏅</div>
+        <div class="card-title-wrap">
+          <h3>Live Leaderboard Re-Sort</h3>
+          <p>In gaming or live competitions, scores change one at a time. After each score update, the leaderboard is "almost sorted" — bubble sort with early-exit detects this and finishes in O(n), far faster than re-running quicksort from scratch.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 A score changes — bubble sort re-sorts in minimal passes</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="lbResort()">▶ Score Update → Re-sort</button>
+            <button class="d-btn reset" onclick="lbReset()">↺ Reset</button>
+          </div>
+          <div id="lbList" style="display:flex;flex-direction:column;gap:.22rem;max-height:160px;overflow-y:auto"></div>
+          <div class="step-info" id="lbInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Nearly Sorted Detection -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">✅</div>
+        <div class="card-title-wrap">
+          <h3>Detecting Already-Sorted Data</h3>
+          <p>Bubble sort with the "swapped" flag is the fastest way to <strong>verify if an array is sorted</strong>: one O(n) pass with zero swaps = confirmed sorted. Used in input validation, CI data checks, and pre-sort detection before choosing an algorithm.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Is this data already sorted? One pass finds out</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="checkSorted('sorted')">✅ Check Sorted</button>
+            <button class="d-btn go" onclick="checkSorted('unsorted')">🔀 Check Unsorted</button>
+            <button class="d-btn reset" onclick="checkSortedReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="checkBars"></div>
+          <div class="status-line" id="checkStatus">Pick a dataset to check</div>
+          <div class="step-info" id="checkInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Network Packet Reordering -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🌐</div>
+        <div class="card-title-wrap">
+          <h3>Network Packet Reordering</h3>
+          <p>Network packets arrive mostly in order with occasional out-of-order packets. Bubble sort's stability and O(n) best case on nearly-sorted data makes it an efficient choice to reorder small packet buffers before processing.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Reorder packets — mostly in order, a few out of place</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="packetStep()">▶ Next Pass</button>
+            <button class="d-btn reset" onclick="packetReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="packetBars"></div>
+          <div class="status-line" id="packetStatus">Packets arrive mostly in order</div>
+          <div class="step-info" id="packetInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Stable Sort Requirement -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗂️</div>
+        <div class="card-title-wrap">
+          <h3>Stable Sort for Records</h3>
+          <p>When sorting student records already sorted by name and then re-sorting by grade, <strong>stability</strong> is critical — same-grade students must stay in original name order. Bubble sort is naturally stable. Selection sort is not.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort by grade — equal grades preserve original name order</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="stableStep()">▶ Next Pass</button>
+            <button class="d-btn reset" onclick="stableReset()">↺ Reset</button>
+          </div>
+          <div id="stableList" style="display:flex;flex-direction:column;gap:.22rem;max-height:150px;overflow-y:auto"></div>
+          <div class="step-info" id="stableInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Small Buffer Sorting -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Microcontroller Sensor Buffer</h3>
+          <p>Sorting a small rolling window of sensor readings (e.g. last 8 temperature readings for median filtering) on an Arduino. With n=8, bubble sort is just as fast as quicksort in practice and needs zero stack space for recursion.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort sensor window for median — n=8, no recursion needed</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="sensorStep()">▶ Bubble Pass</button>
+            <button class="d-btn reset" onclick="sensorReset()">↺ New Window</button>
+          </div>
+          <div class="mini-bars" id="sensorBars"></div>
+          <div class="status-line" id="sensorStatus">Window of 8 sensor readings</div>
+          <div class="step-info" id="sensorInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Education / Visualizer -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">📊</div>
+        <div class="card-title-wrap">
+          <h3>Classroom Sorting Demo</h3>
+          <p>Bubble sort is the canonical teaching algorithm. Students physically stand in a line, compare with their neighbor, and swap if needed — after one pass the tallest is at the end. Every CS course worldwide uses it as the first sorting example.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Full auto animation — watch every comparison and swap</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" id="autoBtn" onclick="autoSort()">▶ Auto Sort</button>
+            <button class="d-btn reset" onclick="autoReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="autoBars"></div>
+          <div class="status-line" id="autoStatus">Press Auto Sort to watch every step</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Swaps: <b id="autoSwaps" style="color:var(--primary-sky)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Passes: <b id="autoPasses" style="color:var(--primary-orange)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(14,165,233,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Bubble sort's best case is its secret weapon — O(n) on already-sorted data beats every O(n log n) algorithm for that specific case.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Swaps</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n)</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Already sorted — 1 pass, 0 swaps, "swapped" flag exits early</td></tr>
+        <tr><td class="op">Average Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Random data — n(n-1)/2 comparisons and swaps</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Reverse-sorted — maximum swaps every pass</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="good">✅ Yes — stable</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Only swaps strict > pairs — equal elements never swap</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(14,165,233,.05);border:1px solid rgba(14,165,233,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> The optimized bubble sort with a <strong style="color:var(--primary-sky)">"swapped" flag</strong> is the fastest algorithm for checking if data is <em>already sorted</em> — O(n) with zero overhead. Selection sort always does O(n²) even on sorted input. This is bubble sort's unique advantage.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Bubble sort gets unfairly dismissed. Here's the complete picture — including where it genuinely wins.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(n) best case — fastest for sorted data</h4><p>With the "swapped" flag optimization, one pass with zero swaps exits immediately. No other sorting algorithm detects already-sorted data faster with O(1) space.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Naturally stable</h4><p>Only swaps when left > right — equal elements are never swapped. This preserves the original relative order of equal keys, making it safe for multi-key sort chains.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) space — truly in-place</h4><p>Sorts within the existing array using only a swap buffer variable. No auxiliary arrays. Ideal for memory-constrained environments like embedded systems and microcontrollers.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Simple to implement and verify</h4><p>The simplest swap-based sort to write correctly. The logic is obvious — compare neighbours, swap if wrong order. Easy to proof-read, test, and teach.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Adaptive — faster on nearly-sorted data</h4><p>Fewer inversions = fewer passes and swaps. On nearly-sorted data, bubble sort with early-exit is often faster in practice than selection sort, which always does O(n²).</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Great for teaching sort mechanics</h4><p>The most visually intuitive sort — adjacent swaps are easy to trace by hand, animate, or simulate physically. Every algorithms course uses it to introduce sorting.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) average and worst case</h4><p>Random or reverse-sorted data triggers maximum comparisons and swaps. 1,000 elements ≈ 500,000 swaps. Quicksort handles the same data in ~10,000 operations.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Most swaps of any sort — O(n²) writes</h4><p>Unlike selection sort's O(n) swaps, bubble sort can make O(n²) swaps in the worst case. Never use on flash memory or write-limited storage where writes degrade hardware.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Outperformed even by insertion sort</h4><p>Insertion sort is strictly better than bubble sort in almost all cases — fewer comparisons, fewer swaps, same O(n) best case, same space. Hard to justify choosing bubble over insertion.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Turtle problem — small elements are slow to move left</h4><p>Large elements bubble to the right quickly, but small elements near the end (turtles) move left by only one position per pass — causing very slow worst-case behavior.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance on large arrays</h4><p>Repeated adjacent swaps cause many write operations. Large arrays thrash the cache. Merge sort's sequential memory access is far more cache-friendly at scale.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No practical advantage over Timsort</h4><p>Python and Java's built-in Timsort combines merge sort with insertion sort — O(n) on sorted, stable, O(n log n) worst case. Timsort obsoletes bubble sort completely in production.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Bubble Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Bubble sort's niche is narrow but real. Knowing exactly when it helps vs when it hurts separates good engineers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Bubble Sort When...</div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Checking if data is already sorted</h4><p>With the <span class="when-code">swapped</span> flag, one O(n) pass confirms sorted order. Fastest possible check — more efficient than running qsort just to verify order is intact.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔃</div><div class="when-text"><h4>Nearly-sorted data with small n</h4><p>A list of 50 items where 2 are out of place? Bubble sort finishes in 2 passes. Insertion sort is also good here — both are O(n + k) where k = number of inversions.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability is required + data is tiny</h4><p>Must preserve order of equal elements and n ≤ 20? Bubble sort is stable, simple, and correct. No need for the complexity of merge sort at this scale.</p></div></div>
+      <div class="when-item"><div class="when-icon">🧠</div><div class="when-text"><h4>Memory is constrained + stability required</h4><p>O(1) space AND stable. Merge sort needs O(n) auxiliary space. For an embedded system that must sort stably, bubble sort and insertion sort are the only O(1) stable options.</p></div></div>
+      <div class="when-item"><div class="when-icon">📚</div><div class="when-text"><h4>Teaching or illustrating sort mechanics</h4><p>The clearest visual sorting algorithm. Each swap is an obvious adjacent exchange — perfect for animations, whiteboard sessions, and building sorting intuition.</p></div></div>
+      <div class="when-item"><div class="when-icon">📡</div><div class="when-text"><h4>Small live-data windows (n ≤ 20)</h4><p>Re-sorting a leaderboard of 10 players after one score update. The overhead of merge sort or heapsort far exceeds the cost of 2-3 bubble passes on such tiny data.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Bubble Sort When...</div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Large datasets (n > 1000)</h4><p>Use quicksort, mergesort, or heapsort. At n=10,000, bubble sort's O(n²) makes 50 million swaps. Quicksort makes ~130,000 operations. No contest.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Write-limited storage (flash / EEPROM)</h4><p>Use selection sort instead. Bubble sort's O(n²) worst-case swaps would wear out flash memory cells rapidly. Selection sort guarantees only n−1 writes total.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔀</div><div class="when-text"><h4>General-purpose sorting</h4><p>Use the language's built-in sort. Python's Timsort, Java's Arrays.sort, C++'s std::sort — all strictly better. Never use bubble sort as a default sort.</p></div></div>
+      <div class="when-item"><div class="when-icon">📉</div><div class="when-text"><h4>Reverse-sorted data</h4><p>Worst case: every pair needs swapping every pass. n elements in reverse order = n(n-1)/2 swaps. Insertion sort handles the same data with the same n² but fewer actual writes.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Performance-critical code paths</h4><p>Even at n=100 in a tight loop called 10,000 times, bubble sort's 5,000 swaps × 10,000 calls = 50M operations. Insertion sort or std::sort would be 10x+ faster.</p></div></div>
+      <div class="when-item"><div class="when-icon">🗃️</div><div class="when-text"><h4>When insertion sort would work just as well</h4><p>In nearly every situation where you'd consider bubble sort, insertion sort is a strictly better choice — same stability, same O(1) space, same best case, but fewer comparisons and swaps on average.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Sorting problems</span></div>
+    <p class="cta-sub">You've seen how bubble sort powers live leaderboards, network reordering, and stability-required scenarios.<br>Now prove you can implement it — and know exactly when to use it versus faster alternatives.</p>
+    <div class="bubble-viz">
+      <div class="bvbar" style="height:20px;background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)"></div>
+      <div class="bvbar" style="height:40px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+      <div class="bvbar" style="height:30px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="bvbar" style="height:52px;background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)"></div>
+      <div class="bvbar" style="height:25px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="bvbar" style="height:45px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+    </div>
+    <a href="practice.html?topic=bubblesort" class="cta-btn">
+      <span>🫧 Solve Bubble Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* THEME */
+const themes=['dark','light','blue'];
+const themeIcons={dark:'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',light:'<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',blue:'<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'};
+function applyTheme(t){document.body.setAttribute('data-theme',t);document.getElementById('themeIcon').innerHTML=themeIcons[t];localStorage.setItem('dsa-theme',t);}
+document.getElementById('themeToggle').addEventListener('click',()=>{const c=localStorage.getItem('dsa-theme')||'dark';applyTheme(themes[(themes.indexOf(c)+1)%3]);});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* CONCEPT */
+let cArr=[5,3,8,1,9,2,7],cPass=0,cDone=false;
+function renderConceptBars(arr,compareA=-1,compareB=-1,sortedFrom=-1,swapPair=[]){
+  const el=document.getElementById('conceptBars');el.innerHTML='';
+  const mx=Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='bar';
+    b.style.height=Math.max(18,Math.round((v/mx)*85))+'px';
+    if(swapPair.includes(i))b.classList.add('swapping');
+    else if(i>=sortedFrom&&sortedFrom>=0)b.classList.add('sorted');
+    else if(i===compareA||i===compareB)b.classList.add('compare');
+    else b.classList.add('def');
+    b.textContent=v;el.appendChild(b);
+  });
+}
+function conceptStep(){
+  if(cDone){conceptReset();return;}
+  if(cPass>=cArr.length-1){renderConceptBars(cArr,-1,-1,0);document.getElementById('conceptStatus').innerHTML='✅ Fully sorted! All elements in place.';cDone=true;return;}
+  let swapped=false;
+  const tmp=[...cArr];
+  for(let j=0;j<cArr.length-1-cPass;j++){
+    if(cArr[j]>cArr[j+1]){[cArr[j],cArr[j+1]]=[cArr[j+1],cArr[j]];swapped=true;}
+  }
+  const sortedFrom=cArr.length-1-cPass;
+  renderConceptBars(cArr,-1,-1,sortedFrom);
+  if(!swapped){renderConceptBars(cArr,-1,-1,0);document.getElementById('conceptStatus').innerHTML=`✅ Pass ${cPass+1}: <span style="color:var(--primary-green)">No swaps — array already sorted!</span> Early exit.`;cDone=true;}
+  else{document.getElementById('conceptStatus').innerHTML=`Pass ${cPass+1}: <span style="color:var(--primary-orange)">${cArr[sortedFrom]}</span> bubbled to position ${sortedFrom+1}. Sorted region grows ✓`;}
+  cPass++;
+}
+function conceptReset(){cArr=[5,3,8,1,9,2,7];cPass=0;cDone=false;renderConceptBars(cArr);document.getElementById('conceptStatus').textContent='Click "Next Pass" to step through bubble sort';}
+renderConceptBars(cArr);
+
+/* HELPER: build mini bars */
+function buildMini(elId,arr,sortedFrom=-1,cmpA=-1,cmpB=-1,swpA=-1,swpB=-1){
+  const el=document.getElementById(elId);if(!el)return;el.innerHTML='';
+  const mx=Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='mbar';
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';
+    if(swpA===i||swpB===i)b.classList.add('swp');
+    else if(i>=sortedFrom&&sortedFrom>=0)b.classList.add('done');
+    else if(i===cmpA||i===cmpB)b.classList.add('cmp');
+    else b.classList.add('def');
+    b.textContent=v;el.appendChild(b);
+  });
+}
+
+/* 1. LEADERBOARD RE-SORT */
+const lbBase=[{n:'Alice',s:950},{n:'Bob',s:920},{n:'Carol',s:880},{n:'Dave',s:860},{n:'Eve',s:830},{n:'Frank',s:800}];
+let lbData=[...lbBase],lbPass=0,lbDone=false;
+function renderLb(cmpIdx=-1,swpIdx=-1,sortedFrom=-1){
+  const el=document.getElementById('lbList');el.innerHTML='';
+  lbData.forEach((p,i)=>{
+    const d=document.createElement('div');
+    d.className='list-item '+(i>=sortedFrom&&sortedFrom>=0?'done':i===cmpIdx||i===cmpIdx+1?'active':i===swpIdx||i===swpIdx+1?'swap':'idle');
+    d.innerHTML=`<span style="font-family:'JetBrains Mono',monospace;font-size:.68rem;min-width:20px;color:var(--text-secondary)">${i+1}.</span><span style="flex:1;font-weight:600;font-size:.78rem">${p.n}</span><span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--primary-orange)">${p.s}pts</span>`;
+    el.appendChild(d);
+  });
+}
+function lbResort(){
+  if(lbDone){lbReset();return;}
+  // First call: inject one score change
+  if(lbPass===0){lbData[3].s=940;document.getElementById('lbInfo').innerHTML=`Score update: Dave → <b>940pts</b> (was 860). Re-sorting...`;renderLb();setTimeout(()=>_lbBubble(),400);return;}
+  _lbBubble();
+}
+function _lbBubble(){
+  if(lbPass>=lbData.length-1){renderLb(-1,-1,0);document.getElementById('lbInfo').innerHTML=`✅ Re-sorted in <b>${lbPass}</b> pass${lbPass!==1?'es':''} — bubble sort's early-exit wins here`;lbDone=true;return;}
+  let swapped=false;
+  for(let j=0;j<lbData.length-1-lbPass;j++){
+    if(lbData[j].s<lbData[j+1].s){[lbData[j],lbData[j+1]]=[lbData[j+1],lbData[j]];swapped=true;}
+  }
+  lbPass++;
+  const sf=lbData.length-lbPass;
+  renderLb(-1,-1,sf);
+  if(!swapped){renderLb(-1,-1,0);document.getElementById('lbInfo').innerHTML=`✅ Done in <b>${lbPass}</b> pass${lbPass!==1?'es':''}! No swaps in last pass — early exit ✓`;lbDone=true;return;}
+  document.getElementById('lbInfo').innerHTML=`Pass <b>${lbPass}</b>: sorted region now ${lbPass} item${lbPass!==1?'s':''}`;
+}
+function lbReset(){lbData=[...lbBase.map(x=>({...x}))];lbPass=0;lbDone=false;renderLb();document.getElementById('lbInfo').textContent='';}
+renderLb();
+
+/* 2. CHECK SORTED */
+const sortedData=[2,4,6,8,10,12,14,16];
+const unsortedData=[2,4,9,8,10,6,14,16];
+let chkArr=[],chkTimer=null;
+function checkSorted(type){
+  clearTimeout(chkTimer);
+  chkArr=type==='sorted'?[...sortedData]:[...unsortedData];
+  buildMini('checkBars',chkArr);
+  document.getElementById('checkStatus').textContent='Scanning...';
+  document.getElementById('checkInfo').textContent='';
+  let swapped=false,comps=0;
+  for(let i=0;i<chkArr.length-1;i++){comps++;if(chkArr[i]>chkArr[i+1]){swapped=true;break;}}
+  chkTimer=setTimeout(()=>{
+    if(!swapped){
+      buildMini('checkBars',chkArr,-1,-1,-1,-1,-1);
+      chkArr.forEach((_,i)=>{ const bs=document.getElementById('checkBars').children[i]; if(bs)bs.className='mbar done';});
+      document.getElementById('checkStatus').innerHTML=`✅ <span>SORTED</span> — confirmed in ${comps} comparison${comps!==1?'s':''}. Early exit!`;
+      document.getElementById('checkInfo').innerHTML=`<b>0 swaps needed</b> — bubble sort detects this in O(n)`;
+    } else {
+      document.getElementById('checkStatus').innerHTML=`⚠ <span style="color:var(--primary-red)">NOT SORTED</span> — found out-of-order pair after ${comps} comparison${comps!==1?'s':''}`;
+      document.getElementById('checkInfo').innerHTML=`<b>Swaps needed</b> — array must be sorted`;
+    }
+  },600);
+}
+function checkSortedReset(){clearTimeout(chkTimer);chkArr=[...sortedData];buildMini('checkBars',chkArr);document.getElementById('checkStatus').textContent='Pick a dataset to check';document.getElementById('checkInfo').textContent='';}
+buildMini('checkBars',sortedData);
+
+/* 3. NETWORK PACKETS */
+// Nearly sorted: seq 1-9 with two out of place
+let pkArr=[1,2,3,7,5,6,4,8,9],pkPass=0,pkDone=false;
+function buildPkBars(sortedFrom=-1){buildMini('packetBars',pkArr,sortedFrom);}
+function packetStep(){
+  if(pkDone){packetReset();return;}
+  if(pkPass>=pkArr.length-1){buildPkBars(0);document.getElementById('packetStatus').innerHTML=`✅ All packets reordered!`;document.getElementById('packetInfo').innerHTML=`Done in <b>${pkPass}</b> passes — nearly-sorted made this fast`;pkDone=true;return;}
+  let swapped=false;
+  for(let j=0;j<pkArr.length-1-pkPass;j++)if(pkArr[j]>pkArr[j+1]){[pkArr[j],pkArr[j+1]]=[pkArr[j+1],pkArr[j]];swapped=true;}
+  pkPass++;
+  const sf=pkArr.length-pkPass;
+  buildPkBars(sf);
+  if(!swapped){buildPkBars(0);document.getElementById('packetStatus').innerHTML=`✅ <span>No swaps</span> — packets fully ordered!`;document.getElementById('packetInfo').innerHTML=`Early exit after <b>${pkPass}</b> passes`;pkDone=true;return;}
+  document.getElementById('packetStatus').innerHTML=`Pass ${pkPass}: Packet <span>${pkArr[sf]}</span> settled. ${sf} remaining`;
+  document.getElementById('packetInfo').innerHTML=`<b>${pkPass}</b> pass${pkPass!==1?'es':''} completed`;
+}
+function packetReset(){pkArr=[1,2,3,7,5,6,4,8,9];pkPass=0;pkDone=false;buildPkBars();document.getElementById('packetStatus').textContent='Packets arrive mostly in order';document.getElementById('packetInfo').textContent='';}
+buildPkBars();
+
+/* 4. STABLE SORT */
+// Same grade students — bubble sort must preserve original name order for equal grades
+const stableBase=[{n:'Carol',g:85},{n:'Alice',g:92},{n:'Dave',g:85},{n:'Bob',g:78},{n:'Eve',g:92},{n:'Frank',g:78}];
+let stArr=[...stableBase],stPass=0,stDone=false;
+function renderStable(cmpIdx=-1,swpIdx=-1,sortedFrom=-1){
+  const el=document.getElementById('stableList');el.innerHTML='';
+  stArr.forEach((s,i)=>{
+    const d=document.createElement('div');
+    const isComp=i===cmpIdx||i===cmpIdx+1;
+    const isSwap=i===swpIdx||i===swpIdx+1;
+    const isDone=i>=sortedFrom&&sortedFrom>=0;
+    d.className='list-item '+(isDone?'done':isSwap?'swap':isComp?'active':'idle');
+    const gradeColor=s.g>=90?'var(--primary-green)':s.g>=80?'var(--primary-orange)':'var(--primary-red)';
+    d.innerHTML=`<span style="font-size:.78rem;flex:1;font-weight:600">${s.n}</span><span style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:${gradeColor};font-weight:700">${s.g}</span>`;
+    el.appendChild(d);
+  });
+}
+function stableStep(){
+  if(stDone){stableReset();return;}
+  if(stPass>=stArr.length-1){renderStable(-1,-1,0);document.getElementById('stableInfo').innerHTML=`✅ Sorted by grade — equal grades kept original name order (stable!)`;stDone=true;return;}
+  let swapped=false;
+  for(let j=0;j<stArr.length-1-stPass;j++){
+    if(stArr[j].g<stArr[j+1].g){[stArr[j],stArr[j+1]]=[stArr[j+1],stArr[j]];swapped=true;}
+  }
+  stPass++;
+  const sf=stArr.length-stPass;
+  renderStable(-1,-1,sf);
+  if(!swapped){renderStable(-1,-1,0);document.getElementById('stableInfo').innerHTML=`✅ Done in <b>${stPass}</b> passes — stability preserved ✓`;stDone=true;return;}
+  document.getElementById('stableInfo').innerHTML=`Pass <b>${stPass}</b>: grade <span style="color:var(--primary-orange)">${stArr[sf].g}</span> bubbled to position ${sf+1}`;
+}
+function stableReset(){stArr=[...stableBase.map(x=>({...x}))];stPass=0;stDone=false;renderStable();document.getElementById('stableInfo').textContent='';}
+renderStable();
+
+/* 5. SENSOR WINDOW */
+let senArr=[38,41,29,44,35,31,43,37],senPass=0,senDone=false;
+function sensorStep(){
+  if(senDone){sensorReset();return;}
+  if(senPass>=senArr.length-1){buildMini('sensorBars',senArr,0);document.getElementById('sensorStatus').innerHTML=`✅ Median = <span>${senArr[Math.floor(senArr.length/2)]}</span>°C (sorted window)`;document.getElementById('sensorInfo').innerHTML=`Done in <b>${senPass}</b> passes — n=8 makes O(n²) trivial`;senDone=true;return;}
+  let swapped=false;
+  for(let j=0;j<senArr.length-1-senPass;j++)if(senArr[j]>senArr[j+1]){[senArr[j],senArr[j+1]]=[senArr[j+1],senArr[j]];swapped=true;}
+  senPass++;
+  const sf=senArr.length-senPass;
+  buildMini('sensorBars',senArr,sf);
+  if(!swapped){buildMini('sensorBars',senArr,0);document.getElementById('sensorStatus').innerHTML=`✅ Median = <span>${senArr[Math.floor(senArr.length/2)]}</span>°C — early exit`;senDone=true;return;}
+  document.getElementById('sensorStatus').innerHTML=`Pass ${senPass}: max remaining = <span>${senArr[sf]}</span>°C placed`;
+  document.getElementById('sensorInfo').innerHTML=`Pass <b>${senPass}</b> of max ${senArr.length-1}`;
+}
+function sensorReset(){senArr=[38,41,29,44,35,31,43,37].sort(()=>Math.random()-.5);senPass=0;senDone=false;buildMini('sensorBars',senArr);document.getElementById('sensorStatus').textContent='Window of 8 sensor readings';document.getElementById('sensorInfo').textContent='';}
+buildMini('sensorBars',senArr);
+
+/* 6. AUTO SORT */
+let autoArr=[6,4,8,2,9,1,7,3,5],autoTimer=null,autoSwapCount=0,autoPassCount=0;
+function buildAutoMini(arr,sortedFrom=-1,cmpA=-1,cmpB=-1,swpA=-1,swpB=-1){
+  const el=document.getElementById('autoBars');if(!el)return;el.innerHTML='';
+  const mx=Math.max(...arr);
+  arr.forEach((v,i)=>{
+    const b=document.createElement('div');b.className='mbar';
+    b.style.height=Math.max(10,Math.round((v/mx)*52))+'px';
+    if(swpA===i||swpB===i)b.classList.add('swp');
+    else if(i>=sortedFrom&&sortedFrom>=0)b.classList.add('done');
+    else if(i===cmpA||i===cmpB)b.classList.add('cmp');
+    else b.classList.add('def');
+    b.textContent=v;el.appendChild(b);
+  });
+}
+function autoSort(){
+  clearTimeout(autoTimer);
+  autoArr=[6,4,8,2,9,1,7,3,5];autoSwapCount=0;autoPassCount=0;
+  document.getElementById('autoBtn').disabled=true;
+  document.getElementById('autoSwaps').textContent=0;document.getElementById('autoPasses').textContent=0;
+  buildAutoMini(autoArr);
+  const steps=[];
+  const tmp=[...autoArr];
+  for(let i=0;i<tmp.length-1;i++){
+    let sw=false;
+    for(let j=0;j<tmp.length-1-i;j++){
+      steps.push({type:'cmp',a:j,b:j+1,sortedFrom:tmp.length-i,arr:[...tmp]});
+      if(tmp[j]>tmp[j+1]){[tmp[j],tmp[j+1]]=[tmp[j+1],tmp[j]];sw=true;autoSwapCount++;steps.push({type:'swp',a:j,b:j+1,sortedFrom:tmp.length-i,arr:[...tmp]});}
+    }
+    steps.push({type:'pass',sortedFrom:tmp.length-1-i,arr:[...tmp]});
+    if(!sw){steps.push({type:'done',arr:[...tmp]});break;}
+  }
+  autoSwapCount=0;let d=0;
+  steps.forEach((s,idx)=>{
+    autoTimer=setTimeout(()=>{
+      if(s.type==='cmp')buildAutoMini(s.arr,s.sortedFrom,s.a,s.b);
+      else if(s.type==='swp'){buildAutoMini(s.arr,s.sortedFrom,-1,-1,s.a,s.b);autoSwapCount++;document.getElementById('autoSwaps').textContent=autoSwapCount;}
+      else if(s.type==='pass'){autoPassCount++;document.getElementById('autoPasses').textContent=autoPassCount;buildAutoMini(s.arr,s.sortedFrom);document.getElementById('autoStatus').innerHTML=`Pass ${autoPassCount} done — ${s.sortedFrom} element${s.sortedFrom!==1?'s':''} sorted`;}
+      else if(s.type==='done'||idx===steps.length-1){buildAutoMini(s.arr,0);document.getElementById('autoStatus').innerHTML=`✅ Sorted! <span style="color:var(--primary-sky)">${autoSwapCount} swaps</span> in <span style="color:var(--primary-orange)">${autoPassCount} passes</span>`;document.getElementById('autoBtn').disabled=false;}
+    },d*90);d++;
+  });
+}
+function autoReset(){clearTimeout(autoTimer);autoArr=[6,4,8,2,9,1,7,3,5];buildAutoMini(autoArr);document.getElementById('autoStatus').textContent='Press Auto Sort to watch every step';document.getElementById('autoSwaps').textContent=0;document.getElementById('autoPasses').textContent=0;document.getElementById('autoBtn').disabled=false;}
+buildAutoMini(autoArr);
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

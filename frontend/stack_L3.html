@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary-green:#10b981;--primary-cyan:#06b6d4;--primary-purple:#8b5cf6;
+  --primary-orange:#f59e0b;--primary-red:#ef4444;--dark-bg:#0a0a0a;
+  --card-bg:#111111;--card-bg2:#161616;--text-primary:#ffffff;
+  --text-secondary:#a0a0a0;--border-color:#222222;--nav-bg:rgba(10,10,10,0.95);
+  --code-bg:#0d1117;--glow-green:rgba(16,185,129,0.15);
+  --glow-cyan:rgba(6,182,212,0.15);--glow-purple:rgba(139,92,246,0.15);
+}
+[data-theme="light"]{
+  --dark-bg:#f0f4f8;--card-bg:#ffffff;--card-bg2:#f8fafc;
+  --text-primary:#0f172a;--text-secondary:#475569;--border-color:#e2e8f0;
+  --nav-bg:rgba(240,244,248,0.95);--code-bg:#f1f5f9;
+  --glow-green:rgba(16,185,129,0.08);--glow-cyan:rgba(6,182,212,0.08);--glow-purple:rgba(139,92,246,0.08);
+}
+[data-theme="blue"]{
+  --dark-bg:#010e1a;--card-bg:#0a1628;--card-bg2:#0d1d35;
+  --text-primary:#e2f0ff;--text-secondary:#7ba3c8;--border-color:#1a3050;
+  --nav-bg:rgba(1,14,26,0.95);--code-bg:#010e1a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--dark-bg);color:var(--text-primary);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-color);height:60px;}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 2rem;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:.5rem;font-size:1.2rem;font-weight:700;text-decoration:none;color:inherit;}
+ .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .3s;}
+.nav-links a:hover{color:var(--primary-green);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+.theme-toggle{background:var(--border-color);border:1px solid var(--border-color);color:var(--text-primary);cursor:pointer;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.theme-toggle:hover{border-color:var(--primary-green);}
+.theme-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* HERO */
+.hero{padding:120px 2rem 60px;max-width:1400px;margin:0 auto;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:30px;padding:.4rem 1.2rem;font-size:.8rem;font-weight:700;color:var(--primary-green);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.5rem;}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;}
+.hero h1 .highlight{background:linear-gradient(135deg,var(--primary-cyan),var(--primary-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero p{font-size:1.1rem;color:var(--text-secondary);max-width:600px;margin:0 auto 2rem;}
+.breadcrumb-bar{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--text-secondary);justify-content:center;margin-bottom:2rem;}
+.breadcrumb-bar a{color:var(--text-secondary);text-decoration:none;}
+.breadcrumb-bar a:hover{color:var(--primary-cyan);}
+.breadcrumb-bar .sep{opacity:.4;}
+
+/* SECTION */
+.section{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+.section-title{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;}
+.section-title .icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.section-sub{color:var(--text-secondary);margin-bottom:2.5rem;font-size:1rem;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0;}
+
+/* ═══ REAL WORLD CARDS ═══ */
+.app-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem;}
+.app-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:transform .3s,border-color .3s,box-shadow .3s;}
+.app-card:hover{transform:translateY(-4px);}
+.app-card.green:hover{border-color:var(--primary-green);box-shadow:0 8px 40px rgba(16,185,129,.12);}
+.app-card.cyan:hover{border-color:var(--primary-cyan);box-shadow:0 8px 40px rgba(6,182,212,.12);}
+.app-card.purple:hover{border-color:var(--primary-purple);box-shadow:0 8px 40px rgba(139,92,246,.12);}
+.app-card.orange:hover{border-color:var(--primary-orange);box-shadow:0 8px 40px rgba(245,158,11,.12);}
+.app-card.red:hover{border-color:var(--primary-red);box-shadow:0 8px 40px rgba(239,68,68,.12);}
+
+.card-header{padding:1.5rem 1.5rem 1rem;display:flex;align-items:flex-start;gap:1rem;}
+.card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.card-icon.green{background:rgba(16,185,129,.15);}
+.card-icon.cyan{background:rgba(6,182,212,.15);}
+.card-icon.purple{background:rgba(139,92,246,.15);}
+.card-icon.orange{background:rgba(245,158,11,.15);}
+.card-icon.red{background:rgba(239,68,68,.15);}
+.card-title-wrap h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.card-title-wrap p{font-size:.85rem;color:var(--text-secondary);line-height:1.5;}
+.card-demo{padding:0 1.5rem 1.5rem;}
+.demo-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:.7rem;}
+
+/* ── Browser History Demo ── */
+.browser-demo{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.browser-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;}
+.browser-dots{display:flex;gap:.3rem;}
+.browser-dots span{width:10px;height:10px;border-radius:50%;}
+.browser-url{flex:1;background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:.3rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-secondary);}
+.browser-btns{display:flex;gap:.4rem;margin-bottom:.8rem;}
+.b-btn{padding:.35rem .8rem;border-radius:7px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.b-btn:hover{border-color:var(--primary-cyan);color:var(--primary-cyan);}
+.b-btn.visit{background:rgba(16,185,129,.15);border-color:var(--primary-green);color:var(--primary-green);}
+.b-btn:disabled{opacity:.3;cursor:not-allowed;}
+.history-stack{display:flex;flex-direction:column;gap:.3rem;max-height:130px;overflow:hidden;}
+.history-item{display:flex;align-items:center;gap:.5rem;padding:.35rem .7rem;border-radius:6px;font-size:.78rem;font-family:'JetBrains Mono',monospace;background:rgba(255,255,255,.03);border:1px solid transparent;transition:all .3s;}
+.history-item.current{background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);}
+.history-item .arrow{opacity:.4;font-size:.65rem;}
+
+/* ── Undo/Redo Demo ── */
+.editor-demo{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.editor-area{min-height:60px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:.6rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text-primary);margin-bottom:.7rem;word-break:break-all;line-height:1.6;}
+.editor-btns{display:flex;gap:.4rem;flex-wrap:wrap;}
+.e-btn{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-size:.73rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.e-btn:hover{border-color:var(--primary-purple);color:var(--primary-purple);}
+.e-btn.type{background:rgba(16,185,129,.1);border-color:var(--primary-green);color:var(--primary-green);}
+.e-btn:disabled{opacity:.3;cursor:not-allowed;}
+.stack-peek{font-size:.72rem;color:var(--text-secondary);margin-top:.6rem;}
+.stack-peek span{color:var(--primary-orange);font-weight:700;}
+
+/* ── Code Validator Demo ── */
+.validator-demo{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.val-input-wrap{display:flex;gap:.5rem;margin-bottom:.7rem;}
+.val-input{flex:1;background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:.4rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-primary);outline:none;transition:border-color .2s;}
+.val-input:focus{border-color:var(--primary-cyan);}
+.val-btn{padding:.4rem 1rem;border-radius:6px;border:none;background:var(--primary-cyan);color:#000;font-weight:700;font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.val-btn:hover{opacity:.85;}
+.val-steps{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.6rem;min-height:32px;}
+.val-step{padding:.2rem .5rem;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;animation:popIn .2s ease;}
+@keyframes popIn{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.val-result{font-size:.82rem;font-weight:700;padding:.4rem .8rem;border-radius:6px;text-align:center;}
+.val-result.ok{background:rgba(16,185,129,.15);color:var(--primary-green);border:1px solid rgba(16,185,129,.3);}
+.val-result.err{background:rgba(239,68,68,.15);color:var(--primary-red);border:1px solid rgba(239,68,68,.3);}
+
+/* ── Expression Evaluator Demo ── */
+.expr-demo{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.expr-presets{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.expr-preset{padding:.25rem .6rem;border-radius:6px;border:1px solid var(--border-color);background:transparent;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;transition:all .2s;}
+.expr-preset:hover{border-color:var(--primary-orange);color:var(--primary-orange);}
+.expr-display{background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:.6rem 1rem;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text-primary);margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center;}
+.expr-stacks{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.mini-stack-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:.5rem;}
+.mini-stack-label{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin-bottom:.4rem;}
+.mini-stack-items{display:flex;gap:.25rem;flex-wrap:wrap;}
+.mini-stack-item{padding:.2rem .45rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;background:rgba(245,158,11,.15);color:var(--primary-orange);border:1px solid rgba(245,158,11,.3);animation:popIn .2s ease;}
+
+/* ── Call Stack Demo ── */
+.callstack-demo{background:var(--code-bg);border:1px solid var(--border-color);border-radius:10px;padding:1rem;}
+.call-btns{display:flex;gap:.4rem;margin-bottom:.8rem;flex-wrap:wrap;}
+.c-btn{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border-color);background:transparent;font-size:.73rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-secondary);}
+.c-btn.call{border-color:var(--primary-green);color:var(--primary-green);background:rgba(16,185,129,.08);}
+.c-btn.ret{border-color:var(--primary-red);color:var(--primary-red);background:rgba(239,68,68,.08);}
+.call-stack-viz{display:flex;flex-direction:column-reverse;gap:.25rem;min-height:100px;}
+.frame{padding:.4rem .8rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;display:flex;align-items:center;justify-content:space-between;animation:slideIn .25s ease;}
+@keyframes slideIn{from{transform:translateX(-10px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.frame-tag{font-size:.65rem;opacity:.6;}
+.stack-bottom{text-align:center;font-size:.7rem;color:var(--text-secondary);padding:.3rem;border-top:2px dashed var(--border-color);margin-top:.2rem;}
+
+/* ═══ PRO/CON ═══ */
+.procon-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.procon-grid{grid-template-columns:1fr;}}
+.procon-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.procon-card.pros{border-color:rgba(16,185,129,.2);}
+.procon-card.cons{border-color:rgba(239,68,68,.2);}
+.procon-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.procon-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1rem;padding:.7rem;border-radius:8px;transition:background .2s;}
+.procon-item:hover{background:rgba(255,255,255,.03);}
+.procon-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;margin-top:2px;}
+.procon-dot.pro{background:rgba(16,185,129,.2);color:var(--primary-green);}
+.procon-dot.con{background:rgba(239,68,68,.2);color:var(--primary-red);}
+.procon-text h4{font-size:.9rem;font-weight:600;margin-bottom:.2rem;}
+.procon-text p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;}
+
+/* ═══ WHEN TO USE ═══ */
+.when-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+@media(max-width:700px){.when-grid{grid-template-columns:1fr;}}
+.when-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem;}
+.when-card.use{border-color:rgba(16,185,129,.2);}
+.when-card.avoid{border-color:rgba(239,68,68,.2);}
+.when-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem;}
+.when-item{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:.9rem;}
+.when-icon{font-size:1rem;flex-shrink:0;margin-top:2px;}
+.when-text h4{font-size:.88rem;font-weight:600;margin-bottom:.15rem;}
+.when-text p{font-size:.8rem;color:var(--text-secondary);line-height:1.5;}
+.when-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.72rem;background:var(--code-bg);padding:.1rem .4rem;border-radius:4px;color:var(--primary-cyan);}
+
+/* ═══ COMPLEXITY TABLE ═══ */
+.complexity-table{width:100%;border-collapse:collapse;font-size:.88rem;}
+.complexity-table th{background:var(--code-bg);padding:.75rem 1rem;text-align:left;font-family:'Space Grotesk',sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);border-bottom:1px solid var(--border-color);}
+.complexity-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);}
+.complexity-table tr:hover td{background:rgba(255,255,255,.02);}
+.complexity-table .op{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text-primary);}
+.complexity-table .time{color:var(--primary-green);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.complexity-table .space{color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+.table-wrap{background:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;overflow:hidden;}
+
+/* ═══ CTA ═══ */
+.cta-section{padding:5rem 2rem;text-align:center;}
+.cta-inner{max-width:700px;margin:0 auto;}
+.cta-label{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--primary-cyan);margin-bottom:1rem;}
+.cta-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:1rem;}
+.cta-title .glow{color:var(--primary-green);text-shadow:0 0 40px rgba(16,185,129,.4);}
+.cta-sub{color:var(--text-secondary);font-size:1rem;margin-bottom:2.5rem;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:.8rem;padding:1rem 2.5rem;background:transparent;color:#000;font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:800;border-radius:50px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;border:none;cursor:pointer;}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--primary-cyan),var(--primary-green));opacity:0;transition:opacity .3s;}
+.cta-btn:hover::before{opacity:1;}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(16,185,129,.4);}
+.cta-btn span{position:relative;z-index:1;}
+.cta-btn .arrow{font-size:1.3rem;position:relative;z-index:1;transition:transform .3s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+.cta-stats{display:flex;justify-content:center;gap:3rem;margin-top:3rem;}
+.cta-stat{text-align:center;}
+.cta-stat-val{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--primary-cyan);}
+.cta-stat-lbl{font-size:.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-top:.2rem;}
+
+/* ═══ FLOATING STACK VIZ ═══ */
+.cta-visual{margin:2.5rem auto;width:160px;position:relative;}
+.stack-tower{display:flex;flex-direction:column;gap:4px;align-items:center;}
+.tower-block{width:140px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;border:1px solid;transition:all .5s;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.tower-block:nth-child(2){animation-delay:.15s;}
+.tower-block:nth-child(3){animation-delay:.3s;}
+.tower-block:nth-child(4){animation-delay:.45s;}
+.tower-block:nth-child(5){animation-delay:.6s;}
+.tower-label{font-size:.65rem;text-align:center;color:var(--text-secondary);margin-top:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+
+@media(max-width:768px){
+  .app-grid{grid-template-columns:1fr;}
+  .cta-stats{gap:1.5rem;}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="stack_L1.html">Stack</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Stack in the <span class="highlight">Real World</span></h1>
+  <p>Every app you use today runs on stacks under the hood. See exactly how — with live interactive demos you can play with.</p>
+</div>
+
+<!-- ══════════════════════════════════
+     SECTION 1: REAL WORLD APPS
+══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(6,182,212,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">These aren't theory — these are the actual algorithms running in software you use every day.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. Browser History -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🌐</div>
+        <div class="card-title-wrap">
+          <h3>Browser Back / Forward</h3>
+          <p>Every browser maintains two stacks — one for back history, one for forward. When you navigate, pages get pushed and popped.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Interactive Demo — Click to navigate</div>
+        <div class="browser-demo">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <span style="background:#ef4444"></span>
+              <span style="background:#f59e0b"></span>
+              <span style="background:#10b981"></span>
+            </div>
+            <div class="browser-url" id="browserUrl">google.com</div>
+          </div>
+          <div class="browser-btns">
+            <button class="b-btn" id="btnBack" onclick="browserBack()">← Back</button>
+            <button class="b-btn" id="btnFwd" onclick="browserFwd()">Forward →</button>
+            <button class="b-btn visit" onclick="browserVisit('github.com')">github</button>
+            <button class="b-btn visit" onclick="browserVisit('leetcode.com')">leetcode</button>
+            <button class="b-btn visit" onclick="browserVisit('youtube.com')">youtube</button>
+          </div>
+          <div class="demo-label" style="margin-bottom:.4rem">Back Stack (top = current page)</div>
+          <div class="history-stack" id="historyStack"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Undo/Redo -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">↩️</div>
+        <div class="card-title-wrap">
+          <h3>Undo / Redo (Ctrl+Z)</h3>
+          <p>Every text editor, Photoshop, VS Code — undo uses a stack. Each action is pushed. Undo pops it. Redo is a second stack.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type words then undo them</div>
+        <div class="editor-demo">
+          <div class="editor-area" id="editorArea">Hello</div>
+          <div class="editor-btns">
+            <button class="e-btn type" onclick="typeWord('World')">+ World</button>
+            <button class="e-btn type" onclick="typeWord('!')">+ !</button>
+            <button class="e-btn type" onclick="typeWord(' DSA')">+ DSA</button>
+            <button class="e-btn type" onclick="typeWord(' Rocks')">+ Rocks</button>
+            <button class="e-btn" id="btnUndo" onclick="undoAction()">↩ Undo</button>
+            <button class="e-btn" id="btnRedo" onclick="redoAction()">↪ Redo</button>
+          </div>
+          <div class="stack-peek">Undo stack size: <span id="undoSize">0</span> &nbsp;|&nbsp; Redo stack size: <span id="redoSize">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Code Validator -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🔍</div>
+        <div class="card-title-wrap">
+          <h3>Code Bracket Validator</h3>
+          <p>VS Code's error squiggles for mismatched brackets? That's a stack. Opening brackets push, closing brackets pop and verify.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type brackets and watch the stack validate</div>
+        <div class="validator-demo">
+          <div class="val-input-wrap">
+            <input class="val-input" id="valInput" type="text" value="{[()]}" placeholder="Type brackets: { [ ( ) ] }" oninput="validateLive()"/>
+            <button class="val-btn" onclick="validateBrackets()">Check</button>
+          </div>
+          <div class="demo-label">Stack state while processing:</div>
+          <div class="val-steps" id="valSteps"></div>
+          <div class="val-result" id="valResult" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Expression Evaluator -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🧮</div>
+        <div class="card-title-wrap">
+          <h3>Expression Evaluator</h3>
+          <p>Calculators, compilers, and spreadsheets convert math to postfix (RPN) notation and evaluate using two stacks: numbers & operators.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Pick an expression to evaluate step-by-step</div>
+        <div class="expr-demo">
+          <div class="expr-presets">
+            <button class="expr-preset" onclick="evalExpr('3 + 4 * 2')">3 + 4 × 2</button>
+            <button class="expr-preset" onclick="evalExpr('(2 + 3) * 4')">( 2 + 3 ) × 4</button>
+            <button class="expr-preset" onclick="evalExpr('10 - 2 * 3')">10 − 2 × 3</button>
+          </div>
+          <div class="expr-display">
+            <span id="exprDisplay" style="color:var(--text-secondary)">Pick an expression above</span>
+            <span id="exprResult" style="color:var(--primary-green);font-weight:700"></span>
+          </div>
+          <div class="expr-stacks">
+            <div class="mini-stack-wrap">
+              <div class="mini-stack-label">Numbers Stack</div>
+              <div class="mini-stack-items" id="numStack">—</div>
+            </div>
+            <div class="mini-stack-wrap">
+              <div class="mini-stack-label">Operators Stack</div>
+              <div class="mini-stack-items" id="opStack">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Call Stack -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Function Call Stack</h3>
+          <p>Every program runtime uses a call stack. When a function calls another, a frame is pushed. When it returns, the frame is popped.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Simulate function calls and returns</div>
+        <div class="callstack-demo">
+          <div class="call-btns">
+            <button class="c-btn call" onclick="callFn('main()')">Call main()</button>
+            <button class="c-btn call" onclick="callFn('calculate()')">Call calculate()</button>
+            <button class="c-btn call" onclick="callFn('add(3,4)')">Call add(3,4)</button>
+            <button class="c-btn call" onclick="callFn('print()')">Call print()</button>
+            <button class="c-btn ret" onclick="returnFn()">↩ Return</button>
+          </div>
+          <div class="call-stack-viz" id="callStackViz"></div>
+          <div class="stack-bottom">— Stack bottom —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Path Navigation -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>GPS Path & Backtracking</h3>
+          <p>Maze solvers, GPS rerouting, and game AI use a stack to track visited paths. Hit a dead end? Pop back and try another route.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Navigate the maze — stack tracks your path</div>
+        <div class="browser-demo" style="padding:.8rem">
+          <div id="mazeGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:.7rem"></div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem">
+            <button class="b-btn" onclick="mazeMove('up')">↑ Up</button>
+            <button class="b-btn" onclick="mazeMove('down')">↓ Down</button>
+            <button class="b-btn" onclick="mazeMove('left')">← Left</button>
+            <button class="b-btn" onclick="mazeMove('right')">→ Right</button>
+            <button class="b-btn" onclick="mazeBacktrack()" style="border-color:var(--primary-orange);color:var(--primary-orange)">↩ Backtrack</button>
+            <button class="b-btn" onclick="mazeReset()" style="border-color:var(--primary-red);color:var(--primary-red)">↺ Reset</button>
+          </div>
+          <div class="stack-peek">Path stack: <span id="mazeStackSize" style="color:var(--primary-green);font-weight:700">0</span> steps &nbsp;|&nbsp; <span id="mazeStatus">Navigate to reach 🏁</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════
+     SECTION 2: COMPLEXITY
+══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">All core stack operations run in constant time — that's what makes it so powerful.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Operation</th>
+          <th>Time Complexity</th>
+          <th>Space</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">push(val)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Add to top — no shifting needed</td></tr>
+        <tr><td class="op">pop()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Remove from top — direct access</td></tr>
+        <tr><td class="op">peek() / top()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Read top without removing</td></tr>
+        <tr><td class="op">isEmpty()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Check if stack has elements</td></tr>
+        <tr><td class="op">search(val)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must scan all elements — use a map instead</td></tr>
+        <tr><td class="op">Space (total)</td><td class="time">—</td><td class="space">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n = number of elements stored</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════
+     SECTION 3: PROS & CONS
+══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Every data structure is a tradeoff. Know when stack shines — and when it doesn't.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) push and pop</h4><p>All core operations are constant time — no looping, no shifting, no searching.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Simple mental model</h4><p>LIFO is intuitive — like a stack of plates. Easy to reason about, easy to implement.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Perfect for reversal</h4><p>Push everything in, pop everything out — you get the reverse. No extra code needed.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Recursion management</h4><p>Every recursive function implicitly uses the call stack. Explicit stacks let you convert recursion to iteration.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Minimal memory overhead</h4><p>No pointers between nodes (with array implementation). Cache-friendly and memory-efficient.</p></div>
+      </div>
+    </div>
+
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No random access</h4><p>You can only access the top element. Reaching the 5th item means popping 4 items first.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Stack overflow risk</h4><p>Too many pushes (especially in recursion) can exceed memory limits and crash your program.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No searching</h4><p>Finding a specific value requires O(n) time — you must pop everything to find something in the middle.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Fixed order only</h4><p>You're locked into LIFO. If you need FIFO (first-in, first-out), you need a queue instead.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Not suitable for sorting</h4><p>Sorting a stack requires popping all elements, sorting them, then pushing back — very inefficient.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════
+     SECTION 4: WHEN TO USE
+══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Stack — and When to Avoid It
+  </div>
+  <p class="section-sub">Choosing the right data structure is half the interview. Here's the decision framework.</p>
+
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Stack When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text">
+          <h4>You need LIFO order</h4>
+          <p>Last operation must be undone first. Undo/Redo, back navigation, function calls — all LIFO.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔤</div>
+        <div class="when-text">
+          <h4>Matching / nesting problems</h4>
+          <p>Brackets, parentheses, HTML tags, XML. Opening tags push, closing tags pop and verify. <span class="when-code">( [ { } ] )</span></p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">↔️</div>
+        <div class="when-text">
+          <h4>Reversing a sequence</h4>
+          <p>Push all elements, then pop — instant reversal. Great for reversing words, sentences, linked lists.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📈</div>
+        <div class="when-text">
+          <h4>Next Greater / Smaller Element</h4>
+          <p>Monotonic stack pattern. Find next warmer day, next taller building — O(n) using stack instead of O(n²) brute force.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌀</div>
+        <div class="when-text">
+          <h4>Converting recursion to iteration</h4>
+          <p>DFS, tree traversal, pathfinding — replace the call stack with an explicit stack to avoid stack overflow.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🧮</div>
+        <div class="when-text">
+          <h4>Expression evaluation</h4>
+          <p>Parsing math expressions, postfix/prefix notation, spreadsheet formulas — all use stacks.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Stack When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text">
+          <h4>You need to search for an element</h4>
+          <p>Use a HashMap or Set instead. Searching a stack is O(n) and destroys the stack in the process.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎲</div>
+        <div class="when-text">
+          <h4>You need random access</h4>
+          <p>Use an Array or ArrayList. If you need the 3rd or 10th element, a stack forces you to pop everything above it.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🚶</div>
+        <div class="when-text">
+          <h4>You need FIFO order</h4>
+          <p>Use a Queue. If the first thing added should be the first thing removed (like a task queue or BFS), stack is the wrong tool.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text">
+          <h4>You need to sort data</h4>
+          <p>Use Arrays with built-in sort. Sorting a stack requires O(n²) operations — completely inefficient.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔗</div>
+        <div class="when-text">
+          <h4>You need bidirectional traversal</h4>
+          <p>Use a Deque (double-ended queue). If you need to access both ends efficiently, stack only gives you one end.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">♾️</div>
+        <div class="when-text">
+          <h4>Deep recursion without limit checks</h4>
+          <p>Add iterative alternative or increase stack size. Unlimited recursion = stack overflow. Always add a depth limit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════
+     CTA: PRACTICE
+══════════════════════════════════ -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Stack problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how stacks power browsers, editors, compilers, and runtimes.<br>
+      Now it's time to solve the actual interview questions using these exact patterns.
+    </p>
+
+    <div class="cta-visual">
+      <div class="stack-tower">
+        <div class="tower-block" style="background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);">RPN Eval</div>
+        <div class="tower-block" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-purple);">Next Greater</div>
+        <div class="tower-block" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:var(--primary-orange);">Daily Temps</div>
+        <div class="tower-block" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--primary-green);">Min Stack</div>
+        <div class="tower-block" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--primary-red);">Valid Parens</div>
+      </div>
+      <div class="tower-label">↑ and more are waiting</div>
+    </div>
+
+    <a href="practice.html?topic=stack" class="cta-btn">
+      <span>⚡ Crack the Stack Problems</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <!-- <div class="cta-stats">
+      <div class="cta-stat">
+        <div class="cta-stat-val">5</div>
+        <div class="cta-stat-lbl">Problems</div>
+      </div>
+      <div class="cta-stat">
+        <div class="cta-stat-val">4</div>
+        <div class="cta-stat-lbl">Languages</div>
+      </div>
+      <div class="cta-stat">
+        <div class="cta-stat-lbl" style="font-size:.9rem;color:var(--primary-green);font-weight:700;margin-top:.5rem">C++ · Python · Java · JS</div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<script>
+/* ═══ THEME ═══ */
+const themes = ['dark','light','blue'];
+const themeIcons = {
+  dark:  '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue:  '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>'
+};
+function applyTheme(t){
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('themeIcon').innerHTML = themeIcons[t];
+  localStorage.setItem('dsa-theme',t);
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const cur = localStorage.getItem('dsa-theme')||'dark';
+  applyTheme(themes[(themes.indexOf(cur)+1)%3]);
+});
+applyTheme(localStorage.getItem('dsa-theme')||'dark');
+
+/* ═══ BROWSER HISTORY DEMO ═══ */
+let backStack = ['google.com'];
+let fwdStack = [];
+
+function renderHistory(){
+  const el = document.getElementById('historyStack');
+  el.innerHTML = '';
+  const display = [...backStack].reverse().slice(0,4);
+  display.forEach((url,i)=>{
+    const div = document.createElement('div');
+    div.className = 'history-item' + (i===0?' current':'');
+    div.innerHTML = `<span>${i===0?'▶':'  '}</span><span>${url}</span>${i===0?'<span style="margin-left:auto;font-size:.65rem;color:var(--primary-cyan)">← current</span>':''}`;
+    el.appendChild(div);
+  });
+  document.getElementById('browserUrl').textContent = backStack[backStack.length-1];
+  document.getElementById('btnBack').disabled = backStack.length <= 1;
+  document.getElementById('btnFwd').disabled  = fwdStack.length === 0;
+}
+
+function browserVisit(url){
+  fwdStack = [];
+  backStack.push(url);
+  renderHistory();
+}
+function browserBack(){
+  if(backStack.length>1){
+    fwdStack.push(backStack.pop());
+    renderHistory();
+  }
+}
+function browserFwd(){
+  if(fwdStack.length>0){
+    backStack.push(fwdStack.pop());
+    renderHistory();
+  }
+}
+renderHistory();
+
+/* ═══ UNDO/REDO DEMO ═══ */
+let editorText = 'Hello';
+let undoStack = [];
+let redoStack = [];
+
+function updateEditor(){
+  document.getElementById('editorArea').textContent = editorText;
+  document.getElementById('undoSize').textContent = undoStack.length;
+  document.getElementById('redoSize').textContent = redoStack.length;
+  document.getElementById('btnUndo').disabled = undoStack.length === 0;
+  document.getElementById('btnRedo').disabled = redoStack.length === 0;
+}
+function typeWord(word){
+  undoStack.push(editorText);
+  redoStack = [];
+  editorText += word;
+  updateEditor();
+}
+function undoAction(){
+  if(undoStack.length>0){
+    redoStack.push(editorText);
+    editorText = undoStack.pop();
+    updateEditor();
+  }
+}
+function redoAction(){
+  if(redoStack.length>0){
+    undoStack.push(editorText);
+    editorText = redoStack.pop();
+    updateEditor();
+  }
+}
+updateEditor();
+
+/* ═══ BRACKET VALIDATOR DEMO ═══ */
+function validateLive(){
+  const input = document.getElementById('valInput').value;
+  if(input) validateBrackets();
+  else {
+    document.getElementById('valSteps').innerHTML='';
+    document.getElementById('valResult').style.display='none';
+  }
+}
+
+function validateBrackets(){
+  const input = document.getElementById('valInput').value;
+  const stepsEl = document.getElementById('valSteps');
+  const resultEl = document.getElementById('valResult');
+  stepsEl.innerHTML='';
+  const stack = [];
+  const match = {')':'(', '}':'{', ']':'['};
+  const colors = {'(':'#06b6d4',')':'#06b6d4','{':'#10b981','}':'#10b981','[':'#8b5cf6',']':'#8b5cf6'};
+  let valid = true;
+  for(const c of input){
+    if('({['.includes(c)){
+      stack.push(c);
+    } else if(')}]'.includes(c)){
+      if(!stack.length || stack[stack.length-1]!==match[c]){ valid=false; break; }
+      stack.pop();
+    }
+  }
+  if(stack.length>0) valid=false;
+  // Show stack state
+  const finalStack = [];
+  for(const c of input){
+    if('({['.includes(c)) finalStack.push(c);
+    else if(')}]'.includes(c) && finalStack.length) finalStack.pop();
+  }
+  if(finalStack.length===0 && valid){
+    stepsEl.innerHTML = `<span style="color:var(--primary-green);font-size:.78rem">Stack empty ✓ — all brackets matched</span>`;
+  } else {
+    finalStack.forEach(c=>{
+      const span = document.createElement('span');
+      span.className='val-step';
+      span.style.cssText=`background:rgba(255,255,255,.06);color:${colors[c]||'#fff'};border:1px solid ${colors[c]||'#444'}40;`;
+      span.textContent=c;
+      stepsEl.appendChild(span);
+    });
+  }
+  resultEl.style.display='block';
+  resultEl.className = 'val-result ' + (valid?'ok':'err');
+  resultEl.textContent = valid ? '✅ Valid — All brackets are properly matched!' : '❌ Invalid — Mismatched or unclosed brackets found';
+}
+
+/* ═══ EXPRESSION EVALUATOR ═══ */
+function evalExpr(expr){
+  document.getElementById('exprDisplay').textContent = expr;
+  document.getElementById('exprResult').textContent = '';
+  const numEl = document.getElementById('numStack');
+  const opEl  = document.getElementById('opStack');
+  numEl.innerHTML = '<span style="color:var(--text-secondary);font-size:.75rem">processing...</span>';
+  opEl.innerHTML  = '<span style="color:var(--text-secondary);font-size:.75rem">processing...</span>';
+  // Simple evaluation
+  try {
+    const result = Function('"use strict";return (' + expr.replace(/×/g,'*').replace(/−/g,'-') + ')')();
+    // Simulate stacks visually
+    const tokens = expr.split(' ');
+    const nums = tokens.filter(t => !isNaN(t) && t!=='');
+    const ops  = tokens.filter(t => isNaN(t)  && t!=='');
+    setTimeout(()=>{
+      numEl.innerHTML = nums.map(n=>`<span class="mini-stack-item">${n}</span>`).join('');
+      opEl.innerHTML  = ops.map(o=>`<span class="mini-stack-item" style="background:rgba(139,92,246,.15);color:var(--primary-purple);border-color:rgba(139,92,246,.3)">${o}</span>`).join('');
+    },300);
+    setTimeout(()=>{
+      document.getElementById('exprResult').textContent = '= ' + result;
+      numEl.innerHTML = `<span class="mini-stack-item" style="background:rgba(16,185,129,.15);color:var(--primary-green);border-color:rgba(16,185,129,.3)">${result}</span>`;
+      opEl.innerHTML  = '<span style="color:var(--text-secondary);font-size:.75rem">empty ✓</span>';
+    },900);
+  } catch(e) {}
+}
+
+/* ═══ CALL STACK DEMO ═══ */
+let callStack = [];
+const frameColors = [
+  {bg:'rgba(6,182,212,.12)',border:'rgba(6,182,212,.3)',color:'var(--primary-cyan)'},
+  {bg:'rgba(16,185,129,.12)',border:'rgba(16,185,129,.3)',color:'var(--primary-green)'},
+  {bg:'rgba(139,92,246,.12)',border:'rgba(139,92,246,.3)',color:'var(--primary-purple)'},
+  {bg:'rgba(245,158,11,.12)',border:'rgba(245,158,11,.3)',color:'var(--primary-orange)'},
+  {bg:'rgba(239,68,68,.12)',border:'rgba(239,68,68,.3)',color:'var(--primary-red)'},
+];
+
+function renderCallStack(){
+  const el = document.getElementById('callStackViz');
+  el.innerHTML='';
+  if(callStack.length===0){
+    el.innerHTML='<div style="text-align:center;color:var(--text-secondary);font-size:.8rem;padding:1rem">Stack is empty — call a function</div>';
+    return;
+  }
+  callStack.forEach((fn,i)=>{
+    const c = frameColors[i % frameColors.length];
+    const div = document.createElement('div');
+    div.className='frame';
+    div.style.cssText=`background:${c.bg};border:1px solid ${c.border};color:${c.color};`;
+    div.innerHTML=`<span>${fn}</span><span class="frame-tag">${i===callStack.length-1?'← TOP':'frame '+(i+1)}</span>`;
+    el.appendChild(div);
+  });
+}
+
+function callFn(name){
+  if(callStack.length >= 5){ 
+    alert('⚠️ Stack Overflow! Too many nested calls without returning.');
+    return;
+  }
+  callStack.push(name);
+  renderCallStack();
+}
+function returnFn(){
+  if(callStack.length>0){
+    callStack.pop();
+    renderCallStack();
+  }
+}
+renderCallStack();
+
+/* ═══ MAZE DEMO ═══ */
+/* ═══ MAZE DEMO (4x6) ═══ */
+const MAZE = [
+  [0,0,1,0,0,0],
+  [1,0,1,0,1,0],
+  [0,0,0,0,1,0],
+  [0,1,1,0,0,2],
+];
+
+let mazePos = {r:0,c:0};
+let mazePath = [{r:0,c:0}];
+
+function renderMaze(){
+  const grid = document.getElementById('mazeGrid');
+  grid.innerHTML='';
+  for(let r=0;r<4;r++){
+    for(let c=0;c<6;c++){
+      const cell = document.createElement('div');
+      const isPlayer = mazePos.r===r && mazePos.c===c;
+      const inPath = mazePath.some(p=>p.r===r&&p.c===c) && !isPlayer;
+      const isWall = MAZE[r][c]===1;
+      const isGoal = MAZE[r][c]===2;
+
+      cell.style.cssText = `
+        width:100%;aspect-ratio:1;border-radius:5px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:.85rem;transition:all .2s;
+        background:${isPlayer?'var(--primary-green)':isGoal?'rgba(245,158,11,.2)':isWall?'rgba(255,255,255,.08)':inPath?'rgba(6,182,212,.15)':'rgba(255,255,255,.03)'};
+        border:1px solid ${isPlayer?'var(--primary-green)':isGoal?'rgba(245,158,11,.4)':isWall?'rgba(255,255,255,.1)':inPath?'rgba(6,182,212,.3)':'rgba(255,255,255,.06)'};
+        color:${isWall?'var(--text-secondary)':'var(--text-primary)'};
+      `;
+
+      cell.textContent = isPlayer?'🧭':isGoal?'🏁':isWall?'█':inPath?'·':'';
+      grid.appendChild(cell);
+    }
+  }
+
+  document.getElementById('mazeStackSize').textContent = mazePath.length;
+
+  if(mazePos.r===3 && mazePos.c===5){
+    document.getElementById('mazeStatus').textContent =
+      '🎉 Goal reached! Stack had '+mazePath.length+' steps';
+    document.getElementById('mazeStatus').style.color = 'var(--primary-green)';
+  }
+}
+
+function mazeMove(dir){
+  let {r,c} = mazePos;
+
+  if(dir==='up')    r--;
+  if(dir==='down')  r++;
+  if(dir==='left')  c--;
+  if(dir==='right') c++;
+
+  if(r<0||r>3||c<0||c>5) return;
+
+  if(MAZE[r][c]===1){
+    document.getElementById('mazeStatus').textContent =
+      '🧱 Wall! Try another direction';
+    document.getElementById('mazeStatus').style.color = 'var(--primary-red)';
+    return;
+  }
+
+  mazePos={r,c};
+  mazePath.push({r,c});
+
+  document.getElementById('mazeStatus').textContent =
+    `Navigate to reach 🏁 (${mazePath.length} steps)`;
+  document.getElementById('mazeStatus').style.color =
+    'var(--text-secondary)';
+
+  renderMaze();
+}
+
+function mazeBacktrack(){
+  if(mazePath.length>1){
+    mazePath.pop();
+    mazePos = {...mazePath[mazePath.length-1]};
+    document.getElementById('mazeStatus').textContent =
+      `↩ Backtracked! (${mazePath.length} steps)`;
+    document.getElementById('mazeStatus').style.color =
+      'var(--primary-orange)';
+    renderMaze();
+  }
+}
+
+function mazeReset(){
+  mazePos={r:0,c:0};
+  mazePath=[{r:0,c:0}];
+  document.getElementById('mazeStatus').textContent =
+    'Navigate to reach 🏁';
+  document.getElementById('mazeStatus').style.color =
+    'var(--text-secondary)';
+  renderMaze();
+}
+
+renderMaze();
+</script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Learning Journey - Interactive 3D Roadmap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Theme Variables */
+        :root {
+            --primary-green: #10b981;
+            --primary-cyan: #06b6d4;
+            --primary-purple: #8b5cf6;
+            --dark-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #2a2a2a;
+             --topic-bg: rgba(255, 255, 255, 0.03);
+        }
+
+         /* Light Theme */
+        [data-theme="light"] {
+            --dark-bg: #ffffff;
+            --card-bg: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --topic-bg: rgba(0, 0, 0, 0.05); /* Light mode topic bg */
+        }
+
+        /* Professional Blue Theme */
+        [data-theme="blue"] {
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --editor-bg: #0b1120;
+            --topic-bg: rgba(255, 255, 255, 0.05);
+        }
+
+      
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+  nav {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: var(--nav-bg); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1400px; margin: 0 auto; padding: 1.2rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; position: relative;
+        }
+
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem; font-weight: 700; z-index: 2; }
+        .logo-icon { width: 45px; height:45px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; z-index: 2; }
+        .nav-links a { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s; position: relative; }
+        .nav-links a:hover { color: var(--primary-green); }
+        nav .nav-links a.active { color: var(--primary-green); }
+        .theme-toggle {
+            
+            background: var(--border-color); border: 1px solid var(--border-color); color: var(--text-primary);
+            cursor: pointer; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; z-index: 2; transition: all 0.3s ease;
+        }
+        .theme-toggle:hover { border-color: var(--primary-green); background: rgba(16, 185, 129, 0.1); }
+        .theme-toggle svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 120px 2rem 80px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+        }
+
+        /* ==================== 3D PERSPECTIVE ROADMAP ==================== */
+
+        .journey-roadmap {
+            position: relative;
+            padding: 4rem 0;
+            perspective: 1500px;
+            margin-bottom: 6rem;
+        }
+
+        .roadmap-track {
+            position: relative;
+            height: 600px;
+            transform-style: preserve-3d;
+        }
+
+        /* Curved Path SVG */
+        .path-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .journey-path {
+            stroke: url(#pathGradient);
+            stroke-width: 4;
+            fill: none;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: drawPath 3s ease-out forwards;
+        }
+
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Floating Journey Cards */
+        .journey-stages {
+            position: relative;
+            height: 100%;
+        }
+
+        .stage {
+            position: absolute;
+            width: 320px;
+            opacity: 0;
+            transform: translateY(50px) scale(0.8);
+            animation: stageAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .stage:nth-child(1) {
+            top: 5%;
+            left: 5%;
+            animation-delay: 0.3s;
+        }
+
+        .stage:nth-child(2) {
+            top: 25%;
+            right: 10%;
+            animation-delay: 0.6s;
+        }
+
+        .stage:nth-child(3) {
+            top: 55%;
+            left: 8%;
+            animation-delay: 0.9s;
+        }
+
+        .stage:nth-child(4) {
+            top: 75%;
+            right: 8%;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes stageAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .stage:hover {
+            transform: translateY(-15px) scale(1.05);
+            z-index: 10;
+        }
+
+        .stage-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stage:hover .stage-card::before {
+            opacity: 1;
+        }
+
+        .stage-number {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .stage-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stage-icon::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 20px;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--accent), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .stage:hover .stage-icon::after {
+            opacity: 1;
+        }
+
+        .stage-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .stage-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .stage-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.8rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+            width: 0;
+            transition: width 1.5s ease-out;
+        }
+
+        .stage:hover .progress-fill {
+            width: 100%;
+        }
+
+        .stage-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Color Schemes for Each Stage */
+        .stage:nth-child(1) {
+            --accent: #d946ef;
+            --accent-light: #a855f7;
+        }
+
+        .stage:nth-child(2) {
+            --accent: #f59e0b;
+            --accent-light: #f97316;
+        }
+
+        .stage:nth-child(3) {
+            --accent: #06b6d4;
+            --accent-light: #0ea5e9;
+        }
+
+        .stage:nth-child(4) {
+            --accent: #10b981;
+            --accent-light: #059669;
+        }
+
+        .stage-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 40px var(--accent-glow);
+        }
+
+        .stage:nth-child(1) .stage-card:hover {
+            --accent-glow: rgba(217, 70, 239, 0.3);
+        }
+
+        .stage:nth-child(2) .stage-card:hover {
+            --accent-glow: rgba(245, 158, 11, 0.3);
+        }
+
+        .stage:nth-child(3) .stage-card:hover {
+            --accent-glow: rgba(6, 182, 212, 0.3);
+        }
+
+        .stage:nth-child(4) .stage-card:hover {
+            --accent-glow: rgba(16, 185, 129, 0.3);
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-cyan);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                opacity: 0;
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-100px) scale(1.5);
+            }
+        }
+
+        /* ==================== PREREQUISITES SECTION ==================== */
+
+        .prerequisites-section {
+            margin-top: 6rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* FIXED: 2x2 Grid Layout */
+        .prerequisites-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .prerequisite-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .prerequisite-card:hover {
+            border-color: var(--card-accent);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                        0 0 40px var(--card-glow);
+        }
+
+        .prerequisite-card:nth-child(1) {
+            --card-accent: #d946ef;
+            --card-glow: rgba(217, 70, 239, 0.2);
+        }
+
+        .prerequisite-card:nth-child(2) {
+            --card-accent: #f59e0b;
+            --card-glow: rgba(245, 158, 11, 0.2);
+        }
+
+        .prerequisite-card:nth-child(3) {
+            --card-accent: #06b6d4;
+            --card-glow: rgba(6, 182, 212, 0.2);
+        }
+
+        .prerequisite-card:nth-child(4) {
+            --card-accent: #10b981;
+            --card-glow: rgba(16, 185, 129, 0.2);
+        }
+
+        .prerequisite-header {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-content {
+            display: flex;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .prereq-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--card-accent), var(--card-accent-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .prerequisite-card:nth-child(1) .prereq-icon {
+            --card-accent-dark: #a855f7;
+        }
+
+        .prerequisite-card:nth-child(2) .prereq-icon {
+            --card-accent-dark: #f97316;
+        }
+
+        .prerequisite-card:nth-child(3) .prereq-icon {
+            --card-accent-dark: #0ea5e9;
+        }
+
+        .prerequisite-card:nth-child(4) .prereq-icon {
+            --card-accent-dark: #059669;
+        }
+
+        .header-text h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .expand-arrow {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .prerequisite-card.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+
+        .prerequisite-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .prerequisite-card.expanded .prerequisite-content {
+            max-height: 600px;
+        }
+
+        .prerequisite-body {
+            padding: 0 2rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .topic-item {
+            padding: 0.8rem;
+            background: var(--topic-bg); /* Changed from hardcoded rgba */
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .topic-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            transform: translateX(4px);
+        }
+
+        .topic-item::before {
+            content: "→";
+            color: var(--card-accent);
+            font-weight: bold;
+        }
+
+/* Ensure Action Button is always high contrast */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--card-accent), var(--card-accent-dark));
+            color: #ffffff !important; /* Force white text regardless of theme */
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Darken the accent colors for buttons specifically in Light Theme for better text contrast */
+       
+        .prerequisite-card:nth-child(1) { --card-accent: #c026d3; --card-accent-dark: #9333ea; }
+        .prerequisite-card:nth-child(2) { --card-accent: #ea580c; --card-accent-dark: #c2410c; }
+        .prerequisite-card:nth-child(3) { --card-accent: #0891b2; --card-accent-dark: #0e7490; }
+        .prerequisite-card:nth-child(4) { --card-accent: #059669; --card-accent-dark: #047857; }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--card-glow);
+        }
+
+        .action-btn i {
+            transition: transform 0.3s;
+        }
+
+        .action-btn:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stage {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .roadmap-track {
+                height: auto;
+            }
+
+            .stage {
+                position: relative !important;
+                width: 100%;
+                top: auto !important;
+                left: auto !important;
+                right: auto !important;
+                margin-bottom: 2rem;
+            }
+
+            .prerequisites-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Your Learning Journey</h1>
+            <p class="page-subtitle">Master DSA step by step with our interactive roadmap</p>
+        </div>
+
+        <!-- 3D Perspective Roadmap -->
+        <div class="journey-roadmap">
+            <div class="path-container">
+                <svg width="100%" height="600" viewBox="0 0 1200 600" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#d946ef;stop-opacity:1" />
+                            <stop offset="33%" style="stop-color:#f59e0b;stop-opacity:1" />
+                            <stop offset="66%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path class="journey-path" d="M 100 100 Q 400 50, 700 200 T 1100 450" />
+                </svg>
+            </div>
+
+            <div class="roadmap-track">
+                <div class="journey-stages">
+                    
+                    <!-- Stage 1: Programming Language -->
+                    <div class="stage">
+                        <div class="stage-card">
+                            <div class="stage-number">1</div>
+                            <div class="stage-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h3 class="stage-title">Programming Language</h3>
+                            <p class="stage-desc">
+                                Master core concepts like variables, loops, functions, arrays, and OOP fundamentals.
+                            </p>
+                            <div class="stage-progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="stage-stats">
+                                <span>📚 8 Topics</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 2: Logic Building -->
+                    <div class="stage">
+                        <div class="stage-card">
+                            <div class="stage-number">2</div>
+                            <div class="stage-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3 class="stage-title">Logic Building</h3>
+                            <p class="stage-desc">
+                                Solve 55+ problems to sharpen problem-solving and algorithmic thinking skills.
+                            </p>
+                            <div class="stage-progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="stage-stats">
+                                <span>🎯 55 Problems</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 3: Complexity Analysis -->
+                    <div class="stage">
+                        <div class="stage-card">
+                            <div class="stage-number">3</div>
+                            <div class="stage-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 class="stage-title">Time & Space Complexity</h3>
+                            <p class="stage-desc">
+                                Learn Big O notation and analyze algorithm efficiency for optimization.
+                            </p>
+                            <div class="stage-progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="stage-stats">
+                                <span>📊 Analysis</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stage 4: DSA Topics -->
+                    <div class="stage">
+                        <div class="stage-card">
+                            <div class="stage-number">4</div>
+                            <div class="stage-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <h3 class="stage-title">Core DSA Topics</h3>
+                            <p class="stage-desc">
+                                Master data structures and algorithms: Arrays, Trees, Graphs, and more.
+                            </p>
+                            <div class="stage-progress">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="stage-stats">
+                                <span>🗂️ 15+ Topics</span>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Floating Particles -->
+            <div class="particle" style="left: 20%; top: 15%; animation-delay: 0s;"></div>
+            <div class="particle" style="left: 60%; top: 35%; animation-delay: 1s;"></div>
+            <div class="particle" style="left: 40%; top: 65%; animation-delay: 2s;"></div>
+            <div class="particle" style="left: 80%; top: 45%; animation-delay: 1.5s;"></div>
+        </div>
+
+        <!-- Prerequisites Section -->
+        <div class="prerequisites-section">
+            <h2 class="section-title">Explore Each Stage</h2>
+            
+            <div class="prerequisites-grid">
+                
+                <!-- Card 1 -->
+                <div class="prerequisite-card">
+                    <div class="prerequisite-header">
+                        <div class="header-content">
+                            <div class="prereq-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Learn a Programming Language and its Core Concepts</h3>
+                                <p>Foundation of your journey</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down expand-arrow"></i>
+                    </div>
+                    
+                    <div class="prerequisite-content">
+                        <div class="prerequisite-body">
+                            <div class="topics-grid">
+                                <div class="topic-item">Variables & Data Types</div>
+                                <div class="topic-item">Control Structures</div>
+                                <div class="topic-item">Loops & Iteration</div>
+                                <div class="topic-item">Functions</div>
+                                <div class="topic-item">Arrays & Strings</div>
+                                <div class="topic-item">Pointers</div>
+                                <div class="topic-item">OOP Concepts</div>
+                                <div class="topic-item">Memory Management</div>
+                            </div>
+                            
+                            <a href="prerequisites.html" class="action-btn">
+                                Start Learning <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="prerequisite-card">
+                    <div class="prerequisite-header">
+                        <div class="header-content">
+                            <div class="prereq-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Improve Your Logic Building and Strengthen Problem-Solving Skills</h3>
+                                <p>Sharpen your problem-solving</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down expand-arrow"></i>
+                    </div>
+                    
+                    <div class="prerequisite-content">
+                        <div class="prerequisite-body">
+                            <div class="topics-grid">
+                                <div class="topic-item">Pattern Problems</div>
+                                <div class="topic-item">Number Series</div>
+                                <div class="topic-item">Mathematical Logic</div>
+                                <div class="topic-item">String Patterns</div>
+                                <div class="topic-item">Array Challenges</div>
+                                <div class="topic-item">Recursion</div>
+                                <div class="topic-item">Bit Manipulation</div>
+                                <div class="topic-item">Optimization</div>
+                            </div>
+                            
+                            <a href="logicBuilding.html" class="action-btn">
+                                Practice Problems <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="prerequisite-card">
+                    <div class="prerequisite-header">
+                        <div class="header-content">
+                            <div class="prereq-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Learn About Complexities</h3>
+                                <p>Optimize your algorithms</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down expand-arrow"></i>
+                    </div>
+                    
+                    <div class="prerequisite-content">
+                        <div class="prerequisite-body">
+                            <div class="topics-grid">
+                                <div class="topic-item">Big O Notation</div>
+                                <div class="topic-item">Time Analysis</div>
+                                <div class="topic-item">Space Analysis</div>
+                                <div class="topic-item">Best/Worst Cases</div>
+                                <div class="topic-item">Asymptotic Bounds</div>
+                                <div class="topic-item">Recurrence</div>
+                                <div class="topic-item">Amortized Analysis</div>
+                                <div class="topic-item">Optimization</div>
+                            </div>
+                            
+                            <a href="complexity.html" class="action-btn">
+                                Learn Complexity <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="prerequisite-card">
+                    <div class="prerequisite-header">
+                        <div class="header-content">
+                            <div class="prereq-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="header-text">
+                                <h3>Understand and Implement Data Structures and Algorithms</h3>
+                                <p>Master data structures</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-down expand-arrow"></i>
+                    </div>
+                    
+                    <div class="prerequisite-content">
+                        <div class="prerequisite-body">
+                            <div class="topics-grid">
+                                <div class="topic-item">Arrays & Matrix</div>
+                                <div class="topic-item">Linked Lists</div>
+                                <div class="topic-item">Stacks & Queues</div>
+                                <div class="topic-item">Trees</div>
+                                <div class="topic-item">Graphs</div>
+                                <div class="topic-item">Hashing</div>
+                                <div class="topic-item">Sorting</div>
+                                <div class="topic-item">Searching</div>
+                            </div>
+                            
+                            <a href="topics.html" class="action-btn">
+                                Explore Topics <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themes = ['dark', 'light', 'blue'];
+        const themeIcons = {
+            dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>',
+            light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>',
+            blue: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>'
+        };
+
+        let currentTheme = localStorage.getItem('dsa-theme') || 'dark';
+
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            themeIcon.innerHTML = themeIcons[theme];
+            localStorage.setItem('dsa-theme', theme);
+        }
+
+        applyTheme(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            let nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+            currentTheme = themes[nextIndex];
+            applyTheme(currentTheme);
+        });
+        // FIXED: Accordion behavior - only one card opens at a time
+        const cards = document.querySelectorAll('.prerequisite-card');
+        
+        cards.forEach(card => {
+            const header = card.querySelector('.prerequisite-header');
+            
+            header.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Check if this card is already expanded
+                const isExpanded = card.classList.contains('expanded');
+                
+                // Close all cards first
+                cards.forEach(c => c.classList.remove('expanded'));
+                
+                // If this card wasn't expanded, open it
+                if (!isExpanded) {
+                    card.classList.add('expanded');
+                }
+            });
+        });
+
+        // Parallax Effect on Scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const stages = document.querySelectorAll('.stage');
+            
+            stages.forEach((el, index) => {
+                const speed = 0.1 + (index * 0.05);
+                const yPos = -(scrolled * speed);
+                el.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+    </script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

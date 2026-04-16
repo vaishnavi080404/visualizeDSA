@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Updated by maintainer - Performance optimization -->
+    <!-- Updated by maintainer - Performance optimization -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap - Data Structures</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    
+    <link rel="stylesheet" href="heap_L1.css">
+</head>
+<body>
+
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Home</a>
+    <a href="topics.html">Topics</a>
+    <a href="prerequisite.html">Prerequisites</a>
+    <a href="codeeditor.html">Code Editor</a>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="container">
+
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a>
+        <span>›</span>
+        <p>Heap</p>
+        <span>›</span>
+        <span>Basics</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Heap — Basics</h1>
+        <p class="page-subtitle">Understanding the core concepts of the Heap data structure and its operations</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3<span class="partition"> | </span>Basics</div>
+        </div>
+    </div>
+
+    
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">📚</div>
+            <h2 class="section-title">Understanding Heap</h2>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">💡 What is a Heap?</h3>
+            <p class="content-text">
+                A <b>Heap</b> is a specialized <b>complete binary tree</b> data structure that satisfies the <b>Heap Property</b>. 
+                In a <b>Max-Heap</b>, every parent node has a value <b>greater than or equal to</b> its children. 
+                In a <b>Min-Heap</b>, every parent node has a value <b>less than or equal to</b> its children.
+                This property ensures that the root is always the <b>maximum</b> (Max-Heap) or <b>minimum</b> (Min-Heap) element in the tree.
+            </p>
+            <p class="content-text">
+                Heaps are <b>not</b> a sorted structure — only the parent-child relationship is enforced, not any sibling relationship.
+                This makes heaps extremely efficient for priority-based operations.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🤔 Why Use a Heap?</h3>
+            <p class="content-text">
+                Heaps are primarily used to implement <b>Priority Queues</b>, where the highest (or lowest) priority element 
+                needs to be served first. The key advantage is that the maximum or minimum element is always accessible in <b>O(1)</b> time,
+                while insert and delete still take only <b>O(log N)</b> time.
+            </p>
+            <ul class="styled-list">
+                <li><b>Priority Queues</b> — task scheduling, event-driven simulations</li>
+                <li><b>Heap Sort</b> — an O(N log N) in-place sorting algorithm</li>
+                <li><b>Graph Algorithms</b> — Dijkstra's shortest path, Prim's MST use min-heaps</li>
+                <li><b>K-th Largest/Smallest</b> — efficiently find K-th element in a stream</li>
+                <li><b>Merge K Sorted Lists</b> — classic interview problem solved with min-heaps</li>
+                <li><b>Job Scheduling</b> — OS schedulers use priority-heap based queues</li>
+            </ul>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🔄 How Does a Heap Work?</h3>
+            <p class="content-text">
+                A heap is stored as a <b>compact array</b> (no pointers needed). For a node at index <b>i</b>:
+            </p>
+            <ul class="styled-list">
+                <li>Left child is at index <b>2*i + 1</b></li>
+                <li>Right child is at index <b>2*i + 2</b></li>
+                <li>Parent is at index <b>(i - 1) / 2</b></li>
+            </ul>
+            <p class="content-text" style="margin-top:0.75rem;">
+                When an element is inserted, it is added at the end of the array and then <b>"heapified up"</b> (bubbled up) to restore the heap property.
+                When the root is removed, the last element replaces it and is <b>"heapified down"</b> (sifted down).
+            </p>
+        </div>
+
+        
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Peek (Min/Max)</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Insert</div>
+                <div class="complexity-value orange">O(log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Delete Root</div>
+                <div class="complexity-value orange">O(log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Build Heap</div>
+                <div class="complexity-value">O(N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Heap Sort</div>
+                <div class="complexity-value orange">O(N log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space</div>
+                <div class="complexity-value orange">O(N)</div>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🎨</div>
+            <h2 class="section-title">Visual Representation</h2>
+        </div>
+
+        <div class="heap-visual-img">
+            <h3 style="color:var(--primary-cyan);margin-bottom:1.5rem;font-size:1.2rem;">Max-Heap vs Min-Heap Structure</h3>
+            <div class="heap-diagram">
+                <svg viewBox="0 0 820 420" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+                    <defs>
+                        <marker id="arrowG" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L8,3 z" fill="#10b981"/>
+                        </marker>
+                        <marker id="arrowC" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L8,3 z" fill="#06b6d4"/>
+                        </marker>
+                    </defs>
+
+                    <!-- ── MAX-HEAP (left) ── -->
+                    <text x="185" y="22" fill="#10b981" font-size="15" font-weight="bold" text-anchor="middle">MAX-HEAP</text>
+                    <text x="185" y="38" fill="#a0a0a0" font-size="11" text-anchor="middle">Parent ≥ Children</text>
+
+                    <!-- Edges level 1 -->
+                    <line x1="185" y1="78" x2="110" y2="130" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="185" y1="78" x2="260" y2="130" stroke="#2a2a2a" stroke-width="2"/>
+                    <!-- Edges level 2 -->
+                    <line x1="110" y1="158" x2="75"  y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="110" y1="158" x2="145" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="260" y1="158" x2="225" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="260" y1="158" x2="295" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <!-- Edges level 3 -->
+                    <line x1="75"  y1="236" x2="55"  y2="286" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <line x1="75"  y1="236" x2="95"  y2="286" stroke="#2a2a2a" stroke-width="1.5"/>
+
+                    <!-- Nodes -->
+                    <circle cx="185" cy="62" r="26" fill="#10b981"/>
+                    <text x="185" y="68" fill="#000" font-size="16" font-weight="bold" text-anchor="middle">100</text>
+                    <text x="230" y="55" fill="#10b981" font-size="11">← ROOT (MAX)</text>
+
+                    <circle cx="110" cy="144" r="22" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="110" y="150" fill="#10b981" font-size="14" font-weight="bold" text-anchor="middle">80</text>
+
+                    <circle cx="260" cy="144" r="22" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="260" y="150" fill="#10b981" font-size="14" font-weight="bold" text-anchor="middle">70</text>
+
+                    <circle cx="75"  cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="75"  y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">50</text>
+
+                    <circle cx="145" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="145" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">60</text>
+
+                    <circle cx="225" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="225" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">40</text>
+
+                    <circle cx="295" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="295" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">30</text>
+
+                    <circle cx="55"  cy="300" r="16" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="55"  y="306" fill="#a0a0a0" font-size="12" text-anchor="middle">10</text>
+
+                    <circle cx="95"  cy="300" r="16" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="95"  y="306" fill="#a0a0a0" font-size="12" text-anchor="middle">20</text>
+
+                    <!-- Array representation (Max) -->
+                    <text x="10" y="355" fill="#a0a0a0" font-size="11" font-weight="bold">Array:</text>
+                    <text x="10" y="370" fill="#10b981" font-size="11" font-family="JetBrains Mono, monospace">[100, 80, 70, 50, 60, 40, 30, 10, 20]</text>
+                    <text x="10" y="390" fill="#a0a0a0" font-size="10">Index:  0   1   2   3   4   5   6   7   8</text>
+
+                    <!-- ── DIVIDER ── -->
+                    <line x1="408" y1="10" x2="408" y2="410" stroke="#2a2a2a" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+                    <!-- ── MIN-HEAP (right) ── -->
+                    <text x="610" y="22" fill="#06b6d4" font-size="15" font-weight="bold" text-anchor="middle">MIN-HEAP</text>
+                    <text x="610" y="38" fill="#a0a0a0" font-size="11" text-anchor="middle">Parent ≤ Children</text>
+
+                    <!-- Edges level 1 -->
+                    <line x1="610" y1="78" x2="535" y2="130" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="610" y1="78" x2="685" y2="130" stroke="#2a2a2a" stroke-width="2"/>
+                    <!-- Edges level 2 -->
+                    <line x1="535" y1="158" x2="500" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="535" y1="158" x2="570" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="685" y1="158" x2="650" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <line x1="685" y1="158" x2="720" y2="208" stroke="#2a2a2a" stroke-width="2"/>
+                    <!-- Edges level 3 -->
+                    <line x1="500" y1="236" x2="480" y2="286" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <line x1="500" y1="236" x2="520" y2="286" stroke="#2a2a2a" stroke-width="1.5"/>
+
+                    <!-- Nodes -->
+                    <circle cx="610" cy="62" r="26" fill="#06b6d4"/>
+                    <text x="610" y="68" fill="#000" font-size="16" font-weight="bold" text-anchor="middle">1</text>
+                    <text x="648" y="55" fill="#06b6d4" font-size="11">← ROOT (MIN)</text>
+
+                    <circle cx="535" cy="144" r="22" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="535" y="150" fill="#06b6d4" font-size="14" font-weight="bold" text-anchor="middle">5</text>
+
+                    <circle cx="685" cy="144" r="22" fill="#1e293b" stroke="#06b6d4" stroke-width="2"/>
+                    <text x="685" y="150" fill="#06b6d4" font-size="14" font-weight="bold" text-anchor="middle">10</text>
+
+                    <circle cx="500" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="500" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">15</text>
+
+                    <circle cx="570" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="570" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">20</text>
+
+                    <circle cx="650" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="650" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">30</text>
+
+                    <circle cx="720" cy="222" r="19" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="720" y="228" fill="#a0a0a0" font-size="13" text-anchor="middle">40</text>
+
+                    <circle cx="480" cy="300" r="16" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="480" y="306" fill="#a0a0a0" font-size="12" text-anchor="middle">25</text>
+
+                    <circle cx="520" cy="300" r="16" fill="#1e293b" stroke="#2a2a2a" stroke-width="1.5"/>
+                    <text x="520" y="306" fill="#a0a0a0" font-size="12" text-anchor="middle">18</text>
+
+                    <!-- Array representation (Min) -->
+                    <text x="430" y="355" fill="#a0a0a0" font-size="11" font-weight="bold">Array:</text>
+                    <text x="430" y="370" fill="#06b6d4" font-size="11" font-family="JetBrains Mono, monospace">[1, 5, 10, 15, 20, 30, 40, 25, 18]</text>
+                    <text x="430" y="390" fill="#a0a0a0" font-size="10">Index: 0  1   2   3   4   5   6   7   8</text>
+                </svg>
+            </div>
+            <p class="content-text" style="margin-top:1.5rem;text-align:center;">
+                Both heaps are <b>complete binary trees</b> stored as arrays. The root is always the extreme element (max or min).
+            </p>
+        </div>
+    </div>
+
+   
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">📖</div>
+            <h2 class="section-title">The Heap Property</h2>
+        </div>
+
+        <p class="content-text">
+            Every heap must satisfy two fundamental properties simultaneously:
+        </p>
+
+        <div class="content-block" style="margin-top:1.5rem;">
+            <h3 class="content-title">1️⃣ Complete Binary Tree Property</h3>
+            <p class="content-text">
+                A heap must be a <b>complete binary tree</b> — all levels are fully filled except possibly the last level,
+                which is filled from <b>left to right</b>. This ensures the array representation is compact with no gaps.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">2️⃣ Heap Ordering Property</h3>
+            <p class="content-text">
+                For every node <code>i</code> in the tree:
+            </p>
+            <ul class="styled-list">
+                <li><b>Max-Heap:</b> <code>arr[parent(i)] ≥ arr[i]</code> — every parent is greater than or equal to its children</li>
+                <li><b>Min-Heap:</b> <code>arr[parent(i)] ≤ arr[i]</code> — every parent is less than or equal to its children</li>
+            </ul>
+            <div class="note-box" style="margin-top:1rem;">
+                <strong>Note:</strong> There is <b>no ordering between siblings</b> in a heap. The left child may be larger or smaller than the right child — only the parent-child relationship is enforced.
+            </div>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🔢 Array Index Formulas</h3>
+            <p class="content-text">For any node at index <code>i</code> (0-indexed):</p>
+            <div class="svg-container">
+                <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+                    <rect x="10" y="10" width="198" height="130" fill="rgba(16,185,129,0.06)" stroke="#10b981" stroke-width="1.5" rx="10"/>
+                    <text x="109" y="35" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">Parent</text>
+                    <text x="109" y="60" fill="#a0a0a0" font-size="11" text-anchor="middle">of node at index i:</text>
+                    <text x="109" y="90" fill="#ffffff" font-size="17" font-weight="bold" text-anchor="middle">(i - 1) / 2</text>
+                    <text x="109" y="115" fill="#10b981" font-size="11" text-anchor="middle">integer division</text>
+
+                    <rect x="240" y="10" width="198" height="130" fill="rgba(6,182,212,0.06)" stroke="#06b6d4" stroke-width="1.5" rx="10"/>
+                    <text x="339" y="35" fill="#06b6d4" font-size="13" font-weight="bold" text-anchor="middle">Left Child</text>
+                    <text x="339" y="60" fill="#a0a0a0" font-size="11" text-anchor="middle">of node at index i:</text>
+                    <text x="339" y="90" fill="#ffffff" font-size="17" font-weight="bold" text-anchor="middle">2 * i + 1</text>
+                    <text x="339" y="115" fill="#06b6d4" font-size="11" text-anchor="middle">left branch</text>
+
+                    <rect x="470" y="10" width="198" height="130" fill="rgba(139,92,246,0.06)" stroke="#8b5cf6" stroke-width="1.5" rx="10"/>
+                    <text x="569" y="35" fill="#8b5cf6" font-size="13" font-weight="bold" text-anchor="middle">Right Child</text>
+                    <text x="569" y="60" fill="#a0a0a0" font-size="11" text-anchor="middle">of node at index i:</text>
+                    <text x="569" y="90" fill="#ffffff" font-size="17" font-weight="bold" text-anchor="middle">2 * i + 2</text>
+                    <text x="569" y="115" fill="#8b5cf6" font-size="11" text-anchor="middle">right branch</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+ 
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚖️</div>
+            <h2 class="section-title">Max-Heap vs Min-Heap</h2>
+        </div>
+
+        <div class="table-wrap">
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Max-Heap</th>
+                        <th>Min-Heap</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Root value</td><td>Largest element</td><td>Smallest element</td></tr>
+                    <tr><td>Property</td><td>Parent ≥ Children</td><td>Parent ≤ Children</td></tr>
+                    <tr><td>Peek (get extreme)</td><td>O(1) — arr[0]</td><td>O(1) — arr[0]</td></tr>
+                    <tr><td>Insert</td><td>O(log N) — heapify up</td><td>O(log N) — heapify up</td></tr>
+                    <tr><td>Delete root</td><td>O(log N) — heapify down</td><td>O(log N) — heapify down</td></tr>
+                    <tr><td>Common use</td><td>Priority Queue (max), Heap Sort descending</td><td>Priority Queue (min), Dijkstra's, Prim's</td></tr>
+                    <tr><td>Languages</td><td>C++ priority_queue (default), Java PriorityQueue reversed</td><td>Python heapq, Java PriorityQueue (default)</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+   
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔑</div>
+            <h2 class="section-title">Key Concepts</h2>
+        </div>
+
+        <div class="concepts-grid">
+            <div class="concept-card">
+                <div class="concept-title">Heapify Up (Bubble Up)</div>
+                <div class="concept-desc">After inserting at the end, compare the new element with its parent. If it violates the heap property, swap and continue up. Runs in O(log N).</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Heapify Down (Sift Down)</div>
+                <div class="concept-desc">After removing the root, replace it with the last element and compare with children. Swap with the appropriate child and continue down. O(log N).</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Build Heap</div>
+                <div class="concept-desc">Convert an arbitrary array into a valid heap by calling heapify-down on all non-leaf nodes from bottom to top. Surprisingly O(N), not O(N log N).</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Priority Queue</div>
+                <div class="concept-desc">The most common use of heaps. Each element has a priority; the highest-priority element is always served first. Implemented using a heap internally.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Heap Height</div>
+                <div class="concept-desc">A heap with N elements has height ⌊log₂N⌋. This bounded height is why all operations are O(log N) — you never traverse more than the height.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Leaf Nodes</div>
+                <div class="concept-desc">In a 0-indexed heap of N elements, all nodes from index ⌊N/2⌋ to N-1 are leaf nodes. Leaves have no children and are always valid heap nodes.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔧</div>
+            <h2 class="section-title">Core Operations — Step by Step</h2>
+        </div>
+
+        <!-- INSERT -->
+        <div class="content-block">
+            <h3 class="content-title">⬆ Insert & Heapify Up</h3>
+            <p class="content-text">
+                To insert into a Max-Heap: add the element at the end, then compare with its parent and swap upward until the heap property is restored.
+            </p>
+            <div class="svg-container">
+                <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+                    <text x="10" y="20" fill="#a0a0a0" font-size="12" font-weight="bold">Inserting 90 into Max-Heap [100, 80, 70, 50, 60, 40, 30]</text>
+
+                    <!-- Step 1: add at end -->
+                    <text x="10" y="48" fill="#10b981" font-size="11" font-weight="bold">Step 1: Add 90 at end (index 7)</text>
+                    <g transform="translate(10, 55)">
+                        <rect x="0"   y="0" width="50" height="32" fill="#0d1117" stroke="#10b981" stroke-width="1.5" rx="4"/><text x="25" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">100</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="76" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">80</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="172" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">50</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">60</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                        <rect x="294" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="316" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">30</text>
+                        <rect x="342" y="0" width="44" height="32" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="2" rx="4"/><text x="364" y="21" fill="#f59e0b" font-size="12" font-weight="bold" text-anchor="middle">90</text>
+                        <text x="364" y="50" fill="#f59e0b" font-size="10" text-anchor="middle">↑ new</text>
+                    </g>
+
+                    <!-- Step 2: compare with parent -->
+                    <text x="10" y="130" fill="#06b6d4" font-size="11" font-weight="bold">Step 2: 90 > parent[50] → SWAP (index 7 ↔ 3)</text>
+                    <g transform="translate(10, 137)">
+                        <rect x="0"   y="0" width="50" height="32" fill="#0d1117" stroke="#10b981" stroke-width="1.5" rx="4"/><text x="25" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">100</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="76" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">80</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="2" rx="4"/><text x="172" y="21" fill="#06b6d4" font-size="12" font-weight="bold" text-anchor="middle">90</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">60</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                        <rect x="294" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="316" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">30</text>
+                        <rect x="342" y="0" width="44" height="32" fill="rgba(6,182,212,0.12)" stroke="#06b6d4" stroke-width="2" rx="4"/><text x="364" y="21" fill="#06b6d4" font-size="12" font-weight="bold" text-anchor="middle">50</text>
+                    </g>
+
+                    <!-- Step 3: compare with parent again -->
+                    <text x="10" y="212" fill="#10b981" font-size="11" font-weight="bold">Step 3: 90 &lt; parent[100] → STOP. Heap restored! ✓</text>
+                    <g transform="translate(10, 219)">
+                        <rect x="0"   y="0" width="50" height="32" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2" rx="4"/><text x="25" y="21" fill="#10b981" font-size="13" font-weight="bold" text-anchor="middle">100</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="76" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">80</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2" rx="4"/><text x="172" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">90</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">60</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                        <rect x="294" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="316" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">30</text>
+                        <rect x="342" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="364" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">50</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- DELETE -->
+        <div class="content-block">
+            <h3 class="content-title">⬇ Delete Root & Heapify Down</h3>
+            <p class="content-text">
+                To delete the root from a Max-Heap: replace it with the last element, remove the last position, then heapify down.
+            </p>
+            <div class="svg-container">
+                <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" font-family="JetBrains Mono, monospace">
+                    <text x="10" y="20" fill="#a0a0a0" font-size="12" font-weight="bold">Deleting root (100) from Max-Heap [100, 80, 70, 50, 60, 40, 30]</text>
+
+                    <text x="10" y="48" fill="#ef4444" font-size="11" font-weight="bold">Step 1: Replace root with last element (30), remove last</text>
+                    <g transform="translate(10, 55)">
+                        <rect x="0"   y="0" width="50" height="32" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="2" rx="4"/><text x="25" y="21" fill="#ef4444" font-size="12" font-weight="bold" text-anchor="middle">30</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="76" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">80</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="172" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">50</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">60</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                        <text x="25" y="50" fill="#ef4444" font-size="10" text-anchor="middle">↑ was 100</text>
+                    </g>
+
+                    <text x="10" y="130" fill="#f59e0b" font-size="11" font-weight="bold">Step 2: 30 &lt; max(80, 70) → SWAP with 80</text>
+                    <g transform="translate(10, 137)">
+                        <rect x="0"   y="0" width="50" height="32" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2" rx="4"/><text x="25" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">80</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="2" rx="4"/><text x="76" y="21" fill="#f59e0b" font-size="12" font-weight="bold" text-anchor="middle">30</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="172" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">50</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">60</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                    </g>
+
+                    <text x="10" y="212" fill="#10b981" font-size="11" font-weight="bold">Step 3: 30 &lt; max(50, 60) → SWAP with 60. Final heap ✓</text>
+                    <g transform="translate(10, 219)">
+                        <rect x="0"   y="0" width="50" height="32" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="2" rx="4"/><text x="25" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">80</text>
+                        <rect x="54"  y="0" width="44" height="32" fill="rgba(16,185,129,0.06)" stroke="#10b981" stroke-width="1.5" rx="4"/><text x="76" y="21" fill="#10b981" font-size="12" font-weight="bold" text-anchor="middle">60</text>
+                        <rect x="102" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="124" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">70</text>
+                        <rect x="150" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="172" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">50</text>
+                        <rect x="198" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="220" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">30</text>
+                        <rect x="246" y="0" width="44" height="32" fill="#0d1117" stroke="#2a2a2a" rx="4"/><text x="268" y="21" fill="#a0a0a0" font-size="12" text-anchor="middle">40</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔧</div>
+            <h2 class="section-title">Types of Heaps</h2>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">1. Binary Heap</h3>
+            <p class="content-text">
+                The most common form. A complete binary tree where each node has at most two children.
+                Stored compactly as an array. All standard heap operations are O(log N).
+                This is what <code>heapq</code> in Python and <code>priority_queue</code> in C++ implement internally.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">2. Binomial Heap</h3>
+            <p class="content-text">
+                A arr of binomial trees. Supports efficient <b>merge of two heaps in O(log N)</b>.
+                More complex to implement but useful when merging heaps is frequent.
+                Insert: O(log N), Delete-min: O(log N), Merge: O(log N).
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">3. Fibonacci Heap</h3>
+            <p class="content-text">
+                Achieves <b>amortized O(1)</b> for insert and decrease-key operations, making it theoretically optimal
+                for graph algorithms like Dijkstra's and Prim's. However, the constant factors are large,
+                so binary heaps are preferred in practice.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">4. d-ary Heap (k-ary Heap)</h3>
+            <p class="content-text">
+                A generalization of binary heaps where each node has <b>d children</b> instead of 2.
+                Higher branching factor means shorter height (O(log_d N)) but more comparisons per heapify-down step.
+                A 4-ary heap often performs better in practice due to cache efficiency.
+            </p>
+        </div>
+    </div>
+
+   
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🌍</div>
+            <h2 class="section-title">Real-World Analogies</h2>
+        </div>
+
+        <p class="content-text" style="margin-bottom:1.5rem;">
+            Heaps model many real-world systems where the most important item must always be accessible first:
+        </p>
+
+        <div class="example-grid">
+            <div class="example-card">
+                <div class="example-number">1</div>
+                <div class="example-title">Hospital Emergency Room</div>
+                <div class="example-desc">Patients are treated based on severity (priority), not arrival order. The most critical patient is always seen first — a Max-Heap by severity score.</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">2</div>
+                <div class="example-title">Job Scheduler (OS)</div>
+                <div class="example-desc">The operating system uses a Min-Heap to pick the process with the shortest remaining time or highest priority to run next on the CPU.</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">3</div>
+                <div class="example-title">Stock Market Orders</div>
+                <div class="example-desc">A stock exchange uses two heaps — a Max-Heap for buy orders (highest bid first) and a Min-Heap for sell orders (lowest ask first) — to match trades.</div>
+            </div>
+            <div class="example-card">
+                <div class="example-number">4</div>
+                <div class="example-title">Navigation (Dijkstra)</div>
+                <div class="example-desc">GPS apps find the shortest path using Dijkstra's algorithm with a Min-Heap — always explore the closest unvisited node next.</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">📝</div>
+            <h2 class="section-title">Basic Terminologies</h2>
+        </div>
+
+        <div class="concepts-grid">
+            <div class="concept-card">
+                <div class="concept-title">Root</div>
+                <div class="concept-desc">The top element of the heap (index 0). Always holds the maximum value in a Max-Heap or minimum value in a Min-Heap.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Heapify</div>
+                <div class="concept-desc">The process of rearranging elements to maintain the heap property after an insertion or deletion. Can go up (insert) or down (delete).</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Heap Size</div>
+                <div class="concept-desc">The current number of elements stored in the heap. Used to identify the last node and boundary for heap operations.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Overflow</div>
+                <div class="concept-desc">Condition when trying to insert into a fixed-size heap that is already full. Dynamic heaps (linked-list or resizing array) never overflow.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Underflow</div>
+                <div class="concept-desc">Condition when trying to delete or peek from an empty heap. Always check isEmpty before performing delete or peek operations.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title">Complete Binary Tree</div>
+                <div class="concept-desc">A binary tree where all levels are filled except possibly the last, which is filled left to right. Guarantees O(log N) height for all operations.</div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">💻</div>
+            <h2 class="section-title">Heap Implementation</h2>
+        </div>
+
+        <p class="content-text" style="margin-bottom:2rem;">
+            Let's explore heap operations — Insert, Delete, Heapify, and Peek — across different languages.
+            We start with a <b>Max-Heap using array</b>, then show the <b>built-in library implementations</b>.
+        </p>
+
+        <!-- ARRAY BASED -->
+        <div class="impl-type">
+            <div class="impl-header">
+                <h3 class="impl-title">📦 Binary Max-Heap (Array-based)</h3>
+                <span class="impl-badge">Manual</span>
+            </div>
+
+            <p class="content-text">
+                The classic implementation using a fixed array. The root is at index 0. Parent of node <code>i</code> is at <code>(i-1)/2</code>.
+                Left child: <code>2i+1</code>, Right child: <code>2i+2</code>.
+            </p>
+
+            <!-- INSERT -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOperation('heap-insert')">
+                    <div class="operation-title">
+                        <div class="operation-number">1</div>
+                        <span>Insert (Push) Operation</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-heap-insert">▼</div>
+                </div>
+                <div class="operation-content" id="content-heap-insert">
+                    <div class="operation-body">
+                        <p class="content-text">Insert element at the end, then heapify up by comparing with parent and swapping if needed.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time (avg)</div><div class="complexity-value orange">O(log N)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Space</div><div class="complexity-value">O(1)</div></div>
+                        </div>
+                        <h4 style="margin:1.25rem 0 0.75rem;color:var(--primary-cyan);">Algorithm:</h4>
+                        <ul class="styled-list">
+                            <li>Add the new element at the end (heap size position)</li>
+                            <li>Compare with parent: index = <code>(i-1)/2</code></li>
+                            <li>If element > parent (Max-Heap), swap them</li>
+                            <li>Repeat from new position until heap property is satisfied</li>
+                        </ul>
+                        <div class="language-tabs" data-group="heap-insert">
+                            <div class="lang-tab active" onclick="switchCode(event,'heap-insert','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-insert','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-insert','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-insert','c')">C</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-insert','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="heap-insert" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">void</span> <span class="function">insert</span>(<span class="keyword">int</span> val) {
+    <span class="comment">// Add new element at the end</span>
+    heap.push_back(val);
+    <span class="keyword">int</span> i = heap.size() - <span class="number">1</span>;
+
+    <span class="comment">// Heapify up — compare with parent</span>
+    <span class="keyword">while</span> (i > <span class="number">0</span>) {
+        <span class="keyword">int</span> parent = (i - <span class="number">1</span>) / <span class="number">2</span>;
+        <span class="keyword">if</span> (heap[i] > heap[parent]) {  <span class="comment">// Max-Heap</span>
+            swap(heap[i], heap[parent]);
+            i = parent;
+        } <span class="keyword">else break</span>;  <span class="comment">// Heap property satisfied</span>
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-insert" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">def</span> <span class="function">insert</span>(self, val):
+    <span class="comment"># Add new element at end</span>
+    self.heap.append(val)
+    i = len(self.heap) - <span class="number">1</span>
+
+    <span class="comment"># Heapify up</span>
+    <span class="keyword">while</span> i > <span class="number">0</span>:
+        parent = (i - <span class="number">1</span>) // <span class="number">2</span>
+        <span class="keyword">if</span> self.heap[i] > self.heap[parent]:  <span class="comment"># Max-Heap</span>
+            self.heap[i], self.heap[parent] = \
+                self.heap[parent], self.heap[i]
+            i = parent
+        <span class="keyword">else</span>:
+            <span class="keyword">break</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-insert" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">void</span> <span class="function">insert</span>(<span class="keyword">int</span> val) {
+    heap[size++] = val;  <span class="comment">// Add at end</span>
+    <span class="keyword">int</span> i = size - <span class="number">1</span>;
+
+    <span class="comment">// Heapify up</span>
+    <span class="keyword">while</span> (i > <span class="number">0</span>) {
+        <span class="keyword">int</span> parent = (i - <span class="number">1</span>) / <span class="number">2</span>;
+        <span class="keyword">if</span> (heap[i] > heap[parent]) {  <span class="comment">// Max-Heap</span>
+            <span class="keyword">int</span> tmp = heap[i];
+            heap[i] = heap[parent];
+            heap[parent] = tmp;
+            i = parent;
+        } <span class="keyword">else break</span>;
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-insert" data-lang="c">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">void</span> <span class="function">insert</span>(<span class="keyword">int</span> val) {
+    heap[size++] = val;  <span class="comment">/* Add at end */</span>
+    <span class="keyword">int</span> i = size - <span class="number">1</span>;
+
+    <span class="comment">/* Heapify up */</span>
+    <span class="keyword">while</span> (i > <span class="number">0</span>) {
+        <span class="keyword">int</span> parent = (i - <span class="number">1</span>) / <span class="number">2</span>;
+        <span class="keyword">if</span> (heap[i] > heap[parent]) {
+            <span class="keyword">int</span> tmp = heap[i];
+            heap[i] = heap[parent];
+            heap[parent] = tmp;
+            i = parent;
+        } <span class="keyword">else break</span>;
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-insert" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="function">insert</span>(val) {
+    <span class="keyword">this</span>.heap.push(val);
+    <span class="keyword">let</span> i = <span class="keyword">this</span>.heap.length - <span class="number">1</span>;
+
+    <span class="comment">// Heapify up</span>
+    <span class="keyword">while</span> (i > <span class="number">0</span>) {
+        <span class="keyword">const</span> parent = Math.<span class="function">floor</span>((i - <span class="number">1</span>) / <span class="number">2</span>);
+        <span class="keyword">if</span> (<span class="keyword">this</span>.heap[i] > <span class="keyword">this</span>.heap[parent]) {
+            [<span class="keyword">this</span>.heap[i], <span class="keyword">this</span>.heap[parent]] =
+             [<span class="keyword">this</span>.heap[parent], <span class="keyword">this</span>.heap[i]];
+            i = parent;
+        } <span class="keyword">else break</span>;
+    }
+}</pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE MAX -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOperation('heap-delete')">
+                    <div class="operation-title">
+                        <div class="operation-number">2</div>
+                        <span>Delete Max (Extract Root)</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-heap-delete">▼</div>
+                </div>
+                <div class="operation-content" id="content-heap-delete">
+                    <div class="operation-body">
+                        <p class="content-text">Remove the root (maximum element). Replace with last element, then heapify down.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time</div><div class="complexity-value orange">O(log N)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Space</div><div class="complexity-value">O(1)</div></div>
+                        </div>
+                        <h4 style="margin:1.25rem 0 0.75rem;color:var(--primary-cyan);">Algorithm:</h4>
+                        <ul class="styled-list">
+                            <li>If heap is empty, return error (Underflow)</li>
+                            <li>Store root value (the maximum) to return</li>
+                            <li>Replace root with last element, reduce heap size by 1</li>
+                            <li>Heapify down: compare with children, swap with larger child until satisfied</li>
+                        </ul>
+                        <div class="language-tabs" data-group="heap-delete">
+                            <div class="lang-tab active" onclick="switchCode(event,'heap-delete','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-delete','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-delete','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-delete','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="heap-delete" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">int</span> <span class="function">extractMax</span>() {
+    <span class="keyword">if</span> (heap.empty()) <span class="keyword">return</span> -<span class="number">1</span>;
+    <span class="keyword">int</span> maxVal = heap[<span class="number">0</span>];        <span class="comment">// Store max</span>
+    heap[<span class="number">0</span>] = heap.back();       <span class="comment">// Move last to root</span>
+    heap.pop_back();             <span class="comment">// Remove last</span>
+    <span class="function">heapifyDown</span>(<span class="number">0</span>);             <span class="comment">// Restore property</span>
+    <span class="keyword">return</span> maxVal;
+}
+
+<span class="keyword">void</span> <span class="function">heapifyDown</span>(<span class="keyword">int</span> i) {
+    <span class="keyword">int</span> n = heap.size();
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">int</span> largest = i;
+        <span class="keyword">int</span> left  = <span class="number">2</span>*i + <span class="number">1</span>;
+        <span class="keyword">int</span> right = <span class="number">2</span>*i + <span class="number">2</span>;
+        <span class="keyword">if</span> (left  < n && heap[left]  > heap[largest]) largest = left;
+        <span class="keyword">if</span> (right < n && heap[right] > heap[largest]) largest = right;
+        <span class="keyword">if</span> (largest == i) <span class="keyword">break</span>;
+        swap(heap[i], heap[largest]);
+        i = largest;
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-delete" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">def</span> <span class="function">extract_max</span>(self):
+    <span class="keyword">if not</span> self.heap:
+        <span class="keyword">return</span> -<span class="number">1</span>
+    max_val = self.heap[<span class="number">0</span>]
+    self.heap[<span class="number">0</span>] = self.heap[-<span class="number">1</span>]
+    self.heap.pop()
+    self.<span class="function">heapify_down</span>(<span class="number">0</span>)
+    <span class="keyword">return</span> max_val
+
+<span class="keyword">def</span> <span class="function">heapify_down</span>(self, i):
+    n = len(self.heap)
+    <span class="keyword">while True</span>:
+        largest, left, right = i, <span class="number">2</span>*i+<span class="number">1</span>, <span class="number">2</span>*i+<span class="number">2</span>
+        <span class="keyword">if</span> left  < n <span class="keyword">and</span> self.heap[left]  > self.heap[largest]:
+            largest = left
+        <span class="keyword">if</span> right < n <span class="keyword">and</span> self.heap[right] > self.heap[largest]:
+            largest = right
+        <span class="keyword">if</span> largest == i: <span class="keyword">break</span>
+        self.heap[i], self.heap[largest] = \
+            self.heap[largest], self.heap[i]
+        i = largest</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-delete" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">int</span> <span class="function">extractMax</span>() {
+    <span class="keyword">if</span> (size == <span class="number">0</span>) <span class="keyword">return</span> -<span class="number">1</span>;
+    <span class="keyword">int</span> max = heap[<span class="number">0</span>];
+    heap[<span class="number">0</span>] = heap[--size];
+    <span class="function">heapifyDown</span>(<span class="number">0</span>);
+    <span class="keyword">return</span> max;
+}
+
+<span class="keyword">void</span> <span class="function">heapifyDown</span>(<span class="keyword">int</span> i) {
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">int</span> largest=i, l=<span class="number">2</span>*i+<span class="number">1</span>, r=<span class="number">2</span>*i+<span class="number">2</span>;
+        <span class="keyword">if</span> (l<size && heap[l]>heap[largest]) largest=l;
+        <span class="keyword">if</span> (r<size && heap[r]>heap[largest]) largest=r;
+        <span class="keyword">if</span> (largest==i) <span class="keyword">break</span>;
+        <span class="keyword">int</span> tmp=heap[i]; heap[i]=heap[largest]; heap[largest]=tmp;
+        i=largest;
+    }
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-delete" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="function">extractMax</span>() {
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.heap.length) <span class="keyword">return</span> -<span class="number">1</span>;
+    <span class="keyword">const</span> max = <span class="keyword">this</span>.heap[<span class="number">0</span>];
+    <span class="keyword">this</span>.heap[<span class="number">0</span>] = <span class="keyword">this</span>.heap.pop();
+    <span class="keyword">this</span>.<span class="function">heapifyDown</span>(<span class="number">0</span>);
+    <span class="keyword">return</span> max;
+}
+
+<span class="function">heapifyDown</span>(i) {
+    <span class="keyword">const</span> n = <span class="keyword">this</span>.heap.length;
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">let</span> largest=i, l=<span class="number">2</span>*i+<span class="number">1</span>, r=<span class="number">2</span>*i+<span class="number">2</span>;
+        <span class="keyword">if</span> (l<n && <span class="keyword">this</span>.heap[l]><span class="keyword">this</span>.heap[largest]) largest=l;
+        <span class="keyword">if</span> (r<n && <span class="keyword">this</span>.heap[r]><span class="keyword">this</span>.heap[largest]) largest=r;
+        <span class="keyword">if</span> (largest===i) <span class="keyword">break</span>;
+        [<span class="keyword">this</span>.heap[i],<span class="keyword">this</span>.heap[largest]]=[<span class="keyword">this</span>.heap[largest],<span class="keyword">this</span>.heap[i]];
+        i=largest;
+    }
+}</pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PEEK -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOperation('heap-peek')">
+                    <div class="operation-title">
+                        <div class="operation-number">3</div>
+                        <span>Peek (Get Max/Min)</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-heap-peek">▼</div>
+                </div>
+                <div class="operation-content" id="content-heap-peek">
+                    <div class="operation-body">
+                        <p class="content-text">Return the root element (maximum in Max-Heap, minimum in Min-Heap) without removing it. Always O(1) — just access index 0.</p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time</div><div class="complexity-value">O(1)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">Space</div><div class="complexity-value">O(1)</div></div>
+                        </div>
+                        <div class="language-tabs" data-group="heap-peek">
+                            <div class="lang-tab active" onclick="switchCode(event,'heap-peek','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-peek','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-peek','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-peek','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="heap-peek" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">int</span> <span class="function">peek</span>() {
+    <span class="keyword">if</span> (heap.empty()) {
+        cout &lt;&lt; <span class="string">"Heap is empty\n"</span>;
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="comment">// Root is always max (Max-Heap) or min (Min-Heap)</span>
+    <span class="keyword">return</span> heap[<span class="number">0</span>];  <span class="comment">// O(1)</span>
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-peek" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">def</span> <span class="function">peek</span>(self):
+    <span class="keyword">if not</span> self.heap:
+        <span class="function">print</span>(<span class="string">"Heap is empty"</span>)
+        <span class="keyword">return</span> -<span class="number">1</span>
+    <span class="comment"># Root is always the extreme element</span>
+    <span class="keyword">return</span> self.heap[<span class="number">0</span>]  <span class="comment"># O(1)</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-peek" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">int</span> <span class="function">peek</span>() {
+    <span class="keyword">if</span> (size == <span class="number">0</span>) {
+        System.out.println(<span class="string">"Heap is empty"</span>);
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="keyword">return</span> heap[<span class="number">0</span>];  <span class="comment">// O(1)</span>
+}</pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-peek" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="function">peek</span>() {
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.heap.length) {
+        console.log(<span class="string">"Heap is empty"</span>);
+        <span class="keyword">return</span> -<span class="number">1</span>;
+    }
+    <span class="keyword">return</span> <span class="keyword">this</span>.heap[<span class="number">0</span>];  <span class="comment">// O(1)</span>
+}</pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUILD HEAP -->
+            <div class="operation-dropdown">
+                <div class="operation-header" onclick="toggleOperation('heap-build')">
+                    <div class="operation-title">
+                        <div class="operation-number">4</div>
+                        <span>Build Heap from Array — O(N)</span>
+                    </div>
+                    <div class="dropdown-icon" id="icon-heap-build">▼</div>
+                </div>
+                <div class="operation-content" id="content-heap-build">
+                    <div class="operation-body">
+                        <p class="content-text">
+                            Convert any array into a valid heap in <b>O(N)</b> time by calling heapify-down on all internal (non-leaf) nodes 
+                            from the bottom up. Start from index <code>N/2 - 1</code> down to <code>0</code>.
+                        </p>
+                        <div class="complexity-grid">
+                            <div class="complexity-box"><div class="complexity-label">Time</div><div class="complexity-value">O(N)</div></div>
+                            <div class="complexity-box"><div class="complexity-label">vs N inserts</div><div class="complexity-value orange">O(N log N)</div></div>
+                        </div>
+                        <div class="note-box">
+                            <strong>Why O(N)?</strong> Most nodes are near the bottom of the tree (leaves), so they need very little heapification work. The mathematical summation of all work converges to O(N) rather than O(N log N).
+                        </div>
+                        <div class="language-tabs" data-group="heap-build">
+                            <div class="lang-tab active" onclick="switchCode(event,'heap-build','cpp')">C++</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-build','python')">Python</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-build','java')">Java</div>
+                            <div class="lang-tab" onclick="switchCode(event,'heap-build','js')">JavaScript</div>
+                        </div>
+                        <div class="code-lang-content active" data-group="heap-build" data-lang="cpp">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">C++</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="comment">// Build Max-Heap from arbitrary array — O(N)</span>
+<span class="keyword">void</span> <span class="function">buildHeap</span>(vector&lt;<span class="keyword">int</span>&gt;&amp; arr) {
+    heap = arr;
+    <span class="keyword">int</span> n = heap.size();
+    <span class="comment">// Start from last non-leaf, go up to root</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = n/<span class="number">2</span> - <span class="number">1</span>; i >= <span class="number">0</span>; i--)
+        <span class="function">heapifyDown</span>(i);
+}
+
+<span class="comment">// Usage</span>
+vector&lt;<span class="keyword">int</span>&gt; arr = {<span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>};
+<span class="function">buildHeap</span>(arr);
+<span class="comment">// Result: [6, 5, 4, 1, 2, 3] — valid Max-Heap</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-build" data-lang="python">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Python (heapq — built-in Min-Heap)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">import</span> heapq
+
+arr = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>]
+heapq.<span class="function">heapify</span>(arr)  <span class="comment"># In-place! O(N)</span>
+<span class="function">print</span>(arr)           <span class="comment"># [1, 2, 4, 5, 3, 6] — Min-Heap</span>
+
+<span class="comment"># Insert</span>
+heapq.<span class="function">heappush</span>(arr, <span class="number">0</span>)
+
+<span class="comment"># Remove minimum</span>
+<span class="function">print</span>(heapq.<span class="function">heappop</span>(arr))  <span class="comment"># 0</span>
+
+<span class="comment"># For Max-Heap, negate values</span>
+max_heap = [-x <span class="keyword">for</span> x <span class="keyword">in</span> [<span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>]]
+heapq.<span class="function">heapify</span>(max_heap)
+<span class="function">print</span>(-heapq.<span class="function">heappop</span>(max_heap))  <span class="comment"># 6 (max)</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-build" data-lang="java">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">Java (PriorityQueue — built-in Min-Heap)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="keyword">import</span> java.util.PriorityQueue;
+<span class="keyword">import</span> java.util.Collections;
+
+<span class="comment">// Min-Heap (default)</span>
+PriorityQueue&lt;Integer&gt; minHeap = <span class="keyword">new</span> PriorityQueue&lt;&gt;();
+minHeap.add(<span class="number">3</span>); minHeap.add(<span class="number">1</span>); minHeap.add(<span class="number">6</span>);
+System.out.println(minHeap.peek()); <span class="comment">// 1 (minimum)</span>
+System.out.println(minHeap.poll()); <span class="comment">// 1 (removes min)</span>
+
+<span class="comment">// Max-Heap (reverseOrder)</span>
+PriorityQueue&lt;Integer&gt; maxHeap =
+    <span class="keyword">new</span> PriorityQueue&lt;&gt;(Collections.reverseOrder());
+maxHeap.add(<span class="number">3</span>); maxHeap.add(<span class="number">1</span>); maxHeap.add(<span class="number">6</span>);
+System.out.println(maxHeap.peek()); <span class="comment">// 6 (maximum)</span></pre></div></div>
+                        </div>
+                        <div class="code-lang-content" data-group="heap-build" data-lang="js">
+                            <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript (Manual Build)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                            <div class="code-content"><pre><span class="function">buildHeap</span>(arr) {
+    <span class="keyword">this</span>.heap = [...arr];
+    <span class="keyword">const</span> n = <span class="keyword">this</span>.heap.length;
+    <span class="comment">// Heapify all non-leaf nodes bottom-up</span>
+    <span class="keyword">for</span> (<span class="keyword">let</span> i = Math.<span class="function">floor</span>(n/<span class="number">2</span>) - <span class="number">1</span>; i >= <span class="number">0</span>; i--)
+        <span class="keyword">this</span>.<span class="function">heapifyDown</span>(i);
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">const</span> h = <span class="keyword">new</span> MaxHeap();
+h.<span class="function">buildHeap</span>([<span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>]);
+console.log(h.<span class="function">peek</span>()); <span class="comment">// 6</span></pre></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIBRARY IMPLEMENTATIONS -->
+        <div class="impl-type">
+            <div class="impl-header">
+                <h3 class="impl-title">📦 Built-in Library Implementations</h3>
+                <span class="impl-badge" style="background:var(--primary-purple);color:#fff;">STL / Standard</span>
+            </div>
+
+            <p class="content-text">All major languages include heap/priority queue implementations. Use these in production code:</p>
+
+            <div class="language-tabs" data-group="lib-heap">
+                <div class="lang-tab active" onclick="switchCode(event,'lib-heap','cpp')">C++ STL</div>
+                <div class="lang-tab" onclick="switchCode(event,'lib-heap','python')">Python heapq</div>
+                <div class="lang-tab" onclick="switchCode(event,'lib-heap','java')">Java PQ</div>
+                <div class="lang-tab" onclick="switchCode(event,'lib-heap','c')">C (Manual)</div>
+                <div class="lang-tab" onclick="switchCode(event,'lib-heap','js')">JavaScript</div>
+            </div>
+
+            <div class="code-lang-content active" data-group="lib-heap" data-lang="cpp">
+                <div class="code-block"><div class="code-header"><span class="code-lang">C++ — priority_queue (Max-Heap by default)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <div class="code-content"><pre><span class="keyword">#include</span> <span class="string">&lt;queue&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="comment">// Max-Heap (default)</span>
+    priority_queue&lt;<span class="keyword">int</span>&gt; maxPQ;
+    maxPQ.push(<span class="number">10</span>);  maxPQ.push(<span class="number">30</span>);  maxPQ.push(<span class="number">20</span>);
+    cout &lt;&lt; maxPQ.top() &lt;&lt; endl;  <span class="comment">// 30 (max)</span>
+    maxPQ.pop();                   <span class="comment">// removes 30</span>
+
+    <span class="comment">// Min-Heap</span>
+    priority_queue&lt;<span class="keyword">int</span>, vector&lt;<span class="keyword">int</span>&gt;, greater&lt;<span class="keyword">int</span>&gt;&gt; minPQ;
+    minPQ.push(<span class="number">10</span>);  minPQ.push(<span class="number">30</span>);  minPQ.push(<span class="number">20</span>);
+    cout &lt;&lt; minPQ.top() &lt;&lt; endl;  <span class="comment">// 10 (min)</span>
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre></div></div>
+            </div>
+
+            <div class="code-lang-content" data-group="lib-heap" data-lang="python">
+                <div class="code-block"><div class="code-header"><span class="code-lang">Python — heapq (Min-Heap)</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <div class="code-content"><pre><span class="keyword">import</span> heapq
+
+<span class="comment"># Min-Heap</span>
+h = []
+heapq.heappush(h, <span class="number">10</span>)
+heapq.heappush(h, <span class="number">30</span>)
+heapq.heappush(h, <span class="number">20</span>)
+<span class="function">print</span>(h[<span class="number">0</span>])            <span class="comment"># 10 (peek min)</span>
+<span class="function">print</span>(heapq.heappop(h)) <span class="comment"># 10 (remove min)</span>
+
+<span class="comment"># Max-Heap trick: negate values</span>
+max_h = []
+heapq.heappush(max_h, -<span class="number">10</span>)
+heapq.heappush(max_h, -<span class="number">30</span>)
+heapq.heappush(max_h, -<span class="number">20</span>)
+<span class="function">print</span>(-heapq.heappop(max_h))  <span class="comment"># 30 (max)</span>
+
+<span class="comment"># nlargest / nsmallest</span>
+data = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">4</span>]
+<span class="function">print</span>(heapq.nlargest(<span class="number">3</span>, data))   <span class="comment"># [6, 5, 4]</span>
+<span class="function">print</span>(heapq.nsmallest(<span class="number">3</span>, data))  <span class="comment"># [1, 2, 3]</span></pre></div></div>
+            </div>
+
+            <div class="code-lang-content" data-group="lib-heap" data-lang="java">
+                <div class="code-block"><div class="code-header"><span class="code-lang">Java — PriorityQueue</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <div class="code-content"><pre><span class="keyword">import</span> java.util.*;
+
+<span class="comment">// Min-Heap (default)</span>
+PriorityQueue&lt;Integer&gt; minPQ = <span class="keyword">new</span> PriorityQueue&lt;&gt;();
+minPQ.offer(<span class="number">10</span>); minPQ.offer(<span class="number">30</span>); minPQ.offer(<span class="number">20</span>);
+System.out.println(minPQ.peek());  <span class="comment">// 10</span>
+System.out.println(minPQ.poll());  <span class="comment">// 10 (removed)</span>
+
+<span class="comment">// Max-Heap</span>
+PriorityQueue&lt;Integer&gt; maxPQ =
+    <span class="keyword">new</span> PriorityQueue&lt;&gt;(Collections.reverseOrder());
+maxPQ.offer(<span class="number">10</span>); maxPQ.offer(<span class="number">30</span>); maxPQ.offer(<span class="number">20</span>);
+System.out.println(maxPQ.peek());  <span class="comment">// 30</span>
+
+<span class="comment">// Custom comparator (e.g. by length for Strings)</span>
+PriorityQueue&lt;String&gt; pq = <span class="keyword">new</span> PriorityQueue&lt;&gt;(
+    (a, b) -> a.length() - b.length()
+);
+pq.offer(<span class="string">"banana"</span>); pq.offer(<span class="string">"fig"</span>); pq.offer(<span class="string">"apple"</span>);
+System.out.println(pq.poll()); <span class="comment">// "fig" (shortest)</span></pre></div></div>
+            </div>
+
+            <div class="code-lang-content" data-group="lib-heap" data-lang="c">
+                <div class="code-block"><div class="code-header"><span class="code-lang">C — No built-in, manual array heap</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <div class="code-content"><pre><span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="keyword">#define</span> MAX <span class="number">100</span>
+
+<span class="keyword">int</span> heap[MAX], size = <span class="number">0</span>;
+
+<span class="keyword">void</span> <span class="function">swap</span>(<span class="keyword">int</span> *a, <span class="keyword">int</span> *b) { <span class="keyword">int</span> t=*a; *a=*b; *b=t; }
+
+<span class="keyword">void</span> <span class="function">insert</span>(<span class="keyword">int</span> v) {
+    heap[size++] = v;
+    <span class="keyword">int</span> i = size - <span class="number">1</span>;
+    <span class="keyword">while</span> (i > <span class="number">0</span> && heap[(i-<span class="number">1</span>)/<span class="number">2</span>] < heap[i]) {
+        swap(&heap[i], &heap[(i-<span class="number">1</span>)/<span class="number">2</span>]);
+        i = (i-<span class="number">1</span>)/<span class="number">2</span>;
+    }
+}
+
+<span class="keyword">int</span> <span class="function">extractMax</span>() {
+    <span class="keyword">if</span> (!size) <span class="keyword">return</span> -<span class="number">1</span>;
+    <span class="keyword">int</span> max = heap[<span class="number">0</span>];
+    heap[<span class="number">0</span>] = heap[--size];
+    <span class="keyword">int</span> i = <span class="number">0</span>;
+    <span class="keyword">while</span> (<span class="keyword">true</span>) {
+        <span class="keyword">int</span> l=<span class="number">2</span>*i+<span class="number">1</span>, r=<span class="number">2</span>*i+<span class="number">2</span>, lg=i;
+        <span class="keyword">if</span> (l<size&&heap[l]>heap[lg]) lg=l;
+        <span class="keyword">if</span> (r<size&&heap[r]>heap[lg]) lg=r;
+        <span class="keyword">if</span> (lg==i) <span class="keyword">break</span>;
+        swap(&heap[i], &heap[lg]); i=lg;
+    }
+    <span class="keyword">return</span> max;
+}</pre></div></div>
+            </div>
+
+            <div class="code-lang-content" data-group="lib-heap" data-lang="js">
+                <div class="code-block"><div class="code-header"><span class="code-lang">JavaScript — No built-in, use a class or library</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+                <div class="code-content"><pre><span class="comment">// Minimal MaxHeap class</span>
+<span class="keyword">class</span> MaxHeap {
+    <span class="function">constructor</span>() { <span class="keyword">this</span>.heap = []; }
+
+    <span class="function">push</span>(v) {
+        <span class="keyword">this</span>.heap.push(v);
+        <span class="keyword">let</span> i = <span class="keyword">this</span>.heap.length - <span class="number">1</span>;
+        <span class="keyword">while</span> (i > <span class="number">0</span>) {
+            <span class="keyword">const</span> p = Math.<span class="function">floor</span>((i-<span class="number">1</span>)/<span class="number">2</span>);
+            <span class="keyword">if</span> (<span class="keyword">this</span>.heap[p] < <span class="keyword">this</span>.heap[i]) {
+                [<span class="keyword">this</span>.heap[p],<span class="keyword">this</span>.heap[i]]=[<span class="keyword">this</span>.heap[i],<span class="keyword">this</span>.heap[p]];
+                i = p;
+            } <span class="keyword">else break</span>;
+        }
+    }
+
+    <span class="function">pop</span>() {
+        <span class="keyword">const</span> top = <span class="keyword">this</span>.heap[<span class="number">0</span>];
+        <span class="keyword">this</span>.heap[<span class="number">0</span>] = <span class="keyword">this</span>.heap.pop();
+        <span class="keyword">this</span>.<span class="function">_down</span>(<span class="number">0</span>); <span class="keyword">return</span> top;
+    }
+
+    <span class="function">peek</span>() { <span class="keyword">return</span> <span class="keyword">this</span>.heap[<span class="number">0</span>]; }
+}
+
+<span class="keyword">const</span> h = <span class="keyword">new</span> MaxHeap();
+h.<span class="function">push</span>(<span class="number">10</span>); h.<span class="function">push</span>(<span class="number">30</span>); h.<span class="function">push</span>(<span class="number">20</span>);
+console.<span class="function">log</span>(h.<span class="function">peek</span>()); <span class="comment">// 30</span>
+console.<span class="function">log</span>(h.<span class="function">pop</span>());  <span class="comment">// 30</span></pre></div></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚀</div>
+            <h2 class="section-title">Applications of Heap</h2>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🏆 Heap Sort</h3>
+            <p class="content-text">
+                Build a Max-Heap from the array (O(N)), then repeatedly extract the maximum and place it at the end of the array.
+                This gives a sorted array in ascending order. Time: <b>O(N log N)</b>, Space: <b>O(1)</b> in-place.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">📊 K-th Largest / Smallest Element</h3>
+            <p class="content-text">
+                To find the K-th largest element in a stream: maintain a Min-Heap of size K.
+                For each new element, push it and pop if size exceeds K. The root is always the K-th largest.
+                Time: <b>O(N log K)</b> — far better than sorting all N elements.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🔀 Merge K Sorted Arrays</h3>
+            <p class="content-text">
+                Use a Min-Heap with one element from each of the K arrays. Extract the minimum, add to result, 
+                then push the next element from the same array. Time: <b>O(N log K)</b> where N is total elements.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">🗺️ Dijkstra's Shortest Path</h3>
+            <p class="content-text">
+                Use a Min-Heap (priority queue) to always explore the closest unvisited node first.
+                This reduces Dijkstra's complexity from O(V²) to <b>O((V + E) log V)</b>.
+            </p>
+        </div>
+
+        <div class="content-block">
+            <h3 class="content-title">📱 Median in a Data Stream</h3>
+            <p class="content-text">
+                Maintain two heaps: a Max-Heap for the lower half and a Min-Heap for the upper half.
+                The median is either the root of one or the average of both roots. All operations in <b>O(log N)</b>.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚠️</div>
+            <h2 class="section-title">When NOT to Use a Heap</h2>
+        </div>
+
+        <div class="concepts-grid">
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🔍 Need Full Sorted Order</div>
+                <div class="concept-desc">Heaps only guarantee the extreme element at the root. For fully sorted access, use a sorting algorithm or balanced BST.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🔎 Random Access by Key</div>
+                <div class="concept-desc">You can't efficiently look up an arbitrary element by key in a heap. Use a hash map or BST for key-based lookups.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">📊 Range Queries</div>
+                <div class="concept-desc">Finding all elements in range [lo, hi] is O(N) in a heap. Use a BST or segment tree for efficient range queries.</div>
+            </div>
+            <div class="concept-card">
+                <div class="concept-title" style="color:var(--primary-orange)">🔄 Frequent Decrease-Key</div>
+                <div class="concept-desc">Binary heaps don't support decrease-key efficiently (O(N) to find the element). Use a Fibonacci Heap for this use case.</div>
+            </div>
+        </div>
+
+        <div class="note-box" style="margin-top:1.5rem;">
+            <strong>Rule of thumb:</strong> Use a Heap when you need repeated access to the extreme element (max or min) with O(1) peek and O(log N) insert/delete. If you need full sorted order, range queries, or arbitrary key access — choose a BST or hash map.
+        </div>
+    </div>
+
+    
+    <div class="video-section">
+        <div class="video-info">
+            <span>📺</span>
+            <span>Heap Data Structure Explained</span>
+        </div>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/NKJnHewiGdc?si=TJHJTHduUp7G34xx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+ 
+    <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider active" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+        <h3 style="color:var(--primary-purple);font-family:'Space Grotesk',sans-serif;font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+        <p style="color:var(--text-secondary);" id="modalMsg">Pass the Level 1 Quiz to unlock Level 2 and continue your Heap journey.</p>
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+
+<script>
+//     const menuToggle = document.getElementById("menuToggle");
+// const mobileNav = document.getElementById("mobileNav");
+// let navOpen = false;
+
+// menuToggle.addEventListener("click", () => {
+//   navOpen = !navOpen;
+//   mobileNav.classList.toggle("open", navOpen);
+// });
+// document.addEventListener("click", (e) => {
+//   if (
+//     navOpen &&
+//     !mobileNav.contains(e.target) &&
+//     !menuToggle.contains(e.target)
+//   ) {
+//     navOpen = false;
+//     mobileNav.classList.remove("open");
+//   }
+// });
+// mobileNav.querySelectorAll("a").forEach((a) =>
+//   a.addEventListener("click", () => {
+//     navOpen = false;
+//     mobileNav.classList.remove("open");
+//   }),
+// );
+
+/* ── THEME ── */
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const themes = ["dark", "light", "blue"];
+const themeIcons = {
+  dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+  light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+  blue: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>',
+};
+
+function applyTheme(t) {
+  document.body.setAttribute("data-theme", t);
+  themeIcon.innerHTML = themeIcons[t];
+  localStorage.setItem("dsa-theme", t);
+}
+
+applyTheme(localStorage.getItem("dsa-theme") || "dark");
+
+themeToggle.addEventListener("click", () => {
+  const cur = localStorage.getItem("dsa-theme") || "dark";
+  const next = themes[(themes.indexOf(cur) + 1) % themes.length];
+  applyTheme(next);
+});
+
+/* ── DROPDOWNS ── */
+function toggleOperation(id) {
+  const content = document.getElementById("content-" + id);
+  const icon = document.getElementById("icon-" + id);
+  const header = content?.previousElementSibling;
+  if (!content) return;
+  content.classList.toggle("show");
+  if (icon) icon.classList.toggle("rotate");
+  if (header) header.classList.toggle("active");
+}
+
+/* ── LANGUAGE TABS ── */
+function switchCode(event, group, lang) {
+  const tabs = event.target.closest(".language-tabs");
+  tabs
+    .querySelectorAll(".lang-tab")
+    .forEach((t) => t.classList.remove("active"));
+  event.target.classList.add("active");
+  document
+    .querySelectorAll(`[data-group="${group}"]`)
+    .forEach((el) => el.classList.remove("active"));
+  const target = document.querySelector(
+    `[data-group="${group}"][data-lang="${lang}"]`,
+  );
+  if (target) target.classList.add("active");
+}
+
+/* ── COPY CODE ── */
+function copyCode(button) {
+  const pre = button.closest(".code-block").querySelector("pre");
+  navigator.clipboard.writeText(pre.innerText || pre.textContent);
+  button.textContent = "Copied!";
+  setTimeout(() => (button.textContent = "Copy"), 2000);
+}
+
+/* ── LEVEL BUTTONS ── */
+const ALGO_KEY = "heap";
+const L2_KEY = `${ALGO_KEY}_l2_unlocked`;
+const L3_KEY = `${ALGO_KEY}_l3_unlocked`;
+const modal = document.getElementById("quizModal");
+const modalMsg = document.getElementById("modalMsg");
+const startQuizBtn = document.getElementById("startQuiz");
+const cancelBtn = document.getElementById("cancelBtn");
+const btnL2 = document.getElementById("l2");
+const btnL3 = document.getElementById("l3");
+
+function updateLevelButtons() {
+  if (localStorage.getItem(L2_KEY) === "true") {
+    btnL2.style.cssText =
+      "border-color:var(--primary-green);background:rgba(16,185,129,0.15);color:var(--primary-green)";
+  }
+  if (localStorage.getItem(L3_KEY) === "true") {
+    btnL3.style.cssText =
+      "border-color:var(--primary-green);background:rgba(16,185,129,0.15);color:var(--primary-green)";
+  }
+}
+
+btnL2.onclick = () => {
+  if (localStorage.getItem(L2_KEY) === "true") {
+    window.location.href = "heap_l2.html";
+    return;
+  }
+  modalMsg.textContent =
+    "Pass the Level 1 Quiz to unlock Level 2 and continue your Heap journey.";
+  modal.style.display = "flex";
+  startQuizBtn.onclick = () => (window.location.href = "quiz.html?id=heap-l1");
+};
+
+btnL3.onclick = () => {
+  const l2 = localStorage.getItem(L2_KEY) === "true";
+  const l3 = localStorage.getItem(L3_KEY) === "true";
+  if (l3) {
+    window.location.href = "heap_l3.html";
+    return;
+  }
+  if (!l2) {
+    modalMsg.textContent =
+      "Pass the Level 1 Quiz first to unlock Level 2 before accessing Level 3.";
+    startQuizBtn.onclick = () =>
+      (window.location.href = "quiz.html?id=heap-l1");
+  } else {
+    modalMsg.textContent =
+      "Pass the Level 2 Quiz to unlock Level 3 and complete your Heap journey.";
+    startQuizBtn.onclick = () =>
+      (window.location.href = "quiz.html?id=heap-l2");
+  }
+  modal.style.display = "flex";
+};
+
+cancelBtn.onclick = () => (modal.style.display = "none");
+window.addEventListener("click", (e) => {
+  if (e.target === modal) modal.style.display = "none";
+});
+
+window.addEventListener("load", () => {
+  const saved = localStorage.getItem("dsa-theme") || "dark";
+  applyTheme(saved);
+  updateLevelButtons();
+});
+
+</script>
+</body>
+</html>

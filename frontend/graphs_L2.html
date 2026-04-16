@@ -1,0 +1,5882 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphs - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --green: #10b981;
+        --cyan: #06b6d4;
+        --purple: #8b5cf6;
+        --orange: #f59e0b;
+        --red: #ef4444;
+        --pink: #ec4899;
+        --yellow: #eab308;
+        --bg: #0a0a0a;
+        --card: #1a1a1a;
+        --fg: #fff;
+        --muted: #a0a0a0;
+        --border: #2a2a2a;
+        --nav-bg: rgba(10, 10, 10, 0.9);
+        --code: #0d1117;
+      }
+      [data-theme="light"] {
+        --bg: #f8fafc;
+        --card: #fff;
+        --fg: #0f172a;
+        --muted: #475569;
+        --border: #e2e8f0;
+        --nav-bg: rgba(248, 250, 252, 0.9);
+        --code: #f1f5f9;
+        --cyan: #0891b2;
+        --green: #059669;
+      }
+      [data-theme="blue"] {
+        --bg: #011425;
+        --card: #1e293b;
+        --fg: #fff;
+        --muted: #94a3b8;
+        --border: #1e3a5f;
+        --nav-bg: rgba(1, 20, 37, 0.9);
+        --code: #011425;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        line-height: 1.6;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      /* NAV */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--fg);
+        text-decoration: none;
+      }
+      .logo-box {
+        width: 34px;
+        height: 34px;
+        background: linear-gradient(135deg, var(--green), var(--cyan));
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--fg);
+        text-decoration: none;
+        font-size: 0.93rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--green);
+      }
+      /* .nav-right{display:flex;align-items:center;} */
+      .theme-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 9px;
+        border: 1px solid var(--border);
+        background: var(--border);
+        color: var(--fg);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+      }
+      .theme-btn:hover {
+        border-color: var(--green);
+      }
+      .theme-btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .hamburger {
+        display: none;
+        width: 38px;
+        height: 38px;
+        border: none;
+        background: none;
+        color: var(--fg);
+        cursor: pointer;
+      }
+      .hamburger svg {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* LAYOUT */
+      .wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 96px 1.5rem 3rem;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.88rem;
+        color: var(--muted);
+        flex-wrap: wrap;
+        margin-bottom: 1.6rem;
+      }
+      .breadcrumb a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        color: var(--cyan);
+      }
+      .page-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(1.9rem, 5vw, 3.2rem);
+        font-weight: 800;
+        margin-bottom: 0.4rem;
+      }
+      .page-sub {
+        color: var(--muted);
+        margin-bottom: 1rem;
+      }
+      .level-pills {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin: 1rem 0 2rem;
+      }
+      .pill {
+        padding: 0.5rem 1.3rem;
+        border-radius: 50px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .pill.active {
+        background: var(--cyan);
+        border-color: var(--cyan);
+        color: #fff;
+      }
+
+      /* SECTION CARD */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+      }
+      .card-head {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-bottom: 1.6rem;
+        flex-wrap: wrap;
+      }
+      .card-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 1.3rem;
+      }
+      .card-title {
+        font-size: clamp(1.2rem, 3vw, 1.7rem);
+        font-weight: 700;
+      }
+      .txt {
+        color: var(--muted);
+        line-height: 1.75;
+        margin-bottom: 0.8rem;
+      }
+
+      /* GRAPH TYPE TABS */
+      .gtype-tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.8rem;
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 0;
+      }
+      .gt-tab {
+        padding: 0.65rem 1.1rem;
+        border-radius: 10px 10px 0 0;
+        border: 2px solid transparent;
+        border-bottom: none;
+        background: var(--code);
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 0.83rem;
+        cursor: pointer;
+        transition: all 0.22s;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+        margin-bottom: -2px;
+      }
+      .gt-tab:hover {
+        border-color: var(--border);
+        color: var(--fg);
+      }
+      .gt-tab.active {
+        background: var(--card);
+        border-color: var(--border);
+        border-bottom-color: var(--card);
+        color: var(--fg);
+      }
+      .gt-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .gtype-panel {
+        display: none;
+      }
+      .gtype-panel.show {
+        display: block;
+      }
+
+      /* TYPE BANNER */
+      .type-banner {
+        border-radius: 14px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.6rem;
+        border: 1.5px solid;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      .type-banner-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+      }
+      .type-banner-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 0.2rem;
+      }
+      .type-banner-desc {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.65;
+      }
+      .type-banner-tags {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+      .tag {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border: 1.5px solid;
+      }
+      .tag-g {
+        background: rgba(16, 185, 129, 0.12);
+        color: var(--green);
+        border-color: var(--green);
+      }
+      .tag-c {
+        background: rgba(6, 182, 212, 0.12);
+        color: var(--cyan);
+        border-color: var(--cyan);
+      }
+      .tag-o {
+        background: rgba(245, 158, 11, 0.12);
+        color: var(--orange);
+        border-color: var(--orange);
+      }
+      .tag-p {
+        background: rgba(139, 92, 246, 0.12);
+        color: var(--purple);
+        border-color: var(--purple);
+      }
+      .tag-r {
+        background: rgba(239, 68, 68, 0.12);
+        color: var(--red);
+        border-color: var(--red);
+      }
+
+      /* MAIN VIS LAYOUT */
+      .vis-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 18px;
+        align-items: start;
+      }
+      .ps-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        position: sticky;
+        top: 86px;
+      }
+      .ps-card-title {
+        color: var(--cyan);
+        font-weight: 700;
+        margin-bottom: 14px;
+        text-align: center;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.8px;
+      }
+      .ps-algo-name {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--orange);
+        margin-bottom: 8px;
+        padding: 4px 8px;
+        background: rgba(245, 158, 11, 0.08);
+        border-radius: 6px;
+        display: inline-block;
+      }
+      .ps-lines {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ps-line {
+        background: var(--code);
+        padding: 8px 11px;
+        border-radius: 7px;
+        color: var(--muted);
+        border-left: 3px solid transparent;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        line-height: 1.55;
+        transition: all 0.25s;
+      }
+      .ps-line.lit {
+        background: linear-gradient(
+          90deg,
+          rgba(6, 182, 212, 0.82),
+          rgba(139, 92, 246, 0.55)
+        );
+        color: #fff;
+        border-left-color: var(--orange);
+        transform: translateX(3px);
+        box-shadow: 0 3px 12px rgba(6, 182, 212, 0.22);
+        font-weight: 600;
+      }
+      .ps-line.done {
+        background: rgba(16, 185, 129, 0.1);
+        border-left-color: var(--green);
+        color: var(--green);
+      }
+
+      /* VIS CARD */
+      .vis-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .vis-head {
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .vis-head-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .vis-body {
+        background: var(--code);
+        padding: 16px;
+      }
+      .vis-foot {
+        padding: 14px 18px;
+        border-top: 2px solid var(--border);
+      }
+      .algo-tabs {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .algo-tab {
+        padding: 6px 13px;
+        border-radius: 7px;
+        border: 1.5px solid var(--border);
+        background: var(--code);
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+      .algo-tab:hover {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .algo-tab.on {
+        border-color: currentColor;
+        color: #000;
+      }
+
+      /* CANVAS */
+      .canvas-box {
+        position: relative;
+        width: 100%;
+        padding-top: 52%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #0a1020;
+        border: 1px solid var(--border);
+        margin-bottom: 10px;
+      }
+      .canvas-box canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* STATUS CHIPS */
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        min-height: 38px;
+        padding: 6px 12px;
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 5px;
+      }
+      .s-label {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        white-space: nowrap;
+      }
+      .chip {
+        min-width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 0.82rem;
+        border: 2px solid;
+        animation: cIn 0.22s ease both;
+      }
+      @keyframes cIn {
+        from {
+          opacity: 0;
+          transform: scale(0.55);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .chip-q {
+        background: rgba(6, 182, 212, 0.16);
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .chip-v {
+        background: rgba(16, 185, 129, 0.16);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .chip-cur {
+        background: linear-gradient(135deg, var(--orange), #ff8c00);
+        border-color: var(--orange);
+        color: #000;
+      }
+      .chip-stk {
+        background: rgba(139, 92, 246, 0.16);
+        border-color: var(--purple);
+        color: var(--purple);
+      }
+      .s-empty {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* CAPTION / RESULT */
+      .caption {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.79rem;
+        color: var(--cyan);
+        text-align: center;
+        padding: 6px 10px;
+        background: rgba(6, 182, 212, 0.07);
+        border-radius: 8px;
+        margin: 6px 0;
+        min-height: 30px;
+        transition: all 0.2s;
+      }
+      .cap-g {
+        color: var(--green);
+        background: rgba(16, 185, 129, 0.07);
+      }
+      .cap-o {
+        color: var(--orange);
+        background: rgba(245, 158, 11, 0.07);
+      }
+      .cap-r {
+        color: var(--red);
+        background: rgba(239, 68, 68, 0.07);
+      }
+      .cap-p {
+        color: var(--purple);
+        background: rgba(139, 92, 246, 0.07);
+      }
+      .result-wrap {
+        text-align: center;
+        margin-top: 5px;
+      }
+      .rb {
+        display: inline-block;
+        padding: 0.38rem 1.1rem;
+        border-radius: 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 0.84rem;
+      }
+      .rb-g {
+        background: rgba(16, 185, 129, 0.14);
+        border: 1.5px solid var(--green);
+        color: var(--green);
+      }
+      .rb-c {
+        background: rgba(6, 182, 212, 0.14);
+        border: 1.5px solid var(--cyan);
+        color: var(--cyan);
+      }
+      .rb-p {
+        background: rgba(139, 92, 246, 0.14);
+        border: 1.5px solid var(--purple);
+        color: var(--purple);
+      }
+      .rb-r {
+        background: rgba(239, 68, 68, 0.14);
+        border: 1.5px solid var(--red);
+        color: var(--red);
+      }
+      .rb-o {
+        background: rgba(245, 158, 11, 0.14);
+        border: 1.5px solid var(--orange);
+        color: var(--orange);
+      }
+
+      /* PROGRESS */
+      .prog-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+      }
+      .prog-lbl {
+        font-size: 0.68rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      .prog-track {
+        flex: 1;
+        height: 5px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        border-radius: 3px;
+        transition: width 0.35s ease;
+      }
+
+      /* FORM */
+      input[type="text"],
+      input[type="number"],
+      select {
+        background: var(--bg);
+        border: 2px solid var(--border);
+        color: var(--fg);
+        border-radius: 7px;
+        padding: 7px 11px;
+        font-family: "Inter", sans-serif;
+        font-size: 0.84rem;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--cyan);
+      }
+      .ctrl-lbl {
+        font-size: 0.74rem;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 3px;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .btn {
+        border: none;
+        font-weight: 700;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        transition: all 0.18s;
+      }
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+      .btn-c {
+        background: linear-gradient(135deg, var(--cyan), #0891b2);
+        color: #fff;
+      }
+      .btn-g {
+        background: linear-gradient(135deg, var(--green), #059669);
+        color: #fff;
+      }
+      .btn-o {
+        background: linear-gradient(135deg, var(--orange), #d97706);
+        color: #000;
+      }
+      .btn-p {
+        background: linear-gradient(135deg, var(--purple), #7c3aed);
+        color: #fff;
+      }
+      .btn-gh {
+        background: var(--code);
+        color: var(--muted);
+        border: 1.5px solid var(--border);
+      }
+      .btn-gh:hover:not(:disabled) {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .ctrl-grid3 {
+        display: grid;
+        grid-template-columns: 1fr 80px auto auto;
+        gap: 8px;
+        align-items: end;
+        margin-bottom: 8px;
+      }
+      .ctrl-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .speed-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+      }
+      .sp-lbl {
+        font-size: 0.7rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 65px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        outline: none;
+        padding: 0;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--cyan);
+        cursor: pointer;
+      }
+
+      /* SCENARIO SECTION */
+      .sc-tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.3rem;
+      }
+      .sc-tab {
+        padding: 0.45rem 1rem;
+        border-radius: 50px;
+        border: 1.5px solid var(--border);
+        background: var(--code);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 0.81rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .sc-tab:hover {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .sc-tab.t-g {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: var(--green) !important;
+        color: var(--green) !important;
+      }
+      .sc-tab.t-c {
+        background: rgba(6, 182, 212, 0.12);
+        border-color: var(--cyan) !important;
+        color: var(--cyan) !important;
+      }
+      .sc-tab.t-o {
+        background: rgba(245, 158, 11, 0.12);
+        border-color: var(--orange) !important;
+        color: var(--orange) !important;
+      }
+      .sc-panel {
+        display: none;
+      }
+      .sc-panel.show {
+        display: block;
+      }
+      .sc-box {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.4rem 1.5rem;
+      }
+      .sc-box h4 {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.98rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+      }
+      .sc-box p {
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.65;
+        margin-bottom: 0.9rem;
+      }
+      .sc-hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 0.7rem 0 1.1rem;
+      }
+      .sc-2col {
+        display: grid;
+        grid-template-columns: 1fr 220px;
+        gap: 1.3rem;
+        align-items: start;
+      }
+      .mini-box {
+        position: relative;
+        width: 100%;
+        padding-top: 58%;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #0a1020;
+        border: 1px solid var(--border);
+      }
+      .mini-box canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .sc-log {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 0.8rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.74rem;
+        min-height: 165px;
+        max-height: 220px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+      }
+      .sc-log-title {
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--cyan);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+      .log-line {
+        padding: 2px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        animation: logIn 0.2s ease;
+        line-height: 1.4;
+      }
+      @keyframes logIn {
+        from {
+          opacity: 0;
+          transform: translateX(-3px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .lc-v {
+        color: var(--cyan);
+      }
+      .lc-q {
+        color: var(--orange);
+      }
+      .lc-d {
+        color: var(--green);
+      }
+      .lc-i {
+        color: var(--muted);
+      }
+      .lc-r {
+        color: var(--purple);
+        font-weight: 700;
+      }
+      .lc-w {
+        color: var(--yellow);
+      }
+      .sc-ctl {
+        display: flex;
+        gap: 0.45rem;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .sc-btn {
+        padding: 6px 12px;
+        border-radius: 7px;
+        border: none;
+        font-weight: 700;
+        font-size: 0.77rem;
+        cursor: pointer;
+        transition: all 0.18s;
+        font-family: "Inter", sans-serif;
+      }
+      .sc-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+      .sc-btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+      .sb-c {
+        background: var(--cyan);
+        color: #000;
+      }
+      .sb-g {
+        background: var(--green);
+        color: #fff;
+      }
+      .sb-o {
+        background: var(--orange);
+        color: #000;
+      }
+      .sb-p {
+        background: var(--purple);
+        color: #fff;
+      }
+      .sb-h {
+        background: var(--code);
+        color: var(--muted);
+        border: 1.5px solid var(--border);
+      }
+      .sb-h:hover:not(:disabled) {
+        border-color: var(--cyan);
+        color: var(--cyan);
+      }
+      .sc-info {
+        font-size: 0.74rem;
+        color: var(--muted);
+        font-family: "JetBrains Mono", monospace;
+        margin-top: 4px;
+      }
+
+      /* ── FIX CALLOUT — makes the fix visible to the user ── */
+      .fix-note {
+        background: rgba(16, 185, 129, 0.06);
+        border: 1.5px solid rgba(16, 185, 129, 0.25);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .fix-note strong {
+        color: var(--green);
+      }
+
+      /* CODE EDITOR */
+      .algo-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        padding: 0.6rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 1.1rem 0;
+        justify-content: center;
+      }
+      .ap {
+        padding: 0.6rem 1.1rem;
+        background: var(--code);
+        border: 2px solid var(--border);
+        border-radius: 9px;
+        cursor: pointer;
+        text-align: center;
+        min-width: 105px;
+        transition: all 0.2s;
+      }
+      .ap:hover {
+        border-color: var(--cyan);
+        transform: translateY(-1px);
+      }
+      .ap.on {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        border-color: var(--cyan);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.22);
+      }
+      .ap-icon {
+        font-size: 1.25rem;
+        margin-bottom: 0.18rem;
+      }
+      .ap-name {
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+      .ap.on .ap-name {
+        color: #fff;
+      }
+      .lang-tabs {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+        background: var(--border);
+        padding: 5px;
+        border-radius: 9px;
+        width: fit-content;
+        max-width: 100%;
+        margin: 1rem 0;
+      }
+      .lt {
+        padding: 6px 12px;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        color: var(--muted);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.18s;
+      }
+      .lt.on {
+        background: var(--cyan);
+        color: #000;
+        border-color: var(--cyan);
+      }
+      .editor-box {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        overflow: hidden;
+        margin: 0.9rem 0;
+      }
+      .editor-hdr {
+        background: rgba(6, 182, 212, 0.09);
+        padding: 0.8rem 1.3rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .copy-btn {
+        padding: 5px 12px;
+        background: var(--purple);
+        border: none;
+        border-radius: 6px;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.74rem;
+        transition: opacity 0.2s;
+      }
+      .copy-btn:hover {
+        opacity: 0.8;
+      }
+      .run-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: linear-gradient(90deg, var(--green), #059669);
+        color: #fff;
+        border: none;
+        padding: 9px 22px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.2s;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .run-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.28);
+      }
+      .in-box {
+        background: var(--code);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 0.85rem 1.2rem;
+        margin-bottom: 0.6rem;
+      }
+      .in-title {
+        font-size: 0.76rem;
+        color: var(--cyan);
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .ig2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .out-box {
+        background: var(--code);
+        color: var(--green);
+        padding: 16px;
+        border-radius: 9px;
+        margin-top: 10px;
+        min-height: 120px;
+        font-family: "JetBrains Mono", monospace;
+        border: 2px solid var(--border);
+        font-size: 12.5px;
+        line-height: 1.7;
+        overflow-x: auto;
+      }
+      .out-box h6 {
+        color: var(--cyan);
+        margin-bottom: 7px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 0.85rem;
+      }
+      .CodeMirror {
+        height: 320px !important;
+        font-size: 13px !important;
+        border-radius: 0 0 11px 11px !important;
+      }
+
+      /* LEVEL NAV */
+      .lv-box {
+        max-width: 760px;
+        margin: 4rem auto;
+        padding: 2.4rem 2rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        text-align: center;
+      }
+      .lv-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 0 20px;
+        height: 96px;
+      }
+      .lv-wrap button {
+        position: relative;
+        z-index: 20;
+        width: 124px;
+        padding: 0.9rem;
+        border-radius: 13px;
+        border: 2px solid var(--border);
+        background: var(--bg);
+        color: var(--fg);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.25s;
+        font-family: "Inter", sans-serif;
+        font-size: 0.86rem;
+      }
+      .lv-wrap button:hover {
+        border-color: var(--cyan);
+      }
+      #l1 {
+        border-color: var(--cyan);
+        background: rgba(6, 182, 212, 0.12);
+        color: var(--cyan) !important;
+      }
+      #l2 {
+        border-color: var(--green);
+        background: rgba(16, 185, 129, 0.12);
+        color: var(--green) !important;
+      }
+      .lv-line {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 4px;
+        background: var(--border);
+        width: 20%;
+        z-index: 1;
+        pointer-events: none;
+      }
+      #ll1 {
+        left: 21%;
+      }
+      #ll2 {
+        left: 58%;
+      }
+      .lv-line.act {
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        box-shadow: 0 0 14px var(--cyan);
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.88);
+        backdrop-filter: blur(14px);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal-box {
+        background: var(--card);
+        border: 2px solid var(--purple);
+        padding: 2.8rem;
+        border-radius: 28px;
+        max-width: 420px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 0 46px rgba(139, 92, 246, 0.35);
+      }
+      .modal-btns {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 1.4rem;
+      }
+      #mOk {
+        background: var(--cyan);
+        color: #fff;
+        width: 100px;
+        height: 38px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      #mCancel {
+        background: var(--border);
+        color: var(--fg);
+        width: 76px;
+        height: 38px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      /* RESPONSIVE */
+      @media (max-width: 1000px) {
+        .vis-layout {
+          grid-template-columns: 1fr;
+        }
+        .ps-card {
+          position: relative;
+          top: 0;
+        }
+        .sc-2col {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          position: fixed;
+          top: 64px;
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          gap: 1rem;
+          background: var(--nav-bg);
+          backdrop-filter: blur(12px);
+          padding: 1.4rem 1.8rem;
+          border-bottom: 1px solid var(--border);
+          z-index: 999;
+        }
+        .nav-links.open {
+          display: flex;
+        }
+        .hamburger {
+          display: grid;
+        }
+        .wrap {
+          padding: 82px 1rem 2rem;
+        }
+        .card {
+          padding: 1.3rem 1rem;
+        }
+        .ctrl-grid3 {
+          grid-template-columns: 1fr auto auto;
+        }
+        .lv-box {
+          margin: 3rem 0;
+          padding: 1.8rem 0.8rem;
+        }
+        .lv-wrap button {
+          width: 82px;
+          font-size: 0.74rem;
+          padding: 0.65rem 0.35rem;
+        }
+        #ll1 {
+          left: 18%;
+        }
+        #ll2 {
+          left: 57%;
+        }
+        .ig2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 480px) {
+        .page-title {
+          font-size: 1.75rem;
+        }
+        .gtype-tabs {
+          gap: 0.25rem;
+        }
+        .gt-tab {
+          font-size: 0.72rem;
+          padding: 0.45rem 0.65rem;
+        }
+        .algo-tabs {
+          gap: 0.3rem;
+        }
+        .algo-tab {
+          font-size: 0.72rem;
+          padding: 5px 9px;
+        }
+      }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <nav>
+      <div class="nav-inner">
+        <a class="logo" href="index.html"
+          ><div class="logo-box">G</div>
+          <span>CODEANIME</span></a
+        >
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisities</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="theme-btn" id="themeBtn">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+
+          <button class="hamburger" id="hamburger">
+            <svg viewBox="0 0 24 24">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span>›</span>
+        <a href="graphs_L1.html">Graph</a> <span>›</span>
+        <span>Level 2 — Interactive</span>
+      </div>
+      <div class="page-title">Graph — Interactive Visualizer</div>
+      <div class="page-sub">
+        Select a graph type, then run BFS / DFS / Shortest Path and watch it
+        animate step-by-step.
+      </div>
+      <div class="level-pills">
+        <div class="pill">Level 1 of 3 | Basics</div>
+        <div class="pill active">Level 2 of 3 | Interactive</div>
+      </div>
+
+      <!-- ═══════ GRAPH TYPE TABS ═══════ -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon">🗂️</div>
+          <h2 class="card-title">Graph Types — Interactive Explorer</h2>
+        </div>
+
+        <div class="gtype-tabs" id="gtypeTabs">
+          <button
+            class="gt-tab active"
+            data-type="undirected"
+            onclick="switchType('undirected')"
+          >
+            <span class="gt-dot" style="background: var(--cyan)"></span
+            >Undirected
+          </button>
+          <button
+            class="gt-tab"
+            data-type="directed"
+            onclick="switchType('directed')"
+          >
+            <span class="gt-dot" style="background: var(--orange)"></span
+            >Directed
+          </button>
+          <button
+            class="gt-tab"
+            data-type="weighted"
+            onclick="switchType('weighted')"
+          >
+            <span class="gt-dot" style="background: var(--green)"></span
+            >Weighted
+          </button>
+          <button
+            class="gt-tab"
+            data-type="connected"
+            onclick="switchType('connected')"
+          >
+            <span class="gt-dot" style="background: var(--purple)"></span
+            >Connected
+          </button>
+          <button
+            class="gt-tab"
+            data-type="cyclic"
+            onclick="switchType('cyclic')"
+          >
+            <span class="gt-dot" style="background: var(--red)"></span>Cyclic
+          </button>
+          <button class="gt-tab" data-type="dag" onclick="switchType('dag')">
+            <span class="gt-dot" style="background: var(--yellow)"></span>DAG
+          </button>
+        </div>
+
+        <!-- UNDIRECTED -->
+        <div class="gtype-panel show" id="gp-undirected">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(6, 182, 212, 0.07);
+              border-color: rgba(6, 182, 212, 0.3);
+            "
+          >
+            <div class="type-banner-icon">↔️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--cyan)">
+                Undirected Graph
+              </div>
+              <div class="type-banner-desc">
+                Edges have <b>no direction</b>. An edge (u,v) allows travel both
+                u→v and v→u. Adjacency matrix is <b>symmetric</b>. Used in:
+                social networks, road maps, collaboration graphs.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-c">BFS works</span
+                ><span class="tag tag-c">DFS works</span
+                ><span class="tag tag-g">Symmetric adj matrix</span
+                ><span class="tag tag-o">No arrows on edges</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-undirected">BFS</div>
+              <div class="ps-lines" id="psLines-undirected"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(6, 182, 212, 0.18),
+                      rgba(139, 92, 246, 0.12)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-undirected"
+                    >Undirected — BFS</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-undirected">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(6, 182, 212, 0.2);
+                        border-color: var(--cyan);
+                        color: var(--cyan);
+                      "
+                      onclick="switchAlgo('undirected', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('undirected', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('undirected', 'components', this)"
+                    >
+                      🧩 Components
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-undirected">
+                    <canvas id="c-undirected"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-undirected">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-undirected">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-undirected">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-undirected"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-undirected"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-undirected">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (e.g. 0-1,1-2,2-3,3-0,0-2)</span
+                      ><input
+                        type="text"
+                        id="edges-undirected"
+                        value="0-1,1-2,2-3,3-0,0-2"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-undirected"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-c"
+                      id="btnStep-undirected"
+                      onclick="doStep('undirected')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-undirected"
+                      onclick="doAuto('undirected')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-g" onclick="doBuild('undirected')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('undirected')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIRECTED -->
+        <div class="gtype-panel" id="gp-directed">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(245, 158, 11, 0.07);
+              border-color: rgba(245, 158, 11, 0.3);
+            "
+          >
+            <div class="type-banner-icon">➡️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--orange)">
+                Directed Graph (Digraph)
+              </div>
+              <div class="type-banner-desc">
+                Edges have a <b>direction</b>. Edge u→v does NOT imply v→u.
+                Adjacency matrix is <b>asymmetric</b>. Used in: Twitter follows,
+                dependency resolution, web links.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-o">One-way arrows</span
+                ><span class="tag tag-o">Asymmetric matrix</span
+                ><span class="tag tag-c">BFS / DFS</span
+                ><span class="tag tag-p">Topological Sort (DAGs)</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-directed">BFS</div>
+              <div class="ps-lines" id="psLines-directed"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(245, 158, 11, 0.18),
+                      rgba(239, 68, 68, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-directed"
+                    >Directed — BFS</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-directed">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(245, 158, 11, 0.2);
+                        border-color: var(--orange);
+                        color: var(--orange);
+                      "
+                      onclick="switchAlgo('directed', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('directed', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('directed', 'cycle', this)"
+                    >
+                      🔄 Cycle Detect
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-directed">
+                    <canvas id="c-directed"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-directed">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-directed">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-directed">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-directed"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-directed"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-directed">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl">Directed edges (u→v as u-v)</span
+                      ><input
+                        type="text"
+                        id="edges-directed"
+                        value="0-1,1-2,2-3,3-1,0-3"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-directed"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-o"
+                      id="btnStep-directed"
+                      onclick="doStep('directed')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-directed"
+                      onclick="doAuto('directed')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-o" onclick="doBuild('directed')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('directed')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEIGHTED -->
+        <div class="gtype-panel" id="gp-weighted">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(16, 185, 129, 0.07);
+              border-color: rgba(16, 185, 129, 0.3);
+            "
+          >
+            <div class="type-banner-icon">⚖️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--green)">
+                Weighted Graph
+              </div>
+              <div class="type-banner-desc">
+                Each edge carries a <b>numeric weight</b> (cost, distance,
+                time). BFS finds shortest <em>hops</em>, but for weighted
+                shortest path we need Dijkstra's algorithm.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-g">Edge weights</span
+                ><span class="tag tag-g">Dijkstra's Algorithm</span
+                ><span class="tag tag-c">BFS = unweighted</span
+                ><span class="tag tag-o">Bellman-Ford handles negatives</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-weighted">Dijkstra</div>
+              <div class="ps-lines" id="psLines-weighted"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(16, 185, 129, 0.18),
+                      rgba(6, 182, 212, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-weighted"
+                    >Weighted — Dijkstra</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-weighted">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(16, 185, 129, 0.2);
+                        border-color: var(--green);
+                        color: var(--green);
+                      "
+                      onclick="switchAlgo('weighted', 'dijkstra', this)"
+                    >
+                      🛣️ Dijkstra
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('weighted', 'bfs', this)"
+                    >
+                      🔍 BFS (hops)
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('weighted', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-weighted">
+                    <canvas id="c-weighted"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-weighted">
+                    <span class="s-label">Priority Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-weighted">
+                    <span class="s-label">Distances:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-weighted">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-weighted"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-weighted"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-weighted">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl">Weighted edges (u-v-w)</span
+                      ><input
+                        type="text"
+                        id="edges-weighted"
+                        value="0-1-4,0-2-1,2-1-2,1-3-5,2-3-8,2-4-3,4-3-2"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-weighted"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-g"
+                      id="btnStep-weighted"
+                      onclick="doStep('weighted')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-weighted"
+                      onclick="doAuto('weighted')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-g" onclick="doBuild('weighted')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('weighted')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONNECTED -->
+        <div class="gtype-panel" id="gp-connected">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(139, 92, 246, 0.07);
+              border-color: rgba(139, 92, 246, 0.3);
+            "
+          >
+            <div class="type-banner-icon">🔗</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--purple)">
+                Connected / Disconnected Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>connected graph</b> has a path between every pair of
+                vertices. A <b>disconnected</b> graph has isolated components.
+                BFS/DFS must restart for each unvisited vertex to find all
+                components.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-p">Find Components</span
+                ><span class="tag tag-c">BFS per component</span
+                ><span class="tag tag-g">O(V+E) total</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-connected">
+                Components
+              </div>
+              <div class="ps-lines" id="psLines-connected"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(139, 92, 246, 0.18),
+                      rgba(236, 72, 153, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-connected"
+                    >Connected — Components</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-connected">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(139, 92, 246, 0.2);
+                        border-color: var(--purple);
+                        color: var(--purple);
+                      "
+                      onclick="switchAlgo('connected', 'components', this)"
+                    >
+                      🧩 Components
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('connected', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('connected', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-connected">
+                    <canvas id="c-connected"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-connected">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-connected">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-connected">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-connected"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-connected"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-connected">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (gaps for disconnected: 0-1,1-2,3-4,6)</span
+                      ><input
+                        type="text"
+                        id="edges-connected"
+                        value="0-1,1-2,3-4,4-5,6"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-connected"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-p"
+                      id="btnStep-connected"
+                      onclick="doStep('connected')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-connected"
+                      onclick="doAuto('connected')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-p" onclick="doBuild('connected')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('connected')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CYCLIC -->
+        <div class="gtype-panel" id="gp-cyclic">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(239, 68, 68, 0.07);
+              border-color: rgba(239, 68, 68, 0.3);
+            "
+          >
+            <div class="type-banner-icon">🔄</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--red)">
+                Cyclic / Acyclic Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>cyclic</b> graph has at least one cycle. An
+                <b>acyclic</b> graph has none — trees are acyclic. Detection
+                method differs: <strong>undirected</strong> uses parent check,
+                <strong>directed</strong> uses a recursion stack.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-r">Directed: rec-stack</span
+                ><span class="tag tag-g">Undirected: parent check</span
+                ><span class="tag tag-o">O(V+E) detection</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-cyclic">
+                Cycle Detection
+              </div>
+              <div class="ps-lines" id="psLines-cyclic"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(239, 68, 68, 0.18),
+                      rgba(245, 158, 11, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-cyclic"
+                    >Cyclic — Cycle Detection</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-cyclic">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(239, 68, 68, 0.2);
+                        border-color: var(--red);
+                        color: var(--red);
+                      "
+                      onclick="switchAlgo('cyclic', 'cycle', this)"
+                    >
+                      🔄 Detect Cycle
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('cyclic', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('cyclic', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-cyclic">
+                    <canvas id="c-cyclic"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-cyclic">
+                    <span class="s-label">Rec Stack:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-cyclic">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-cyclic">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-cyclic"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-cyclic"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-cyclic">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (try 0-1,1-2,2-0 to create a cycle)</span
+                      ><input
+                        type="text"
+                        id="edges-cyclic"
+                        value="0-1,1-2,2-3,3-1"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-cyclic"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn"
+                      style="background: var(--red); color: #fff"
+                      id="btnStep-cyclic"
+                      onclick="doStep('cyclic')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-cyclic"
+                      onclick="doAuto('cyclic')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button
+                      class="btn"
+                      style="background: var(--red); color: #fff"
+                      onclick="doBuild('cyclic')"
+                    >
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('cyclic')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAG -->
+        <div class="gtype-panel" id="gp-dag">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(234, 179, 8, 0.07);
+              border-color: rgba(234, 179, 8, 0.3);
+            "
+          >
+            <div class="type-banner-icon">📐</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--yellow)">
+                DAG — Directed Acyclic Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>directed graph with no cycles</b>. Every DAG has at least
+                one <em>topological ordering</em>. Used in: build systems, task
+                scheduling, dependency resolution.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-o">No cycles</span
+                ><span class="tag tag-o">Directed edges</span
+                ><span class="tag tag-g">Topological Sort</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-dag">Topo Sort</div>
+              <div class="ps-lines" id="psLines-dag"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(234, 179, 8, 0.18),
+                      rgba(245, 158, 11, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-dag"
+                    >DAG — Topological Sort</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-dag">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(234, 179, 8, 0.2);
+                        border-color: var(--yellow);
+                        color: var(--yellow);
+                      "
+                      onclick="switchAlgo('dag', 'topo', this)"
+                    >
+                      📐 Topo Sort
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('dag', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('dag', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-dag">
+                    <canvas id="c-dag"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-dag">
+                    <span class="s-label">Stack:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-dag">
+                    <span class="s-label">Order:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-dag">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-dag"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-dag"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-dag">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Directed acyclic edges (u→v as u-v)</span
+                      ><input
+                        type="text"
+                        id="edges-dag"
+                        value="5-2,5-0,4-0,4-1,2-3,3-1"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">V</span
+                      ><input
+                        type="number"
+                        id="start-dag"
+                        value="6"
+                        min="2"
+                        max="10"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-o"
+                      style="background: var(--yellow); color: #000"
+                      id="btnStep-dag"
+                      onclick="doStep('dag')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-dag"
+                      onclick="doAuto('dag')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button
+                      class="btn btn-o"
+                      style="background: var(--yellow); color: #000"
+                      onclick="doBuild('dag')"
+                    >
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('dag')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ SCENARIOS ═══════
+       FIX 1: Scenario canvases now redraw with the correct
+       directed/undirected flag whenever you switch graph type.
+       Steps are regenerated fresh — not hardcoded undirected.
+  ══════════════════════════════ -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon">🧪</div>
+          <h2 class="card-title">
+            Scenarios —
+            <span id="scTypeLabel" style="color: var(--cyan)"
+              >Undirected Graph</span
+            >
+          </h2>
+        </div>
+
+        <!-- Fix note shown to the user -->
+        <div class="fix-note">
+          <strong>✅ Fixed:</strong> These scenarios now draw the correct graph
+          for whatever tab you're on. Switch to "Directed" then open Best/Worst
+          case — you'll see arrows on the edges. Cycle detection also uses the
+          correct algorithm for each type.
+        </div>
+
+        <div class="sc-tabs">
+          <button class="sc-tab t-g" id="scTabBest" onclick="switchSc('best')">
+            ⚡ Best Case
+          </button>
+          <button class="sc-tab" id="scTabAvg" onclick="switchSc('avg')">
+            〜 Average Case
+          </button>
+          <button class="sc-tab" id="scTabWorst" onclick="switchSc('worst')">
+            ⚠ Worst Case
+          </button>
+        </div>
+
+        <div class="sc-panel show" id="sc-best">
+          <div class="sc-box">
+            <h4 id="sc-best-title">⚡ Best Case — O(1): Target = Source</h4>
+            <p id="sc-best-desc">
+              When the start node is already the target, BFS dequeues it
+              immediately and stops — 1 dequeue, 0 neighbour checks. Always O(1)
+              regardless of graph type.
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-best-c"></canvas></div>
+                <div class="sc-info" id="sc-best-info">Steps: 0</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-best-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-g"
+                    id="sc-best-stepBtn"
+                    onclick="scBestStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-best-autoBtn"
+                    onclick="scBestAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitBest()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-panel" id="sc-avg">
+          <div class="sc-box">
+            <h4>〜 Average Case — O(V+E): BFS Level-by-Level</h4>
+            <p>
+              BFS explores vertices
+              <strong style="color: var(--cyan)">level by level</strong>. On
+              average roughly V/2 nodes are visited before reaching a mid-graph
+              node. Total: O(V+E).
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-avg-c"></canvas></div>
+                <div class="sc-info" id="sc-avg-info">Step 0 | Queue: [0]</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-avg-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-c"
+                    id="sc-avg-stepBtn"
+                    onclick="scAvgStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-avg-autoBtn"
+                    onclick="scAvgAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitAvg()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-panel" id="sc-worst">
+          <div class="sc-box">
+            <h4 id="sc-worst-title">
+              ⚠ Worst Case — O(V+E): DFS on Linear Chain
+            </h4>
+            <p id="sc-worst-desc">
+              DFS on a
+              <strong style="color: var(--orange)">linear chain</strong> must
+              traverse all vertices with maximum recursion depth = N.
+              Demonstrates worst-case stack usage for DFS.
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-worst-c"></canvas></div>
+                <div class="sc-info" id="sc-worst-info">Stack depth: 0/6</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-worst-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-worst-stepBtn"
+                    onclick="scWorstStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-c"
+                    id="sc-worst-autoBtn"
+                    onclick="scWorstAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitWorst()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══════ CODE EDITOR
+       FIX 2: Cycle detection shows DIFFERENT code for directed vs undirected.
+       The editor also reads the currently active graph type and picks the
+       right template variant when it matters.
+  ══════════════════════════════ -->
+      <div class="card" id="editor">
+        <div class="card-head">
+          <div class="card-icon"><i class="fas fa-code"></i></div>
+          <h2 class="card-title">Code Editor — Graph Algorithms</h2>
+        </div>
+
+        <div class="fix-note">
+          <strong>✅ Fixed:</strong> The
+          <strong>Cycle Detection</strong> template now shows
+          <em>undirected graph</em> code (parent check) when you're on the
+          Undirected tab, and <em>directed graph</em> code (recursion stack)
+          when you're on the Directed/Cyclic tab. Switch the graph type tab
+          above, then come back here to see it change.
+        </div>
+
+        <div class="algo-picker" id="algoPicker">
+          <div class="ap on" data-a="bfs" onclick="setEditorAlgo('bfs')">
+            <div class="ap-icon">🔍</div>
+            <div class="ap-name">BFS</div>
+          </div>
+          <div class="ap" data-a="dfs" onclick="setEditorAlgo('dfs')">
+            <div class="ap-icon">📦</div>
+            <div class="ap-name">DFS</div>
+          </div>
+          <div class="ap" data-a="dijkstra" onclick="setEditorAlgo('dijkstra')">
+            <div class="ap-icon">🛣️</div>
+            <div class="ap-name">Dijkstra</div>
+          </div>
+          <div class="ap" data-a="cycle" onclick="setEditorAlgo('cycle')">
+            <div class="ap-icon">🔄</div>
+            <div class="ap-name">Cycle</div>
+          </div>
+          <div
+            class="ap"
+            data-a="components"
+            onclick="setEditorAlgo('components')"
+          >
+            <div class="ap-icon">🧩</div>
+            <div class="ap-name">Components</div>
+          </div>
+          <div class="ap" data-a="topo" onclick="setEditorAlgo('topo')">
+            <div class="ap-icon">📐</div>
+            <div class="ap-name">Topo Sort</div>
+          </div>
+        </div>
+
+        <div class="lang-tabs" id="langTabs">
+          <button class="lt on" data-l="cpp">C++</button>
+          <button class="lt" data-l="python">Python</button>
+          <button class="lt" data-l="java">Java</button>
+          <button class="lt" data-l="c">C</button>
+          <button class="lt" data-l="js">JS</button>
+        </div>
+
+        <div class="editor-box">
+          <div class="editor-hdr">
+            <div>
+              <span
+                id="edLabel"
+                style="
+                  font-weight: 600;
+                  color: var(--cyan);
+                  font-family: &quot;Space Grotesk&quot;, sans-serif;
+                "
+                >C++ — BFS</span
+              >
+              <!-- Shows which variant is loaded -->
+              <span
+                id="edVariantBadge"
+                style="
+                  margin-left: 8px;
+                  font-size: 0.72rem;
+                  padding: 2px 8px;
+                  border-radius: 10px;
+                  background: rgba(6, 182, 212, 0.12);
+                  border: 1px solid var(--cyan);
+                  color: var(--cyan);
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  display: none;
+                "
+              ></span>
+            </div>
+            <button class="copy-btn" onclick="copyEd()">Copy</button>
+          </div>
+          <textarea id="codeArea"></textarea>
+        </div>
+
+        <div class="in-box">
+          <div class="in-title">📥 INPUTS</div>
+          <div id="runInputs"></div>
+        </div>
+        <button class="run-btn" onclick="runCode()">
+          <i class="fas fa-play"></i> Run Code
+        </button>
+        <div class="out-box">
+          <h6>📤 Output:</h6>
+          <div id="codeOut">Fill inputs and click Run...</div>
+        </div>
+      </div>
+
+      <!-- LEVEL NAV -->
+      <h3
+        style="
+          text-align: center;
+          font-family: &quot;Space Grotesk&quot;, sans-serif;
+          margin-bottom: 1.6rem;
+          font-size: 1rem;
+        "
+      >
+        Ready to Test Your Knowledge? →
+      </h3>
+      <div class="lv-box">
+        <div class="lv-wrap">
+          <button id="l1">Level 1</button>
+          <div class="lv-line act" id="ll1"></div>
+          <button id="l2">Level 2</button>
+          <div class="lv-line" id="ll2"></div>
+          <button id="l3">Level 3</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="modal">
+      <div class="modal-box">
+        <div style="font-size: 3rem; margin-bottom: 0.8rem">🔒</div>
+        <h3
+          style="
+            color: var(--purple);
+            font-family: &quot;Space Grotesk&quot;, sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+          "
+        >
+          Level Locked
+        </h3>
+        <p style="color: var(--muted)">
+          Pass the Level 2 Quiz to unlock Level 3.
+        </p>
+        <div class="modal-btns">
+          <button id="mOk">Take Quiz</button
+          ><button id="mCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/navbar.js"></script>
+    <script>
+      "use strict";
+
+      // ─── THEME ────────────────────────────────────────────────────────────────────
+      const THEMES = ["dark", "light", "blue"];
+      const CM_THEMES = {
+        dark: "material-ocean",
+        light: "eclipse",
+        blue: "material-ocean",
+      };
+      const THEME_ICONS = {
+        dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>',
+        light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>',
+        blue: '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>',
+      };
+
+      let thIdx = THEMES.indexOf(localStorage.getItem("dsa-theme") || "dark");
+
+      const applyTheme = (t) => {
+        document.body.setAttribute("data-theme", t);
+        document.querySelector("#themeBtn svg").innerHTML = THEME_ICONS[t];
+        localStorage.setItem("dsa-theme", t);
+        if (editorCM) editorCM.setOption("theme", CM_THEMES[t]);
+      };
+
+      document.getElementById("themeBtn").addEventListener("click", () => {
+        thIdx = (thIdx + 1) % THEMES.length;
+        applyTheme(THEMES[thIdx]);
+      });
+
+      document
+        .getElementById("hamburger")
+        .addEventListener("click", () =>
+          document.getElementById("navLinks").classList.toggle("open"),
+        );
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("nav"))
+          document.getElementById("navLinks").classList.remove("open");
+      });
+
+      document.querySelectorAll(".spRange").forEach((sl) => {
+        sl.nextElementSibling.textContent =
+          +sl.value <= 300 ? "Fast" : +sl.value >= 1000 ? "Slow" : "Normal";
+        sl.addEventListener("input", () => {
+          sl.nextElementSibling.textContent =
+            +sl.value <= 300 ? "Fast" : +sl.value >= 1000 ? "Slow" : "Normal";
+        });
+      });
+
+      const getSpeed = (wrap) => {
+        const r = wrap && wrap.querySelector(".spRange");
+        return r ? +r.value : 750;
+      };
+
+      // ─── WHICH TYPE IS CURRENTLY ACTIVE ────────────────────────────────────────
+      let currentType = "undirected";
+
+      // True when the active type is a directed graph
+      // Used by the scenario canvas draw and cycle code templates
+      const isDirectedType = (t) => ["directed", "cyclic", "dag"].includes(t);
+      const isWeightedType = (t) => t === "weighted";
+
+      // ─── CANVAS / DRAW HELPERS ────────────────────────────────────────────────────
+      const NCOLORS = {
+        unvisited: "#1e3a4a",
+        current: "#f59e0b",
+        inQueue: "#06b6d4",
+        inStack: "#8b5cf6",
+        visited: "#10b981",
+        cycle: "#ef4444",
+        path: "#ec4899",
+      };
+      const COMP_COLORS = [
+        "#06b6d4",
+        "#10b981",
+        "#8b5cf6",
+        "#f59e0b",
+        "#ec4899",
+        "#ef4444",
+        "#3b82f6",
+      ];
+
+      // Parse undirected "0-1,1-2" or directed same format (directed flag controls adj building)
+      const parseEdges = (str, directed = false, weighted = false) => {
+        const edges = [];
+        let maxNode = -1;
+        str.split(",").forEach((e) => {
+          const p = e.trim().split("-");
+          if (p.length < 2) return;
+          const u = parseInt(p[0]),
+            v = parseInt(p[1]);
+          if (isNaN(u) || isNaN(v)) return;
+          const w = weighted && p[2] ? parseFloat(p[2]) : 1;
+          edges.push({ u, v, w });
+          maxNode = Math.max(maxNode, u, v);
+        });
+        const n = maxNode + 1;
+        if (n <= 0) return { adj: [], n: 0 };
+        const adj = Array.from({ length: n }, () => []);
+        edges.forEach(({ u, v, w }) => {
+          adj[u].push({ to: v, w });
+          // Only add reverse edge for undirected
+          if (!directed) adj[v].push({ to: u, w });
+        });
+        return { adj, n };
+      };
+
+      // Parse disconnected graph strings like "0-1,2-3,4"
+      const parseConnected = (str) => {
+        let maxNode = -1;
+        const edges = [];
+        str.split(",").forEach((p) => {
+          const sides = p.trim().split("-");
+          if (sides.length >= 2) {
+            const u = parseInt(sides[0]),
+              v = parseInt(sides[1]);
+            if (!isNaN(u) && !isNaN(v)) {
+              edges.push({ u, v });
+              maxNode = Math.max(maxNode, u, v);
+            }
+          } else {
+            const solo = parseInt(sides[0]);
+            if (!isNaN(solo)) maxNode = Math.max(maxNode, solo);
+          }
+        });
+        const n = maxNode + 1;
+        if (n <= 0) return { adj: [], n: 0 };
+        const adj = Array.from({ length: n }, () => []);
+        edges.forEach(({ u, v }) => {
+          adj[u].push({ to: v, w: 1 });
+          adj[v].push({ to: u, w: 1 });
+        });
+        return { adj, n };
+      };
+
+      /*
+       * drawGraph — the core canvas renderer.
+       * directed=true draws arrowheads on edges.
+       * weights=true shows edge weight labels.
+       */
+      const drawGraph = (
+        canvasId,
+        adj,
+        n,
+        nodeState,
+        edgeActive,
+        directed = false,
+        weights = false,
+      ) => {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const rect = canvas.getBoundingClientRect();
+        if (rect.width < 1) return;
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width,
+          H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        if (!n) return;
+
+        const margin = Math.max(28, Math.min(40, Math.min(W, H) * 0.12));
+        const R = Math.min(W, H) / 2 - margin;
+        const cx = W / 2,
+          cy = H / 2;
+        const nr = Math.max(14, Math.min(22, R * 0.22));
+
+        // Position nodes in a circle
+        const pos = Array.from({ length: n }, (_, i) => {
+          const ang = (2 * Math.PI * i) / n - Math.PI / 2;
+          return { x: cx + R * Math.cos(ang), y: cy + R * Math.sin(ang) };
+        });
+
+        // Draw edges first so nodes sit on top
+        for (let u = 0; u < n; u++) {
+          (adj[u] || []).forEach(({ to: v, w }) => {
+            // For undirected, avoid drawing the same edge twice
+            if (!directed && v < u) return;
+
+            const lit =
+              edgeActive.has(`${u}-${v}`) || edgeActive.has(`${v}-${u}`);
+            ctx.beginPath();
+            ctx.moveTo(pos[u].x, pos[u].y);
+            ctx.lineTo(pos[v].x, pos[v].y);
+            ctx.strokeStyle = lit ? "#10b981" : "#2a3a4a";
+            ctx.lineWidth = lit ? 2.6 : 1.6;
+            ctx.stroke();
+
+            // Weight label
+            if (weights && w !== 1) {
+              const mx = (pos[u].x + pos[v].x) / 2;
+              const my = (pos[u].y + pos[v].y) / 2;
+              ctx.fillStyle = lit ? "#10b981" : "#a0a0a0";
+              ctx.font = `bold ${Math.max(9, Math.floor(nr * 0.55))}px 'JetBrains Mono',monospace`;
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              ctx.fillText(w, mx, my - 8);
+            }
+
+            // Arrowhead for directed graphs
+            if (directed) {
+              const ang = Math.atan2(pos[v].y - pos[u].y, pos[v].x - pos[u].x);
+              const tx = pos[v].x - nr * Math.cos(ang);
+              const ty = pos[v].y - nr * Math.sin(ang);
+              ctx.beginPath();
+              ctx.moveTo(tx, ty);
+              ctx.lineTo(
+                tx - 10 * Math.cos(ang - 0.42),
+                ty - 10 * Math.sin(ang - 0.42),
+              );
+              ctx.lineTo(
+                tx - 10 * Math.cos(ang + 0.42),
+                ty - 10 * Math.sin(ang + 0.42),
+              );
+              ctx.fillStyle = lit ? "#10b981" : "#3a4a5a";
+              ctx.fill();
+            }
+          });
+        }
+
+        // Draw nodes
+        for (let i = 0; i < n; i++) {
+          const st = nodeState[i] || "unvisited";
+          let color;
+          if (st.startsWith("comp"))
+            color =
+              COMP_COLORS[
+                parseInt(st.replace("comp", "")) % COMP_COLORS.length
+              ];
+          else color = NCOLORS[st] || NCOLORS.unvisited;
+
+          // Glow ring for active nodes
+          if (["current", "inQueue", "inStack"].includes(st)) {
+            ctx.beginPath();
+            ctx.arc(pos[i].x, pos[i].y, nr + 5, 0, Math.PI * 2);
+            ctx.strokeStyle = color + "55";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+          ctx.beginPath();
+          ctx.arc(pos[i].x, pos[i].y, nr, 0, Math.PI * 2);
+          ctx.fillStyle = color + "2a";
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
+
+          ctx.fillStyle = "#fff";
+          ctx.font = `bold ${Math.max(10, Math.floor(nr * 0.72))}px 'JetBrains Mono',monospace`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(String(i), pos[i].x, pos[i].y);
+        }
+      };
+
+      // ─── PSEUDO-CODE DEFINITIONS ──────────────────────────────────────────────────
+      const PS_DEFS = {
+        bfs: [
+          { key: "init", text: "INIT  queue=[start], visited[start]=true" },
+          { key: "loop", text: "WHILE queue is not empty" },
+          { key: "deq", text: "  DEQUEUE node = queue.front()" },
+          { key: "process", text: "  PROCESS node (record/print)" },
+          { key: "nbrs", text: "  FOR each neighbour nbr of node" },
+          { key: "check", text: "    IF not visited[nbr]" },
+          { key: "enq", text: "      ENQUEUE nbr, mark visited" },
+          { key: "done", text: "DONE — all reachable nodes visited" },
+        ],
+        dfs: [
+          { key: "init", text: "INIT  mark start as visited" },
+          { key: "visit", text: "VISIT current node (record/print)" },
+          { key: "nbrs", text: "FOR each neighbour nbr" },
+          { key: "check", text: "  IF not visited[nbr]" },
+          { key: "recurse", text: "    RECURSE → DFS(nbr)" },
+          { key: "back", text: "BACKTRACK — return from call" },
+          { key: "done", text: "DONE — all paths explored" },
+        ],
+        // Directed cycle uses rec-stack; undirected uses parent check
+        cycle_directed: [
+          { key: "init", text: "INIT  visited[], recStack[]" },
+          { key: "loop", text: "FOR each unvisited node i" },
+          { key: "visit", text: "  VISIT i, add to recStack" },
+          { key: "nbrs", text: "  FOR each neighbour nbr" },
+          { key: "check1", text: "    IF not visited[nbr] → recurse" },
+          {
+            key: "check2",
+            text: "    ELSE IF in recStack → CYCLE! ← key difference",
+          },
+          { key: "remove", text: "  REMOVE i from recStack (backtrack)" },
+          { key: "done", text: "DONE — cycle found or not" },
+        ],
+        cycle_undirected: [
+          { key: "init", text: "INIT  visited[], parent[]=-1" },
+          { key: "loop", text: "FOR each unvisited node i" },
+          { key: "visit", text: "  VISIT i via DFS(node, parent)" },
+          { key: "nbrs", text: "  FOR each neighbour nbr" },
+          { key: "check1", text: "    IF not visited[nbr] → recurse" },
+          {
+            key: "check2",
+            text: "    ELSE IF nbr ≠ parent → CYCLE! ← key difference",
+          },
+          { key: "done", text: "DONE — cycle found or not" },
+        ],
+        components: [
+          { key: "init", text: "INIT  visited[] = all false, comp=0" },
+          { key: "loop", text: "FOR i = 0 to V-1" },
+          { key: "check", text: "  IF not visited[i]" },
+          { key: "bfs", text: "    BFS/DFS from i → label comp" },
+          { key: "mark", text: "    Mark all reachable nodes comp" },
+          { key: "inc", text: "    comp++ (new component found)" },
+          { key: "done", text: "DONE — comp = total components" },
+        ],
+        dijkstra: [
+          { key: "init", text: "INIT  dist[src]=0, others=∞" },
+          { key: "pq", text: "INIT  minHeap with (0, src)" },
+          { key: "loop", text: "WHILE heap not empty" },
+          { key: "pop", text: "  POP (d, u) with min distance" },
+          { key: "skip", text: "  IF d > dist[u]: SKIP" },
+          { key: "relax", text: "  FOR each neighbour v, weight w" },
+          { key: "update", text: "    IF dist[u]+w < dist[v]: UPDATE" },
+          { key: "done", text: "DONE — dist[] has all shortest paths" },
+        ],
+        topo: [
+          { key: "init", text: "INIT  visited[], result=[]" },
+          { key: "loop", text: "FOR each unvisited node i" },
+          { key: "visit", text: "  VISIT i — mark visited" },
+          { key: "nbrs", text: "  FOR each neighbour nbr" },
+          { key: "recurse", text: "    IF not visited → DFS(nbr)" },
+          { key: "push", text: "  PUSH i to result (post-order)" },
+          { key: "done", text: "DONE — reverse result = topo order" },
+        ],
+      };
+
+      // Get the right pseudo-code key for cycle detection based on type
+      const getCyclePS = (typeId) =>
+        isDirectedType(typeId) ? "cycle_directed" : "cycle_undirected";
+
+      const setPS = (typeId, algoKey) => {
+        const nameEl = document.getElementById(`psAlgoName-${typeId}`);
+        const linesEl = document.getElementById(`psLines-${typeId}`);
+        if (!nameEl || !linesEl) return;
+
+        // Pick the right variant for cycle
+        const key = algoKey === "cycle" ? getCyclePS(typeId) : algoKey;
+        const lines = PS_DEFS[key] || PS_DEFS.bfs;
+
+        nameEl.textContent = algoKey.toUpperCase();
+        linesEl.innerHTML = "";
+        lines.forEach(({ key: k, text }) => {
+          const div = document.createElement("div");
+          div.className = "ps-line";
+          div.setAttribute("data-k", k);
+          div.textContent = text;
+          linesEl.appendChild(div);
+        });
+      };
+
+      const litPS = (typeId, key) => {
+        document
+          .querySelectorAll(`#psLines-${typeId} .ps-line`)
+          .forEach((el) => {
+            el.classList.remove("lit");
+            if (el.getAttribute("data-k") === key) el.classList.add("lit");
+          });
+      };
+
+      const clearPS = (typeId) =>
+        document
+          .querySelectorAll(`#psLines-${typeId} .ps-line`)
+          .forEach((el) => el.classList.remove("lit", "done"));
+
+      // ─── TYPE STATE MACHINE ───────────────────────────────────────────────────────
+      const TYPE_STATE = {};
+      const TYPES = [
+        "undirected",
+        "directed",
+        "weighted",
+        "connected",
+        "cyclic",
+        "dag",
+      ];
+      TYPES.forEach((t) => {
+        TYPE_STATE[t] = {
+          adj: [],
+          n: 0,
+          steps: [],
+          stepIdx: 0,
+          stepDone: false,
+          autoTimer: null,
+          currentAlgo: defaultAlgo(t),
+        };
+      });
+
+      function defaultAlgo(type) {
+        const map = {
+          undirected: "bfs",
+          directed: "bfs",
+          weighted: "dijkstra",
+          connected: "components",
+          cyclic: "cycle",
+          dag: "topo",
+        };
+        return map[type];
+      }
+
+      const switchType = (type) => {
+        currentType = type;
+        document
+          .querySelectorAll(".gt-tab")
+          .forEach((t) =>
+            t.classList.toggle("active", t.dataset.type === type),
+          );
+        document
+          .querySelectorAll(".gtype-panel")
+          .forEach((p) => p.classList.remove("show"));
+        document.getElementById("gp-" + type).classList.add("show");
+
+        // Update label
+        const names = {
+          undirected: "Undirected Graph",
+          directed: "Directed Graph",
+          weighted: "Weighted Graph",
+          connected: "Connected Graph",
+          cyclic: "Cyclic Graph",
+          dag: "DAG",
+        };
+        document.getElementById("scTypeLabel").textContent = names[type];
+
+        // FIX 1 — reinitialise scenarios so they draw the correct directed/undirected graph
+        scInitBest();
+        scInitAvg();
+        scInitWorst();
+
+        // Always reload the editor when type switches — templates change based on type.
+        // e.g. cycle switches between parent-check and rec-stack,
+        // dijkstra shows a note when you're not on the Weighted tab.
+        if (editorCM) {
+          setEditorAlgo(curEdAlgo);
+        }
+      };
+
+      const switchAlgo = (typeId, algo, btn) => {
+        TYPE_STATE[typeId].currentAlgo = algo;
+
+        const container = document.getElementById(`algoTabs-${typeId}`);
+        const accentMap = {
+          undirected: "var(--cyan)",
+          directed: "var(--orange)",
+          weighted: "var(--green)",
+          connected: "var(--purple)",
+          cyclic: "var(--red)",
+          dag: "var(--yellow)",
+        };
+        const col = accentMap[typeId] || "var(--cyan)";
+
+        container.querySelectorAll(".algo-tab").forEach((t) => {
+          t.classList.remove("on");
+          t.style.cssText = "";
+        });
+        btn.classList.add("on");
+        btn.style.borderColor = col;
+        btn.style.color = col;
+
+        const algoNames = {
+          bfs: "BFS",
+          dfs: "DFS",
+          dijkstra: "Dijkstra",
+          cycle: "Cycle Detect",
+          components: "Components",
+          topo: "Topo Sort",
+        };
+        document.getElementById(`vTitle-${typeId}`).textContent =
+          `${typeId.charAt(0).toUpperCase() + typeId.slice(1)} — ${algoNames[algo] || algo}`;
+
+        setPS(typeId, algo);
+        doReset(typeId);
+      };
+
+      // ─── BUILD / STEP / AUTO ──────────────────────────────────────────────────────
+      const doBuild = (typeId) => {
+        const st = TYPE_STATE[typeId];
+        const edgesStr =
+          document.getElementById(`edges-${typeId}`)?.value || "";
+        const startVal =
+          parseInt(document.getElementById(`start-${typeId}`)?.value) || 0;
+
+        let adj, n;
+        if (typeId === "weighted") {
+          ({ adj, n } = parseEdges(edgesStr, false, true));
+        } else if (typeId === "directed" || typeId === "cyclic") {
+          ({ adj, n } = parseEdges(edgesStr, true, false));
+        } else if (typeId === "dag") {
+          const r = parseEdges(edgesStr, true, false);
+          adj = r.adj;
+          n = Math.max(r.n, startVal || 0);
+          while (adj.length < n) adj.push([]);
+        } else if (typeId === "connected") {
+          ({ adj, n } = parseConnected(edgesStr));
+        } else {
+          ({ adj, n } = parseEdges(edgesStr, false, false));
+        }
+
+        if (n === 0) {
+          setCaption(typeId, "⚠ Parse error. Use format: 0-1,1-2", "cap-r");
+          return;
+        }
+        st.adj = adj;
+        st.n = n;
+
+        drawGraph(
+          `c-${typeId}`,
+          adj,
+          n,
+          Array(n).fill("unvisited"),
+          new Set(),
+          isDirectedType(typeId),
+          isWeightedType(typeId),
+        );
+
+        // Generate steps for the selected algorithm
+        st.steps = [];
+        const algo = st.currentAlgo;
+        const start = Math.min(startVal, n - 1);
+        if (algo === "bfs") genBFS(typeId, start);
+        else if (algo === "dfs") genDFS(typeId, start);
+        else if (algo === "dijkstra") genDijkstra(typeId, start);
+        else if (algo === "cycle") genCycle(typeId);
+        else if (algo === "components") genComponents(typeId);
+        else if (algo === "topo") genTopo(typeId, n);
+
+        st.stepIdx = 0;
+        st.stepDone = false;
+        clearPS(typeId);
+        setPS(typeId, algo);
+        setCaption(typeId, "Ready — click ▶ Step or ⚡ Auto.", "");
+        setProgress(typeId, 0);
+        setChips(`qrow-${typeId}`, "Queue:", []);
+        setChips(`vrow-${typeId}`, "Visited:", []);
+        setResult(typeId, "", "");
+        document.getElementById(`btnStep-${typeId}`).disabled = false;
+        document.getElementById(`btnAuto-${typeId}`).disabled = false;
+      };
+
+      const doReset = (typeId) => {
+        const st = TYPE_STATE[typeId];
+        clearTimeout(st.autoTimer);
+        st.steps = [];
+        st.stepIdx = 0;
+        st.stepDone = false;
+        clearPS(typeId);
+        setPS(typeId, st.currentAlgo);
+        setCaption(typeId, "Build the graph to begin.", "");
+        setResult(typeId, "", "");
+        setProgress(typeId, 0);
+        setChips(`qrow-${typeId}`, "Queue:", []);
+        setChips(`vrow-${typeId}`, "Visited:", []);
+        document.getElementById(`btnStep-${typeId}`).disabled = true;
+        document.getElementById(`btnAuto-${typeId}`).disabled = true;
+        if (st.n > 0)
+          drawGraph(
+            `c-${typeId}`,
+            st.adj,
+            st.n,
+            Array(st.n).fill("unvisited"),
+            new Set(),
+            isDirectedType(typeId),
+          );
+      };
+
+      const doStep = (typeId) => {
+        const st = TYPE_STATE[typeId];
+        if (st.stepDone || st.stepIdx >= st.steps.length) return;
+        applyStep(typeId, st.steps[st.stepIdx++]);
+        if (st.stepIdx >= st.steps.length) {
+          st.stepDone = true;
+          document.getElementById(`btnStep-${typeId}`).disabled = true;
+          document.getElementById(`btnAuto-${typeId}`).disabled = true;
+        }
+      };
+
+      const doAuto = (typeId) => {
+        const st = TYPE_STATE[typeId];
+        if (st.stepDone) return;
+        document.getElementById(`btnAuto-${typeId}`).disabled = true;
+        const footWrap = document
+          .getElementById(`btnAuto-${typeId}`)
+          .closest(".vis-foot");
+        const tick = () => {
+          if (st.stepDone || st.stepIdx >= st.steps.length) return;
+          doStep(typeId);
+          st.autoTimer = setTimeout(tick, footWrap ? getSpeed(footWrap) : 750);
+        };
+        tick();
+      };
+
+      const applyStep = (typeId, s) => {
+        if (!s) return;
+        const st = TYPE_STATE[typeId];
+        drawGraph(
+          `c-${typeId}`,
+          st.adj,
+          st.n,
+          s.ns,
+          s.es,
+          isDirectedType(typeId),
+          isWeightedType(typeId),
+        );
+        if (s.ps) litPS(typeId, s.ps);
+        setCaption(typeId, s.caption || "", s.captionCls || "");
+        if (s.result) setResult(typeId, s.result, s.resultCls || "rb-g");
+        if (s.qRow !== undefined)
+          setChips(
+            `qrow-${typeId}`,
+            s.qLabel || "Queue:",
+            s.qRow,
+            s.qChipClass || "chip-q",
+          );
+        if (s.vRow !== undefined)
+          setChips(
+            `vrow-${typeId}`,
+            s.vLabel || "Visited:",
+            s.vRow,
+            s.vChipClass || "chip-v",
+          );
+        setProgress(typeId, (st.stepIdx / st.steps.length) * 100);
+      };
+
+      // ─── UI HELPERS ───────────────────────────────────────────────────────────────
+      const setCaption = (typeId, txt, cls) => {
+        const el = document.getElementById(`cap-${typeId}`);
+        if (el) {
+          el.textContent = txt;
+          el.className = "caption" + (cls ? " " + cls : "");
+        }
+      };
+      const setResult = (typeId, txt, cls) => {
+        const el = document.getElementById(`res-${typeId}`);
+        if (el) el.innerHTML = txt ? `<div class="rb ${cls}">${txt}</div>` : "";
+      };
+      const setProgress = (typeId, pct) => {
+        const f = document.getElementById(`prog-${typeId}`);
+        const l = document.getElementById(`progTxt-${typeId}`);
+        if (f) f.style.width = Math.round(pct) + "%";
+        if (l) l.textContent = Math.round(pct) + "%";
+      };
+      const setChips = (rowId, label, items, chipClass = "chip-v") => {
+        const row = document.getElementById(rowId);
+        if (!row) return;
+        row.innerHTML = `<span class="s-label">${label}</span>`;
+        if (!items || !items.length) {
+          row.innerHTML += '<span class="s-empty">—</span>';
+          return;
+        }
+        items.forEach((v) => {
+          const ch = document.createElement("div");
+          ch.className = "chip " + chipClass;
+          ch.textContent = v;
+          row.appendChild(ch);
+        });
+      };
+
+      // Snapshot helpers
+      const NS = (arr) => [...arr];
+      const ES = (set) => new Set(set);
+
+      // ─── STEP GENERATORS ──────────────────────────────────────────────────────────
+
+      const genBFS = (typeId, start) => {
+        const { adj, n, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          es = new Set(),
+          vis = Array(n).fill(false);
+        const q = [start];
+        vis[start] = true;
+        ns[start] = "inQueue";
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "init",
+          caption: `Init: enqueue node ${start}`,
+          qRow: [...q],
+          qLabel: "Queue:",
+          qChipClass: "chip-q",
+          vRow: [],
+          vLabel: "Visited:",
+        });
+        while (q.length) {
+          const node = q.shift();
+          ns[node] = "current";
+          const visited = ns
+            .map((s, i) => (s === "visited" || s === "current" ? i : null))
+            .filter((x) => x !== null);
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "deq",
+            caption: `Dequeue ${node}`,
+            qRow: [...q],
+            qLabel: "Queue:",
+            qChipClass: "chip-q",
+            vRow: visited,
+            vLabel: "Visited:",
+          });
+          for (const { to: nbr } of adj[node] || []) {
+            if (!vis[nbr]) {
+              vis[nbr] = true;
+              ns[nbr] = "inQueue";
+              q.push(nbr);
+              es.add(`${node}-${nbr}`);
+              es.add(`${nbr}-${node}`);
+              steps.push({
+                ns: NS(ns),
+                es: ES(es),
+                ps: "enq",
+                caption: `Enqueue ${nbr}`,
+                qRow: [...q],
+                qLabel: "Queue:",
+                qChipClass: "chip-q",
+              });
+            } else {
+              steps.push({
+                ns: NS(ns),
+                es: ES(es),
+                ps: "check",
+                caption: `${nbr} already visited — skip`,
+                qRow: [...q],
+                qLabel: "Queue:",
+              });
+            }
+          }
+          ns[node] = "visited";
+        }
+        const order = ns
+          .map((s, i) => (s === "visited" ? i : null))
+          .filter((x) => x !== null);
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "done",
+          caption: `BFS done! Order: ${order.join(" → ")}`,
+          captionCls: "cap-g",
+          result: "✓ BFS Complete",
+          resultCls: "rb-g",
+          qRow: [],
+          qLabel: "Queue:",
+          vRow: order,
+          vLabel: "Visited:",
+        });
+      };
+
+      const genDFS = (typeId, start) => {
+        const { adj, n, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          es = new Set(),
+          vis = Array(n).fill(false),
+          stk = [];
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "init",
+          caption: `Init DFS from ${start}`,
+          qRow: [],
+          qLabel: "Stack:",
+        });
+        const dfs = (node) => {
+          vis[node] = true;
+          ns[node] = "current";
+          stk.push(node);
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "visit",
+            caption: `Visit ${node} — push to stack`,
+            qRow: [...stk],
+            qLabel: "Stack:",
+            qChipClass: "chip-stk",
+          });
+          for (const { to: nbr } of adj[node] || []) {
+            if (!vis[nbr]) {
+              es.add(`${node}-${nbr}`);
+              es.add(`${nbr}-${node}`);
+              steps.push({
+                ns: NS(ns),
+                es: ES(es),
+                ps: "check",
+                caption: `${nbr} not visited → recurse`,
+                qRow: [...stk],
+                qLabel: "Stack:",
+                qChipClass: "chip-stk",
+              });
+              dfs(nbr);
+            } else {
+              steps.push({
+                ns: NS(ns),
+                es: ES(es),
+                ps: "check",
+                caption: `${nbr} visited — skip`,
+                qRow: [...stk],
+                qLabel: "Stack:",
+              });
+            }
+          }
+          ns[node] = "visited";
+          stk.pop();
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "back",
+            caption: `Backtrack from ${node}`,
+            qRow: [...stk],
+            qLabel: "Stack:",
+            qChipClass: "chip-stk",
+          });
+        };
+        dfs(start);
+        const order = ns
+          .map((s, i) => (s === "visited" ? i : null))
+          .filter((x) => x !== null);
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "done",
+          caption: `DFS done! Order: ${order.join(" → ")}`,
+          captionCls: "cap-g",
+          result: "✓ DFS Complete",
+          resultCls: "rb-p",
+          qRow: [],
+          qLabel: "Stack:",
+          vRow: order,
+          vLabel: "Visited:",
+        });
+      };
+
+      const genDijkstra = (typeId, start) => {
+        const { adj, n, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          es = new Set();
+        const dist = Array(n).fill(Infinity),
+          vis = Array(n).fill(false);
+        dist[start] = 0;
+        const getMin = () => {
+          let u = -1,
+            d = Infinity;
+          for (let i = 0; i < n; i++)
+            if (!vis[i] && dist[i] < d) {
+              d = dist[i];
+              u = i;
+            }
+          return u;
+        };
+        const distRow = () =>
+          dist.map((d, i) => `${i}:${d === Infinity ? "∞" : d}`);
+        ns[start] = "inQueue";
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "init",
+          caption: `Init: dist[${start}]=0, others=∞`,
+          qRow: distRow(),
+          qLabel: "Distances:",
+          qChipClass: "chip-v",
+        });
+        for (let iter = 0; iter < n; iter++) {
+          const u = getMin();
+          if (u === -1) break;
+          vis[u] = true;
+          ns[u] = "current";
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "pop",
+            caption: `Pick node ${u} (dist=${dist[u]})`,
+            qRow: distRow(),
+            qLabel: "Distances:",
+            qChipClass: "chip-v",
+          });
+          for (const { to: v, w } of adj[u] || []) {
+            if (!vis[v]) {
+              const nd = dist[u] + w;
+              if (nd < dist[v]) {
+                dist[v] = nd;
+                ns[v] = "inQueue";
+                es.add(`${u}-${v}`);
+                es.add(`${v}-${u}`);
+                steps.push({
+                  ns: NS(ns),
+                  es: ES(es),
+                  ps: "update",
+                  caption: `Relax ${u}→${v}: dist=${nd}`,
+                  captionCls: "cap-g",
+                  qRow: distRow(),
+                  qLabel: "Distances:",
+                  qChipClass: "chip-v",
+                });
+              } else {
+                steps.push({
+                  ns: NS(ns),
+                  es: ES(es),
+                  ps: "relax",
+                  caption: `${u}→${v}: ${dist[u] + w} ≥ ${dist[v]}, no update`,
+                  qRow: distRow(),
+                  qLabel: "Distances:",
+                });
+              }
+            }
+          }
+          ns[u] = "visited";
+        }
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "done",
+          caption: `Dijkstra done! Distances: [${distRow().join("  ")}]`,
+          captionCls: "cap-g",
+          result: "✓ Shortest Paths Found",
+          resultCls: "rb-g",
+          qRow: distRow(),
+          qLabel: "Distances:",
+          qChipClass: "chip-v",
+        });
+      };
+
+      /*
+       * FIX: Cycle detection generates DIFFERENT steps based on graph direction.
+       * Directed  → uses recursion stack (rec[]) — back edge = same rec-stack node
+       * Undirected → uses parent check       — back edge = neighbour that isn't parent
+       */
+      const genCycle = (typeId) => {
+        const { adj, n, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          es = new Set();
+        const vis = Array(n).fill(false);
+        let found = false;
+
+        if (isDirectedType(typeId)) {
+          // ── DIRECTED: rec-stack approach ──
+          const rec = Array(n).fill(false);
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "init",
+            caption: "Directed cycle detection: DFS + recursion stack",
+            qRow: [],
+            qLabel: "Rec Stack:",
+          });
+
+          const dfs = (node) => {
+            if (found) return;
+            vis[node] = true;
+            rec[node] = true;
+            ns[node] = "current";
+            const recNodes = rec
+              .map((v, i) => (v ? i : null))
+              .filter((x) => x !== null);
+            steps.push({
+              ns: NS(ns),
+              es: ES(es),
+              ps: "visit",
+              caption: `Visit ${node} — add to rec-stack`,
+              qRow: recNodes,
+              qLabel: "Rec Stack:",
+              qChipClass: "chip-stk",
+            });
+
+            for (const { to: nbr } of adj[node] || []) {
+              if (found) return;
+              if (!vis[nbr]) {
+                es.add(`${node}-${nbr}`);
+                dfs(nbr);
+              } else if (rec[nbr]) {
+                // This is the directed-specific check
+                ns[nbr] = "cycle";
+                ns[node] = "cycle";
+                found = true;
+                steps.push({
+                  ns: NS(ns),
+                  es: ES(es),
+                  ps: "check2",
+                  caption: `Back-edge to ${nbr} (in rec-stack) → CYCLE!`,
+                  captionCls: "cap-r",
+                  result: "⚠ Cycle Found!",
+                  resultCls: "rb-r",
+                });
+                return;
+              }
+            }
+            rec[node] = false;
+            ns[node] = "visited";
+            steps.push({
+              ns: NS(ns),
+              es: ES(es),
+              ps: "remove",
+              caption: `Done with ${node} — remove from rec-stack`,
+              qRow: rec.map((v, i) => (v ? i : null)).filter((x) => x !== null),
+              qLabel: "Rec Stack:",
+              qChipClass: "chip-stk",
+            });
+          };
+          for (let i = 0; i < n; i++) if (!vis[i]) dfs(i);
+        } else {
+          // ── UNDIRECTED: parent check approach ──
+          // Note: much simpler — no rec-stack needed.
+          // A back-edge is just a visited neighbour that isn't the parent.
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "init",
+            caption:
+              "Undirected cycle detection: DFS + parent check (no rec-stack needed)",
+            qRow: [],
+            qLabel: "Visited:",
+          });
+
+          const dfs = (node, parent) => {
+            if (found) return;
+            vis[node] = true;
+            ns[node] = "current";
+            const visNodes = vis
+              .map((v, i) => (v ? i : null))
+              .filter((x) => x !== null);
+            steps.push({
+              ns: NS(ns),
+              es: ES(es),
+              ps: "visit",
+              caption: `Visit ${node} (parent=${parent})`,
+              qRow: visNodes,
+              qLabel: "Visited:",
+              qChipClass: "chip-v",
+            });
+
+            for (const { to: nbr } of adj[node] || []) {
+              if (found) return;
+              if (!vis[nbr]) {
+                es.add(`${node}-${nbr}`);
+                es.add(`${nbr}-${node}`);
+                dfs(nbr, node);
+              } else if (nbr !== parent) {
+                // This is the undirected-specific check — just check it's not our parent
+                ns[nbr] = "cycle";
+                ns[node] = "cycle";
+                found = true;
+                steps.push({
+                  ns: NS(ns),
+                  es: ES(es),
+                  ps: "check2",
+                  caption: `${nbr} is visited and NOT parent → CYCLE!`,
+                  captionCls: "cap-r",
+                  result: "⚠ Cycle Found!",
+                  resultCls: "rb-r",
+                });
+                return;
+              } else {
+                steps.push({
+                  ns: NS(ns),
+                  es: ES(es),
+                  ps: "check2",
+                  caption: `${nbr} is parent — skip (not a cycle)`,
+                  qRow: visNodes,
+                  qLabel: "Visited:",
+                });
+              }
+            }
+            ns[node] = "visited";
+          };
+          for (let i = 0; i < n; i++) if (!vis[i]) dfs(i, -1);
+        }
+
+        if (!found)
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "done",
+            caption: "No cycle found — graph is acyclic!",
+            captionCls: "cap-g",
+            result: "✓ No Cycle (Acyclic)",
+            resultCls: "rb-g",
+          });
+      };
+
+      const genComponents = (typeId) => {
+        const { adj, n, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          es = new Set(),
+          vis = Array(n).fill(false);
+        let comp = 0;
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "init",
+          caption: "Find components — loop all vertices",
+          qRow: [],
+          qLabel: "Comp #:",
+        });
+        const dfs = (node, c) => {
+          vis[node] = true;
+          ns[node] = `comp${c}`;
+          steps.push({
+            ns: NS(ns),
+            es: ES(es),
+            ps: "mark",
+            caption: `Node ${node} → Component ${c}`,
+            qRow: [c],
+            qLabel: "Comp #:",
+            qChipClass: "chip-q",
+          });
+          for (const { to: nbr } of adj[node] || []) {
+            if (!vis[nbr]) {
+              es.add(`${node}-${nbr}`);
+              es.add(`${nbr}-${node}`);
+              dfs(nbr, c);
+            }
+          }
+        };
+        for (let i = 0; i < n; i++) {
+          if (!vis[i]) {
+            steps.push({
+              ns: NS(ns),
+              es: ES(es),
+              ps: "check",
+              caption: `Node ${i} not visited → new component ${comp}`,
+              qRow: [comp],
+              qLabel: "Comp #:",
+              qChipClass: "chip-q",
+            });
+            dfs(i, comp++);
+          }
+        }
+        steps.push({
+          ns: NS(ns),
+          es: ES(es),
+          ps: "done",
+          caption: `Found ${comp} component${comp > 1 ? "s" : ""}!`,
+          captionCls: "cap-g",
+          result: `✓ ${comp} Component${comp > 1 ? "s" : ""}`,
+          resultCls: "rb-c",
+        });
+      };
+
+      const genTopo = (typeId, n) => {
+        const { adj, steps } = getCtx(typeId);
+        const ns = Array(n).fill("unvisited"),
+          vis = Array(n).fill(false),
+          order = [];
+        steps.push({
+          ns: NS(ns),
+          es: new Set(),
+          ps: "init",
+          caption: "Topological sort: DFS post-order",
+          qRow: [],
+          qLabel: "Stack:",
+        });
+        const dfs = (node) => {
+          vis[node] = true;
+          ns[node] = "current";
+          steps.push({
+            ns: NS(ns),
+            es: new Set(),
+            ps: "visit",
+            caption: `Visit ${node}`,
+            qRow: [...order],
+            qLabel: "Result:",
+            qChipClass: "chip-v",
+          });
+          for (const { to: nbr } of adj[node] || []) if (!vis[nbr]) dfs(nbr);
+          ns[node] = "visited";
+          order.unshift(node);
+          steps.push({
+            ns: NS(ns),
+            es: new Set(),
+            ps: "push",
+            caption: `Finish ${node} → prepend to result`,
+            qRow: [...order],
+            qLabel: "Result:",
+            qChipClass: "chip-v",
+            vRow: [...order],
+            vLabel: "Topo:",
+          });
+        };
+        for (let i = 0; i < n; i++) if (!vis[i]) dfs(i);
+        steps.push({
+          ns: NS(ns),
+          es: new Set(),
+          ps: "done",
+          caption: `Topo order: ${order.join(" → ")}`,
+          captionCls: "cap-g",
+          result: `Topo: ${order.join("→")}`,
+          resultCls: "rb-p",
+          qRow: order,
+          qLabel: "Result:",
+          qChipClass: "chip-v",
+          vRow: order,
+          vLabel: "Topo:",
+        });
+      };
+
+      const getCtx = (typeId) => ({
+        adj: TYPE_STATE[typeId].adj,
+        n: TYPE_STATE[typeId].n,
+        steps: TYPE_STATE[typeId].steps,
+      });
+
+      // ─── SCENARIOS ─────────────────────────────────────────────────────────────────
+      /*
+       * Each graph type now gets a SPECIFIC scenario graph — not the same chain for all.
+       *
+       *  UNDIRECTED / CONNECTED:  5-node undirected path  0—1—2—3—4
+       *  DIRECTED   / DAG:        5-node directed chain   0→1→2→3→4  (arrows only)
+       *  CYCLIC:                  4-node directed ring    0→1→2→3→0  (has back-edge)
+       *  WEIGHTED:                4-node weighted graph   with visible edge costs
+       *
+       * getScenarioConfig() returns the right adj/dir/weighted for the active tab.
+       */
+
+      // ── Config lookup: returns the right graph for the active type tab ──
+      const getScenarioConfig = () => {
+        const t = currentType;
+        if (t === "weighted") {
+          return {
+            adj: [
+              [
+                { to: 1, w: 5 },
+                { to: 2, w: 12 },
+              ],
+              [
+                { to: 0, w: 5 },
+                { to: 2, w: 10 },
+              ],
+              [
+                { to: 0, w: 12 },
+                { to: 1, w: 10 },
+                { to: 3, w: 3 },
+              ],
+              [{ to: 2, w: 3 }],
+            ],
+            n: 4,
+            dir: false,
+            weighted: true,
+            label:
+              "Weighted graph — edge costs are visible. Dijkstra picks lowest-cost path, not shortest hops.",
+            worstLabel:
+              "Weighted graph: DFS ignores edge costs and explores all paths — this is why we use Dijkstra.",
+          };
+        }
+        if (t === "directed" || t === "dag") {
+          return {
+            adj: [
+              [{ to: 1, w: 1 }],
+              [{ to: 2, w: 1 }],
+              [{ to: 3, w: 1 }],
+              [{ to: 4, w: 1 }],
+              [],
+            ],
+            n: 5,
+            dir: true,
+            weighted: false,
+            label:
+              "Directed chain 0→1→2→3→4 — edges are one-way. BFS/DFS respect arrow direction.",
+            worstLabel:
+              "Directed DFS: arrows force a single direction, recursion depth hits N.",
+          };
+        }
+        if (t === "cyclic") {
+          return {
+            adj: [
+              [{ to: 1, w: 1 }],
+              [{ to: 2, w: 1 }],
+              [{ to: 3, w: 1 }],
+              [{ to: 0, w: 1 }],
+            ],
+            n: 4,
+            dir: true,
+            weighted: false,
+            label:
+              "Cyclic directed graph 0→1→2→3→0 — the back-edge 3→0 creates the cycle.",
+            worstLabel:
+              "Cyclic DFS: rec-stack catches back-edge 3→0 as the cycle indicator.",
+          };
+        }
+        // undirected / connected (default)
+        return {
+          adj: [
+            [{ to: 1, w: 1 }],
+            [
+              { to: 0, w: 1 },
+              { to: 2, w: 1 },
+            ],
+            [
+              { to: 1, w: 1 },
+              { to: 3, w: 1 },
+            ],
+            [
+              { to: 2, w: 1 },
+              { to: 4, w: 1 },
+            ],
+            [{ to: 3, w: 1 }],
+          ],
+          n: 5,
+          dir: false,
+          weighted: false,
+          label:
+            "Undirected path 0—1—2—3—4 — edges go both ways, no direction.",
+          worstLabel:
+            "Undirected DFS: max depth = N, must backtrack all the way back.",
+        };
+      };
+
+      // Average-case: 6-node graph, type-specific
+      const getAvgConfig = () => {
+        const t = currentType;
+        if (t === "weighted") {
+          // Weighted 6-node: show actual edge costs
+          return {
+            adj: [
+              [
+                { to: 1, w: 4 },
+                { to: 2, w: 1 },
+              ],
+              [
+                { to: 0, w: 4 },
+                { to: 3, w: 5 },
+              ],
+              [
+                { to: 0, w: 1 },
+                { to: 3, w: 8 },
+                { to: 4, w: 3 },
+              ],
+              [
+                { to: 1, w: 5 },
+                { to: 2, w: 8 },
+                { to: 5, w: 2 },
+              ],
+              [
+                { to: 2, w: 3 },
+                { to: 5, w: 6 },
+              ],
+              [
+                { to: 3, w: 2 },
+                { to: 4, w: 6 },
+              ],
+            ],
+            n: 6,
+            dir: false,
+            weighted: true,
+            label:
+              "Weighted 6-node — Dijkstra picks the path with lowest total cost, not fewest hops.",
+          };
+        }
+        if (t === "directed" || t === "dag") {
+          return {
+            adj: [
+              [
+                { to: 1, w: 1 },
+                { to: 2, w: 1 },
+              ],
+              [
+                { to: 3, w: 1 },
+                { to: 4, w: 1 },
+              ],
+              [{ to: 5, w: 1 }],
+              [],
+              [],
+              [],
+            ],
+            n: 6,
+            dir: true,
+            weighted: false,
+            label:
+              "Directed 6-node — BFS follows arrows level by level. No reverse traversal.",
+          };
+        }
+        if (t === "cyclic") {
+          return {
+            adj: [
+              [
+                { to: 1, w: 1 },
+                { to: 2, w: 1 },
+              ],
+              [
+                { to: 3, w: 1 },
+                { to: 4, w: 1 },
+              ],
+              [{ to: 0, w: 1 }], // back-edge creates cycle
+              [],
+              [{ to: 2, w: 1 }],
+              [],
+            ],
+            n: 6,
+            dir: true,
+            weighted: false,
+            label:
+              "Cyclic directed 6-node — BFS explores nodes, back-edges 2→0 and 4→2 create cycles.",
+          };
+        }
+        // undirected / connected
+        return {
+          adj: [
+            [
+              { to: 1, w: 1 },
+              { to: 2, w: 1 },
+            ],
+            [
+              { to: 0, w: 1 },
+              { to: 3, w: 1 },
+              { to: 4, w: 1 },
+            ],
+            [
+              { to: 0, w: 1 },
+              { to: 5, w: 1 },
+            ],
+            [{ to: 1, w: 1 }],
+            [{ to: 1, w: 1 }],
+            [{ to: 2, w: 1 }],
+          ],
+          n: 6,
+          dir: false,
+          weighted: false,
+          label:
+            "Undirected 6-node balanced graph — BFS explores level by level, O(V+E).",
+        };
+      };
+
+      const switchSc = (name) => {
+        const clsMap = { best: "t-g", avg: "t-c", worst: "t-o" };
+        const scNames = ["best", "avg", "worst"];
+        document.querySelectorAll(".sc-tab").forEach((t, i) => {
+          t.className = "sc-tab";
+          if (scNames[i] === name) t.classList.add(clsMap[name]);
+        });
+        document
+          .querySelectorAll(".sc-panel")
+          .forEach((p) => p.classList.remove("show"));
+        document.getElementById("sc-" + name).classList.add("show");
+      };
+
+      // Shared log helper
+      const scLog = (id, msg, cls) => {
+        const l = document.getElementById(id);
+        if (!l) return;
+        const e = document.createElement("div");
+        e.className = "log-line " + (cls || "lc-i");
+        e.textContent = "> " + msg;
+        l.appendChild(e);
+        l.scrollTop = l.scrollHeight;
+      };
+
+      // ── Scenario BEST: BFS, target = source ──
+      let bestSt = [],
+        bestIdx = 0,
+        bestDone = false,
+        bestTimer = null;
+
+      const scInitBest = () => {
+        clearTimeout(bestTimer);
+        bestIdx = 0;
+        bestDone = false;
+
+        const cfg = getScenarioConfig();
+        drawGraph(
+          "sc-best-c",
+          cfg.adj,
+          cfg.n,
+          Array(cfg.n).fill("unvisited"),
+          new Set(),
+          cfg.dir,
+          cfg.weighted,
+        );
+
+        document.getElementById("sc-best-log").innerHTML =
+          '<div class="sc-log-title">📋 Log</div>';
+        document.getElementById("sc-best-info").textContent = "Steps: 0";
+        document.getElementById("sc-best-stepBtn").disabled = false;
+        document.getElementById("sc-best-autoBtn").disabled = false;
+        document.getElementById("sc-best-title").textContent =
+          `⚡ Best Case — O(1): Target = Source (${cfg.dir ? "Directed" : "Undirected"} BFS)`;
+
+        // Two steps: enqueue node 0, then immediately find it
+        bestSt = [
+          {
+            ns: Array(cfg.n)
+              .fill("unvisited")
+              .map((s, i) => (i === 0 ? "inQueue" : s)),
+            es: new Set(),
+            log: "Enqueue node 0 (start = target)",
+            cls: "lc-q",
+            info: "Steps: 1 | Queue:[0]",
+          },
+          {
+            ns: Array(cfg.n)
+              .fill("unvisited")
+              .map((s, i) => (i === 0 ? "current" : s)),
+            es: new Set(),
+            log: "Dequeue 0 — this IS the target! Done immediately.",
+            cls: "lc-v",
+            info: "Found at step 1 — O(1)!",
+            done: true,
+          },
+        ];
+        scLog("sc-best-log", cfg.label, "lc-i");
+        scLog(
+          "sc-best-log",
+          "BFS: start = target = 0 → O(1) — no actual traversal needed",
+          "lc-i",
+        );
+      };
+
+      const scBestStep = () => {
+        if (bestDone || bestIdx >= bestSt.length) return;
+        const cfg = getScenarioConfig();
+        const s = bestSt[bestIdx++];
+        drawGraph(
+          "sc-best-c",
+          cfg.adj,
+          cfg.n,
+          s.ns,
+          s.es,
+          cfg.dir,
+          cfg.weighted,
+        );
+        scLog("sc-best-log", s.log, s.cls);
+        document.getElementById("sc-best-info").textContent = s.info;
+        if (s.done) {
+          bestDone = true;
+          clearTimeout(bestTimer);
+          document.getElementById("sc-best-stepBtn").disabled = true;
+          document.getElementById("sc-best-autoBtn").disabled = true;
+          scLog("sc-best-log", "✓ Best case O(1) confirmed", "lc-r");
+        }
+      };
+
+      const scBestAuto = () => {
+        document.getElementById("sc-best-autoBtn").disabled = true;
+        const tick = () => {
+          if (bestDone) return;
+          scBestStep();
+          bestTimer = setTimeout(tick, 700);
+        };
+        tick();
+      };
+
+      // ── Scenario AVERAGE: BFS level-by-level on type-specific graph ──
+      let avgSt = [],
+        avgIdx = 0,
+        avgDone = false,
+        avgTimer = null;
+
+      const scInitAvg = () => {
+        clearTimeout(avgTimer);
+        avgIdx = 0;
+        avgDone = false;
+
+        const cfg = getAvgConfig();
+        drawGraph(
+          "sc-avg-c",
+          cfg.adj,
+          cfg.n,
+          Array(cfg.n).fill("unvisited"),
+          new Set(),
+          cfg.dir,
+          cfg.weighted,
+        );
+        document.getElementById("sc-avg-log").innerHTML =
+          '<div class="sc-log-title">📋 Log</div>';
+        document.getElementById("sc-avg-info").textContent =
+          "Step 0 | Queue: [0]";
+        document.getElementById("sc-avg-stepBtn").disabled = false;
+        document.getElementById("sc-avg-autoBtn").disabled = false;
+
+        // Generate BFS steps on the type-specific graph
+        avgSt = [];
+        const ns = Array(cfg.n).fill("unvisited");
+        const es = new Set();
+        const vis = Array(cfg.n).fill(false);
+        const q = [0];
+        vis[0] = true;
+        ns[0] = "inQueue";
+        avgSt.push({
+          ns: NS(ns),
+          es: ES(es),
+          log: "Enqueue 0",
+          cls: "lc-q",
+          info: "Queue:[0]",
+        });
+
+        while (q.length) {
+          const node = q.shift();
+          ns[node] = "current";
+          avgSt.push({
+            ns: NS(ns),
+            es: ES(es),
+            log: `Dequeue ${node}`,
+            cls: "lc-v",
+            info: `Queue:[${q}]`,
+          });
+          for (const { to: nbr, w } of cfg.adj[node] || []) {
+            if (!vis[nbr]) {
+              vis[nbr] = true;
+              ns[nbr] = "inQueue";
+              q.push(nbr);
+              es.add(`${node}-${nbr}`);
+              if (!cfg.dir) es.add(`${nbr}-${node}`);
+              // For weighted graphs, show the edge cost in the log
+              const wNote = cfg.weighted ? ` (edge cost: ${w})` : "";
+              avgSt.push({
+                ns: NS(ns),
+                es: ES(es),
+                log: `Enqueue ${nbr}${wNote}`,
+                cls: "lc-q",
+                info: `Queue:[${q}]`,
+              });
+            } else {
+              avgSt.push({
+                ns: NS(ns),
+                es: ES(es),
+                log: `${nbr} already visited — skip`,
+                cls: "lc-i",
+                info: `Queue:[${q}]`,
+              });
+            }
+          }
+          ns[node] = "visited";
+        }
+        avgSt.push({
+          ns: NS(ns),
+          es: ES(es),
+          log: `BFS done! ${vis.filter(Boolean).length} nodes visited`,
+          cls: "lc-r",
+          info: "Done — O(V+E)",
+          done: true,
+        });
+
+        scLog("sc-avg-log", cfg.label, "lc-i");
+        scLog(
+          "sc-avg-log",
+          "Average case O(V+E): roughly half the nodes visited before mid-graph target",
+          "lc-i",
+        );
+      };
+
+      const scAvgStep = () => {
+        if (avgDone || avgIdx >= avgSt.length) return;
+        const cfg = getAvgConfig();
+        const s = avgSt[avgIdx++];
+        drawGraph(
+          "sc-avg-c",
+          cfg.adj,
+          cfg.n,
+          s.ns,
+          s.es,
+          cfg.dir,
+          cfg.weighted,
+        );
+        scLog("sc-avg-log", s.log, s.cls);
+        document.getElementById("sc-avg-info").textContent =
+          `Step ${avgIdx} | ${s.info}`;
+        if (s.done) {
+          avgDone = true;
+          clearTimeout(avgTimer);
+          document.getElementById("sc-avg-stepBtn").disabled = true;
+          document.getElementById("sc-avg-autoBtn").disabled = true;
+        }
+      };
+
+      const scAvgAuto = () => {
+        document.getElementById("sc-avg-autoBtn").disabled = true;
+        const tick = () => {
+          if (avgDone) return;
+          scAvgStep();
+          avgTimer = setTimeout(tick, 600);
+        };
+        tick();
+      };
+
+      // ── Scenario WORST: DFS chain — max recursion depth ──
+      // Uses a type-specific chain: directed for directed types, cyclic chain for cyclic
+      let worstSt = [],
+        worstIdx = 0,
+        worstDone = false,
+        worstTimer = null;
+
+      const scInitWorst = () => {
+        clearTimeout(worstTimer);
+        worstIdx = 0;
+        worstDone = false;
+
+        const cfg = getScenarioConfig();
+        // Build chain: N=4 for cyclic (with back-edge), N=6 for others
+        const chainN = currentType === "cyclic" ? 4 : 6;
+        const chainAdj = [];
+        for (let i = 0; i < chainN; i++) {
+          const nb = [];
+          if (i + 1 < chainN) nb.push({ to: i + 1, w: 1 });
+          if (!cfg.dir && i > 0) nb.push({ to: i - 1, w: 1 }); // undirected reverse
+          chainAdj.push(nb);
+        }
+        if (currentType === "cyclic")
+          chainAdj[chainN - 1].push({ to: 0, w: 1 }); // back-edge
+
+        drawGraph(
+          "sc-worst-c",
+          chainAdj,
+          chainN,
+          Array(chainN).fill("unvisited"),
+          new Set(),
+          cfg.dir,
+          false,
+        );
+        document.getElementById("sc-worst-log").innerHTML =
+          '<div class="sc-log-title">📋 Log</div>';
+        document.getElementById("sc-worst-info").textContent =
+          `Stack depth: 0/${chainN}`;
+        document.getElementById("sc-worst-stepBtn").disabled = false;
+        document.getElementById("sc-worst-autoBtn").disabled = false;
+        document.getElementById("sc-worst-title").textContent =
+          `⚠ Worst Case — O(V+E): DFS on ${cfg.dir ? "Directed" : "Undirected"} ${currentType === "cyclic" ? "Cyclic Chain" : "Linear Chain"}`;
+        document.getElementById("sc-worst-desc").textContent = cfg.worstLabel;
+
+        // Generate DFS steps on this chain
+        worstSt = [];
+        const ns = Array(chainN).fill("unvisited");
+        const es = new Set();
+        const vis = Array(chainN).fill(false);
+        const stk = [];
+        const rec = Array(chainN).fill(false); // for cyclic directed
+        let cycleFound = false;
+
+        const dfs = (node) => {
+          vis[node] = true;
+          ns[node] = "current";
+          stk.push(node);
+          if (currentType === "cyclic") rec[node] = true;
+          worstSt.push({
+            ns: NS(ns),
+            es: ES(es),
+            log: `Visit ${node} — stack depth: ${stk.length}/${chainN}`,
+            cls: "lc-v",
+            info: `Depth: ${stk.length}/${chainN}`,
+          });
+
+          for (const { to: nbr } of chainAdj[node] || []) {
+            if (!vis[nbr]) {
+              es.add(`${node}-${nbr}`);
+              if (!cfg.dir) es.add(`${nbr}-${node}`);
+              dfs(nbr);
+            } else if (currentType === "cyclic" && rec[nbr] && !cycleFound) {
+              cycleFound = true;
+              ns[nbr] = "cycle";
+              ns[node] = "cycle";
+              worstSt.push({
+                ns: NS(ns),
+                es: ES(es),
+                log: `Back-edge ${node}→${nbr} (in rec-stack) → CYCLE DETECTED!`,
+                cls: "lc-r",
+                info: `Cycle: ${node}→${nbr}`,
+              });
+            } else {
+              worstSt.push({
+                ns: NS(ns),
+                es: ES(es),
+                log: `${nbr} visited${currentType === "cyclic" ? " (not in rec-stack)" : ""} — skip`,
+                cls: "lc-i",
+                info: `Depth: ${stk.length}`,
+              });
+            }
+          }
+          if (!cycleFound || ns[node] !== "cycle") ns[node] = "visited";
+          if (currentType === "cyclic") rec[node] = false;
+          stk.pop();
+          worstSt.push({
+            ns: NS(ns),
+            es: ES(es),
+            log: `Backtrack from ${node} — depth now: ${stk.length}`,
+            cls: "lc-d",
+            info: `${vis.filter(Boolean).length}/${chainN} visited`,
+          });
+        };
+
+        dfs(0);
+        const finalMsg =
+          currentType === "cyclic"
+            ? `DFS done — cycle detected via back-edge, max rec-stack = ${chainN}`
+            : `DFS done — max recursion depth was ${chainN} = N (worst case)`;
+        worstSt.push({
+          ns: NS(ns),
+          es: ES(es),
+          log: finalMsg,
+          cls: "lc-r",
+          info: "Worst case O(V+E)",
+          done: true,
+        });
+
+        scLog("sc-worst-log", cfg.worstLabel, "lc-i");
+        scLog(
+          "sc-worst-log",
+          `Worst case: max recursion depth = ${chainN} (= N)`,
+          "lc-i",
+        );
+      };
+
+      const scWorstStep = () => {
+        if (worstDone || worstIdx >= worstSt.length) return;
+        const cfg = getScenarioConfig();
+        const chainN = currentType === "cyclic" ? 4 : 6;
+        const chainAdj = [];
+        for (let i = 0; i < chainN; i++) {
+          const nb = [];
+          if (i + 1 < chainN) nb.push({ to: i + 1, w: 1 });
+          if (!cfg.dir && i > 0) nb.push({ to: i - 1, w: 1 });
+          chainAdj.push(nb);
+        }
+        if (currentType === "cyclic")
+          chainAdj[chainN - 1].push({ to: 0, w: 1 });
+
+        const s = worstSt[worstIdx++];
+        drawGraph("sc-worst-c", chainAdj, chainN, s.ns, s.es, cfg.dir, false);
+        scLog("sc-worst-log", s.log, s.cls);
+        document.getElementById("sc-worst-info").textContent = s.info;
+        if (s.done) {
+          worstDone = true;
+          clearTimeout(worstTimer);
+          document.getElementById("sc-worst-stepBtn").disabled = true;
+          document.getElementById("sc-worst-autoBtn").disabled = true;
+        }
+      };
+
+      const scWorstAuto = () => {
+        document.getElementById("sc-worst-autoBtn").disabled = true;
+        const tick = () => {
+          if (worstDone) return;
+          scWorstStep();
+          worstTimer = setTimeout(tick, 480);
+        };
+        tick();
+      };
+
+      // ─── CODE EDITOR ─────────────────────────────────────────────────────────────
+      /*
+       * FIX 2: The cycle templates are now SPLIT into two variants:
+       *   cycle_undirected  — uses parent check (the correct approach for undirected)
+       *   cycle_directed    — uses recursion stack (the correct approach for directed)
+       *
+       * getEditorTemplate() picks the right one based on currentType.
+       */
+
+      let editorCM = null,
+        curEdAlgo = "bfs",
+        curEdLang = "cpp";
+
+      const ED_NAMES = {
+        bfs: "BFS",
+        dfs: "DFS",
+        dijkstra: "Dijkstra's",
+        cycle: "Cycle Detection",
+        components: "Connected Components",
+        topo: "Topological Sort",
+      };
+
+      // Returns current cycle variant label for the badge
+      const getCycleVariantLabel = () =>
+        isDirectedType(currentType)
+          ? "directed (rec-stack)"
+          : "undirected (parent check)";
+
+      // ── CODE TEMPLATES ──
+      // Only showing cycle split here — other algos are universal
+      const TEMPLATES = {
+        bfs: {
+          cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
+
+// Time: O(V+E) | Space: O(V)
+void bfs(vector<vector<int>>& adj, int start, int V) {
+    vector<bool> vis(V, false);
+    queue<int> q;
+    vis[start] = true;
+    q.push(start);
+    cout << "BFS: ";
+    while (!q.empty()) {
+        int node = q.front(); q.pop();
+        cout << node << " ";
+        for (int nbr : adj[node])
+            if (!vis[nbr]) { vis[nbr] = true; q.push(nbr); }
+    }
+    cout << endl;
+}
+
+int main() {
+    int V = 6;
+    vector<vector<int>> adj(V);
+    // undirected — add both directions
+    auto add = [&](int u, int v) { adj[u].push_back(v); adj[v].push_back(u); };
+    add(0,1); add(0,2); add(1,3); add(1,4); add(2,5);
+    bfs(adj, 0, V);
+    return 0;
+}`,
+          python: `from collections import deque
+
+# Time: O(V+E) | Space: O(V)
+def bfs(adj, start):
+    vis = [False] * len(adj)
+    q = deque([start])
+    vis[start] = True
+    order = []
+    while q:
+        node = q.popleft()
+        order.append(node)
+        for nbr in adj[node]:
+            if not vis[nbr]:
+                vis[nbr] = True
+                q.append(nbr)
+    print("BFS:", "->".join(map(str, order)))
+
+# undirected adjacency list
+adj = [[1,2],[0,3,4],[0,5],[1],[1],[2]]
+bfs(adj, 0)`,
+          java: `import java.util.*;
+
+public class BFS {
+    static void bfs(List<List<Integer>> adj, int start, int V) {
+        boolean[] vis = new boolean[V];
+        Queue<Integer> q = new LinkedList<>();
+        vis[start] = true;
+        q.add(start);
+        System.out.print("BFS: ");
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            System.out.print(node + " ");
+            for (int nbr : adj.get(node))
+                if (!vis[nbr]) { vis[nbr] = true; q.add(nbr); }
+        }
+        System.out.println();
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 6
+int adj[V][V], vis[V], q[100], f=0, r=0;
+
+void bfs(int s) {
+    vis[s]=1; q[r++]=s;
+    printf("BFS: ");
+    while (f < r) {
+        int nd = q[f++];
+        printf("%d ", nd);
+        for (int i=0; i<V; i++)
+            if (adj[nd][i] && !vis[i]) { vis[i]=1; q[r++]=i; }
+    }
+    printf("\\n");
+}
+
+int main() {
+    // Build undirected adj matrix
+    int edges[][2]={{0,1},{0,2},{1,3},{1,4},{2,5}};
+    for (int i=0; i<5; i++) {
+        adj[edges[i][0]][edges[i][1]] = 1;
+        adj[edges[i][1]][edges[i][0]] = 1;
+    }
+    bfs(0);
+    return 0;
+}`,
+          js: `// Time: O(V+E) | Space: O(V)
+function bfs(adj, start) {
+    const vis = new Array(adj.length).fill(false);
+    const q = [start];
+    vis[start] = true;
+    const order = [];
+    while (q.length) {
+        const node = q.shift();
+        order.push(node);
+        for (const nbr of adj[node])
+            if (!vis[nbr]) { vis[nbr] = true; q.push(nbr); }
+    }
+    console.log("BFS:", order.join("->"));
+}
+
+const adj = [[1,2],[0,3,4],[0,5],[1],[1],[2]];
+bfs(adj, 0);`,
+        },
+
+        dfs: {
+          cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+// Time: O(V+E) | Space: O(V) recursion stack
+void dfs(vector<vector<int>>& adj, vector<bool>& vis, int node) {
+    vis[node] = true;
+    cout << node << " ";
+    for (int nbr : adj[node])
+        if (!vis[nbr]) dfs(adj, vis, nbr);
+}
+
+int main() {
+    int V = 6;
+    vector<vector<int>> adj(V);
+    auto add = [&](int u, int v) { adj[u].push_back(v); adj[v].push_back(u); };
+    add(0,1); add(0,2); add(1,3); add(1,4); add(2,5);
+    vector<bool> vis(V, false);
+    cout << "DFS: ";
+    dfs(adj, vis, 0);
+    cout << endl;
+    return 0;
+}`,
+          python: `def dfs(adj, vis, node, order):
+    vis[node] = True
+    order.append(node)
+    for nbr in adj[node]:
+        if not vis[nbr]:
+            dfs(adj, vis, nbr, order)
+
+adj = [[1,2],[0,3,4],[0,5],[1],[1],[2]]
+vis = [False] * 6
+order = []
+dfs(adj, vis, 0, order)
+print("DFS:", "->".join(map(str, order)))`,
+          java: `import java.util.*;
+
+public class DFS {
+    static void dfs(List<List<Integer>> adj, boolean[] vis, int node) {
+        vis[node] = true;
+        System.out.print(node + " ");
+        for (int nbr : adj.get(node))
+            if (!vis[nbr]) dfs(adj, vis, nbr);
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 6
+int adj[V][V], vis[V];
+
+void dfs(int n) {
+    vis[n] = 1;
+    printf("%d ", n);
+    for (int i=0; i<V; i++)
+        if (adj[n][i] && !vis[i]) dfs(i);
+}
+
+int main() {
+    int e[][2]={{0,1},{0,2},{1,3},{1,4},{2,5}};
+    for (int i=0;i<5;i++){adj[e[i][0]][e[i][1]]=adj[e[i][1]][e[i][0]]=1;}
+    printf("DFS: ");
+    dfs(0);
+    printf("\\n");
+    return 0;
+}`,
+          js: `function dfs(adj, vis, node, order = []) {
+    vis[node] = true;
+    order.push(node);
+    for (const nbr of adj[node])
+        if (!vis[nbr]) dfs(adj, vis, nbr, order);
+    return order;
+}
+
+const adj = [[1,2],[0,3,4],[0,5],[1],[1],[2]];
+const vis = new Array(adj.length).fill(false);
+console.log("DFS:", dfs(adj, vis, 0).join("->"));`,
+        },
+
+        dijkstra: {
+          cpp: `#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+using namespace std;
+typedef pair<int,int> pii;
+
+// Time: O((V+E) log V) | Space: O(V)
+vector<int> dijkstra(vector<vector<pii>>& adj, int src, int V) {
+    vector<int> dist(V, INT_MAX);
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    dist[src] = 0;
+    pq.push({0, src});
+    while (!pq.empty()) {
+        auto [d, u] = pq.top(); pq.pop();
+        if (d > dist[u]) continue;  // skip stale entry
+        for (auto [w, v] : adj[u])
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+                pq.push({dist[v], v});
+            }
+    }
+    return dist;
+}`,
+          python: `import heapq
+
+# Time: O((V+E) log V) | Space: O(V)
+def dijkstra(adj, src, V):
+    dist = [float('inf')] * V
+    dist[src] = 0
+    pq = [(0, src)]  # (distance, node)
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist[u]: continue  # stale — skip
+        for v, w in adj[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(pq, (dist[v], v))
+    return dist`,
+          java: `import java.util.*;
+
+public class Dijkstra {
+    static int[] dijkstra(List<int[]>[] adj, int src, int V) {
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        dist[src] = 0;
+        pq.add(new int[]{0, src});
+        while (!pq.isEmpty()) {
+            int[] top = pq.poll();
+            int d = top[0], u = top[1];
+            if (d > dist[u]) continue;
+            for (int[] e : adj[u]) {
+                int v = e[0], w = e[1];
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    pq.add(new int[]{dist[v], v});
+                }
+            }
+        }
+        return dist;
+    }
+}`,
+          c: `#include <stdio.h>
+#include <limits.h>
+#define V 5
+
+// Simple O(V^2) Dijkstra — good enough for small graphs
+int dist[V], vis[V];
+int adj[V][V], w[V][V];
+
+void dijkstra(int src) {
+    for (int i=0;i<V;i++){dist[i]=INT_MAX;vis[i]=0;}
+    dist[src] = 0;
+    for (int c=0;c<V;c++){
+        int u=-1;
+        for (int i=0;i<V;i++)
+            if (!vis[i] && (u==-1 || dist[i]<dist[u])) u=i;
+        if (u==-1 || dist[u]==INT_MAX) break;
+        vis[u]=1;
+        for (int v=0;v<V;v++)
+            if (adj[u][v] && !vis[v] && dist[u]+w[u][v] < dist[v])
+                dist[v] = dist[u] + w[u][v];
+    }
+}`,
+          js: `// Time: O((V+E) log V) | Space: O(V)
+function dijkstra(adj, src) {
+    const V = adj.length;
+    const dist = new Array(V).fill(Infinity);
+    dist[src] = 0;
+    // Array-based min-priority queue (fine for small graphs)
+    const pq = [[0, src]];
+    while (pq.length) {
+        pq.sort((a, b) => a[0] - b[0]);
+        const [d, u] = pq.shift();
+        if (d > dist[u]) continue;
+        for (const [v, wt] of adj[u])
+            if (dist[u] + wt < dist[v]) {
+                dist[v] = dist[u] + wt;
+                pq.push([dist[v], v]);
+            }
+    }
+    return dist;
+}`,
+        },
+
+        // ── CYCLE: TWO SEPARATE VARIANTS ──
+        // The editor picks the right one via getEditorTemplate()
+        cycle_undirected: {
+          cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+ * UNDIRECTED graph cycle detection.
+ * Trick: just pass the parent node. If we see a visited neighbour
+ * that isn't our parent, that's a back-edge → cycle!
+ * No recursion stack needed — much simpler than directed version.
+ */
+bool dfsCycle(vector<vector<int>>& adj, vector<bool>& vis, int node, int parent) {
+    vis[node] = true;
+    for (int nbr : adj[node]) {
+        if (!vis[nbr]) {
+            if (dfsCycle(adj, vis, nbr, node)) return true;
+        } else if (nbr != parent) {
+            // Visited AND not our parent → back edge → CYCLE
+            return true;
+        }
+    }
+    return false;
+}
+
+bool hasCycle(vector<vector<int>>& adj, int V) {
+    vector<bool> vis(V, false);
+    for (int i = 0; i < V; i++)
+        if (!vis[i] && dfsCycle(adj, vis, i, -1)) return true;
+    return false;
+}
+
+int main() {
+    int V = 5;
+    vector<vector<int>> adj(V);
+    // Undirected edges
+    auto add = [&](int u, int v) { adj[u].push_back(v); adj[v].push_back(u); };
+    add(0,1); add(1,2); add(2,3); add(3,4);  // no cycle
+    cout << (hasCycle(adj,V) ? "Cycle!" : "No cycle") << endl;
+    add(4,1);  // creates cycle 1-2-3-4-1
+    cout << (hasCycle(adj,V) ? "Cycle!" : "No cycle") << endl;
+    return 0;
+}`,
+          python: `# UNDIRECTED graph cycle detection
+# Uses parent check — no rec-stack needed.
+
+def dfs_cycle(adj, vis, node, parent):
+    vis[node] = True
+    for nbr in adj[node]:
+        if not vis[nbr]:
+            if dfs_cycle(adj, vis, nbr, node):
+                return True
+        elif nbr != parent:
+            # visited AND not our parent → back edge → cycle
+            return True
+    return False
+
+def has_cycle(adj, V):
+    vis = [False] * V
+    return any(not vis[i] and dfs_cycle(adj, vis, i, -1) for i in range(V))
+
+# Test
+adj = [[1],[0,2],[1,3],[2,4],[3]]  # linear chain — no cycle
+print(has_cycle(adj, 5))  # False
+adj[4].append(1); adj[1].append(4)  # add 1-4 edge → creates cycle
+print(has_cycle(adj, 5))  # True`,
+          java: `import java.util.*;
+
+public class CycleUndirected {
+    /*
+     * Undirected cycle: check if visited neighbour is NOT the parent.
+     * Parent tracking avoids false positives (parent is always "visited").
+     */
+    static boolean dfs(List<List<Integer>> adj, boolean[] vis, int node, int parent) {
+        vis[node] = true;
+        for (int nbr : adj.get(node)) {
+            if (!vis[nbr]) {
+                if (dfs(adj, vis, nbr, node)) return true;
+            } else if (nbr != parent) {
+                return true;  // back edge found
+            }
+        }
+        return false;
+    }
+
+    static boolean hasCycle(List<List<Integer>> adj, int V) {
+        boolean[] vis = new boolean[V];
+        for (int i = 0; i < V; i++)
+            if (!vis[i] && dfs(adj, vis, i, -1)) return true;
+        return false;
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 5
+int adj[V][V], vis[V];
+
+// Undirected: pass parent to avoid going back on same edge
+int dfsCycle(int node, int parent) {
+    vis[node] = 1;
+    for (int nbr = 0; nbr < V; nbr++) {
+        if (!adj[node][nbr]) continue;
+        if (!vis[nbr]) {
+            if (dfsCycle(nbr, node)) return 1;
+        } else if (nbr != parent) {
+            return 1;  // cycle!
+        }
+    }
+    return 0;
+}
+
+int main() {
+    // Build undirected graph: 0-1-2-3-4-1 (cycle)
+    int e[][2]={{0,1},{1,2},{2,3},{3,4},{4,1}};
+    for(int i=0;i<5;i++){adj[e[i][0]][e[i][1]]=adj[e[i][1]][e[i][0]]=1;}
+    printf(dfsCycle(0,-1)?"Cycle!\\n":"No cycle\\n");
+    return 0;
+}`,
+          js: `// UNDIRECTED cycle detection — parent check approach
+function dfsCycle(adj, vis, node, parent) {
+    vis[node] = true;
+    for (const nbr of adj[node]) {
+        if (!vis[nbr]) {
+            if (dfsCycle(adj, vis, nbr, node)) return true;
+        } else if (nbr !== parent) {
+            return true;  // back edge — cycle found
+        }
+    }
+    return false;
+}
+
+function hasCycle(adj) {
+    const vis = new Array(adj.length).fill(false);
+    return adj.some((_, i) => !vis[i] && dfsCycle(adj, vis, i, -1));
+}
+
+// Test
+const adj = [[1],[0,2],[1,3],[2,4],[3]];  // no cycle
+console.log(hasCycle(adj));  // false
+adj[4].push(1); adj[1].push(4);  // add back edge → cycle
+console.log(hasCycle(adj));  // true`,
+        },
+
+        cycle_directed: {
+          cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+ * DIRECTED graph cycle detection.
+ * Must use a recursion stack (rec[]) — parent check doesn't work
+ * because in a directed graph, visiting a node doesn't mean cycle.
+ * Only if we reach a node that's CURRENTLY in our DFS call stack
+ * does it confirm a cycle (back edge).
+ */
+bool dfsCycle(vector<vector<int>>& adj, vector<bool>& vis, vector<bool>& rec, int node) {
+    vis[node] = true;
+    rec[node] = true;  // add to current call stack
+
+    for (int nbr : adj[node]) {
+        if (!vis[nbr] && dfsCycle(adj, vis, rec, nbr)) return true;
+        else if (rec[nbr]) return true;  // still in call stack → cycle!
+    }
+
+    rec[node] = false;  // remove from call stack on backtrack
+    return false;
+}
+
+bool hasCycle(vector<vector<int>>& adj, int V) {
+    vector<bool> vis(V, false), rec(V, false);
+    for (int i = 0; i < V; i++)
+        if (!vis[i] && dfsCycle(adj, vis, rec, i)) return true;
+    return false;
+}
+
+int main() {
+    int V = 4;
+    vector<vector<int>> adj(V);
+    adj[0].push_back(1);
+    adj[1].push_back(2);
+    adj[2].push_back(3);
+    adj[3].push_back(1);  // directed cycle 1→2→3→1
+    cout << (hasCycle(adj, V) ? "Cycle!" : "No cycle") << endl;
+    return 0;
+}`,
+          python: `# DIRECTED graph cycle detection
+# Must use a recursion stack (rec[]) — parent check doesn't work
+# for directed graphs. Only a node IN the current call stack
+# confirms a cycle.
+
+def dfs_cycle(adj, vis, rec, node):
+    vis[node] = True
+    rec[node] = True   # add to current DFS call stack
+
+    for nbr in adj[node]:
+        if not vis[nbr]:
+            if dfs_cycle(adj, vis, rec, nbr):
+                return True
+        elif rec[nbr]:
+            return True  # in call stack → back edge → cycle!
+
+    rec[node] = False  # remove from call stack on backtrack
+    return False
+
+def has_cycle(adj, V):
+    vis = [False] * V
+    rec = [False] * V
+    return any(not vis[i] and dfs_cycle(adj, vis, rec, i) for i in range(V))
+
+# Test: directed cycle 1→2→3→1
+adj = [[1],[2],[3],[1]]
+print(has_cycle(adj, 4))  # True
+
+# No cycle: 0→1→2→3
+adj2 = [[1],[2],[3],[]]
+print(has_cycle(adj2, 4))  # False`,
+          java: `import java.util.*;
+
+public class CycleDirected {
+    /*
+     * Directed cycle detection: uses rec[] (recursion stack).
+     * If we reach a node still in rec[], we found a back edge = cycle.
+     * This is different from undirected — we can't just check the parent.
+     */
+    static boolean dfs(List<List<Integer>> adj, boolean[] vis, boolean[] rec, int node) {
+        vis[node] = true;
+        rec[node] = true;
+        for (int nbr : adj.get(node)) {
+            if (!vis[nbr] && dfs(adj, vis, rec, nbr)) return true;
+            else if (rec[nbr]) return true;
+        }
+        rec[node] = false;
+        return false;
+    }
+
+    static boolean hasCycle(List<List<Integer>> adj, int V) {
+        boolean[] vis = new boolean[V], rec = new boolean[V];
+        for (int i = 0; i < V; i++)
+            if (!vis[i] && dfs(adj, vis, rec, i)) return true;
+        return false;
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 4
+int adj[V][V], vis[V], rec[V];
+
+// Directed: must track recursion stack separately from visited
+int dfsCycle(int node) {
+    vis[node] = rec[node] = 1;
+    for (int nbr = 0; nbr < V; nbr++) {
+        if (!adj[node][nbr]) continue;
+        if (!vis[nbr] && dfsCycle(nbr)) return 1;
+        else if (rec[nbr]) return 1;  // back edge!
+    }
+    rec[node] = 0;  // remove from call stack on backtrack
+    return 0;
+}
+
+int main() {
+    // Directed cycle: 0→1→2→3→1
+    adj[0][1]=adj[1][2]=adj[2][3]=adj[3][1]=1;
+    int found=0;
+    for(int i=0;i<V;i++) if(!vis[i]&&dfsCycle(i)){found=1;break;}
+    printf(found?"Cycle!\\n":"No cycle\\n");
+    return 0;
+}`,
+          js: `// DIRECTED cycle detection — uses recursion stack (rec[])
+// This is the key difference from undirected:
+// we can't just check if neighbour is parent.
+
+function dfsCycle(adj, vis, rec, node) {
+    vis[node] = true;
+    rec[node] = true;   // add to current call stack
+    for (const nbr of adj[node]) {
+        if (!vis[nbr] && dfsCycle(adj, vis, rec, nbr)) return true;
+        else if (rec[nbr]) return true;  // in call stack = back edge = cycle
+    }
+    rec[node] = false;  // remove on backtrack
+    return false;
+}
+
+function hasCycle(adj) {
+    const vis = new Array(adj.length).fill(false);
+    const rec = new Array(adj.length).fill(false);
+    return adj.some((_, i) => !vis[i] && dfsCycle(adj, vis, rec, i));
+}
+
+// Test: directed cycle 1→2→3→1
+const adj = [[1],[2],[3],[1]];
+console.log(hasCycle(adj));  // true
+
+// No cycle
+const adj2 = [[1],[2],[3],[]];
+console.log(hasCycle(adj2));  // false`,
+        },
+
+        components: {
+          cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+void dfs(vector<vector<int>>& adj, vector<bool>& vis, int node, vector<int>& comp) {
+    vis[node] = true;
+    comp.push_back(node);
+    for (int nbr : adj[node]) if (!vis[nbr]) dfs(adj, vis, nbr, comp);
+}
+
+int countComponents(vector<vector<int>>& adj, int V) {
+    vector<bool> vis(V, false);
+    int count = 0;
+    for (int i = 0; i < V; i++) {
+        if (!vis[i]) {
+            vector<int> comp;
+            dfs(adj, vis, i, comp);
+            cout << "Component " << count++ << ": ";
+            for (int v : comp) cout << v << " ";
+            cout << "\\n";
+        }
+    }
+    return count;
+}
+
+int main() {
+    int V = 7;
+    vector<vector<int>> adj(V);
+    auto add = [&](int u, int v) { adj[u].push_back(v); adj[v].push_back(u); };
+    add(0,1); add(1,2);   // component 0
+    add(3,4);              // component 1
+    add(5,6);              // component 2
+    cout << countComponents(adj, V) << " components total\\n";
+    return 0;
+}`,
+          python: `def dfs(adj, vis, node, comp):
+    vis[node] = True
+    comp.append(node)
+    for nbr in adj[node]:
+        if not vis[nbr]: dfs(adj, vis, nbr, comp)
+
+def count_components(adj, V):
+    vis = [False] * V
+    count = 0
+    for i in range(V):
+        if not vis[i]:
+            comp = []
+            dfs(adj, vis, i, comp)
+            print(f"Component {count}: {comp}")
+            count += 1
+    return count
+
+V = 7
+adj = [[] for _ in range(V)]
+def add(u,v): adj[u].append(v); adj[v].append(u)
+add(0,1); add(1,2); add(3,4); add(5,6)
+print(count_components(adj, V), "components")`,
+          java: `import java.util.*;
+
+public class Components {
+    static void dfs(List<List<Integer>> adj, boolean[] vis, int n, List<Integer> comp) {
+        vis[n] = true; comp.add(n);
+        for (int nbr : adj.get(n)) if (!vis[nbr]) dfs(adj, vis, nbr, comp);
+    }
+
+    static int count(List<List<Integer>> adj, int V) {
+        boolean[] vis = new boolean[V]; int count = 0;
+        for (int i = 0; i < V; i++) if (!vis[i]) {
+            List<Integer> c = new ArrayList<>();
+            dfs(adj, vis, i, c);
+            System.out.println("Component " + count++ + ": " + c);
+        }
+        return count;
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 7
+int adj[V][V], vis[V];
+
+void dfs(int n, int c) {
+    vis[n]=1; printf("%d(C%d) ", n, c);
+    for (int i=0;i<V;i++) if(adj[n][i]&&!vis[i]) dfs(i,c);
+}
+
+int main() {
+    int e[][2]={{0,1},{1,2},{3,4},{5,6}};
+    for(int i=0;i<4;i++){adj[e[i][0]][e[i][1]]=adj[e[i][1]][e[i][0]]=1;}
+    int c=0;
+    for(int i=0;i<V;i++) if(!vis[i]){dfs(i,c);c++;printf("\\n");}
+    printf("%d components\\n",c);
+    return 0;
+}`,
+          js: `function dfs(adj, vis, node, comp) {
+    vis[node] = true; comp.push(node);
+    for (const nbr of adj[node]) if (!vis[nbr]) dfs(adj, vis, nbr, comp);
+}
+
+function countComponents(adj) {
+    const vis = new Array(adj.length).fill(false);
+    let count = 0;
+    for (let i = 0; i < adj.length; i++) if (!vis[i]) {
+        const comp = [];
+        dfs(adj, vis, i, comp);
+        console.log("Component " + count++ + ":", comp.join(","));
+    }
+    return count;
+}
+
+// 3 separate components
+const adj = [[1],[0,2],[1],[4],[3],[6],[5]];
+console.log(countComponents(adj), "components");`,
+        },
+
+        topo: {
+          cpp: `#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+void dfs(vector<vector<int>>& adj, vector<bool>& vis, stack<int>& stk, int node) {
+    vis[node] = true;
+    for (int nbr : adj[node]) if (!vis[nbr]) dfs(adj, vis, stk, nbr);
+    stk.push(node);  // push AFTER all descendants — that's what makes it topo
+}
+
+vector<int> topoSort(vector<vector<int>>& adj, int V) {
+    vector<bool> vis(V, false);
+    stack<int> stk;
+    for (int i = 0; i < V; i++) if (!vis[i]) dfs(adj, vis, stk, i);
+    vector<int> order;
+    while (!stk.empty()) { order.push_back(stk.top()); stk.pop(); }
+    return order;
+}
+
+int main() {
+    int V = 6;
+    vector<vector<int>> adj(V);
+    adj[5].push_back(2); adj[5].push_back(0);
+    adj[4].push_back(0); adj[4].push_back(1);
+    adj[2].push_back(3); adj[3].push_back(1);
+    auto order = topoSort(adj, V);
+    for (int v : order) cout << v << " ";
+    cout << endl;
+    return 0;
+}`,
+          python: `import sys; sys.setrecursionlimit(10000)
+
+def dfs(adj, vis, node, stack):
+    vis[node] = True
+    for nbr in adj[node]:
+        if not vis[nbr]: dfs(adj, vis, nbr, stack)
+    stack.append(node)  # push AFTER all descendants
+
+def topo_sort(adj, V):
+    vis = [False] * V
+    stack = []
+    for i in range(V):
+        if not vis[i]: dfs(adj, vis, i, stack)
+    return list(reversed(stack))
+
+V = 6; adj = [[] for _ in range(V)]
+adj[5] += [2, 0]; adj[4] += [0, 1]; adj[2].append(3); adj[3].append(1)
+print("Topo:", "->".join(map(str, topo_sort(adj, V))))`,
+          java: `import java.util.*;
+
+public class Topo {
+    static void dfs(List<List<Integer>> adj, boolean[] vis, Deque<Integer> stk, int n) {
+        vis[n] = true;
+        for (int nbr : adj.get(n)) if (!vis[nbr]) dfs(adj, vis, stk, nbr);
+        stk.push(n);  // post-order push
+    }
+
+    public static void main(String[] a) {
+        int V = 6;
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        adj.get(5).addAll(Arrays.asList(2, 0));
+        adj.get(4).addAll(Arrays.asList(0, 1));
+        adj.get(2).add(3); adj.get(3).add(1);
+        boolean[] vis = new boolean[V];
+        Deque<Integer> stk = new ArrayDeque<>();
+        for (int i = 0; i < V; i++) if (!vis[i]) dfs(adj, vis, stk, i);
+        while (!stk.isEmpty()) System.out.print(stk.pop() + " ");
+    }
+}`,
+          c: `#include <stdio.h>
+#define V 6
+int adj[V][V], vis[V], res[V], top=0;
+
+void dfs(int n) {
+    vis[n]=1;
+    for (int i=0;i<V;i++) if(adj[n][i]&&!vis[i]) dfs(i);
+    res[top++]=n;  // push after all children
+}
+
+int main() {
+    adj[5][2]=adj[5][0]=adj[4][0]=adj[4][1]=adj[2][3]=adj[3][1]=1;
+    for(int i=0;i<V;i++) if(!vis[i]) dfs(i);
+    for(int i=top-1;i>=0;i--) printf("%d ",res[i]);
+    printf("\\n");
+    return 0;
+}`,
+          js: `function topoSort(adj) {
+    const V = adj.length;
+    const vis = new Array(V).fill(false);
+    const stack = [];
+
+    function dfs(node) {
+        vis[node] = true;
+        for (const nbr of adj[node]) if (!vis[nbr]) dfs(nbr);
+        stack.push(node);  // push AFTER all children — post-order
+    }
+
+    for (let i = 0; i < V; i++) if (!vis[i]) dfs(i);
+    return stack.reverse();
+}
+
+// Directed acyclic graph
+const adj = [[], [], [3], [1], [0,1], [2,0]];
+console.log("Topo:", topoSort(adj).join("->"));`,
+        },
+      };
+
+      // getEditorTemplate: for cycle, picks directed or undirected variant based on currentType
+      const getEditorTemplate = (algo, lang) => {
+        // Cycle detection: pick the right variant based on graph direction
+        if (algo === "cycle") {
+          const variant = isDirectedType(currentType)
+            ? "cycle_directed"
+            : "cycle_undirected";
+          return TEMPLATES[variant]?.[lang] || "// Not available";
+        }
+
+        // Dijkstra on a non-weighted tab: add a note so the user knows the context
+        if (algo === "dijkstra" && !isWeightedType(currentType)) {
+          const note = [
+            `// Note: You're viewing this from the "${currentType}" tab.`,
+            `// Dijkstra is designed for WEIGHTED graphs (edge costs matter).`,
+            `// Switch to the "Weighted" tab to see it animate with edge weights.`,
+            `// The code below is correct for a weighted undirected graph.\n`,
+          ].join("\n");
+          return note + (TEMPLATES["dijkstra"]?.[lang] || "// Not available");
+        }
+
+        return TEMPLATES[algo]?.[lang] || "// Not available";
+      };
+
+      const RUN_INPUTS = {
+        bfs: `<div class="ig2"><div><label class="ctrl-lbl">Edges (u-v)</label><input id="ri0" value="0-1,0-2,1-3,1-4,2-5"></div><div><label class="ctrl-lbl">Start</label><input type="number" id="ri1" value="0" style="width:70px;"></div></div>`,
+        dfs: `<div class="ig2"><div><label class="ctrl-lbl">Edges (u-v)</label><input id="ri0" value="0-1,0-2,1-3,1-4,2-5"></div><div><label class="ctrl-lbl">Start</label><input type="number" id="ri1" value="0" style="width:70px;"></div></div>`,
+        dijkstra: `<div class="ig2"><div><label class="ctrl-lbl">Weighted edges (u-v-w)</label><input id="ri0" value="0-1-4,0-2-1,2-1-2,1-3-5,2-3-8"></div><div><label class="ctrl-lbl">Source</label><input type="number" id="ri1" value="0" style="width:70px;"></div></div>`,
+        cycle: `<div class="ig2"><div><label class="ctrl-lbl">Directed edges (try 0-1,1-2,2-0)</label><input id="ri0" value="0-1,1-2,2-3,3-1"></div><div><label class="ctrl-lbl">V</label><input type="number" id="ri1" value="4" style="width:70px;"></div></div>`,
+        components: `<div class="ig2"><div><label class="ctrl-lbl">Edges (gaps ok: 0-1,2-3,4)</label><input id="ri0" value="0-1,1-2,3-4,5-6"></div><div><label class="ctrl-lbl">Total V</label><input type="number" id="ri1" value="7" style="width:70px;"></div></div>`,
+        topo: `<div class="ig2"><div><label class="ctrl-lbl">Directed acyclic edges (u→v as u-v)</label><input id="ri0" value="5-2,5-0,4-0,4-1,2-3,3-1"></div><div><label class="ctrl-lbl">V</label><input type="number" id="ri1" value="6" style="width:70px;"></div></div>`,
+      };
+
+      const setEditorAlgo = (algo) => {
+        curEdAlgo = algo;
+        document
+          .querySelectorAll("#algoPicker .ap")
+          .forEach((el) => el.classList.toggle("on", el.dataset.a === algo));
+        if (editorCM) editorCM.setValue(getEditorTemplate(algo, curEdLang));
+        document.getElementById("edLabel").textContent =
+          `${curEdLang.toUpperCase()} — ${ED_NAMES[algo]}`;
+
+        // Variant badge: shows context-specific info for cycle and dijkstra
+        const badge = document.getElementById("edVariantBadge");
+        if (algo === "cycle") {
+          badge.textContent = getCycleVariantLabel();
+          badge.style.display = "inline";
+        } else if (algo === "dijkstra" && !isWeightedType(currentType)) {
+          badge.textContent = "⚠ best used on Weighted tab";
+          badge.style.background = "rgba(245,158,11,.12)";
+          badge.style.borderColor = "var(--orange)";
+          badge.style.color = "var(--orange)";
+          badge.style.display = "inline";
+        } else {
+          badge.style.display = "none";
+        }
+
+        document.getElementById("runInputs").innerHTML = RUN_INPUTS[algo] || "";
+        document.getElementById("codeOut").textContent =
+          "Fill inputs and click Run...";
+      };
+
+      const copyEd = () => {
+        if (!editorCM) return;
+        navigator.clipboard.writeText(editorCM.getValue());
+        const b = document.querySelector(".copy-btn");
+        b.textContent = "Copied!";
+        setTimeout(() => (b.textContent = "Copy"), 2000);
+      };
+
+      const runCode = () => {
+        const r0 = (document.getElementById("ri0") || {}).value || "";
+        const r1 = parseInt((document.getElementById("ri1") || {}).value) || 0;
+        const out = document.getElementById("codeOut");
+        out.innerHTML = '<span style="color:var(--cyan)">[Running…]</span>';
+
+        setTimeout(() => {
+          // JavaScript runs inline; others are simulated
+          if (curEdLang === "js") {
+            try {
+              const logs = [];
+              const origLog = console.log;
+              console.log = (...a) => logs.push(a.map(String).join(" "));
+              eval(editorCM.getValue());
+              console.log = origLog;
+              out.innerHTML =
+                logs
+                  .map((l) => `<span style="color:var(--green)">${l}</span>`)
+                  .join("<br>") || "(No output)";
+            } catch (e) {
+              out.innerHTML = `<span style="color:var(--red)">Error: ${e.message}</span>`;
+            }
+            return;
+          }
+
+          const f = (s, c = "var(--green)") =>
+            `<span style="color:${c}">${s}</span>`;
+
+          // Type-info line — makes the output feel graph-type aware
+          const typeInfo = {
+            undirected: "Undirected Graph — edges go both ways (u↔v)",
+            directed: "Directed Graph — edges are one-way (u→v only)",
+            weighted: "Weighted Graph — edge costs determine shortest path",
+            connected: "Connected/Disconnected Graph — finding components",
+            cyclic: "Cyclic Graph — directed edges, checking for back-edges",
+            dag: "DAG — Directed Acyclic Graph, topological ordering",
+          };
+
+          let html =
+            f(`[Simulated ${curEdLang.toUpperCase()} Output]`) + "<br>";
+          html += f(typeInfo[currentType] || "", "var(--muted)") + "<br><br>";
+
+          if (curEdAlgo === "bfs" || curEdAlgo === "dfs") {
+            const { adj, n } = parseEdges(r0, false, false);
+            const vis = new Set();
+            const order = [];
+            if (curEdAlgo === "bfs") {
+              const q = [r1];
+              vis.add(r1);
+              while (q.length) {
+                const nd = q.shift();
+                order.push(nd);
+                (adj[nd] || []).forEach(({ to: nb }) => {
+                  if (!vis.has(nb)) {
+                    vis.add(nb);
+                    q.push(nb);
+                  }
+                });
+              }
+            } else {
+              (function dfs(nd) {
+                vis.add(nd);
+                order.push(nd);
+                (adj[nd] || []).forEach(({ to: nb }) => {
+                  if (!vis.has(nb)) dfs(nb);
+                });
+              })(r1);
+            }
+            html += f(`${curEdAlgo.toUpperCase()}: ${order.join(" -> ")}`);
+          } else if (curEdAlgo === "dijkstra") {
+            const { adj, n } = parseEdges(r0, false, true);
+            if (!n) {
+              html += f("⚠ Parse error", "var(--red)");
+              out.innerHTML = html;
+              return;
+            }
+            const dist = new Array(n).fill(Infinity);
+            dist[r1] = 0;
+            const vis = new Set();
+            for (let i = 0; i < n; i++) {
+              let u = -1,
+                d = Infinity;
+              for (let j = 0; j < n; j++)
+                if (!vis.has(j) && dist[j] < d) {
+                  d = dist[j];
+                  u = j;
+                }
+              if (u === -1) break;
+              vis.add(u);
+              (adj[u] || []).forEach(({ to: v, w }) => {
+                if (dist[u] + w < dist[v]) dist[v] = dist[u] + w;
+              });
+            }
+            dist.forEach((d, i) => {
+              html +=
+                f(`  0 -> ${i}: ${d === Infinity ? "∞ (unreachable)" : d}`) +
+                "<br>";
+            });
+          } else if (curEdAlgo === "cycle") {
+            if (isDirectedType(currentType)) {
+              // Directed: rec-stack approach
+              const { adj, n } = parseEdges(r0, true, false);
+              const vis = new Set();
+              const rec = new Set();
+              let found = false;
+              const dfsCy = (nd) => {
+                if (found) return;
+                vis.add(nd);
+                rec.add(nd);
+                (adj[nd] || []).forEach(({ to: nb }) => {
+                  if (!vis.has(nb)) dfsCy(nb);
+                  else if (rec.has(nb)) found = true;
+                });
+                rec.delete(nd);
+              };
+              for (let i = 0; i < n; i++) if (!vis.has(i)) dfsCy(i);
+              html +=
+                f(
+                  "Algorithm: Directed cycle detection (recursion stack)",
+                  "var(--muted)",
+                ) + "<br>";
+              html += f(
+                found ? "⚠ Cycle Detected!" : "✓ No Cycle — Acyclic graph",
+                found ? "var(--red)" : "var(--green)",
+              );
+            } else {
+              // Undirected: parent-check approach
+              const { adj, n } = parseEdges(r0, false, false);
+              const vis = new Set();
+              let found = false;
+              const dfsCy = (nd, parent) => {
+                if (found) return;
+                vis.add(nd);
+                (adj[nd] || []).forEach(({ to: nb }) => {
+                  if (!vis.has(nb)) dfsCy(nb, nd);
+                  else if (nb !== parent) found = true; // not parent = back edge
+                });
+              };
+              for (let i = 0; i < n; i++) if (!vis.has(i)) dfsCy(i, -1);
+              html +=
+                f(
+                  "Algorithm: Undirected cycle detection (parent check, no rec-stack needed)",
+                  "var(--muted)",
+                ) + "<br>";
+              html += f(
+                found ? "⚠ Cycle Detected!" : "✓ No Cycle — Acyclic graph",
+                found ? "var(--red)" : "var(--green)",
+              );
+            }
+          } else if (curEdAlgo === "components") {
+            const { adj, n } = parseConnected(r0);
+            const vis = new Set();
+            let cnt = 0;
+            function dfsC(nd, arr) {
+              vis.add(nd);
+              arr.push(nd);
+              (adj[nd] || []).forEach(({ to: nb }) => {
+                if (!vis.has(nb)) dfsC(nb, arr);
+              });
+            }
+            for (let i = 0; i < n; i++)
+              if (!vis.has(i)) {
+                const a = [];
+                dfsC(i, a);
+                html += f(`Component ${cnt}: [${a.join(", ")}]`) + "<br>";
+                cnt++;
+              }
+            html +=
+              "<br>" +
+              f(`${cnt} component${cnt > 1 ? "s" : ""} total`, "var(--cyan)");
+          } else if (curEdAlgo === "topo") {
+            const { adj, n } = parseEdges(r0, true, false);
+            const vis = new Set();
+            const order = [];
+            (function dfsT(nd) {
+              vis.add(nd);
+              (adj[nd] || []).forEach(({ to: nb }) => {
+                if (!vis.has(nb)) dfsT(nb);
+              });
+              order.unshift(nd);
+            })(0);
+            for (let i = 0; i < n; i++)
+              if (!vis.has(i)) {
+                (function dfsT(nd) {
+                  vis.add(nd);
+                  (adj[nd] || []).forEach(({ to: nb }) => {
+                    if (!vis.has(nb)) dfsT(nb);
+                  });
+                  order.unshift(nd);
+                })(i);
+              }
+            html += f(
+              "Topological Order: " + order.join(" -> "),
+              "var(--purple)",
+            );
+          }
+          out.innerHTML = html;
+        }, 400);
+      };
+
+      // ─── INIT ─────────────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        applyTheme(THEMES[thIdx]);
+
+        // Set pseudo-code for all type panels
+        TYPES.forEach((t) => setPS(t, defaultAlgo(t)));
+
+        // CodeMirror
+        editorCM = CodeMirror.fromTextArea(
+          document.getElementById("codeArea"),
+          {
+            lineNumbers: true,
+            theme: CM_THEMES[THEMES[thIdx]],
+            mode: "text/x-c++src",
+            indentUnit: 4,
+          },
+        );
+        setEditorAlgo("bfs");
+
+        // Language tabs
+        document.querySelectorAll("#langTabs .lt").forEach((tab) => {
+          tab.addEventListener("click", () => {
+            document
+              .querySelectorAll("#langTabs .lt")
+              .forEach((t) => t.classList.remove("on"));
+            tab.classList.add("on");
+            curEdLang = tab.dataset.l;
+            const modes = {
+              cpp: "text/x-c++src",
+              python: "text/x-python",
+              java: "text/x-java",
+              c: "text/x-csrc",
+              js: "text/javascript",
+            };
+            editorCM.setOption("mode", modes[curEdLang]);
+            editorCM.setValue(getEditorTemplate(curEdAlgo, curEdLang));
+            document.getElementById("edLabel").textContent =
+              `${curEdLang.toUpperCase()} — ${ED_NAMES[curEdAlgo]}`;
+          });
+        });
+
+        // Init scenarios (undirected by default)
+        scInitBest();
+        scInitAvg();
+        scInitWorst();
+
+        // Redraw canvases on resize
+        window.addEventListener("resize", () => {
+          TYPES.forEach((t) => {
+            const st = TYPE_STATE[t];
+            if (st.n > 0)
+              drawGraph(
+                `c-${t}`,
+                st.adj,
+                st.n,
+                Array(st.n).fill("unvisited"),
+                new Set(),
+                isDirectedType(t),
+              );
+          });
+        });
+      });
+
+      // ─── LEVEL NAV + MODAL ────────────────────────────────────────────────────────
+    /* ── LEVEL BUTTONS (FIXED) ── */
+const ALGO_KEY = "graphs"; // Must match topics.html ID
+
+function getLevelFromDB() {
+    const progress = JSON.parse(localStorage.getItem('progress') || "{}");
+    return progress[ALGO_KEY] || 0;
+}
+
+function updateLevelButtons() {
+    const currentLevel = getLevelFromDB();
+    const btnL2 = document.getElementById("l2");
+    const btnL3 = document.getElementById("l3");
+
+    // If Level 2 or higher is reached, highlight L2 button
+    if (currentLevel >= 2) {
+        btnL2.style.borderColor = "var(--green)";
+        btnL2.style.background = "rgba(16,185,129,0.12)";
+        btnL2.style.color = "var(--green)";
+    }
+    // If Level 3 is reached (by solving a problem), highlight L3 button
+    if (currentLevel >= 3) {
+        btnL3.style.borderColor = "var(--green)";
+        btnL3.style.background = "rgba(16,185,129,0.12)";
+        btnL3.style.color = "var(--green)";
+    }
+}
+
+// Level 1 Click
+document.getElementById("l1").addEventListener("click", () => {
+    window.location.href = "graphs_L1.html";
+});
+
+// Level 2 Click
+document.getElementById("l2").addEventListener("click", () => {
+    // Level 2 is always accessible if you are on this page
+    window.location.reload(); 
+});
+
+// Level 3 Click (THE FIX)
+document.getElementById("l3").addEventListener("click", () => {
+    const currentLevel = getLevelFromDB();
+    const modal = document.getElementById("modal");
+    const modalMsg = document.getElementById("modalMsg");
+    const okBtn = document.getElementById("mOk");
+
+    if (currentLevel >= 2) {
+        // SUCCESS: Redirect to practice page
+        window.location.href = "practice.html?topic=graphs";
+    } else {
+        // LOCKED: Show modal
+        modalMsg.textContent = "Pass the Level 2 Quiz to unlock the Practice Problems.";
+        okBtn.textContent = "Take Quiz";
+        okBtn.onclick = () => window.location.href = "quiz.html?id=graphs-l2";
+        modal.classList.add("show");
+    }
+});
+
+// Modal Cancel
+document.getElementById("mCancel").addEventListener("click", () => {
+    document.getElementById("modal").classList.remove("show");
+});
+    </script>
+  </body>
+</html>

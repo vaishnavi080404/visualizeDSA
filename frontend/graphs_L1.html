@@ -1,0 +1,4583 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphs - Data Structures</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-green: #10b981;
+        --primary-cyan: #06b6d4;
+        --primary-purple: #8b5cf6;
+        --primary-orange: #f59e0b;
+        --primary-red: #ef4444;
+        --dark-bg: #0a0a0a;
+        --card-bg: #1a1a1a;
+        --text-primary: #ffffff;
+        --text-secondary: #a0a0a0;
+        --border-color: #2a2a2a;
+        --nav-bg: rgba(10, 10, 10, 0.85);
+        --code-bg: #0d1117;
+        --terminal-bg: #0d1117;
+      }
+      [data-theme="light"] {
+        --dark-bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --border-color: #e2e8f0;
+        --nav-bg: rgba(248, 250, 252, 0.85);
+        --code-bg: #f1f5f9;
+        --terminal-bg: #f1f5f9;
+        --primary-cyan: #0891b2;
+        --primary-green: #059669;
+      }
+      [data-theme="blue"] {
+        --dark-bg: #011425;
+        --card-bg: #1e293b;
+        --text-primary: #ffffff;
+        --text-secondary: #94a3b8;
+        --border-color: #242424;
+        --nav-bg: rgba(1, 20, 37, 0.85);
+        --code-bg: #011425;
+        --terminal-bg: #011425;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-color);
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.2rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-decoration: none;
+        color: inherit;
+      }
+      .logo-icon {
+        width: 35px;
+        height: 35px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--primary-cyan)
+        );
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: #fff;
+        font-weight: 700;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      .nav-links a:hover {
+        color: var(--primary-green);
+      }
+      .theme-toggle {
+        background: var(--border-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+      .theme-toggle:hover {
+        border-color: var(--primary-green);
+        background: rgba(16, 185, 129, 0.1);
+      }
+      .theme-toggle svg {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+      .nav-hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        cursor: pointer;
+        padding: 4px;
+      }
+      .nav-hamburger svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* ── LAYOUT ── */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 100px 2rem 3rem;
+      }
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        flex-wrap: wrap;
+      }
+      .breadcrumb a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      .breadcrumb a:hover {
+        color: var(--primary-cyan);
+      }
+      .page-header {
+        margin-bottom: 3rem;
+      }
+      .page-title {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+      }
+      .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .level-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .level-tab {
+        padding: 0.6rem 1.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-secondary);
+        font-weight: 600;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+      }
+      .level-tab.active {
+        background: var(--primary-cyan);
+        border-color: var(--primary-cyan);
+        color: white;
+        border-radius: 50px;
+      }
+      .partition {
+        color: #0891b2;
+        padding: 0 4px;
+      }
+
+      /* ── CARDS ── */
+      .section-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+      }
+      .section-icon {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-cyan),
+          var(--primary-purple)
+        );
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+      .section-title {
+        font-size: clamp(1.3rem, 3vw, 1.8rem);
+        font-weight: 700;
+      }
+      .content-block {
+        margin-bottom: 2rem;
+      }
+      .content-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--primary-cyan);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .content-text {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        line-height: 1.75;
+      }
+
+      /* ── COMPLEXITY GRID ── */
+      .complexity-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+      .complexity-box {
+        padding: 1.5rem;
+        text-align: center;
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: all 0.3s;
+      }
+      .complexity-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .complexity-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary-green);
+      }
+      .complexity-value.orange {
+        color: var(--primary-orange);
+      }
+      .complexity-value.red {
+        color: var(--primary-red);
+      }
+      .complexity-value.purple {
+        color: var(--primary-purple);
+      }
+
+      /* ── STYLED LIST ── */
+      .styled-list {
+        list-style: none;
+        margin: 1rem 0;
+      }
+      .styled-list li {
+        padding: 0.55rem 0 0.55rem 1.5rem;
+        position: relative;
+        color: var(--text-secondary);
+      }
+      .styled-list li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--primary-green);
+        font-weight: bold;
+      }
+
+      /* ── CONCEPT / EXAMPLE GRIDS ── */
+      .concepts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+      .concept-card {
+        padding: 1.5rem;
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: all 0.3s;
+      }
+      .concept-card:hover {
+        border-color: var(--primary-cyan);
+        transform: translateY(-2px);
+      }
+      .concept-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--primary-cyan);
+        font-size: 1rem;
+      }
+      .concept-desc {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      .example-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+      .example-card {
+        padding: 1.5rem;
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+      }
+      .example-number {
+        width: 35px;
+        height: 35px;
+        background: var(--primary-green);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #fff;
+        font-size: 0.9rem;
+      }
+      .example-title {
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+      }
+      .example-desc {
+        color: var(--text-secondary);
+        font-size: 0.88rem;
+        line-height: 1.55;
+      }
+
+      /* ── GRAPH VISUAL ── */
+      .graph-visual-img {
+        border-radius: 16px;
+        padding: 2rem 1rem;
+        margin: 2rem 0;
+        text-align: center;
+        background: var(--terminal-bg);
+        border: 1px solid var(--border-color);
+        transition: background 0.3s;
+        overflow-x: auto;
+      }
+      .graph-visual-img h3 {
+        color: var(--primary-cyan);
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+      }
+      .graph-diagram {
+        max-width: 860px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .graph-diagram svg {
+        width: 100%;
+        height: auto;
+      }
+
+      /* ── OPERATION DROPDOWNS ── */
+      .impl-type {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: 0.3s;
+      }
+      .impl-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .impl-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .impl-badge {
+        padding: 4px 14px;
+        background: var(--primary-cyan);
+        color: #000;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .operation-dropdown {
+        margin-bottom: 1rem;
+      }
+      .operation-header {
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s;
+      }
+      .operation-header:hover {
+        border-color: var(--primary-cyan);
+        background: rgba(6, 182, 212, 0.06);
+      }
+      .operation-header.active {
+        background: linear-gradient(
+          135deg,
+          rgba(6, 182, 212, 0.1),
+          rgba(139, 92, 246, 0.1)
+        );
+        border-color: var(--primary-cyan);
+      }
+      .operation-title {
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .operation-number {
+        width: 32px;
+        height: 32px;
+        background: var(--primary-cyan);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 14px;
+        color: #000;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+      }
+      .dropdown-icon {
+        transition: transform 0.3s;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+      }
+      .dropdown-icon.rotate {
+        transform: rotate(180deg);
+      }
+      .operation-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+      }
+      .operation-content.show {
+        max-height: 8000px;
+      }
+      .operation-body {
+        padding: 1.5rem 0 0.5rem;
+      }
+
+      /* ── CODE BLOCKS ── */
+      .language-tabs {
+        display: flex;
+        gap: 0.8rem;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+        background: var(--border-color);
+        padding: 6px;
+        border-radius: 12px;
+        width: fit-content;
+        max-width: 100%;
+      }
+      .lang-tab {
+        padding: 7px 15px;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+        font-size: 0.85rem;
+      }
+      .lang-tab.active {
+        background: var(--primary-cyan);
+        color: white;
+        border-color: var(--primary-cyan);
+      }
+      .code-lang-content {
+        display: none;
+      }
+      .code-lang-content.active {
+        display: block;
+      }
+      .code-block {
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 1.5rem 0;
+      }
+      .code-header {
+        background: rgba(6, 182, 212, 0.1);
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .code-lang {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--primary-cyan);
+      }
+      .code-content {
+        padding: 1.5rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.82rem;
+        line-height: 1.8;
+        overflow-x: auto;
+      }
+      .code-content pre {
+        white-space: pre;
+      }
+      .code-copy {
+        padding: 6px 14px;
+        background: var(--primary-purple);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 0.8rem;
+        transition: all 0.3s;
+      }
+      .code-copy:hover {
+        opacity: 0.85;
+      }
+      .keyword {
+        color: #ff7b72;
+      }
+      .string {
+        color: #a5d6ff;
+      }
+      .comment {
+        color: #8b949e;
+        font-style: italic;
+      }
+      .number {
+        color: #79c0ff;
+      }
+      .function {
+        color: #d2a8ff;
+      }
+      .type {
+        color: #ffa657;
+      }
+      .output-block {
+        background: #000;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 1rem 1.4rem;
+        margin: 1rem 0;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--primary-green);
+        line-height: 1.8;
+        overflow-x: auto;
+      }
+      .output-label {
+        font-size: 0.72rem;
+        color: var(--text-secondary);
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 0.5rem;
+      }
+
+      /* ── COMPARISON TABLE ── */
+      .table-wrap {
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: auto;
+      }
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      .compare-table th,
+      .compare-table td {
+        padding: 0.9rem 1.2rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .compare-table th {
+        background: rgba(6, 182, 212, 0.1);
+        color: var(--primary-cyan);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.78rem;
+        letter-spacing: 0.8px;
+        white-space: nowrap;
+      }
+      .compare-table tr:last-child td {
+        border-bottom: none;
+      }
+      .compare-table td {
+        color: var(--text-secondary);
+      }
+      .compare-table td:first-child {
+        color: var(--text-primary);
+        font-weight: 600;
+      }
+      .compare-table tbody tr:hover {
+        background: rgba(6, 182, 212, 0.04);
+      }
+
+      /* ── NOTE BOX ── */
+      .note-box {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      .note-box strong {
+        color: var(--primary-orange);
+      }
+      .info-box {
+        background: rgba(6, 182, 212, 0.07);
+        border: 1px solid rgba(6, 182, 212, 0.25);
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      .info-box strong {
+        color: var(--primary-cyan);
+      }
+
+      /* ── TAGS ── */
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin: 2px;
+      }
+      .tag-green {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--primary-green);
+        border: 1px solid var(--primary-green);
+      }
+      .tag-cyan {
+        background: rgba(6, 182, 212, 0.15);
+        color: var(--primary-cyan);
+        border: 1px solid var(--primary-cyan);
+      }
+      .tag-orange {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--primary-orange);
+        border: 1px solid var(--primary-orange);
+      }
+      .tag-red {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--primary-red);
+        border: 1px solid var(--primary-red);
+      }
+      .tag-purple {
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--primary-purple);
+        border: 1px solid var(--primary-purple);
+      }
+
+      /* ── STEPS GRID ── */
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.2rem;
+        margin: 1.5rem 0;
+      }
+      .step-card {
+        background: var(--code-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1.2rem;
+      }
+      .step-num {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--primary-orange);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.85rem;
+        color: #000;
+        margin-bottom: 0.75rem;
+      }
+      .step-title {
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.35rem;
+        font-size: 0.92rem;
+      }
+      .step-body {
+        color: var(--text-secondary);
+        font-size: 0.83rem;
+        line-height: 1.55;
+      }
+      .step-code {
+        margin-top: 0.5rem;
+        background: var(--terminal-bg);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--primary-green);
+        border: 1px solid var(--border-color);
+      }
+
+      /* ── TWO-COL LAYOUT for matrix + vis ── */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      .two-col .side-label {
+        font-family: "Space Grotesk", sans-serif;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--primary-cyan);
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      /* ── VIDEO ── */
+      .video-section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 4rem 0;
+      }
+      .video-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .video-info span {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .video-container {
+        width: 100%;
+        max-width: 900px;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 1.5rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        margin: 0 auto;
+        transition: all 0.3s;
+      }
+      .video-container:hover {
+        border-color: var(--primary-green);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+      }
+      .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #000;
+      }
+      .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      /* ── LEVEL NAV ── */
+      .level-container {
+        max-width: 800px;
+        margin: 5rem auto;
+        padding: 3rem 2rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        text-align: center;
+      }
+      .level-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 0 20px;
+        height: 100px;
+      }
+      .level-wrapper button {
+        position: relative;
+        z-index: 20;
+        width: 130px;
+        padding: 1rem;
+        border-radius: 14px;
+        border: 2px solid var(--border-color);
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-family: "Inter", sans-serif;
+        font-size: 0.9rem;
+      }
+      .level-wrapper button:hover {
+        border-color: var(--primary-cyan);
+      }
+      #l1 {
+        border-color: var(--primary-cyan);
+        background: rgba(6, 182, 212, 0.15);
+        color: var(--primary-cyan) !important;
+        box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+      }
+      .slider {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 4px;
+        background: var(--border-color);
+        width: 20%;
+        z-index: 1;
+        pointer-events: none;
+      }
+      #slider1 {
+        left: 22%;
+      }
+      #slider2 {
+        left: 58%;
+      }
+      .slider.active {
+        background: linear-gradient(
+          90deg,
+          var(--primary-cyan),
+          var(--primary-purple)
+        );
+        box-shadow: 0 0 20px var(--primary-cyan);
+      }
+
+      /* ── MODAL ── */
+      .level-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px);
+        z-index: 100000;
+        justify-content: center;
+        align-items: center;
+      }
+      .level-modal-content {
+        background: var(--card-bg);
+        border: 2px solid var(--primary-purple);
+        padding: 3rem;
+        border-radius: 30px;
+        max-width: 450px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 1.5rem;
+      }
+      #startQuiz {
+        background: var(--primary-cyan);
+        color: white;
+        width: 100px;
+        height: 40px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+      #startQuiz:hover {
+        box-shadow: 0 0 15px var(--primary-cyan);
+      }
+      #cancelBtn {
+        background: var(--border-color);
+        color: var(--text-primary);
+        width: 80px;
+        height: 40px;
+        border-radius: 20px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        .nav-links.open {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          position: fixed;
+          top: 65px;
+          left: 0;
+          right: 0;
+          background: var(--nav-bg);
+          backdrop-filter: blur(12px);
+          padding: 1.5rem 2rem;
+          border-bottom: 1px solid var(--border-color);
+          z-index: 999;
+        }
+        .nav-hamburger {
+          display: block;
+        }
+        .container {
+          padding: 88px 1rem 2rem;
+        }
+        .section-card {
+          padding: 1.5rem 1.2rem;
+        }
+        .level-container {
+          margin: 3rem 0;
+          padding: 2rem 1rem;
+        }
+        .level-wrapper {
+          padding: 0 10px;
+        }
+        .level-wrapper button {
+          width: 90px;
+          font-size: 0.78rem;
+          padding: 0.75rem 0.5rem;
+        }
+        #slider1 {
+          left: 20%;
+        }
+        #slider2 {
+          left: 58%;
+        }
+        .graph-visual-img {
+          padding: 1rem 0.5rem;
+        }
+        .language-tabs {
+          width: 100%;
+        }
+      }
+      @media (max-width: 480px) {
+        .page-title {
+          font-size: 1.8rem;
+        }
+        .section-title {
+          font-size: 1.25rem;
+        }
+        .concepts-grid,
+        .example-grid,
+        .steps-grid {
+          grid-template-columns: 1fr;
+        }
+        .complexity-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .compare-table th,
+        .compare-table td {
+          padding: 0.6rem 0.7rem;
+          font-size: 0.76rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ════ NAV ════ -->
+    <nav>
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">G</div>
+          <span>CODEANIME</span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="#level-nav">Levels</a></li>
+        </ul>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              ></path>
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+          <button
+            class="nav-hamburger"
+            id="navHamburger"
+            aria-label="Toggle menu"
+          >
+            <svg viewBox="0 0 24 24">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span>›</span> <span>Graph</span>
+        <span>›</span>
+        <span>Basics</span>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <div class="page-header">
+        <h1 class="page-title">Graph — Basics</h1>
+        <p class="page-subtitle">
+          Understanding vertices, edges, and graph representations
+        </p>
+        <div class="level-tabs">
+          <div class="level-tab active">
+            Level 1 of 3<span class="partition"> | </span>Basics
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 1. UNDERSTANDING GRAPH ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">📚</div>
+          <h2 class="section-title">Understanding Graph</h2>
+        </div>
+
+        <div class="content-block">
+          <h3 class="content-title">💡 What is a Graph?</h3>
+          <p class="content-text">
+            A <b>Graph</b> is a non-linear data structure consisting of
+            <b>vertices</b> and <b>edges</b>. The vertices are sometimes
+            referred to as <b>nodes</b>, and the edges are lines or arcs that
+            connect any two nodes in the graph. More formally, a Graph is
+            composed of a set of vertices
+            <code style="color: var(--primary-cyan)">V</code> and a set of edges
+            <code style="color: var(--primary-cyan)">E</code>. The graph is
+            denoted by <b style="color: var(--primary-cyan)">G(V, E)</b>.
+          </p>
+        </div>
+
+        <div class="content-block">
+          <h3 class="content-title">🤔 Why Use Graphs?</h3>
+          <p class="content-text">
+            Graphs model relationships between objects. Unlike trees, graphs can
+            have <b>cycles</b>, multiple paths between nodes, and can represent
+            far more complex real-world structures. They are foundational to
+            network analysis, pathfinding, and scheduling problems.
+          </p>
+          <ul class="styled-list">
+            <li>
+              <b>Social Networks</b> — users as vertices, friendships as edges
+            </li>
+            <li>
+              <b>Maps &amp; Navigation</b> — cities as vertices, roads as edges
+              (weighted by distance)
+            </li>
+            <li>
+              <b>Web Crawling</b> — pages as vertices, hyperlinks as edges
+            </li>
+            <li>
+              <b>Dependency Resolution</b> — packages as vertices, dependencies
+              as directed edges
+            </li>
+            <li>
+              <b>Electrical Circuits</b> — components as vertices, wires as
+              edges
+            </li>
+          </ul>
+        </div>
+
+        <div class="content-block">
+          <h3 class="content-title">🔄 Key Terminology</h3>
+        </div>
+
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <div class="concept-title">⚪ Vertex (Node)</div>
+            <div class="concept-desc">
+              A fundamental unit of a graph. Represents an entity — a city,
+              person, web page, etc. A graph with <b>V</b> vertices has indices
+              0 to V-1.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">— Edge</div>
+            <div class="concept-desc">
+              A connection between two vertices. Can be <b>directed</b> (one-way
+              arrow) or <b>undirected</b> (bidirectional). Can also carry a
+              <b>weight</b>.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🔢 Degree</div>
+            <div class="concept-desc">
+              Number of edges incident to a vertex. In directed graphs:
+              <b>in-degree</b> (incoming) and <b>out-degree</b> (outgoing) are
+              counted separately.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🔗 Adjacent</div>
+            <div class="concept-desc">
+              Two vertices are adjacent (neighbours) if there is an edge
+              directly connecting them. The adjacency list stores all neighbours
+              of each vertex.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🔄 Path</div>
+            <div class="concept-desc">
+              A sequence of vertices where each consecutive pair is connected by
+              an edge. A <b>simple path</b> visits each vertex at most once.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🔁 Cycle</div>
+            <div class="concept-desc">
+              A path that starts and ends at the same vertex. A graph with no
+              cycles is called a <b>DAG</b> (Directed Acyclic Graph).
+            </div>
+          </div>
+        </div>
+
+        <div class="complexity-grid">
+          <div class="complexity-box">
+            <div class="complexity-label">Vertices</div>
+            <div class="complexity-value">V</div>
+          </div>
+          <div class="complexity-box">
+            <div class="complexity-label">Edges</div>
+            <div class="complexity-value purple">E</div>
+          </div>
+          <div class="complexity-box">
+            <div class="complexity-label">Matrix Space</div>
+            <div class="complexity-value orange">O(V²)</div>
+          </div>
+          <div class="complexity-box">
+            <div class="complexity-label">List Space</div>
+            <div class="complexity-value">O(V+E)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 2. GRAPH TYPES ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🗂️</div>
+          <h2 class="section-title">Types of Graphs</h2>
+        </div>
+
+        <div class="example-grid">
+          <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Undirected Graph</div>
+            <div class="example-desc">
+              Edges have no direction. If there is an edge (u, v), you can
+              travel both u→v and v→u. Example: friendship network.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Directed Graph (Digraph)</div>
+            <div class="example-desc">
+              Edges have a direction — arrow from source to destination. Edge
+              (u→v) does NOT imply (v→u). Example: Twitter follows.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Weighted Graph</div>
+            <div class="example-desc">
+              Each edge carries a numeric weight (cost, distance, time). Used in
+              shortest path algorithms like Dijkstra's and Bellman-Ford.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Connected Graph</div>
+            <div class="example-desc">
+              Every vertex is reachable from every other vertex. A disconnected
+              graph has isolated components with no path between them.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">5</div>
+            <div class="example-title">Cyclic / Acyclic</div>
+            <div class="example-desc">
+              A cyclic graph contains at least one cycle. An acyclic graph has
+              none. Trees are a special case of connected acyclic undirected
+              graphs.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">6</div>
+            <div class="example-title">DAG</div>
+            <div class="example-desc">
+              Directed Acyclic Graph — directed with no cycles. Used in
+              scheduling, topological sort, build systems (Makefiles, npm), and
+              neural networks.
+            </div>
+          </div>
+        </div>
+
+        <!-- Graph Type Visual -->
+        <div class="graph-visual-img" style="margin-top: 1.5rem">
+          <h3>Undirected vs Directed Graph</h3>
+          <div class="graph-diagram">
+            <svg
+              viewBox="0 0 760 260"
+              xmlns="http://www.w3.org/2000/svg"
+              font-family="JetBrains Mono,monospace"
+            >
+              <defs>
+                <marker
+                  id="darr"
+                  markerWidth="9"
+                  markerHeight="9"
+                  refX="8"
+                  refY="3"
+                  orient="auto"
+                >
+                  <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b" />
+                </marker>
+              </defs>
+
+              <!-- UNDIRECTED LABEL -->
+              <text
+                x="185"
+                y="22"
+                fill="#06b6d4"
+                font-size="14"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                Undirected Graph G(V,E)
+              </text>
+
+              <!-- Undirected nodes -->
+              <circle
+                cx="100"
+                cy="100"
+                r="28"
+                fill="rgba(139,92,246,.25)"
+                stroke="#8b5cf6"
+                stroke-width="2"
+              />
+              <text
+                x="100"
+                y="106"
+                fill="#c4b5fd"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                0
+              </text>
+
+              <circle
+                cx="200"
+                cy="60"
+                r="28"
+                fill="rgba(6,182,212,.25)"
+                stroke="#06b6d4"
+                stroke-width="2"
+              />
+              <text
+                x="200"
+                y="66"
+                fill="#a5f3fc"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                1
+              </text>
+
+              <circle
+                cx="280"
+                cy="100"
+                r="28"
+                fill="rgba(16,185,129,.25)"
+                stroke="#10b981"
+                stroke-width="2"
+              />
+              <text
+                x="280"
+                y="106"
+                fill="#6ee7b7"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                2
+              </text>
+
+              <circle
+                cx="190"
+                cy="175"
+                r="28"
+                fill="rgba(245,158,11,.25)"
+                stroke="#f59e0b"
+                stroke-width="2"
+              />
+              <text
+                x="190"
+                y="181"
+                fill="#fde68a"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                3
+              </text>
+
+              <!-- Undirected edges (no arrows) -->
+              <line
+                x1="126"
+                y1="88"
+                x2="173"
+                y2="72"
+                stroke="#a0a0a0"
+                stroke-width="2"
+              />
+              <line
+                x1="226"
+                y1="72"
+                x2="254"
+                y2="86"
+                stroke="#a0a0a0"
+                stroke-width="2"
+              />
+              <line
+                x1="100"
+                y1="128"
+                x2="170"
+                y2="163"
+                stroke="#a0a0a0"
+                stroke-width="2"
+              />
+              <line
+                x1="218"
+                y1="160"
+                x2="257"
+                y2="122"
+                stroke="#a0a0a0"
+                stroke-width="2"
+              />
+              <line
+                x1="200"
+                y1="88"
+                x2="200"
+                y2="147"
+                stroke="#a0a0a0"
+                stroke-width="2"
+                stroke-dasharray="5,3"
+              />
+
+              <!-- Edge labels -->
+              <text x="145" y="74" fill="#a0a0a0" font-size="10">(0,1)</text>
+              <text x="240" y="72" fill="#a0a0a0" font-size="10">(1,2)</text>
+              <text x="120" y="158" fill="#a0a0a0" font-size="10">(0,3)</text>
+              <text x="250" y="150" fill="#a0a0a0" font-size="10">(2,3)</text>
+
+              <text
+                x="185"
+                y="235"
+                fill="#a0a0a0"
+                font-size="11"
+                text-anchor="middle"
+              >
+                V={0,1,2,3} E={(0,1),(1,2),(0,3),(2,3)}
+              </text>
+
+              <!-- DIVIDER -->
+              <line
+                x1="390"
+                y1="10"
+                x2="390"
+                y2="250"
+                stroke="#2a2a2a"
+                stroke-width="2"
+                stroke-dasharray="6,4"
+              />
+
+              <!-- DIRECTED LABEL -->
+              <text
+                x="570"
+                y="22"
+                fill="#f59e0b"
+                font-size="14"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                Directed Graph (Digraph)
+              </text>
+
+              <!-- Directed nodes -->
+              <circle
+                cx="470"
+                cy="100"
+                r="28"
+                fill="rgba(139,92,246,.25)"
+                stroke="#8b5cf6"
+                stroke-width="2"
+              />
+              <text
+                x="470"
+                y="106"
+                fill="#c4b5fd"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                0
+              </text>
+
+              <circle
+                cx="580"
+                cy="60"
+                r="28"
+                fill="rgba(6,182,212,.25)"
+                stroke="#06b6d4"
+                stroke-width="2"
+              />
+              <text
+                x="580"
+                y="66"
+                fill="#a5f3fc"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                1
+              </text>
+
+              <circle
+                cx="660"
+                cy="100"
+                r="28"
+                fill="rgba(16,185,129,.25)"
+                stroke="#10b981"
+                stroke-width="2"
+              />
+              <text
+                x="660"
+                y="106"
+                fill="#6ee7b7"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                2
+              </text>
+
+              <!-- Directed edges with arrows -->
+              <!-- 1→0 -->
+              <line
+                x1="554"
+                y1="72"
+                x2="497"
+                y2="88"
+                stroke="#f59e0b"
+                stroke-width="2"
+                marker-end="url(#darr)"
+              />
+              <text x="515" y="72" fill="#f59e0b" font-size="10">1→0</text>
+              <!-- 2→0 -->
+              <line
+                x1="633"
+                y1="114"
+                x2="498"
+                y2="100"
+                stroke="#f59e0b"
+                stroke-width="2"
+                marker-end="url(#darr)"
+              />
+              <text x="560" y="122" fill="#f59e0b" font-size="10">2→0</text>
+              <!-- 1→2 -->
+              <line
+                x1="607"
+                y1="72"
+                x2="633"
+                y2="86"
+                stroke="#f59e0b"
+                stroke-width="2"
+                marker-end="url(#darr)"
+              />
+              <text x="625" y="70" fill="#f59e0b" font-size="10">1→2</text>
+
+              <text
+                x="565"
+                y="235"
+                fill="#a0a0a0"
+                font-size="11"
+                text-anchor="middle"
+              >
+                V={0,1,2} E={1→0, 2→0, 1→2}
+              </text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 3. REPRESENTATIONS ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🎨</div>
+          <h2 class="section-title">Graph Representations</h2>
+        </div>
+
+        <p class="content-text">
+          There are two most common ways to represent a graph. The choice
+          affects time and space complexity of graph algorithms significantly.
+        </p>
+
+        <div class="table-wrap" style="margin-bottom: 2rem">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Adjacency Matrix</th>
+                <th>Adjacency List</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Space</td>
+                <td style="color: var(--primary-red)">O(V²)</td>
+                <td style="color: var(--primary-green)">O(V + E)</td>
+              </tr>
+              <tr>
+                <td>Check edge (u,v)</td>
+                <td style="color: var(--primary-green)">O(1)</td>
+                <td style="color: var(--primary-orange)">O(degree)</td>
+              </tr>
+              <tr>
+                <td>Find all neighbours of v</td>
+                <td style="color: var(--primary-red)">O(V)</td>
+                <td style="color: var(--primary-green)">O(degree)</td>
+              </tr>
+              <tr>
+                <td>Add edge</td>
+                <td style="color: var(--primary-green)">O(1)</td>
+                <td style="color: var(--primary-green)">O(1)</td>
+              </tr>
+              <tr>
+                <td>Best for</td>
+                <td>Dense graphs, quick edge checks</td>
+                <td>Sparse graphs, BFS/DFS traversal</td>
+              </tr>
+              <tr>
+                <td>Cache performance</td>
+                <td>Good (2D array)</td>
+                <td>Moderate (linked lists / vectors)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="info-box">
+          <strong>Rule of thumb:</strong> Use <b>Adjacency Matrix</b> when V is
+          small and the graph is dense (E ≈ V²). Use <b>Adjacency List</b> when
+          the graph is sparse (E ≪ V²) or you frequently traverse neighbours —
+          which is the common case for BFS and DFS.
+        </div>
+      </div>
+
+      <!-- ══════════ 4. ADJACENCY MATRIX ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🔢</div>
+          <h2 class="section-title">Adjacency Matrix Representation</h2>
+        </div>
+
+        <p class="content-text">
+          An <b>adjacency matrix</b> represents a graph as a boolean 2D matrix
+          of 0s and 1s. For a graph with <b>n</b> vertices, create a 2D array
+          <code style="color: var(--primary-cyan)">adjMat[n][n]</code>:
+        </p>
+        <ul class="styled-list">
+          <li>
+            If there is an edge from vertex <b>i</b> to vertex <b>j</b>, mark
+            <code style="color: var(--primary-green)">adjMat[i][j] = 1</code>
+          </li>
+          <li>
+            If there is no edge, mark
+            <code style="color: var(--primary-orange)">adjMat[i][j] = 0</code>
+          </li>
+          <li>
+            For <b>undirected</b> graphs, the matrix is <b>symmetric</b>:
+            adjMat[i][j] == adjMat[j][i]
+          </li>
+        </ul>
+
+        <!-- Undirected Matrix -->
+        <div class="impl-type">
+          <div class="impl-header">
+            <h3 class="impl-title">⬜ Undirected Graph — Adjacency Matrix</h3>
+            <span class="impl-badge">Symmetric</span>
+          </div>
+
+          <div class="content-block">
+            <p class="content-text">
+              Consider 3 vertices (0, 1, 2) and edges: (0,1), (0,2), (1,2). Each
+              undirected edge sets <b>two</b> matrix cells.
+            </p>
+            <div class="steps-grid">
+              <div class="step-card">
+                <div class="step-num">1</div>
+                <div class="step-title">Initialize</div>
+                <div class="step-body">
+                  Create a 3×3 matrix filled with all 0s — no edges exist yet.
+                </div>
+                <div class="step-code">adjMat[3][3] = {0}</div>
+              </div>
+              <div class="step-card">
+                <div class="step-num">2</div>
+                <div class="step-title">Edge (0, 1)</div>
+                <div class="step-body">
+                  Set both mat[0][1]=1 and mat[1][0]=1 since the graph is
+                  undirected.
+                </div>
+                <div class="step-code">mat[0][1]=1, mat[1][0]=1</div>
+              </div>
+              <div class="step-card">
+                <div class="step-num">3</div>
+                <div class="step-title">Edge (0, 2)</div>
+                <div class="step-body">Set mat[0][2]=1 and mat[2][0]=1.</div>
+                <div class="step-code">mat[0][2]=1, mat[2][0]=1</div>
+              </div>
+              <div class="step-card">
+                <div class="step-num">4</div>
+                <div class="step-title">Edge (1, 2)</div>
+                <div class="step-body">
+                  Set mat[1][2]=1 and mat[2][1]=1. Matrix is now complete.
+                </div>
+                <div class="step-code">mat[1][2]=1, mat[2][1]=1</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual: graph + matrix side by side -->
+          <div class="graph-visual-img">
+            <h3>Undirected Graph → Adjacency Matrix</h3>
+            <div class="graph-diagram">
+              <svg
+                viewBox="0 0 720 280"
+                xmlns="http://www.w3.org/2000/svg"
+                font-family="JetBrains Mono,monospace"
+              >
+                <!-- GRAPH left side -->
+                <text
+                  x="155"
+                  y="22"
+                  fill="#06b6d4"
+                  font-size="13"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  Graph
+                </text>
+                <circle
+                  cx="155"
+                  cy="90"
+                  r="30"
+                  fill="rgba(139,92,246,.25)"
+                  stroke="#8b5cf6"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="155"
+                  y="96"
+                  fill="#c4b5fd"
+                  font-size="16"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <circle
+                  cx="75"
+                  cy="200"
+                  r="30"
+                  fill="rgba(6,182,212,.25)"
+                  stroke="#06b6d4"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="75"
+                  y="206"
+                  fill="#a5f3fc"
+                  font-size="16"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <circle
+                  cx="235"
+                  cy="200"
+                  r="30"
+                  fill="rgba(16,185,129,.25)"
+                  stroke="#10b981"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="235"
+                  y="206"
+                  fill="#6ee7b7"
+                  font-size="16"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <!-- Edges -->
+                <line
+                  x1="132"
+                  y1="113"
+                  x2="95"
+                  y2="175"
+                  stroke="#a0a0a0"
+                  stroke-width="2.5"
+                />
+                <line
+                  x1="178"
+                  y1="113"
+                  x2="214"
+                  y2="175"
+                  stroke="#a0a0a0"
+                  stroke-width="2.5"
+                />
+                <line
+                  x1="105"
+                  y1="200"
+                  x2="205"
+                  y2="200"
+                  stroke="#a0a0a0"
+                  stroke-width="2.5"
+                />
+                <!-- Edge labels -->
+                <text
+                  x="103"
+                  y="148"
+                  fill="#10b981"
+                  font-size="11"
+                  text-anchor="middle"
+                >
+                  (0,1)
+                </text>
+                <text
+                  x="207"
+                  y="148"
+                  fill="#10b981"
+                  font-size="11"
+                  text-anchor="middle"
+                >
+                  (0,2)
+                </text>
+                <text
+                  x="155"
+                  y="193"
+                  fill="#10b981"
+                  font-size="11"
+                  text-anchor="middle"
+                >
+                  (1,2)
+                </text>
+
+                <!-- ARROW -->
+                <text
+                  x="340"
+                  y="150"
+                  fill="#06b6d4"
+                  font-size="22"
+                  text-anchor="middle"
+                >
+                  →
+                </text>
+                <text
+                  x="340"
+                  y="168"
+                  fill="#a0a0a0"
+                  font-size="10"
+                  text-anchor="middle"
+                >
+                  represent as
+                </text>
+
+                <!-- MATRIX right side -->
+                <text
+                  x="555"
+                  y="22"
+                  fill="#06b6d4"
+                  font-size="13"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  Adjacency Matrix (3×3)
+                </text>
+
+                <!-- column headers -->
+                <text
+                  x="450"
+                  y="55"
+                  fill="#a0a0a0"
+                  font-size="11"
+                  text-anchor="middle"
+                ></text>
+                <text
+                  x="498"
+                  y="55"
+                  fill="#8b5cf6"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <text
+                  x="558"
+                  y="55"
+                  fill="#06b6d4"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <text
+                  x="618"
+                  y="55"
+                  fill="#10b981"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <!-- row headers -->
+                <text
+                  x="450"
+                  y="92"
+                  fill="#8b5cf6"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <text
+                  x="450"
+                  y="152"
+                  fill="#06b6d4"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <text
+                  x="450"
+                  y="212"
+                  fill="#10b981"
+                  font-size="12"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+
+                <!-- Matrix cells -->
+                <!-- row 0 -->
+                <rect
+                  x="468"
+                  y="64"
+                  width="54"
+                  height="48"
+                  fill="#0d1117"
+                  stroke="#2a2a2a"
+                  rx="4"
+                />
+                <text
+                  x="495"
+                  y="93"
+                  fill="#a0a0a0"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+
+                <rect
+                  x="528"
+                  y="64"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="555"
+                  y="93"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <rect
+                  x="588"
+                  y="64"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="615"
+                  y="93"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <!-- row 1 -->
+                <rect
+                  x="468"
+                  y="124"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="495"
+                  y="153"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <rect
+                  x="528"
+                  y="124"
+                  width="54"
+                  height="48"
+                  fill="#0d1117"
+                  stroke="#2a2a2a"
+                  rx="4"
+                />
+                <text
+                  x="555"
+                  y="153"
+                  fill="#a0a0a0"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+
+                <rect
+                  x="588"
+                  y="124"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="615"
+                  y="153"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <!-- row 2 -->
+                <rect
+                  x="468"
+                  y="184"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="495"
+                  y="213"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <rect
+                  x="528"
+                  y="184"
+                  width="54"
+                  height="48"
+                  fill="rgba(16,185,129,.18)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="555"
+                  y="213"
+                  fill="#10b981"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+
+                <rect
+                  x="588"
+                  y="184"
+                  width="54"
+                  height="48"
+                  fill="#0d1117"
+                  stroke="#2a2a2a"
+                  rx="4"
+                />
+                <text
+                  x="615"
+                  y="213"
+                  fill="#a0a0a0"
+                  font-size="17"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+
+                <!-- symmetric note -->
+                <text
+                  x="555"
+                  y="252"
+                  fill="#f59e0b"
+                  font-size="11"
+                  text-anchor="middle"
+                >
+                  ✓ Symmetric matrix — undirected graph
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Undirected Adjacency Matrix code -->
+          <div class="operation-dropdown">
+            <div
+              class="operation-header"
+              onclick="toggleOp('undirected-matrix')"
+            >
+              <div class="operation-title">
+                <div class="operation-number">1</div>
+                <span>Undirected Graph — Adjacency Matrix Code</span>
+              </div>
+              <div class="dropdown-icon" id="icon-undirected-matrix">▼</div>
+            </div>
+            <div class="operation-content" id="content-undirected-matrix">
+              <div class="operation-body">
+                <div class="complexity-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Time Build</div>
+                    <div class="complexity-value orange">O(V²+E)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space</div>
+                    <div class="complexity-value orange">O(V²)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Edge Check</div>
+                    <div class="complexity-value">O(1)</div>
+                  </div>
+                </div>
+                <div class="language-tabs" data-group="umat">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'umat', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'umat', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'umat', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'umat', 'c')"
+                  >
+                    C
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'umat', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="umat"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="function">createGraph</span>(<span class="keyword">int</span> V, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; &amp;edges) {
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; mat(V, vector&lt;<span class="keyword">int</span>&gt;(V, <span class="number">0</span>));
+
+    <span class="comment">// Add each edge to the adjacency matrix</span>
+    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;it : edges) {
+        <span class="keyword">int</span> u = it[<span class="number">0</span>];
+        <span class="keyword">int</span> v = it[<span class="number">1</span>];
+        mat[u][v] = <span class="number">1</span>;
+        mat[v][u] = <span class="number">1</span>; <span class="comment">// undirected — set both directions</span>
+    }
+    <span class="keyword">return</span> mat;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">int</span> V = <span class="number">3</span>;
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; edges = {{<span class="number">0</span>,<span class="number">1</span>},{<span class="number">0</span>,<span class="number">2</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; mat = <span class="function">createGraph</span>(V, edges);
+
+    cout &lt;&lt; <span class="string">"Adjacency Matrix:\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; i++) {
+        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; V; j++)
+            cout &lt;&lt; mat[i][j] &lt;&lt; <span class="string">" "</span>;
+        cout &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="umat"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">def</span> <span class="function">create_graph</span>(V, edges):
+    <span class="comment"># Initialize V×V matrix with 0s</span>
+    mat = [[<span class="number">0</span>] * V <span class="keyword">for</span> _ <span class="keyword">in</span> range(V)]
+
+    <span class="keyword">for</span> u, v <span class="keyword">in</span> edges:
+        mat[u][v] = <span class="number">1</span>
+        mat[v][u] = <span class="number">1</span>  <span class="comment"># undirected</span>
+
+    <span class="keyword">return</span> mat
+
+V = <span class="number">3</span>
+edges = [(<span class="number">0</span>,<span class="number">1</span>), (<span class="number">0</span>,<span class="number">2</span>), (<span class="number">1</span>,<span class="number">2</span>)]
+mat = <span class="function">create_graph</span>(V, edges)
+
+<span class="function">print</span>(<span class="string">"Adjacency Matrix:"</span>)
+<span class="keyword">for</span> row <span class="keyword">in</span> mat:
+    <span class="function">print</span>(<span class="string">' '</span>.<span class="function">join</span>(<span class="function">map</span>(str, row)))</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="umat"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">public class</span> Graph {
+    <span class="keyword">static int</span>[][] <span class="function">createGraph</span>(<span class="keyword">int</span> V, <span class="keyword">int</span>[][] edges) {
+        <span class="keyword">int</span>[][] mat = <span class="keyword">new int</span>[V][V];
+
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] e : edges) {
+            mat[e[<span class="number">0</span>]][e[<span class="number">1</span>]] = <span class="number">1</span>;
+            mat[e[<span class="number">1</span>]][e[<span class="number">0</span>]] = <span class="number">1</span>; <span class="comment">// undirected</span>
+        }
+        <span class="keyword">return</span> mat;
+    }
+
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
+        <span class="keyword">int</span> V = <span class="number">3</span>;
+        <span class="keyword">int</span>[][] edges = {{<span class="number">0</span>,<span class="number">1</span>},{<span class="number">0</span>,<span class="number">2</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+        <span class="keyword">int</span>[][] mat = <span class="function">createGraph</span>(V, edges);
+
+        System.out.<span class="function">println</span>(<span class="string">"Adjacency Matrix:"</span>);
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] row : mat) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> val : row)
+                System.out.<span class="function">print</span>(val + <span class="string">" "</span>);
+            System.out.<span class="function">println</span>();
+        }
+    }
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="umat" data-lang="c">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="keyword">#define</span> V <span class="number">3</span>
+
+<span class="keyword">void</span> <span class="function">createGraph</span>(<span class="keyword">int</span> mat[V][V], <span class="keyword">int</span> edges[][<span class="number">2</span>], <span class="keyword">int</span> E) {
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; E; i++) {
+        <span class="keyword">int</span> u = edges[i][<span class="number">0</span>], v = edges[i][<span class="number">1</span>];
+        mat[u][v] = <span class="number">1</span>;
+        mat[v][u] = <span class="number">1</span>; <span class="comment">// undirected</span>
+    }
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">int</span> mat[V][V] = {<span class="number">0</span>};
+    <span class="keyword">int</span> edges[][<span class="number">2</span>] = {{<span class="number">0</span>,<span class="number">1</span>},{<span class="number">0</span>,<span class="number">2</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+    <span class="function">createGraph</span>(mat, edges, <span class="number">3</span>);
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; i++) {
+        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; V; j++)
+            printf(<span class="string">"%d "</span>, mat[i][j]);
+        printf(<span class="string">"\n"</span>);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="umat" data-lang="js">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">function</span> <span class="function">createGraph</span>(V, edges) {
+    <span class="keyword">const</span> mat = Array.<span class="function">from</span>({length: V}, () =&gt; Array(V).<span class="function">fill</span>(<span class="number">0</span>));
+
+    <span class="keyword">for</span> (<span class="keyword">const</span> [u, v] <span class="keyword">of</span> edges) {
+        mat[u][v] = <span class="number">1</span>;
+        mat[v][u] = <span class="number">1</span>; <span class="comment">// undirected</span>
+    }
+    <span class="keyword">return</span> mat;
+}
+
+<span class="keyword">const</span> edges = [[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">2</span>],[<span class="number">1</span>,<span class="number">2</span>]];
+<span class="keyword">const</span> mat = <span class="function">createGraph</span>(<span class="number">3</span>, edges);
+mat.<span class="function">forEach</span>(row =&gt; console.<span class="function">log</span>(row.<span class="function">join</span>(<span class="string">' '</span>)));</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="output-label">Output</div>
+                <div class="output-block">
+                  Adjacency Matrix Representation:<br />0 1 1<br />1 0 1<br />1
+                  1 0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Directed Matrix -->
+          <div class="operation-dropdown" style="margin-top: 1.5rem">
+            <div class="operation-header" onclick="toggleOp('directed-matrix')">
+              <div class="operation-title">
+                <div class="operation-number">2</div>
+                <span>Directed Graph — Adjacency Matrix Code</span>
+              </div>
+              <div class="dropdown-icon" id="icon-directed-matrix">▼</div>
+            </div>
+            <div class="operation-content" id="content-directed-matrix">
+              <div class="operation-body">
+                <p class="content-text">
+                  For a <b>directed graph</b>, we only set
+                  <code style="color: var(--primary-green)">mat[u][v] = 1</code>
+                  — NOT mat[v][u]. The matrix is generally <b>asymmetric</b>.
+                  Consider edges: 1→0, 2→0, 1→2.
+                </p>
+
+                <div class="graph-visual-img">
+                  <h3>Directed Graph → Adjacency Matrix</h3>
+                  <div class="graph-diagram">
+                    <svg
+                      viewBox="0 0 720 270"
+                      xmlns="http://www.w3.org/2000/svg"
+                      font-family="JetBrains Mono,monospace"
+                    >
+                      <defs>
+                        <marker
+                          id="darr2"
+                          markerWidth="9"
+                          markerHeight="9"
+                          refX="8"
+                          refY="3"
+                          orient="auto"
+                        >
+                          <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b" />
+                        </marker>
+                      </defs>
+                      <text
+                        x="155"
+                        y="22"
+                        fill="#f59e0b"
+                        font-size="13"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        Directed Graph
+                      </text>
+                      <!-- Nodes -->
+                      <circle
+                        cx="155"
+                        cy="90"
+                        r="30"
+                        fill="rgba(139,92,246,.25)"
+                        stroke="#8b5cf6"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="155"
+                        y="96"
+                        fill="#c4b5fd"
+                        font-size="16"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <circle
+                        cx="75"
+                        cy="200"
+                        r="30"
+                        fill="rgba(6,182,212,.25)"
+                        stroke="#06b6d4"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="75"
+                        y="206"
+                        fill="#a5f3fc"
+                        font-size="16"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <circle
+                        cx="235"
+                        cy="200"
+                        r="30"
+                        fill="rgba(16,185,129,.25)"
+                        stroke="#10b981"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="235"
+                        y="206"
+                        fill="#6ee7b7"
+                        font-size="16"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <!-- Directed Edges 1→0, 2→0, 1→2 -->
+                      <line
+                        x1="90"
+                        y1="177"
+                        x2="136"
+                        y2="117"
+                        stroke="#f59e0b"
+                        stroke-width="2.5"
+                        marker-end="url(#darr2)"
+                      />
+                      <line
+                        x1="220"
+                        y1="177"
+                        x2="172"
+                        y2="117"
+                        stroke="#f59e0b"
+                        stroke-width="2.5"
+                        marker-end="url(#darr2)"
+                      />
+                      <line
+                        x1="105"
+                        y1="200"
+                        x2="205"
+                        y2="200"
+                        stroke="#f59e0b"
+                        stroke-width="2.5"
+                        marker-end="url(#darr2)"
+                      />
+                      <text x="98" y="140" fill="#f59e0b" font-size="11">
+                        1→0
+                      </text>
+                      <text x="192" y="140" fill="#f59e0b" font-size="11">
+                        2→0
+                      </text>
+                      <text x="150" y="194" fill="#f59e0b" font-size="11">
+                        1→2
+                      </text>
+
+                      <!-- ARROW -->
+                      <text
+                        x="340"
+                        y="150"
+                        fill="#06b6d4"
+                        font-size="22"
+                        text-anchor="middle"
+                      >
+                        →
+                      </text>
+
+                      <!-- MATRIX -->
+                      <text
+                        x="555"
+                        y="22"
+                        fill="#f59e0b"
+                        font-size="13"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        Adjacency Matrix (Asymmetric)
+                      </text>
+                      <!-- col headers -->
+                      <text
+                        x="498"
+                        y="55"
+                        fill="#8b5cf6"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <text
+                        x="558"
+                        y="55"
+                        fill="#06b6d4"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <text
+                        x="618"
+                        y="55"
+                        fill="#10b981"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <!-- row headers -->
+                      <text
+                        x="450"
+                        y="92"
+                        fill="#8b5cf6"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <text
+                        x="450"
+                        y="152"
+                        fill="#06b6d4"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <text
+                        x="450"
+                        y="212"
+                        fill="#10b981"
+                        font-size="12"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <!-- row 0: all 0 -->
+                      <rect
+                        x="468"
+                        y="64"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="495"
+                        y="93"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <rect
+                        x="528"
+                        y="64"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="555"
+                        y="93"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <rect
+                        x="588"
+                        y="64"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="615"
+                        y="93"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <!-- row 1: 1→0 and 1→2 -->
+                      <rect
+                        x="468"
+                        y="124"
+                        width="54"
+                        height="48"
+                        fill="rgba(245,158,11,.18)"
+                        stroke="#f59e0b"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="495"
+                        y="153"
+                        fill="#fde68a"
+                        font-size="17"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <rect
+                        x="528"
+                        y="124"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="555"
+                        y="153"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <rect
+                        x="588"
+                        y="124"
+                        width="54"
+                        height="48"
+                        fill="rgba(245,158,11,.18)"
+                        stroke="#f59e0b"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="615"
+                        y="153"
+                        fill="#fde68a"
+                        font-size="17"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <!-- row 2: 2→0 only -->
+                      <rect
+                        x="468"
+                        y="184"
+                        width="54"
+                        height="48"
+                        fill="rgba(245,158,11,.18)"
+                        stroke="#f59e0b"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="495"
+                        y="213"
+                        fill="#fde68a"
+                        font-size="17"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <rect
+                        x="528"
+                        y="184"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="555"
+                        y="213"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <rect
+                        x="588"
+                        y="184"
+                        width="54"
+                        height="48"
+                        fill="#0d1117"
+                        stroke="#2a2a2a"
+                        rx="4"
+                      />
+                      <text
+                        x="615"
+                        y="213"
+                        fill="#a0a0a0"
+                        font-size="17"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+
+                      <text
+                        x="555"
+                        y="252"
+                        fill="#f59e0b"
+                        font-size="11"
+                        text-anchor="middle"
+                      >
+                        ⚠ Asymmetric — directed graph, do NOT set mat[v][u]
+                      </text>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="language-tabs" data-group="dmat">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'dmat', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dmat', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dmat', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dmat', 'c')"
+                  >
+                    C
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dmat', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="dmat"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre>vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="function">createGraph</span>(<span class="keyword">int</span> V, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; &amp;edges) {
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; mat(V, vector&lt;<span class="keyword">int</span>&gt;(V, <span class="number">0</span>));
+
+    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;it : edges) {
+        <span class="keyword">int</span> u = it[<span class="number">0</span>], v = it[<span class="number">1</span>];
+        mat[u][v] = <span class="number">1</span>;
+        <span class="comment">// Do NOT set mat[v][u] — directed graph!</span>
+    }
+    <span class="keyword">return</span> mat;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">int</span> V = <span class="number">3</span>;
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; edges = {{<span class="number">1</span>,<span class="number">0</span>},{<span class="number">2</span>,<span class="number">0</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+    <span class="comment">// Output: 0 0 0 / 1 0 1 / 1 0 0</span>
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="dmat"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">def</span> <span class="function">create_graph</span>(V, edges):
+    mat = [[<span class="number">0</span>] * V <span class="keyword">for</span> _ <span class="keyword">in</span> range(V)]
+    <span class="keyword">for</span> u, v <span class="keyword">in</span> edges:
+        mat[u][v] = <span class="number">1</span>    <span class="comment"># directed — one way only</span>
+    <span class="keyword">return</span> mat
+
+edges = [(<span class="number">1</span>,<span class="number">0</span>), (<span class="number">2</span>,<span class="number">0</span>), (<span class="number">1</span>,<span class="number">2</span>)]
+mat = <span class="function">create_graph</span>(<span class="number">3</span>, edges)
+<span class="keyword">for</span> row <span class="keyword">in</span> mat: <span class="function">print</span>(<span class="string">' '</span>.<span class="function">join</span>(<span class="function">map</span>(str, row)))</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="dmat"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">static int</span>[][] <span class="function">createGraph</span>(<span class="keyword">int</span> V, <span class="keyword">int</span>[][] edges) {
+    <span class="keyword">int</span>[][] mat = <span class="keyword">new int</span>[V][V];
+    <span class="keyword">for</span> (<span class="keyword">int</span>[] e : edges)
+        mat[e[<span class="number">0</span>]][e[<span class="number">1</span>]] = <span class="number">1</span>; <span class="comment">// directed only</span>
+    <span class="keyword">return</span> mat;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="dmat" data-lang="c">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">void</span> <span class="function">createGraph</span>(<span class="keyword">int</span> mat[V][V], <span class="keyword">int</span> edges[][<span class="number">2</span>], <span class="keyword">int</span> E) {
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; E; i++)
+        mat[edges[i][<span class="number">0</span>]][edges[i][<span class="number">1</span>]] = <span class="number">1</span>; <span class="comment">// one direction</span>
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="dmat" data-lang="js">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">function</span> <span class="function">createGraph</span>(V, edges) {
+    <span class="keyword">const</span> mat = Array.<span class="function">from</span>({length:V}, () =&gt; Array(V).<span class="function">fill</span>(<span class="number">0</span>));
+    <span class="keyword">for</span> (<span class="keyword">const</span> [u, v] <span class="keyword">of</span> edges)
+        mat[u][v] = <span class="number">1</span>; <span class="comment">// directed only</span>
+    <span class="keyword">return</span> mat;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="output-label">Output</div>
+                <div class="output-block">
+                  Adjacency Matrix Representation:<br />0 0 0<br />1 0 1<br />1
+                  0 0
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 5. ADJACENCY LIST ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🔗</div>
+          <h2 class="section-title">Adjacency List Representation</h2>
+        </div>
+
+        <p class="content-text">
+          An <b>adjacency list</b> uses an array of lists (or vector of vectors)
+          to store edges. The size of the array equals the number of vertices
+          <b>n</b>. Each index
+          <code style="color: var(--primary-cyan)">i</code> stores a list of all
+          vertices adjacent to vertex
+          <code style="color: var(--primary-cyan)">i</code>.
+        </p>
+        <ul class="styled-list">
+          <li>
+            <code style="color: var(--primary-green)">adjList[0]</code> → all
+            neighbours of vertex 0
+          </li>
+          <li>
+            <code style="color: var(--primary-green)">adjList[1]</code> → all
+            neighbours of vertex 1, and so on
+          </li>
+          <li>
+            Much more <b>space-efficient</b> for sparse graphs: O(V + E) vs
+            O(V²)
+          </li>
+        </ul>
+
+        <!-- Undirected List -->
+        <div class="impl-type">
+          <div class="impl-header">
+            <h3 class="impl-title">⬜ Undirected Graph — Adjacency List</h3>
+            <span class="impl-badge" style="background: var(--primary-green)"
+              >Space Efficient</span
+            >
+          </div>
+
+          <p class="content-text">
+            Same 3-vertex graph: edges (0,1), (0,2), (1,2). Each undirected edge
+            is added to <b>both</b> adjacency lists.
+          </p>
+
+          <!-- Adjacency List Visual -->
+          <div class="graph-visual-img">
+            <h3>Undirected Graph → Adjacency List</h3>
+            <div class="graph-diagram">
+              <svg
+                viewBox="0 0 760 260"
+                xmlns="http://www.w3.org/2000/svg"
+                font-family="JetBrains Mono,monospace"
+              >
+                <defs>
+                  <marker
+                    id="listArr"
+                    markerWidth="7"
+                    markerHeight="7"
+                    refX="6"
+                    refY="3"
+                    orient="auto"
+                  >
+                    <path d="M0,0 L0,6 L7,3 z" fill="#a0a0a0" />
+                  </marker>
+                </defs>
+
+                <!-- Graph left -->
+                <text
+                  x="155"
+                  y="22"
+                  fill="#06b6d4"
+                  font-size="13"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  Graph
+                </text>
+                <circle
+                  cx="155"
+                  cy="90"
+                  r="28"
+                  fill="rgba(139,92,246,.25)"
+                  stroke="#8b5cf6"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="155"
+                  y="96"
+                  fill="#c4b5fd"
+                  font-size="15"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <circle
+                  cx="75"
+                  cy="195"
+                  r="28"
+                  fill="rgba(6,182,212,.25)"
+                  stroke="#06b6d4"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="75"
+                  y="201"
+                  fill="#a5f3fc"
+                  font-size="15"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <circle
+                  cx="235"
+                  cy="195"
+                  r="28"
+                  fill="rgba(16,185,129,.25)"
+                  stroke="#10b981"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="235"
+                  y="201"
+                  fill="#6ee7b7"
+                  font-size="15"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <line
+                  x1="130"
+                  y1="110"
+                  x2="96"
+                  y2="173"
+                  stroke="#a0a0a0"
+                  stroke-width="2"
+                />
+                <line
+                  x1="178"
+                  y1="110"
+                  x2="212"
+                  y2="173"
+                  stroke="#a0a0a0"
+                  stroke-width="2"
+                />
+                <line
+                  x1="103"
+                  y1="195"
+                  x2="207"
+                  y2="195"
+                  stroke="#a0a0a0"
+                  stroke-width="2"
+                />
+
+                <!-- Arrow to list -->
+                <text
+                  x="350"
+                  y="145"
+                  fill="#06b6d4"
+                  font-size="22"
+                  text-anchor="middle"
+                >
+                  →
+                </text>
+
+                <!-- Adjacency List right -->
+                <text
+                  x="570"
+                  y="22"
+                  fill="#06b6d4"
+                  font-size="13"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  Adjacency List
+                </text>
+
+                <!-- Index 0 -->
+                <rect
+                  x="420"
+                  y="40"
+                  width="48"
+                  height="40"
+                  fill="rgba(139,92,246,.2)"
+                  stroke="#8b5cf6"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="444"
+                  y="65"
+                  fill="#c4b5fd"
+                  font-size="14"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <path
+                  d="M468 60 L502 60"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="502"
+                  y="44"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#8b5cf6"
+                  rx="4"
+                />
+                <text
+                  x="528"
+                  y="64"
+                  fill="#c4b5fd"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <path
+                  d="M554 60 L584 60"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="584"
+                  y="44"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#8b5cf6"
+                  rx="4"
+                />
+                <text
+                  x="610"
+                  y="64"
+                  fill="#c4b5fd"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <path
+                  d="M636 60 L666 60"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="666"
+                  y="52"
+                  width="36"
+                  height="16"
+                  fill="#0d1117"
+                  stroke="#333"
+                  rx="3"
+                />
+                <text
+                  x="684"
+                  y="64"
+                  fill="#333"
+                  font-size="10"
+                  text-anchor="middle"
+                >
+                  ∅
+                </text>
+
+                <!-- Index 1 -->
+                <rect
+                  x="420"
+                  y="105"
+                  width="48"
+                  height="40"
+                  fill="rgba(6,182,212,.2)"
+                  stroke="#06b6d4"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="444"
+                  y="130"
+                  fill="#a5f3fc"
+                  font-size="14"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <path
+                  d="M468 125 L502 125"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="502"
+                  y="109"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#06b6d4"
+                  rx="4"
+                />
+                <text
+                  x="528"
+                  y="129"
+                  fill="#a5f3fc"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <path
+                  d="M554 125 L584 125"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="584"
+                  y="109"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#06b6d4"
+                  rx="4"
+                />
+                <text
+                  x="610"
+                  y="129"
+                  fill="#a5f3fc"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <path
+                  d="M636 125 L666 125"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="666"
+                  y="117"
+                  width="36"
+                  height="16"
+                  fill="#0d1117"
+                  stroke="#333"
+                  rx="3"
+                />
+                <text
+                  x="684"
+                  y="129"
+                  fill="#333"
+                  font-size="10"
+                  text-anchor="middle"
+                >
+                  ∅
+                </text>
+
+                <!-- Index 2 -->
+                <rect
+                  x="420"
+                  y="170"
+                  width="48"
+                  height="40"
+                  fill="rgba(16,185,129,.2)"
+                  stroke="#10b981"
+                  stroke-width="1.5"
+                  rx="4"
+                />
+                <text
+                  x="444"
+                  y="195"
+                  fill="#6ee7b7"
+                  font-size="14"
+                  font-weight="bold"
+                  text-anchor="middle"
+                >
+                  2
+                </text>
+                <path
+                  d="M468 190 L502 190"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="502"
+                  y="174"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#10b981"
+                  rx="4"
+                />
+                <text
+                  x="528"
+                  y="194"
+                  fill="#6ee7b7"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  0
+                </text>
+                <path
+                  d="M554 190 L584 190"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="584"
+                  y="174"
+                  width="52"
+                  height="32"
+                  fill="#1e293b"
+                  stroke="#10b981"
+                  rx="4"
+                />
+                <text
+                  x="610"
+                  y="194"
+                  fill="#6ee7b7"
+                  font-size="12"
+                  text-anchor="middle"
+                >
+                  1
+                </text>
+                <path
+                  d="M636 190 L666 190"
+                  stroke="#a0a0a0"
+                  stroke-width="1.5"
+                  marker-end="url(#listArr)"
+                />
+                <rect
+                  x="666"
+                  y="182"
+                  width="36"
+                  height="16"
+                  fill="#0d1117"
+                  stroke="#333"
+                  rx="3"
+                />
+                <text
+                  x="684"
+                  y="194"
+                  fill="#333"
+                  font-size="10"
+                  text-anchor="middle"
+                >
+                  ∅
+                </text>
+
+                <text
+                  x="555"
+                  y="238"
+                  fill="#10b981"
+                  font-size="11"
+                  text-anchor="middle"
+                >
+                  Each vertex lists its neighbours — bidirectional edges stored
+                  twice
+                </text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="operation-dropdown">
+            <div class="operation-header" onclick="toggleOp('undirected-list')">
+              <div class="operation-title">
+                <div class="operation-number">1</div>
+                <span>Undirected Graph — Adjacency List Code</span>
+              </div>
+              <div class="dropdown-icon" id="icon-undirected-list">▼</div>
+            </div>
+            <div class="operation-content" id="content-undirected-list">
+              <div class="operation-body">
+                <div class="complexity-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space</div>
+                    <div class="complexity-value">O(V+E)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Build Time</div>
+                    <div class="complexity-value orange">O(V+E)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Traverse Neighbours</div>
+                    <div class="complexity-value">O(degree)</div>
+                  </div>
+                </div>
+                <div class="language-tabs" data-group="ulist">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'ulist', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'ulist', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'ulist', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'ulist', 'c')"
+                  >
+                    C
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'ulist', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="ulist"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="function">createGraph</span>(<span class="keyword">int</span> V, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; &amp;edges) {
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; adj(V);
+
+    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;it : edges) {
+        <span class="keyword">int</span> u = it[<span class="number">0</span>], v = it[<span class="number">1</span>];
+        adj[u].<span class="function">push_back</span>(v);
+        adj[v].<span class="function">push_back</span>(u); <span class="comment">// undirected — add both ways</span>
+    }
+    <span class="keyword">return</span> adj;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">int</span> V = <span class="number">3</span>;
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; edges = {{<span class="number">0</span>,<span class="number">1</span>},{<span class="number">0</span>,<span class="number">2</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; adj = <span class="function">createGraph</span>(V, edges);
+
+    cout &lt;&lt; <span class="string">"Adjacency List:\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; i++) {
+        cout &lt;&lt; i &lt;&lt; <span class="string">": "</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> j : adj[i]) cout &lt;&lt; j &lt;&lt; <span class="string">" "</span>;
+        cout &lt;&lt; endl;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="ulist"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict
+
+<span class="keyword">def</span> <span class="function">create_graph</span>(V, edges):
+    adj = defaultdict(list)
+    <span class="keyword">for</span> u, v <span class="keyword">in</span> edges:
+        adj[u].<span class="function">append</span>(v)
+        adj[v].<span class="function">append</span>(u)  <span class="comment"># undirected</span>
+    <span class="keyword">return</span> adj
+
+edges = [(<span class="number">0</span>,<span class="number">1</span>), (<span class="number">0</span>,<span class="number">2</span>), (<span class="number">1</span>,<span class="number">2</span>)]
+adj = <span class="function">create_graph</span>(<span class="number">3</span>, edges)
+
+<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):
+    <span class="function">print</span>(f<span class="string">"{i}: {' '.join(map(str, adj[i]))}"</span>)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="ulist"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">import</span> java.util.*;
+
+<span class="keyword">public class</span> Graph {
+    <span class="keyword">static</span> List&lt;List&lt;Integer&gt;&gt; <span class="function">createGraph</span>(<span class="keyword">int</span> V, <span class="keyword">int</span>[][] edges) {
+        List&lt;List&lt;Integer&gt;&gt; adj = <span class="keyword">new</span> ArrayList&lt;&gt;();
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; i++) adj.<span class="function">add</span>(<span class="keyword">new</span> ArrayList&lt;&gt;());
+
+        <span class="keyword">for</span> (<span class="keyword">int</span>[] e : edges) {
+            adj.<span class="function">get</span>(e[<span class="number">0</span>]).<span class="function">add</span>(e[<span class="number">1</span>]);
+            adj.<span class="function">get</span>(e[<span class="number">1</span>]).<span class="function">add</span>(e[<span class="number">0</span>]); <span class="comment">// undirected</span>
+        }
+        <span class="keyword">return</span> adj;
+    }
+
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
+        <span class="keyword">int</span>[][] edges = {{<span class="number">0</span>,<span class="number">1</span>},{<span class="number">0</span>,<span class="number">2</span>},{<span class="number">1</span>,<span class="number">2</span>}};
+        List&lt;List&lt;Integer&gt;&gt; adj = <span class="function">createGraph</span>(<span class="number">3</span>, edges);
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; adj.<span class="function">size</span>(); i++)
+            System.out.<span class="function">println</span>(i + <span class="string">": "</span> + adj.<span class="function">get</span>(i));
+    }
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="ulist" data-lang="c">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdlib.h&gt;</span>
+<span class="keyword">#define</span> V <span class="number">3</span>
+
+<span class="keyword">typedef struct</span> Node {
+    <span class="keyword">int</span> val;
+    <span class="keyword">struct</span> Node* next;
+} Node;
+
+Node* adj[V];
+
+<span class="keyword">void</span> <span class="function">addEdge</span>(<span class="keyword">int</span> u, <span class="keyword">int</span> v) {
+    Node* n1 = (Node*)<span class="function">malloc</span>(<span class="keyword">sizeof</span>(Node));
+    n1->val = v; n1->next = adj[u]; adj[u] = n1;
+    Node* n2 = (Node*)<span class="function">malloc</span>(<span class="keyword">sizeof</span>(Node));
+    n2->val = u; n2->next = adj[v]; adj[v] = n2; <span class="comment">// undirected</span>
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="function">addEdge</span>(<span class="number">0</span>,<span class="number">1</span>); <span class="function">addEdge</span>(<span class="number">0</span>,<span class="number">2</span>); <span class="function">addEdge</span>(<span class="number">1</span>,<span class="number">2</span>);
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; V; i++) {
+        printf(<span class="string">"%d: "</span>, i);
+        <span class="keyword">for</span> (Node* cur = adj[i]; cur; cur = cur->next)
+            printf(<span class="string">"%d "</span>, cur->val);
+        printf(<span class="string">"\n"</span>);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="ulist"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">function</span> <span class="function">createGraph</span>(V, edges) {
+    <span class="keyword">const</span> adj = Array.<span class="function">from</span>({length: V}, () =&gt; []);
+    <span class="keyword">for</span> (<span class="keyword">const</span> [u, v] <span class="keyword">of</span> edges) {
+        adj[u].<span class="function">push</span>(v);
+        adj[v].<span class="function">push</span>(u); <span class="comment">// undirected</span>
+    }
+    <span class="keyword">return</span> adj;
+}
+
+<span class="keyword">const</span> adj = <span class="function">createGraph</span>(<span class="number">3</span>, [[<span class="number">0</span>,<span class="number">1</span>],[<span class="number">0</span>,<span class="number">2</span>],[<span class="number">1</span>,<span class="number">2</span>]]);
+adj.<span class="function">forEach</span>((nbrs, i) =&gt; console.<span class="function">log</span>(`${i}: ${nbrs.<span class="function">join</span>(<span class="string">' '</span>)}`))</pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="output-label">Output</div>
+                <div class="output-block">
+                  Adjacency List Representation:<br />0: 1 2<br />1: 0 2<br />2:
+                  0 1
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Directed List -->
+          <div class="operation-dropdown" style="margin-top: 1.5rem">
+            <div class="operation-header" onclick="toggleOp('directed-list')">
+              <div class="operation-title">
+                <div class="operation-number">2</div>
+                <span>Directed Graph — Adjacency List Code</span>
+              </div>
+              <div class="dropdown-icon" id="icon-directed-list">▼</div>
+            </div>
+            <div class="operation-content" id="content-directed-list">
+              <div class="operation-body">
+                <p class="content-text">
+                  For a directed graph, each edge (u→v) only adds
+                  <code style="color: var(--primary-green)">v</code> to
+                  <code style="color: var(--primary-cyan)">adj[u]</code>.
+                  Consider edges: 1→0, 1→2, 2→0.
+                </p>
+
+                <!-- Directed list visual -->
+                <div class="graph-visual-img">
+                  <h3>Directed Graph → Adjacency List</h3>
+                  <div class="graph-diagram">
+                    <svg
+                      viewBox="0 0 760 250"
+                      xmlns="http://www.w3.org/2000/svg"
+                      font-family="JetBrains Mono,monospace"
+                    >
+                      <defs>
+                        <marker
+                          id="darr3"
+                          markerWidth="8"
+                          markerHeight="8"
+                          refX="7"
+                          refY="3"
+                          orient="auto"
+                        >
+                          <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b" />
+                        </marker>
+                        <marker
+                          id="listArr2"
+                          markerWidth="7"
+                          markerHeight="7"
+                          refX="6"
+                          refY="3"
+                          orient="auto"
+                        >
+                          <path d="M0,0 L0,6 L7,3 z" fill="#a0a0a0" />
+                        </marker>
+                      </defs>
+                      <!-- Directed graph -->
+                      <text
+                        x="155"
+                        y="22"
+                        fill="#f59e0b"
+                        font-size="13"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        Directed Graph
+                      </text>
+                      <circle
+                        cx="155"
+                        cy="90"
+                        r="28"
+                        fill="rgba(139,92,246,.25)"
+                        stroke="#8b5cf6"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="155"
+                        y="96"
+                        fill="#c4b5fd"
+                        font-size="15"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <circle
+                        cx="75"
+                        cy="195"
+                        r="28"
+                        fill="rgba(6,182,212,.25)"
+                        stroke="#06b6d4"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="75"
+                        y="201"
+                        fill="#a5f3fc"
+                        font-size="15"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <circle
+                        cx="235"
+                        cy="195"
+                        r="28"
+                        fill="rgba(16,185,129,.25)"
+                        stroke="#10b981"
+                        stroke-width="2.5"
+                      />
+                      <text
+                        x="235"
+                        y="201"
+                        fill="#6ee7b7"
+                        font-size="15"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <!-- Directed arrows -->
+                      <line
+                        x1="90"
+                        y1="173"
+                        x2="134"
+                        y2="115"
+                        stroke="#f59e0b"
+                        stroke-width="2"
+                        marker-end="url(#darr3)"
+                      />
+                      <line
+                        x1="207"
+                        y1="195"
+                        x2="107"
+                        y2="195"
+                        stroke="#f59e0b"
+                        stroke-width="2"
+                        marker-end="url(#darr3)"
+                      />
+                      <line
+                        x1="220"
+                        y1="173"
+                        x2="174"
+                        y2="115"
+                        stroke="#f59e0b"
+                        stroke-width="2"
+                        marker-end="url(#darr3)"
+                      />
+                      <text x="96" y="140" fill="#f59e0b" font-size="10">
+                        1→0
+                      </text>
+                      <text x="150" y="192" fill="#f59e0b" font-size="10">
+                        2→0
+                      </text>
+                      <text x="208" y="140" fill="#f59e0b" font-size="10">
+                        1→2
+                      </text>
+                      <!-- Arrow -->
+                      <text
+                        x="350"
+                        y="145"
+                        fill="#06b6d4"
+                        font-size="22"
+                        text-anchor="middle"
+                      >
+                        →
+                      </text>
+                      <!-- List -->
+                      <text
+                        x="570"
+                        y="22"
+                        fill="#f59e0b"
+                        font-size="13"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        Adjacency List (Directed)
+                      </text>
+                      <!-- Index 0: empty -->
+                      <rect
+                        x="420"
+                        y="40"
+                        width="48"
+                        height="36"
+                        fill="rgba(139,92,246,.2)"
+                        stroke="#8b5cf6"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="444"
+                        y="62"
+                        fill="#c4b5fd"
+                        font-size="14"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <path
+                        d="M468 58 L502 58"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="502"
+                        y="48"
+                        width="60"
+                        height="20"
+                        fill="#0d1117"
+                        stroke="#333"
+                        rx="3"
+                      />
+                      <text
+                        x="532"
+                        y="62"
+                        fill="#555"
+                        font-size="11"
+                        text-anchor="middle"
+                      >
+                        empty ∅
+                      </text>
+                      <!-- Index 1: 0, 2 -->
+                      <rect
+                        x="420"
+                        y="100"
+                        width="48"
+                        height="36"
+                        fill="rgba(6,182,212,.2)"
+                        stroke="#06b6d4"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="444"
+                        y="122"
+                        fill="#a5f3fc"
+                        font-size="14"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        1
+                      </text>
+                      <path
+                        d="M468 118 L502 118"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="502"
+                        y="102"
+                        width="46"
+                        height="32"
+                        fill="#1e293b"
+                        stroke="#f59e0b"
+                        rx="4"
+                      />
+                      <text
+                        x="525"
+                        y="122"
+                        fill="#fde68a"
+                        font-size="13"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <path
+                        d="M548 118 L576 118"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="576"
+                        y="102"
+                        width="46"
+                        height="32"
+                        fill="#1e293b"
+                        stroke="#f59e0b"
+                        rx="4"
+                      />
+                      <text
+                        x="599"
+                        y="122"
+                        fill="#fde68a"
+                        font-size="13"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <path
+                        d="M622 118 L652 118"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="652"
+                        y="110"
+                        width="30"
+                        height="16"
+                        fill="#0d1117"
+                        stroke="#333"
+                        rx="3"
+                      />
+                      <text
+                        x="667"
+                        y="122"
+                        fill="#333"
+                        font-size="10"
+                        text-anchor="middle"
+                      >
+                        ∅
+                      </text>
+                      <!-- Index 2: 0 -->
+                      <rect
+                        x="420"
+                        y="160"
+                        width="48"
+                        height="36"
+                        fill="rgba(16,185,129,.2)"
+                        stroke="#10b981"
+                        stroke-width="1.5"
+                        rx="4"
+                      />
+                      <text
+                        x="444"
+                        y="182"
+                        fill="#6ee7b7"
+                        font-size="14"
+                        font-weight="bold"
+                        text-anchor="middle"
+                      >
+                        2
+                      </text>
+                      <path
+                        d="M468 178 L502 178"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="502"
+                        y="162"
+                        width="46"
+                        height="32"
+                        fill="#1e293b"
+                        stroke="#f59e0b"
+                        rx="4"
+                      />
+                      <text
+                        x="525"
+                        y="182"
+                        fill="#fde68a"
+                        font-size="13"
+                        text-anchor="middle"
+                      >
+                        0
+                      </text>
+                      <path
+                        d="M548 178 L576 178"
+                        stroke="#a0a0a0"
+                        stroke-width="1.5"
+                        marker-end="url(#listArr2)"
+                      />
+                      <rect
+                        x="576"
+                        y="170"
+                        width="30"
+                        height="16"
+                        fill="#0d1117"
+                        stroke="#333"
+                        rx="3"
+                      />
+                      <text
+                        x="591"
+                        y="182"
+                        fill="#333"
+                        font-size="10"
+                        text-anchor="middle"
+                      >
+                        ∅
+                      </text>
+
+                      <text
+                        x="555"
+                        y="222"
+                        fill="#f59e0b"
+                        font-size="11"
+                        text-anchor="middle"
+                      >
+                        Only adj[u] gets v — not adj[v]
+                      </text>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="language-tabs" data-group="dlist">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'dlist', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dlist', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dlist', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dlist', 'c')"
+                  >
+                    C
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'dlist', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="dlist"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre>vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; <span class="function">createGraph</span>(<span class="keyword">int</span> V, vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; &amp;edges) {
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; adj(V);
+
+    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;it : edges) {
+        <span class="keyword">int</span> u = it[<span class="number">0</span>], v = it[<span class="number">1</span>];
+        adj[u].<span class="function">push_back</span>(v);
+        <span class="comment">// Do NOT add adj[v].push_back(u) — directed!</span>
+    }
+    <span class="keyword">return</span> adj;
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="keyword">int</span> V = <span class="number">3</span>;
+    vector&lt;vector&lt;<span class="keyword">int</span>&gt;&gt; edges = {{<span class="number">1</span>,<span class="number">0</span>},{<span class="number">1</span>,<span class="number">2</span>},{<span class="number">2</span>,<span class="number">0</span>}};
+    <span class="comment">// Output: 0:  / 1: 0 2 / 2: 0</span>
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="dlist"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">def</span> <span class="function">create_graph</span>(V, edges):
+    adj = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> range(V)]
+    <span class="keyword">for</span> u, v <span class="keyword">in</span> edges:
+        adj[u].<span class="function">append</span>(v)  <span class="comment"># directed — one direction only</span>
+    <span class="keyword">return</span> adj
+
+edges = [(<span class="number">1</span>,<span class="number">0</span>), (<span class="number">1</span>,<span class="number">2</span>), (<span class="number">2</span>,<span class="number">0</span>)]
+adj = <span class="function">create_graph</span>(<span class="number">3</span>, edges)
+<span class="keyword">for</span> i, nbrs <span class="keyword">in</span> enumerate(adj):
+    <span class="function">print</span>(f<span class="string">"{i}: {' '.join(map(str, nbrs))}"</span>)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="dlist"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">for</span> (<span class="keyword">int</span>[] e : edges)
+    adj.<span class="function">get</span>(e[<span class="number">0</span>]).<span class="function">add</span>(e[<span class="number">1</span>]); <span class="comment">// directed — no reverse edge</span></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="code-lang-content" data-group="dlist" data-lang="c">
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">void</span> <span class="function">addEdge</span>(<span class="keyword">int</span> u, <span class="keyword">int</span> v) {
+    Node* n = (Node*)<span class="function">malloc</span>(<span class="keyword">sizeof</span>(Node));
+    n->val = v; n->next = adj[u]; adj[u] = n;
+    <span class="comment">// No reverse edge for directed graph</span>
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="dlist"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="keyword">for</span> (<span class="keyword">const</span> [u, v] <span class="keyword">of</span> edges)
+    adj[u].<span class="function">push</span>(v); <span class="comment">// directed — one way only</span></pre>
+                    </div>
+                  </div>
+                </div>
+                <div class="output-label">Output</div>
+                <div class="output-block">
+                  Adjacency List Representation:<br />0:<br />1: 0 2<br />2: 0
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 6. REAL-WORLD ANALOGIES ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🌍</div>
+          <h2 class="section-title">Real-World Analogies</h2>
+        </div>
+        <p class="content-text">
+          Graphs are everywhere in the real world. Once you see them, you can't
+          unsee them:
+        </p>
+        <div class="example-grid">
+          <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Google Maps</div>
+            <div class="example-desc">
+              Cities are vertices. Roads are weighted edges (distance/time).
+              Dijkstra's algorithm finds the shortest path — a classic graph
+              problem.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Social Networks</div>
+            <div class="example-desc">
+              Users are vertices. Friendship = undirected edge. Follow =
+              directed edge. "Friends of friends" is BFS on the friendship
+              graph.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Internet / Web</div>
+            <div class="example-desc">
+              Web pages are vertices. Hyperlinks are directed edges. Google's
+              PageRank works by analysing this massive directed graph.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Package Dependencies</div>
+            <div class="example-desc">
+              Packages are vertices, dependencies are directed edges. npm/pip
+              use topological sort on a DAG to install in correct order.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 7. WHAT'S NEXT ══════════ -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon">🚀</div>
+          <h2 class="section-title">What's Next?</h2>
+        </div>
+        <p class="content-text">
+          Now that you understand graph representations, the next step is
+          learning how to <b>traverse</b> a graph and <b>search</b> for paths:
+        </p>
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <div class="concept-title">🔍 BFS — Breadth-First Search</div>
+            <div class="concept-desc">
+              Explores all neighbours at current depth before going deeper. Uses
+              a <b>Queue</b>. Finds the shortest path in unweighted graphs.
+              O(V+E).
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">📦 DFS — Depth-First Search</div>
+            <div class="concept-desc">
+              Explores as far as possible before backtracking. Uses a
+              <b>Stack</b> (or recursion). Used for cycle detection, topological
+              sort, connected components. O(V+E).
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🛣️ Shortest Path</div>
+            <div class="concept-desc">
+              <b>Dijkstra's</b> for non-negative weights.
+              <b>Bellman-Ford</b> handles negative weights.
+              <b>Floyd-Warshall</b> finds all-pairs shortest paths.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">🌲 Spanning Tree</div>
+            <div class="concept-desc">
+              <b>Prim's</b> and <b>Kruskal's</b> algorithms find the Minimum
+              Spanning Tree (MST) — a tree connecting all vertices with minimum
+              total edge weight.
+            </div>
+          </div>
+        </div>
+        <div class="note-box" style="margin-top: 1rem">
+          <strong>Level 2 preview:</strong> In Level 2 you'll build an
+          interactive BFS/DFS visualizer and step through graph traversal
+          algorithms with animated call stacks and visited-node tracking.
+        </div>
+      </div>
+
+      <!-- ══════════ VIDEO ══════════ -->
+      <div class="video-section">
+        <div class="video-info">
+          <span>📺</span>
+          <span>Graphs Explained</span>
+        </div>
+        <div class="video-container">
+          <div class="video-wrapper">
+            <iframe
+              src="https://www.youtube.com/embed/tWVWeAqZ0WU"
+              title="Graph Data Structure Explained"
+              allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share;
+              "
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ LEVEL NAV ══════════ -->
+      <h3
+        style="
+          font-family: &quot;Space Grotesk&quot;, sans-serif;
+          text-align: center;
+          margin-bottom: 2rem;
+          font-size: 1.15rem;
+          color: var(--text-primary);
+        "
+        id="level-nav"
+      >
+        Ready to See it in Action? →
+      </h3>
+   
+        <div class="level-wrapper">
+          <button id="l1">Level 1</button>
+          <div class="slider active" id="slider1"></div>
+          <button id="l2">Level 2</button>
+          <div class="slider" id="slider2"></div>
+          <button id="l3">Level 3</button>
+     
+      </div>
+    </div>
+    <!-- /container -->
+
+    <!-- MODAL -->
+    <div id="quizModal" class="level-modal">
+      <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem">🔒</div>
+        <h3
+          style="
+            color: var(--primary-purple);
+            font-family: &quot;Space Grotesk&quot;, sans-serif;
+            font-size: 2rem;
+            margin-bottom: 10px;
+          "
+        >
+          Level Locked
+        </h3>
+        <p style="color: var(--text-secondary)" id="modalMsg">
+          Pass the Level 1 Quiz to unlock Level 2 and continue your Graph
+          journey.
+        </p>
+        <div class="modal-buttons">
+          <button id="startQuiz">Start Quiz</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/navbar.js"></script>
+
+    <script>
+      /* ── THEME ── */
+      const themeToggle = document.getElementById("themeToggle");
+      const themeIcon = document.getElementById("themeIcon");
+      const themes = ["dark", "light", "blue"];
+      const themeIcons = {
+        dark: '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>',
+        light: '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>',
+        blue: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>',
+      };
+      function applyTheme(t) {
+        document.body.setAttribute("data-theme", t);
+        themeIcon.innerHTML = themeIcons[t];
+        localStorage.setItem("dsa-theme", t);
+      }
+      applyTheme(localStorage.getItem("dsa-theme") || "dark");
+      themeToggle.addEventListener("click", () => {
+        const cur = localStorage.getItem("dsa-theme") || "dark";
+        applyTheme(themes[(themes.indexOf(cur) + 1) % themes.length]);
+      });
+
+      /* ── HAMBURGER ── */
+      document.getElementById("navHamburger").addEventListener("click", () => {
+        document.getElementById("navLinks").classList.toggle("open");
+      });
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("nav"))
+          document.getElementById("navLinks").classList.remove("open");
+      });
+
+      /* ── DROPDOWNS ── */
+      function toggleOp(id) {
+        const content = document.getElementById("content-" + id);
+        const icon = document.getElementById("icon-" + id);
+        const header = content.previousElementSibling;
+        if (!content) return;
+        content.classList.toggle("show");
+        if (icon) icon.classList.toggle("rotate");
+        if (header) header.classList.toggle("active");
+      }
+
+      /* ── LANGUAGE TABS ── */
+      function switchCode(event, group, lang) {
+        const tabs = event.target.closest(".language-tabs");
+        tabs
+          .querySelectorAll(".lang-tab")
+          .forEach((t) => t.classList.remove("active"));
+        event.target.classList.add("active");
+        document
+          .querySelectorAll(`[data-group="${group}"]`)
+          .forEach((el) => el.classList.remove("active"));
+        const target = document.querySelector(
+          `[data-group="${group}"][data-lang="${lang}"]`,
+        );
+        if (target) target.classList.add("active");
+      }
+
+      /* ── COPY CODE ── */
+      function copyCode(button) {
+        const pre = button.closest(".code-block").querySelector("pre");
+        navigator.clipboard.writeText(pre.innerText || pre.textContent);
+        button.textContent = "Copied!";
+        setTimeout(() => (button.textContent = "Copy"), 2000);
+      }
+
+     /* ── LEVEL NAVIGATION & PROGRESS (Unified Logic) ── */
+const ALGO_KEY = "graphs"; // Must match topics.html ID
+const modal = document.getElementById("quizModal");
+const modalMsg = document.getElementById("modalMsg");
+const startQuizBtn = document.getElementById("startQuiz");
+const cancelBtn = document.getElementById("cancelBtn");
+
+// 1. Get the current numeric level from the Source of Truth (progress object)
+function getLevelFromDB() {
+    const progress = JSON.parse(localStorage.getItem('progress') || "{}");
+    return progress[ALGO_KEY] || 0; 
+}
+
+// 2. Update button colors based on progress
+function updateLevelButtons() {
+    const currentLevel = getLevelFromDB(); // Defined here!
+    const btnL2 = document.getElementById("l2");
+    const btnL3 = document.getElementById("l3");
+
+    // If Level 2 is unlocked or completed
+    if (currentLevel >= 2) {
+        btnL2.style.borderColor = "var(--primary-green)";
+        btnL2.style.background = "rgba(16,185,129,0.15)";
+        btnL2.style.color = "var(--primary-green)";
+    }
+    
+    // If Level 3 is completed (solved at least one problem)
+    if (currentLevel >= 3) {
+        btnL3.style.borderColor = "var(--primary-green)";
+        btnL3.style.background = "rgba(16,185,129,0.15)";
+        btnL3.style.color = "var(--primary-green)";
+    }
+}
+
+// 3. Handle Clicks
+document.getElementById("l1").addEventListener("click", () => {
+    window.location.href = "graphs_L1.html";
+});
+
+document.getElementById("l2").addEventListener("click", () => {
+    const currentLevel = getLevelFromDB();
+    if (currentLevel >= 1) {
+        window.location.href = "graphs_L2.html";
+    } else {
+        modalMsg.textContent = "Pass the Level 1 Quiz to unlock Level 2.";
+        startQuizBtn.onclick = () => window.location.href = "quiz.html?id=graphs-l1";
+        modal.style.display = "flex";
+    }
+});
+
+document.getElementById("l3").addEventListener("click", () => {
+    const currentLevel = getLevelFromDB();
+    if (currentLevel >= 2) {
+        // Redirect to practice page (Level 3)
+        window.location.href = "practice.html?topic=graphs";
+    } else {
+        modalMsg.textContent = "Pass the Level 2 Quiz to unlock Level 3 Problems.";
+        startQuizBtn.onclick = () => window.location.href = "quiz.html?id=graphs-l2";
+        modal.style.display = "flex";
+    }
+});
+
+// 4. Modal Controls
+cancelBtn.addEventListener("click", () => modal.style.display = "none");
+window.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+});
+
+// 5. Initialize on load
+window.addEventListener("load", () => {
+    updateLevelButtons();
+});
+    </script>
+  </body>
+</html>

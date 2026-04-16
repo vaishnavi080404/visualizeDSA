@@ -1,0 +1,142 @@
+/* ── Nav User Avatar + Dropdown ── */
+/* This ensures the theme button and avatar stay in one row */
+.nav-right {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 15px; /* Spacing between the icon and avatar */
+    z-index: 10;
+}
+
+/* Ensure the slot itself doesn't take up full width */
+#nav-user-slot {
+    display: flex;
+    align-items: center;
+}
+
+/* Optional: If the theme toggle button is too big, fix its size */
+.theme-toggle {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-user-container { position: relative; display: flex; align-items: center; }
+
+.avatar-wrap { position: relative; display: inline-flex; }
+
+.user-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+  color: #fff; font-weight: 800; font-size: 0.95rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; user-select: none;
+  border: 2px solid transparent;
+  outline: 2px solid var(--border-color);
+  transition: outline-color 0.25s, transform 0.2s;
+}
+.user-avatar:hover { outline-color: var(--primary-green); transform: scale(1.06); }
+
+.status-dot {
+  position: absolute; bottom: 1px; right: 1px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--primary-green);
+  border: 2px solid var(--dark-bg);
+}
+
+.user-dropdown {
+  position: absolute; top: calc(100% + 12px); right: 0;
+  width: 210px; background: var(--card-bg);
+  border: 1px solid var(--border-color); border-radius: 14px;
+  overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+  opacity: 0; transform: translateY(8px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 2000;
+}
+
+/* Show on hover (desktop) OR .open class (mobile tap) */
+.nav-user-container:hover .user-dropdown,
+.nav-user-container.open  .user-dropdown {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: all;
+}
+
+.dropdown-header {
+  padding: 14px 16px 12px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dd-avatar-sm {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.8rem; color: #fff; flex-shrink: 0;
+}
+
+.dd-user-info { flex: 1; min-width: 0; }
+
+.dd-fullname {
+  display: block; font-size: 0.875rem; font-weight: 700;
+  color: var(--text-primary); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.dd-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 3px; font-size: 0.68rem; font-weight: 700;
+  color: var(--primary-green);
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.25);
+  padding: 2px 7px; border-radius: 20px;
+}
+
+.dd-xp-row {
+  margin: 6px; padding: 8px 10px;
+  background: rgba(128,128,128,0.08); border-radius: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem; color: var(--text-secondary);
+}
+.dd-xp-row strong { color: var(--primary-green); font-size: 0.8rem; }
+
+.dropdown-menu { padding: 6px; }
+
+.dd-item {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; background: transparent; border: none;
+  border-radius: 8px; cursor: pointer; font-size: 0.85rem;
+  font-weight: 500; color: var(--text-secondary); text-align: left;
+  transition: background 0.15s, color 0.15s; font-family: 'Inter', sans-serif;
+}
+.dd-item:hover { background: var(--border-color); color: var(--text-primary); }
+
+.dd-item-icon {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: rgba(128,128,128,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+
+.logout-item { color: #ef4444 !important; }
+.logout-item:hover { background: rgba(239,68,68,0.1) !important; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }                    /* hide links, show hamburger */
+  .nav-links.mobile-open { display: flex; flex-direction: column; 
+    position: absolute; top: 65px; left: 0; width: 100%;
+    background: var(--nav-bg); border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem; gap: 1rem; z-index: 999; backdrop-filter: blur(10px); }
+  .hamburger-btn { display: flex; }
+}
+@media (min-width: 769px) { .hamburger-btn { display: none; } }
+
+.hamburger-btn {
+  width: 34px; height: 34px; background: var(--card-bg);
+  border: 1px solid var(--border-color); border-radius: 8px;
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 5px; cursor: pointer;
+}
+.ham-line { width: 16px; height: 1.5px; background: var(--text-secondary); border-radius: 2px; }

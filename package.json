@@ -1,14 +1,28 @@
 {
-  "name": "dsa-visualizer-server",
+  "name": "new-folder",
   "version": "1.0.0",
-  "description": "Code execution server for DSA Visualizer",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
+  "description": "",
+  "main": "index.js",
+ "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && node server.js",
+    "frontend": "live-server frontend --port=5502"
   },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "socket.io": "^4.8.3"
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaishnavi080404/visualizeDSA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/vaishnavi080404/visualizeDSA/issues"
+  },
+  "homepage": "https://github.com/vaishnavi080404/visualizeDSA#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "live-server": "^1.2.2"
   }
 }
