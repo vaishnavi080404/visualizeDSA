@@ -61,3 +61,6 @@ app.listen(PORT, () => {
   console.log(`📁 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🌐 Accepting requests from any localhost/127.0.0.1 port\n`);
 });
+app.get("/", (req, res) => {
+  res.send("DSA Visualizer Backend is running 🚀");
+});
