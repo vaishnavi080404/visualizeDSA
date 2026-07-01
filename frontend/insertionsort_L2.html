@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insertion Sort - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/insertionsort_L2.css">
+  </head>
+</html>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="insertion_sort_basics.html">Insertion Sort</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Insertion Sort — Interactive Visualizer</h1>
+    <p class="content-text">Watch Insertion Sort <strong style="color:var(--primary-orange)">pick each key element</strong>, <strong style="color:var(--primary-purple)">shift larger elements right</strong>, and <strong style="color:var(--primary-cyan)">insert the key at its correct position</strong>. Best case is a blazing fast <strong style="color:var(--primary-green)">O(N)</strong> — great for nearly-sorted data.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="iterative" onclick="switchImplementation('iterative')">
+      <div class="impl-option-icon">🔁</div>
+      <div class="impl-option-title">Iterative</div>
+      <div class="impl-option-desc">Classic in-place loop, O(1) extra space</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔄</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">Sort first N-1 elements, then insert Nth</div>
+    </div>
+  </div>
+
+  <!-- VISUALIZER GRID -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+
+      <div id="pseudo-iterative">
+        <div class="pseudo-step" data-step="it-outer">
+          <strong>OUTER LOOP:</strong> Pick each key<br>
+          <span>for i = 1 to n-1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-key">
+          <strong>KEY:</strong> Store current element<br>
+          <span>key = arr[i]; j = i-1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-compare">
+          <strong>COMPARE:</strong> Key vs sorted element<br>
+          <span>while j &ge; 0 and arr[j] &gt; key</span>
+        </div>
+        <div class="pseudo-step" data-step="it-shift">
+          <strong>SHIFT RIGHT:</strong> Move element<br>
+          <span>arr[j+1] = arr[j]; j--</span>
+        </div>
+        <div class="pseudo-step" data-step="it-place">
+          <strong>INSERT:</strong> Place key at position<br>
+          <span>arr[j+1] = key</span>
+        </div>
+        <div class="pseudo-step" data-step="it-done">
+          <strong>SORTED:</strong> All keys placed ✓<br>
+          <span>i reached n, array sorted</span>
+        </div>
+      </div>
+
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="rc-base">
+          <strong>BASE CASE:</strong> Single element<br>
+          <span>if n &le; 1: return</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-recurse">
+          <strong>RECURSE:</strong> Sort first n-1 elements<br>
+          <span>insertionSortRec(arr, n-1)</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-key">
+          <strong>KEY:</strong> Last element to insert<br>
+          <span>key = arr[n-1]; j = n-2</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-compare">
+          <strong>COMPARE:</strong> Key vs element at j<br>
+          <span>while j &ge; 0 and arr[j] &gt; key</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-shift">
+          <strong>SHIFT RIGHT:</strong> Move element<br>
+          <span>arr[j+1] = arr[j]; j--</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-place">
+          <strong>INSERT:</strong> Place key at position<br>
+          <span>arr[j+1] = key</span>
+        </div>
+        <div class="pseudo-step" data-step="rc-done">
+          <strong>SORTED:</strong> All recursive calls done ✓<br>
+          <span>base case reached and unwound</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Insertion Sort Visualizer — Iterative</h5>
+        </div>
+        <div class="card-body">
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-orange" id="badge-phase">Phase: —</div>
+              <div class="stat-badge sb-pink"   id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-purple" id="badge-shifts">Shifts: 0</div>
+              <div class="stat-badge sb-cyan"   id="badge-inserts">Inserts: 0</div>
+            </div>
+            <!-- key + j display -->
+            <div class="key-row" id="keyRow" style="display:none;">
+              <div class="key-badge"><span>key = </span><span id="keyVal">—</span></div>
+              <div class="j-badge"><span>j = </span><span id="jVal">—</span></div>
+            </div>
+            <!-- main array strip -->
+            <div class="arr-strip" id="arrStrip"></div>
+            <div class="idx-strip" id="idxStrip"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-green)"></div>Sorted</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-orange)"></div>Key (current)</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-pink)"></div>Comparing</div>
+              <div class="leg-item"><div class="leg-dot" style="background:rgba(139,92,246,.8)"></div>Shifting</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-cyan)"></div>Inserting</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g. 12, 11, 13, 5, 6">
+            <button class="btn btn-warning" onclick="startSort()">Sort</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSort()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSort()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"  id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"              id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"              id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"              id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div>
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — Already Sorted</h4>
+          <p>When the array is already sorted, each key element only requires <strong style="color:var(--primary-green)">one comparison</strong> per iteration — compare with the immediate left neighbour, no shift needed. This results in <strong style="color:var(--primary-green)">O(N)</strong> time, a huge advantage over Merge Sort and Quick Sort for nearly-sorted inputs.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [5, 10, 15, 20, 25, 30] — sorted, O(N) comparisons</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-best"></div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — Random Order</h4>
+          <p>Random input — each key shifts past roughly half the sorted portion on average. Results in <strong style="color:var(--primary-orange)">O(N²/4)</strong> comparisons and shifts overall. Watch the key travel leftwards, nudging elements to the right until its spot is found.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [29, 10, 14, 37, 13, 8] — random order</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-avg"></div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — Reverse Sorted</h4>
+          <p>Reverse-sorted input forces every key to shift past the <strong style="color:var(--primary-red)">entire sorted portion</strong> — maximum shifts per iteration. The 2nd element shifts 1, 3rd shifts 2, … Nth shifts N-1. Total: <strong style="color:var(--primary-red)">O(N²)</strong> comparisons and shifts.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [60, 50, 40, 30, 20, 10] — reverse sorted, max shifts</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-worst"></div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own array and watch every step of Insertion Sort. The complexity cards highlight which case your input represents. Insertion Sort is unique — its <strong style="color:var(--primary-cyan)">O(N) best case</strong> is genuinely useful and its <strong style="color:var(--primary-green)">O(1) space</strong> is always guaranteed.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-green">O(N)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Sorted input — 1 compare per key, zero shifts needed</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-orange">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Random input — each key shifts ~N/4 places on average</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Reverse sorted — every key shifts past the full sorted portion</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 64, 25, 12, 22, 11" style="width:240px;">
+            <button class="ctl-btn ctl-btn-green"  onclick="customLoad()">▶ Load &amp; Sort</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"     id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="s-arr-wrap" id="sarr-custom"></div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CODE EDITOR -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-tabs">
+      <button class="impl-tab active" onclick="switchEditorImpl('iterative', this)">🔁 Iterative</button>
+      <button class="impl-tab"        onclick="switchEditorImpl('recursive', this)">🔄 Recursive</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Iterative</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--primary-cyan);display:flex;align-items:center;gap:.5rem;font-size:1.25rem;font-weight:600;justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Insertion Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/insertionsort_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>

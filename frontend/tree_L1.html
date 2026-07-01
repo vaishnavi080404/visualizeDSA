@@ -1,0 +1,2001 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Updated by maintainer - Performance optimization -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tree - Data Structures</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/tree_L1.css">
+  </head>
+  <body>
+    <!-- 
+    CODEANIME v1.2
+    Developed for College Project
+    Refactored and Optimized: April 2024
+    -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a><span>›</span><span>Tree</span
+        ><span>›</span><span>Basics</span>
+      </div>
+
+      <div class="page-header">
+        <h1 class="page-title">Tree - Basics</h1>
+        <p class="page-subtitle">
+          Understanding the core concepts of tree data structure
+        </p>
+        <div class="level-tabs">
+          <div class="level-tab active">
+            Level 1 of 3<span class="partition"> | </span>Basics
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. UNDERSTANDING TREE -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">📚</div>
+          <h2 class="section-title">Understanding Tree</h2>
+        </div>
+        <div class="content-block">
+          <h3 class="content-title">💡 What is a Tree?</h3>
+          <p class="content-text">
+            A <b>Tree</b> is a hierarchical data structure used to organize and
+            represent data in a <b>parent–child relationship</b>. It consists of
+            nodes, where the topmost node is called the <b>root</b>, and every
+            other node can have one or more child nodes. Unlike arrays or linked
+            lists, data in a tree is not stored sequentially — it is organized
+            across multiple levels.
+          </p>
+        </div>
+        <div class="content-block">
+          <h3 class="content-title">🤔 Why Use a Tree?</h3>
+          <p class="content-text">
+            Trees are useful for storing data that naturally forms a hierarchy.
+            File systems, the HTML DOM, databases (B-Trees), and network routing
+            all rely on trees. They enable efficient data organization,
+            retrieval, and hierarchical representation.
+          </p>
+        </div>
+        <div class="content-block">
+          <h3 class="content-title">
+            🔄 Why is Tree a Non-Linear Data Structure?
+          </h3>
+          <p class="content-text">
+            Data in a tree is not stored sequentially. Instead, it is organized
+            across multiple levels forming a hierarchical structure. Because of
+            this, a tree is classified as a <b>non-linear data structure</b>.
+          </p>
+        </div>
+        <div class="perf-metrics-grid">
+          <div class="complexity-box">
+            <div class="complexity-label">Search / Insert / Delete</div>
+            <div class="complexity-value">O(log n)</div>
+          </div>
+          <div class="complexity-box">
+            <div class="complexity-label">Space Complexity</div>
+            <div class="complexity-value">O(n)</div>
+          </div>
+          <div class="complexity-box">
+            <div class="complexity-label">Edges (N nodes)</div>
+            <div class="complexity-value">N − 1</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. VISUAL -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">🎨</div>
+          <h2 class="section-title">Visual Representation</h2>
+        </div>
+        <div class="tree-visual-img">
+          <h3
+            style="
+              color: var(--primary-cyan);
+              margin-bottom: 1.5rem;
+              font-size: 1.2rem;
+            "
+          >
+            Tree Structure and Terminologies
+          </h3>
+          <div class="tree-diagram">
+            <svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg">
+              <!-- Depth labels -->
+              <text
+                x="22"
+                y="58"
+                fill="#5a5a5a"
+                font-size="11"
+                font-family="JetBrains Mono"
+              >
+                D:0
+              </text>
+              <text
+                x="22"
+                y="173"
+                fill="#5a5a5a"
+                font-size="11"
+                font-family="JetBrains Mono"
+              >
+                D:1
+              </text>
+              <text
+                x="22"
+                y="283"
+                fill="#5a5a5a"
+                font-size="11"
+                font-family="JetBrains Mono"
+              >
+                D:2
+              </text>
+              <text
+                x="22"
+                y="383"
+                fill="#5a5a5a"
+                font-size="11"
+                font-family="JetBrains Mono"
+              >
+                D:3
+              </text>
+              <!-- Edges -->
+              <line
+                x1="360"
+                y1="72"
+                x2="210"
+                y2="150"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="360"
+                y1="72"
+                x2="510"
+                y2="150"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="210"
+                y1="190"
+                x2="135"
+                y2="262"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="210"
+                y1="190"
+                x2="285"
+                y2="262"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="510"
+                y1="190"
+                x2="440"
+                y2="262"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="510"
+                y1="190"
+                x2="580"
+                y2="262"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="135"
+                y1="298"
+                x2="95"
+                y2="365"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <line
+                x1="135"
+                y1="298"
+                x2="170"
+                y2="365"
+                stroke="#3a3a3a"
+                stroke-width="2"
+              />
+              <!-- Root -->
+              <circle cx="360" cy="52" r="30" fill="#8b5cf6" />
+              <text
+                x="360"
+                y="57"
+                fill="white"
+                font-size="17"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                15
+              </text>
+              <text
+                x="360"
+                y="18"
+                fill="#8b5cf6"
+                font-size="12"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                ROOT
+              </text>
+              <!-- Level 1 -->
+              <circle cx="210" cy="170" r="26" fill="#06b6d4" />
+              <text
+                x="210"
+                y="175"
+                fill="white"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                35
+              </text>
+              <circle cx="510" cy="170" r="26" fill="#06b6d4" />
+              <text
+                x="510"
+                y="175"
+                fill="white"
+                font-size="15"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                48
+              </text>
+              <!-- Level 2 -->
+              <circle cx="135" cy="280" r="22" fill="#10b981" />
+              <text
+                x="135"
+                y="285"
+                fill="white"
+                font-size="13"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                3
+              </text>
+              <circle cx="285" cy="280" r="22" fill="#10b981" />
+              <text
+                x="285"
+                y="285"
+                fill="white"
+                font-size="13"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                6
+              </text>
+              <circle cx="440" cy="280" r="22" fill="#10b981" />
+              <text
+                x="440"
+                y="285"
+                fill="white"
+                font-size="13"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                9
+              </text>
+              <circle cx="580" cy="280" r="22" fill="#10b981" />
+              <text
+                x="580"
+                y="285"
+                fill="white"
+                font-size="13"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                12
+              </text>
+              <!-- Level 3 -->
+              <circle cx="90" cy="380" r="18" fill="#f59e0b" />
+              <text
+                x="90"
+                y="385"
+                fill="white"
+                font-size="12"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                1
+              </text>
+              <circle cx="165" cy="380" r="18" fill="#f59e0b" />
+              <text
+                x="165"
+                y="385"
+                fill="white"
+                font-size="12"
+                font-weight="bold"
+                text-anchor="middle"
+              >
+                10
+              </text>
+              <!-- Labels -->
+              <text
+                x="596"
+                y="170"
+                fill="#06b6d4"
+                font-size="11"
+                font-weight="bold"
+              >
+                Internal
+              </text>
+              <text
+                x="596"
+                y="283"
+                fill="#10b981"
+                font-size="11"
+                font-weight="bold"
+              >
+                Children
+              </text>
+              <text
+                x="185"
+                y="398"
+                fill="#f59e0b"
+                font-size="11"
+                font-weight="bold"
+              >
+                Leaf Nodes
+              </text>
+              <!-- Sibling bracket -->
+              <text x="192" y="245" fill="#666" font-size="10">
+                ← Siblings →
+              </text>
+            </svg>
+          </div>
+          <p
+            class="content-text"
+            style="margin-top: 1.5rem; text-align: center"
+          >
+            A tree is hierarchical — each node can have multiple children but
+            only one parent. The root has no parent.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3. TERMINOLOGIES -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">📝</div>
+          <h2 class="section-title">Basic Terminologies</h2>
+        </div>
+        <p class="content-text" style="margin-bottom: 1.5rem">
+          Understanding the vocabulary of trees is essential before working with
+          them:
+        </p>
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <div class="concept-title">Root Node</div>
+            <div class="concept-desc">
+              The topmost node with no parent. Example: 15 is the root.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Parent Node</div>
+            <div class="concept-desc">
+              An immediate predecessor of another node. Example: 35 is parent of
+              3 and 6.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Child Node</div>
+            <div class="concept-desc">
+              An immediate successor of another node. Example: 3 and 6 are
+              children of 35.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Leaf Node</div>
+            <div class="concept-desc">
+              Nodes with no children (External Nodes). Example: 1, 10, 12, 9 are
+              leaf nodes.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Ancestor</div>
+            <div class="concept-desc">
+              Any node on the path from root to a given node. Example: 15 and 35
+              are ancestors of 10.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Descendant</div>
+            <div class="concept-desc">
+              Node x is descendant of y if y is ancestor of x. Example: 1, 10, 6
+              are descendants of 35.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Sibling</div>
+            <div class="concept-desc">
+              Nodes sharing the same parent. Example: 1 and 10 are siblings.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Internal Node</div>
+            <div class="concept-desc">
+              A node with at least one child. All non-leaf nodes are internal
+              nodes.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Subtree</div>
+            <div class="concept-desc">
+              A node and all its descendants together form a subtree.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Level of a Node</div>
+            <div class="concept-desc">
+              Number of edges from root to that node. Root is at level 0.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Height of Tree</div>
+            <div class="concept-desc">
+              Length of the longest path from root to any leaf node.
+            </div>
+          </div>
+          <div class="concept-card">
+            <div class="concept-title">Degree of a Node</div>
+            <div class="concept-desc">
+              Number of children a node has. A leaf node has degree 0.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. REAL-WORLD -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">🌍</div>
+          <h2 class="section-title">Real-World Analogy</h2>
+        </div>
+        <p class="content-text" style="margin-bottom: 1.5rem">
+          Trees appear everywhere in the real world. Here are some familiar
+          examples:
+        </p>
+        <div class="example-grid">
+          <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">File System</div>
+            <div class="example-desc">
+              Folders contain subfolders and files. The root drive (C:/) is the
+              root; nested folders are children.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">HTML DOM</div>
+            <div class="example-desc">
+              The &lt;html&gt; tag is the root. &lt;head&gt; and &lt;body&gt;
+              are children with their own child nodes.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Family Tree</div>
+            <div class="example-desc">
+              Represents ancestor–descendant relationships. Grandparents are
+              ancestors of grandchildren.
+            </div>
+          </div>
+          <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Organization Chart</div>
+            <div class="example-desc">
+              CEO is the root. Managers are children, and their employees are
+              leaf nodes of the org tree.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. PROPERTIES -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">📊</div>
+          <h2 class="section-title">Properties of Tree</h2>
+        </div>
+        <ul class="styled-list">
+          <li>
+            <strong>Number of edges:</strong> A tree with N nodes always has
+            exactly N − 1 edges. There is exactly one path between any two
+            nodes.
+          </li>
+          <li>
+            <strong>Depth of a node:</strong> The number of edges from the root
+            to that node. The root has depth 0.
+          </li>
+          <li>
+            <strong>Height of the tree:</strong> Length of the longest path from
+            root to any leaf node.
+          </li>
+          <li>
+            <strong>Degree of a node:</strong> Number of children it has. Degree
+            of tree = max degree among all nodes.
+          </li>
+          <li>
+            <strong>Leaf node degree:</strong> A leaf node always has degree 0 —
+            no children.
+          </li>
+        </ul>
+        <div class="svg-container" style="margin-top: 1.5rem">
+          <svg
+            viewBox="0 0 680 175"
+            xmlns="http://www.w3.org/2000/svg"
+            style="
+              background: var(--terminal-bg);
+              border-radius: 10px;
+              padding: 8px;
+              min-width: 400px;
+            "
+          >
+            <text
+              x="340"
+              y="22"
+              fill="#06b6d4"
+              font-size="13"
+              font-weight="bold"
+              text-anchor="middle"
+            >
+              Properties Summary
+            </text>
+            <rect
+              x="10"
+              y="32"
+              width="155"
+              height="28"
+              fill="rgba(6,182,212,.15)"
+              rx="3"
+            />
+            <text
+              x="87"
+              y="50"
+              fill="#06b6d4"
+              font-size="10"
+              font-weight="bold"
+              text-anchor="middle"
+            >
+              PROPERTY
+            </text>
+            <rect
+              x="170"
+              y="32"
+              width="215"
+              height="28"
+              fill="rgba(6,182,212,.15)"
+              rx="3"
+            />
+            <text
+              x="277"
+              y="50"
+              fill="#06b6d4"
+              font-size="10"
+              font-weight="bold"
+              text-anchor="middle"
+            >
+              FORMULA
+            </text>
+            <rect
+              x="390"
+              y="32"
+              width="280"
+              height="28"
+              fill="rgba(6,182,212,.15)"
+              rx="3"
+            />
+            <text
+              x="530"
+              y="50"
+              fill="#06b6d4"
+              font-size="10"
+              font-weight="bold"
+              text-anchor="middle"
+            >
+              EXAMPLE (N=7)
+            </text>
+            <line
+              x1="10"
+              y1="62"
+              x2="670"
+              y2="62"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+            <text
+              x="87"
+              y="82"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Edges
+            </text>
+            <text
+              x="277"
+              y="82"
+              fill="#10b981"
+              font-size="10"
+              text-anchor="middle"
+              font-family="JetBrains Mono"
+            >
+              N − 1
+            </text>
+            <text
+              x="530"
+              y="82"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              7 − 1 = 6 edges
+            </text>
+            <line
+              x1="10"
+              y1="92"
+              x2="670"
+              y2="92"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+            <text
+              x="87"
+              y="112"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Max Height
+            </text>
+            <text
+              x="277"
+              y="112"
+              fill="#10b981"
+              font-size="10"
+              text-anchor="middle"
+              font-family="JetBrains Mono"
+            >
+              N − 1 (skewed)
+            </text>
+            <text
+              x="530"
+              y="112"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Worst case: linear chain
+            </text>
+            <line
+              x1="10"
+              y1="122"
+              x2="670"
+              y2="122"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+            <text
+              x="87"
+              y="142"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Min Height
+            </text>
+            <text
+              x="277"
+              y="142"
+              fill="#10b981"
+              font-size="10"
+              text-anchor="middle"
+              font-family="JetBrains Mono"
+            >
+              floor(log₂N)
+            </text>
+            <text
+              x="530"
+              y="142"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Best case: balanced tree
+            </text>
+            <line
+              x1="10"
+              y1="152"
+              x2="670"
+              y2="152"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+            <text
+              x="87"
+              y="168"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Unique Paths
+            </text>
+            <text
+              x="277"
+              y="168"
+              fill="#10b981"
+              font-size="10"
+              text-anchor="middle"
+              font-family="JetBrains Mono"
+            >
+              Exactly 1
+            </text>
+            <text
+              x="530"
+              y="168"
+              fill="#a0a0a0"
+              font-size="10"
+              text-anchor="middle"
+            >
+              Between any two nodes
+            </text>
+            <line
+              x1="165"
+              y1="32"
+              x2="165"
+              y2="175"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+            <line
+              x1="385"
+              y1="32"
+              x2="385"
+              y2="175"
+              stroke="#2a2a2a"
+              stroke-width="1"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- 6. TYPES -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">🔧</div>
+          <h2 class="section-title">Types of Tree Data Structures</h2>
+        </div>
+        <p class="content-text" style="margin-bottom: 1.5rem">
+          Tree data structures are classified based on the number of children
+          each node can have:
+        </p>
+        <div class="content-block">
+          <h3 class="content-title">1. Binary Tree</h3>
+          <p class="content-text">
+            Each node can have a maximum of <b>two children</b> (left and
+            right).
+          </p>
+          <div class="type-grid" style="margin-top: 1rem">
+            <div class="type-card">
+              <div class="type-name">Full Binary Tree</div>
+              <div class="type-desc">
+                Every node has either 0 or 2 children. No node has exactly 1
+                child.
+              </div>
+            </div>
+            <div class="type-card purple">
+              <div class="type-name">Complete Binary Tree</div>
+              <div class="type-desc">
+                All levels fully filled except possibly the last, filled left to
+                right.
+              </div>
+            </div>
+            <div class="type-card green">
+              <div class="type-name">Balanced Binary Tree</div>
+              <div class="type-desc">
+                Height difference between left and right subtrees of every node
+                is at most 1.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="content-block" style="margin-top: 2rem">
+          <h3 class="content-title">2. Ternary Tree</h3>
+          <p class="content-text">
+            Each node can have at most <b>three children</b>, often labeled as
+            left, middle, and right.
+          </p>
+        </div>
+        <div class="content-block" style="margin-top: 2rem">
+          <h3 class="content-title">3. N-ary Tree (Generic Tree)</h3>
+          <p class="content-text">
+            Each node can have <b>any number of children</b>. Each node contains
+            data and a list of references to its children (duplicates not
+            allowed).
+          </p>
+          <ul class="styled-list" style="margin-top: 0.8rem">
+            <li>
+              Unlike linked lists, nodes store references to
+              <strong>multiple child nodes</strong>
+            </li>
+            <li>A binary tree is a special case of N-ary tree where N = 2</li>
+            <li>
+              Used in file systems, DOM trees, and organizational hierarchies
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 7. NODE REPRESENTATION -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">💻</div>
+          <h2 class="section-title">Node Representation</h2>
+        </div>
+        <p class="content-text" style="margin-bottom: 1.5rem">
+          A tree is represented using nodes. Each node is a class or struct
+          containing data and references to children:
+        </p>
+        <div class="language-tabs" data-group="node-repr">
+          <div
+            class="lang-tab active"
+            onclick="switchCode(event, 'node-repr', 'cpp')"
+          >
+            C++
+          </div>
+          <div class="lang-tab" onclick="switchCode(event, 'node-repr', 'c')">
+            C
+          </div>
+          <div
+            class="lang-tab"
+            onclick="switchCode(event, 'node-repr', 'java')"
+          >
+            Java
+          </div>
+          <div
+            class="lang-tab"
+            onclick="switchCode(event, 'node-repr', 'python')"
+          >
+            Python
+          </div>
+          <div class="lang-tab" onclick="switchCode(event, 'node-repr', 'js')">
+            JavaScript
+          </div>
+        </div>
+        <div
+          class="code-lang-content active"
+          data-group="node-repr"
+          data-lang="cpp"
+        >
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">C++</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="comment">// Node structure for a generic tree</span>
+<span class="keyword">class</span> <span class="type">Node</span> {
+<span class="keyword">public</span>:
+    <span class="keyword">int</span> data;
+    vector&lt;<span class="type">Node</span>*&gt; children;
+    <span class="function">Node</span>(<span class="keyword">int</span> x) { data = x; }
+};</pre>
+            </div>
+          </div>
+        </div>
+        <div class="code-lang-content" data-group="node-repr" data-lang="c">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">C</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="comment">// Binary tree node in C</span>
+<span class="keyword">struct</span> <span class="type">Node</span> {
+    <span class="keyword">int</span> data;
+    <span class="keyword">struct</span> <span class="type">Node</span>* left;
+    <span class="keyword">struct</span> <span class="type">Node</span>* right;
+};
+<span class="keyword">struct</span> <span class="type">Node</span>* <span class="function">newNode</span>(<span class="keyword">int</span> data) {
+    <span class="keyword">struct</span> <span class="type">Node</span>* node = (<span class="keyword">struct</span> <span class="type">Node</span>*)<span class="function">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> <span class="type">Node</span>));
+    node->data = data;
+    node->left = node->right = <span class="keyword">NULL</span>;
+    <span class="keyword">return</span> node;
+}</pre>
+            </div>
+          </div>
+        </div>
+        <div class="code-lang-content" data-group="node-repr" data-lang="java">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">Java</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">import</span> java.util.*;
+<span class="keyword">class</span> <span class="type">Node</span> {
+    <span class="keyword">int</span> data;
+    List&lt;<span class="type">Node</span>&gt; children;
+    <span class="function">Node</span>(<span class="keyword">int</span> x) {
+        data = x;
+        children = <span class="keyword">new</span> ArrayList&lt;&gt;();
+    }
+}</pre>
+            </div>
+          </div>
+        </div>
+        <div
+          class="code-lang-content"
+          data-group="node-repr"
+          data-lang="python"
+        >
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">Python</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">class</span> <span class="type">Node</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, data):
+        self.data = data
+        self.children = []  <span class="comment"># list of child nodes</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="code-lang-content" data-group="node-repr" data-lang="js">
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">JavaScript</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">class</span> <span class="type">Node</span> {
+    <span class="function">constructor</span>(data) {
+        <span class="keyword">this</span>.data = data;
+        <span class="keyword">this</span>.children = [];
+    }
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. OPERATIONS -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">⚙️</div>
+          <h2 class="section-title">Basic Operations of Tree</h2>
+        </div>
+        <p class="content-text" style="margin-bottom: 1.5rem">
+          Let's explore the core operations you can perform on a tree:
+        </p>
+
+        <div class="impl-type">
+          <div class="impl-header">
+            <h3 class="impl-title">🌳 Generic Tree — Core Operations</h3>
+            <span class="impl-badge">N-ary Tree</span>
+          </div>
+
+          <!-- ADD CHILD -->
+          <div class="operation-dropdown">
+            <div class="operation-header" onclick="toggleOp('tree-add')">
+              <div class="operation-title">
+                <div class="operation-number">1</div>
+                <span>Add Child (Insert)</span>
+              </div>
+              <div class="dropdown-icon" id="icon-tree-add">▼</div>
+            </div>
+            <div class="operation-content" id="content-tree-add">
+              <div class="operation-body">
+                <p class="content-text">
+                  Adds a child node to a given parent by appending it to the
+                  parent's children list.
+                </p>
+                <div class="perf-metrics-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Time Complexity</div>
+                    <div class="complexity-value">O(1)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(1)</div>
+                  </div>
+                </div>
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan)">
+                  Algorithm:
+                </h4>
+                <ul class="styled-list">
+                  <li>Create a new node with the given value</li>
+                  <li>Access the parent node's children list</li>
+                  <li>Append the new node to the parent's children list</li>
+                </ul>
+                <div class="language-tabs" data-group="tree-add">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'tree-add', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-add', 'c')"
+                  >
+                    C
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-add', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-add', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-add', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="tree-add"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">addChild</span>(<span class="type">Node</span>* parent, <span class="type">Node</span>* child) {
+    parent->children.<span class="function">push_back</span>(child);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-add"
+                  data-lang="c"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="comment">// Binary tree: assign left or right child</span>
+<span class="keyword">void</span> <span class="function">setLeft</span>(<span class="keyword">struct</span> <span class="type">Node</span>* p, <span class="keyword">struct</span> <span class="type">Node</span>* c)  { p->left  = c; }
+<span class="keyword">void</span> <span class="function">setRight</span>(<span class="keyword">struct</span> <span class="type">Node</span>* p, <span class="keyword">struct</span> <span class="type">Node</span>* c) { p->right = c; }</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-add"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">addChild</span>(<span class="type">Node</span> parent, <span class="type">Node</span> child) {
+    parent.children.<span class="function">add</span>(child);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-add"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">def</span> <span class="function">add_child</span>(parent, child):
+    parent.children.<span class="function">append</span>(child)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-add"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">function</span> <span class="function">addChild</span>(parent, child) {
+    parent.children.<span class="function">push</span>(child);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <!-- SVG -->
+                <div class="svg-container" style="margin-top: 1.5rem">
+                  <svg
+                    viewBox="0 0 600 200"
+                    style="
+                      background: var(--terminal-bg);
+                      border-radius: 10px;
+                      min-width: 320px;
+                    "
+                  >
+                    <text
+                      x="130"
+                      y="22"
+                      fill="#06b6d4"
+                      font-size="13"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      Before addChild(35, 6)
+                    </text>
+                    <circle cx="130" cy="58" r="22" fill="#8b5cf6" />
+                    <text
+                      x="130"
+                      y="63"
+                      fill="white"
+                      font-size="13"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      35
+                    </text>
+                    <line
+                      x1="112"
+                      y1="78"
+                      x2="88"
+                      y2="112"
+                      stroke="#3a3a3a"
+                      stroke-width="2"
+                    />
+                    <circle cx="78" cy="128" r="18" fill="#06b6d4" />
+                    <text
+                      x="78"
+                      y="133"
+                      fill="white"
+                      font-size="12"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      3
+                    </text>
+                    <text
+                      x="130"
+                      y="175"
+                      fill="#666"
+                      font-size="11"
+                      text-anchor="middle"
+                    >
+                      1 child
+                    </text>
+                    <path
+                      d="M 195 100 L 265 100"
+                      stroke="#10b981"
+                      stroke-width="3"
+                      marker-end="url(#ga2)"
+                    />
+                    <text
+                      x="230"
+                      y="90"
+                      fill="#10b981"
+                      font-size="11"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      ADD
+                    </text>
+                    <defs>
+                      <marker
+                        id="ga2"
+                        markerWidth="8"
+                        markerHeight="8"
+                        refX="7"
+                        refY="3"
+                        orient="auto"
+                      >
+                        <path d="M0,0 L0,6 L8,3 z" fill="#10b981" />
+                      </marker>
+                    </defs>
+                    <text
+                      x="445"
+                      y="22"
+                      fill="#06b6d4"
+                      font-size="13"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      After addChild(35, 6)
+                    </text>
+                    <circle cx="445" cy="58" r="22" fill="#8b5cf6" />
+                    <text
+                      x="445"
+                      y="63"
+                      fill="white"
+                      font-size="13"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      35
+                    </text>
+                    <line
+                      x1="430"
+                      y1="78"
+                      x2="398"
+                      y2="112"
+                      stroke="#3a3a3a"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="460"
+                      y1="78"
+                      x2="492"
+                      y2="112"
+                      stroke="#3a3a3a"
+                      stroke-width="2"
+                    />
+                    <circle cx="388" cy="128" r="18" fill="#06b6d4" />
+                    <text
+                      x="388"
+                      y="133"
+                      fill="white"
+                      font-size="12"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      3
+                    </text>
+                    <circle cx="502" cy="128" r="18" fill="#10b981" />
+                    <text
+                      x="502"
+                      y="133"
+                      fill="white"
+                      font-size="12"
+                      font-weight="bold"
+                      text-anchor="middle"
+                    >
+                      6
+                    </text>
+                    <text
+                      x="445"
+                      y="175"
+                      fill="#666"
+                      font-size="11"
+                      text-anchor="middle"
+                    >
+                      2 children
+                    </text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRINT PARENTS -->
+          <div class="operation-dropdown">
+            <div class="operation-header" onclick="toggleOp('tree-parents')">
+              <div class="operation-title">
+                <div class="operation-number">2</div>
+                <span>Print Parents of Each Node</span>
+              </div>
+              <div class="dropdown-icon" id="icon-tree-parents">▼</div>
+            </div>
+            <div class="operation-content" id="content-tree-parents">
+              <div class="operation-body">
+                <p class="content-text">
+                  Recursively prints the parent of each node. Root's parent is
+                  NULL.
+                </p>
+                <div class="perf-metrics-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Time Complexity</div>
+                    <div class="complexity-value">O(n)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(h)</div>
+                  </div>
+                </div>
+                <div class="language-tabs" data-group="tree-parents">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'tree-parents', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-parents', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-parents', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-parents', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="tree-parents"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printParents</span>(<span class="type">Node</span>* node, <span class="type">Node</span>* parent) {
+    <span class="keyword">if</span> (parent == <span class="keyword">nullptr</span>)
+        cout &lt;&lt; node->data &lt;&lt; <span class="string">" -> NULL\n"</span>;
+    <span class="keyword">else</span>
+        cout &lt;&lt; node->data &lt;&lt; <span class="string">" -> "</span> &lt;&lt; parent->data &lt;&lt; <span class="string">"\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">auto</span> child : node->children)
+        <span class="function">printParents</span>(child, node);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-parents"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printParents</span>(<span class="type">Node</span> node, <span class="type">Node</span> parent) {
+    <span class="keyword">if</span> (parent == <span class="keyword">null</span>)
+        System.out.println(node.data + <span class="string">" -> NULL"</span>);
+    <span class="keyword">else</span>
+        System.out.println(node.data + <span class="string">" -> "</span> + parent.data);
+    <span class="keyword">for</span> (<span class="type">Node</span> child : node.children)
+        <span class="function">printParents</span>(child, node);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-parents"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">def</span> <span class="function">print_parents</span>(node, parent=<span class="keyword">None</span>):
+    p = <span class="string">"NULL"</span> <span class="keyword">if</span> parent <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">else</span> parent.data
+    <span class="function">print</span>(f<span class="string">"{node.data} -> {p}"</span>)
+    <span class="keyword">for</span> child <span class="keyword">in</span> node.children:
+        <span class="function">print_parents</span>(child, node)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-parents"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">function</span> <span class="function">printParents</span>(node, parent = <span class="keyword">null</span>) {
+    <span class="keyword">const</span> p = parent ? parent.data : <span class="string">'NULL'</span>;
+    console.<span class="function">log</span>(`${node.data} -> ${p}`);
+    node.children.<span class="function">forEach</span>(c => <span class="function">printParents</span>(c, node));
+}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRINT LEAF NODES -->
+          <div class="operation-dropdown">
+            <div class="operation-header" onclick="toggleOp('tree-leaf')">
+              <div class="operation-title">
+                <div class="operation-number">3</div>
+                <span>Print Leaf Nodes</span>
+              </div>
+              <div class="dropdown-icon" id="icon-tree-leaf">▼</div>
+            </div>
+            <div class="operation-content" id="content-tree-leaf">
+              <div class="operation-body">
+                <p class="content-text">
+                  Finds and prints all leaf nodes — nodes with no children.
+                </p>
+                <div class="perf-metrics-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Time Complexity</div>
+                    <div class="complexity-value">O(n)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(h)</div>
+                  </div>
+                </div>
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan)">
+                  Algorithm:
+                </h4>
+                <ul class="styled-list">
+                  <li>
+                    If the node's children list is empty → it is a leaf, print
+                    it
+                  </li>
+                  <li>Otherwise, recursively call for each child</li>
+                </ul>
+                <div class="language-tabs" data-group="tree-leaf">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'tree-leaf', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-leaf', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-leaf', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-leaf', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="tree-leaf"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printLeafNodes</span>(<span class="type">Node</span>* node) {
+    <span class="keyword">if</span> (node->children.<span class="function">empty</span>()) {
+        cout &lt;&lt; node->data &lt;&lt; <span class="string">" "</span>;
+        <span class="keyword">return</span>;
+    }
+    <span class="keyword">for</span> (<span class="keyword">auto</span> child : node->children)
+        <span class="function">printLeafNodes</span>(child);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-leaf"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printLeafNodes</span>(<span class="type">Node</span> node) {
+    <span class="keyword">if</span> (node.children.<span class="function">isEmpty</span>()) {
+        System.out.print(node.data + <span class="string">" "</span>);
+        <span class="keyword">return</span>;
+    }
+    <span class="keyword">for</span> (<span class="type">Node</span> child : node.children)
+        <span class="function">printLeafNodes</span>(child);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-leaf"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">def</span> <span class="function">print_leaf_nodes</span>(node):
+    <span class="keyword">if not</span> node.children:
+        <span class="function">print</span>(node.data, end=<span class="string">' '</span>)
+        <span class="keyword">return</span>
+    <span class="keyword">for</span> child <span class="keyword">in</span> node.children:
+        <span class="function">print_leaf_nodes</span>(child)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-leaf"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">function</span> <span class="function">printLeafNodes</span>(node) {
+    <span class="keyword">if</span> (node.children.length === <span class="number">0</span>) {
+        process.stdout.write(node.data + <span class="string">' '</span>);
+        <span class="keyword">return</span>;
+    }
+    node.children.<span class="function">forEach</span>(c => <span class="function">printLeafNodes</span>(c));
+}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PRINT DEGREES -->
+          <div class="operation-dropdown">
+            <div class="operation-header" onclick="toggleOp('tree-degree')">
+              <div class="operation-title">
+                <div class="operation-number">4</div>
+                <span>Print Degrees of Each Node</span>
+              </div>
+              <div class="dropdown-icon" id="icon-tree-degree">▼</div>
+            </div>
+            <div class="operation-content" id="content-tree-degree">
+              <div class="operation-body">
+                <p class="content-text">
+                  Degree of a node = number of children + 1 (for parent edge),
+                  except the root which has no parent.
+                </p>
+                <div class="perf-metrics-grid">
+                  <div class="complexity-box">
+                    <div class="complexity-label">Time Complexity</div>
+                    <div class="complexity-value">O(n)</div>
+                  </div>
+                  <div class="complexity-box">
+                    <div class="complexity-label">Space Complexity</div>
+                    <div class="complexity-value">O(h)</div>
+                  </div>
+                </div>
+                <div class="language-tabs" data-group="tree-degree">
+                  <div
+                    class="lang-tab active"
+                    onclick="switchCode(event, 'tree-degree', 'cpp')"
+                  >
+                    C++
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-degree', 'java')"
+                  >
+                    Java
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-degree', 'python')"
+                  >
+                    Python
+                  </div>
+                  <div
+                    class="lang-tab"
+                    onclick="switchCode(event, 'tree-degree', 'js')"
+                  >
+                    JavaScript
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content active"
+                  data-group="tree-degree"
+                  data-lang="cpp"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">C++</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printDegrees</span>(<span class="type">Node</span>* node, <span class="type">Node</span>* parent) {
+    <span class="keyword">int</span> degree = node->children.<span class="function">size</span>();
+    <span class="keyword">if</span> (parent != <span class="keyword">nullptr</span>) degree++;
+    cout &lt;&lt; node->data &lt;&lt; <span class="string">" -> "</span> &lt;&lt; degree &lt;&lt; <span class="string">"\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">auto</span> child : node->children)
+        <span class="function">printDegrees</span>(child, node);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-degree"
+                  data-lang="java"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Java</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">void</span> <span class="function">printDegrees</span>(<span class="type">Node</span> node, <span class="type">Node</span> parent) {
+    <span class="keyword">int</span> degree = node.children.<span class="function">size</span>();
+    <span class="keyword">if</span> (parent != <span class="keyword">null</span>) degree++;
+    System.out.println(node.data + <span class="string">" -> "</span> + degree);
+    <span class="keyword">for</span> (<span class="type">Node</span> child : node.children)
+        <span class="function">printDegrees</span>(child, node);
+}</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-degree"
+                  data-lang="python"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">Python</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">def</span> <span class="function">print_degrees</span>(node, parent=<span class="keyword">None</span>):
+    degree = <span class="function">len</span>(node.children)
+    <span class="keyword">if</span> parent <span class="keyword">is not</span> <span class="keyword">None</span>: degree += <span class="number">1</span>
+    <span class="function">print</span>(f<span class="string">"{node.data} -> {degree}"</span>)
+    <span class="keyword">for</span> child <span class="keyword">in</span> node.children:
+        <span class="function">print_degrees</span>(child, node)</pre>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="code-lang-content"
+                  data-group="tree-degree"
+                  data-lang="js"
+                >
+                  <div class="code-block">
+                    <div class="code-header">
+                      <span class="code-lang">JavaScript</span
+                      ><button class="code-copy" onclick="copyCode(this)">
+                        Copy
+                      </button>
+                    </div>
+                    <div class="code-content">
+                      <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">function</span> <span class="function">printDegrees</span>(node, parent = <span class="keyword">null</span>) {
+    <span class="keyword">let</span> degree = node.children.length;
+    <span class="keyword">if</span> (parent) degree++;
+    console.<span class="function">log</span>(`${node.data} -> ${degree}`);
+    node.children.<span class="function">forEach</span>(c => <span class="function">printDegrees</span>(c, node));
+}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Implementation -->
+        <div class="impl-type" style="margin-top: 2rem">
+          <div class="impl-header">
+            <h3 class="impl-title">📦 Full Tree Implementation (C++)</h3>
+            <span class="impl-badge">Complete Code</span>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">C++ — Full with Output</span
+              ><button class="code-copy" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><span class="comment">// Note: Ensure the index is within bounds to avoid overflow errors</span>
+<span class="keyword">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> <span class="type">Node</span> {
+<span class="keyword">public</span>:
+    <span class="keyword">int</span> data;
+    vector&lt;<span class="type">Node</span>*&gt; children;
+    <span class="function">Node</span>(<span class="keyword">int</span> x) { data = x; }
+};
+
+<span class="keyword">void</span> <span class="function">addChild</span>(<span class="type">Node</span>* p, <span class="type">Node</span>* c) { p->children.<span class="function">push_back</span>(c); }
+
+<span class="keyword">void</span> <span class="function">printParents</span>(<span class="type">Node</span>* node, <span class="type">Node</span>* parent) {
+    cout &lt;&lt; node->data &lt;&lt; <span class="string">" -> "</span>
+         &lt;&lt; (parent ? to_string(parent->data) : <span class="string">"NULL"</span>) &lt;&lt; <span class="string">"\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">auto</span> c : node->children) <span class="function">printParents</span>(c, node);
+}
+
+<span class="keyword">void</span> <span class="function">printLeafNodes</span>(<span class="type">Node</span>* node) {
+    <span class="keyword">if</span> (node->children.<span class="function">empty</span>()) { cout &lt;&lt; node->data &lt;&lt; <span class="string">" "</span>; <span class="keyword">return</span>; }
+    <span class="keyword">for</span> (<span class="keyword">auto</span> c : node->children) <span class="function">printLeafNodes</span>(c);
+}
+
+<span class="keyword">void</span> <span class="function">printDegrees</span>(<span class="type">Node</span>* node, <span class="type">Node</span>* parent) {
+    <span class="keyword">int</span> d = node->children.<span class="function">size</span>(); <span class="keyword">if</span> (parent) d++;
+    cout &lt;&lt; node->data &lt;&lt; <span class="string">" -> "</span> &lt;&lt; d &lt;&lt; <span class="string">"\n"</span>;
+    <span class="keyword">for</span> (<span class="keyword">auto</span> c : node->children) <span class="function">printDegrees</span>(c, node);
+}
+
+<span class="keyword">int</span> <span class="function">main</span>() {
+    <span class="type">Node</span>* root = <span class="keyword">new</span> <span class="type">Node</span>(<span class="number">1</span>);
+    <span class="type">Node</span>* n2 = <span class="keyword">new</span> <span class="type">Node</span>(<span class="number">2</span>), *n3 = <span class="keyword">new</span> <span class="type">Node</span>(<span class="number">3</span>);
+    <span class="type">Node</span>* n4 = <span class="keyword">new</span> <span class="type">Node</span>(<span class="number">4</span>), *n5 = <span class="keyword">new</span> <span class="type">Node</span>(<span class="number">5</span>);
+    <span class="function">addChild</span>(root,n2); <span class="function">addChild</span>(root,n3);
+    <span class="function">addChild</span>(n2,n4);   <span class="function">addChild</span>(n2,n5);
+
+    cout &lt;&lt; <span class="string">"Parents:\n"</span>;     <span class="function">printParents</span>(root, <span class="keyword">nullptr</span>);
+    cout &lt;&lt; <span class="string">"\nLeaf nodes: "</span>; <span class="function">printLeafNodes</span>(root);
+    cout &lt;&lt; <span class="string">"\n\nDegrees:\n"</span>; <span class="function">printDegrees</span>(root, <span class="keyword">nullptr</span>);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+<span class="comment">/* Output:
+Parents:
+1 -> NULL  2 -> 1  4 -> 2  5 -> 2  3 -> 1
+Leaf nodes: 4 5 3
+Degrees:
+1->2  2->3  4->1  5->1  3->1 */</span></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. IMPORTANCE -->
+      <div class="ds-card-container">
+        <div class="section-header">
+          <div class="section-icon">🔑</div>
+          <h2 class="section-title">Importance of Tree Data Structure</h2>
+        </div>
+        <ul class="styled-list">
+          <li>
+            Trees are useful for storing data that naturally forms a
+            <strong>hierarchy</strong>
+          </li>
+          <li>
+            File systems are structured as trees — folders containing subfolders
+            and files
+          </li>
+          <li>
+            The <strong>DOM</strong> of an HTML page is a tree:
+            <code>&lt;html&gt;</code> is the root, <code>&lt;head&gt;</code> and
+            <code>&lt;body&gt;</code> are children
+          </li>
+          <li>
+            Trees allow <strong>efficient organization</strong> and retrieval of
+            hierarchical data
+          </li>
+          <li>
+            Used in <strong>databases</strong> (B-Trees),
+            <strong>compilers</strong> (parse trees), and
+            <strong>AI</strong> (decision trees)
+          </li>
+          <li>
+            Binary Search Trees enable average <strong>O(log n)</strong> search,
+            insert, and delete operations
+          </li>
+          <li>
+            Heap trees power <strong>priority queues</strong> used in Dijkstra's
+            and Prim's algorithms
+          </li>
+        </ul>
+      </div>
+
+      <!-- VIDEO -->
+      <div class="video-section">
+        <div class="video-info">
+          <span>📺</span><span>Tree Data Structure Explained</span>
+        </div>
+        <div class="video-container">
+          <div class="video-wrapper">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/5NiXlPrLslg?si=JBJ2OdQZMGsb1E0W"
+              title="YouTube video player"
+              frameborder="0"
+              allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share;
+              "
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEVEL SLIDER -->
+
+      <h3
+        class="content-title"
+        style="justify-content: center; margin-bottom: 2.5rem"
+      >
+        Ready to See it in Action? →
+      </h3>
+      <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider active" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="quizModal" class="level-modal">
+      <div class="level-modal-content">
+        <div style="font-size: 3rem; margin-bottom: 1rem">🔒</div>
+        <h3
+          style="
+            color: var(--primary-purple);
+            font-family: &quot;Space Grotesk&quot;;
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+          "
+        >
+          Level Locked
+        </h3>
+        <p
+          id="modalMsg"
+          style="color: var(--text-secondary); font-size: 0.95rem"
+        >
+          Pass the Level 1 Quiz to unlock Level 2 and continue your Tree
+          journey.
+        </p>
+        <div class="level-modal-buttons">
+          <button id="startQuiz">Start Quiz</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/tree_L1.js"></script>
+  <link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

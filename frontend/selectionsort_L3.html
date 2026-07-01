@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selection Sort — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/selectionsort_L3.css">
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="selectionsort_L1.html">Selection Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Selection Sort in the <span class="highlight">Real World</span></h1>
+  <p>Simple, predictable, write-minimal. Selection sort's guarantee of exactly one swap per pass makes it the right choice in more situations than you'd expect.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Find the Minimum, Swap It Into Place</div>
+    <p class="concept-desc">Selection sort divides the array into <strong>sorted (left)</strong> and <strong>unsorted (right)</strong> halves. Each pass: <strong>scan the unsorted portion</strong> to find the minimum, then <strong>swap it</strong> to the front. After n passes the array is sorted. The unique property: <strong>exactly n−1 swaps total</strong>, regardless of input — the fewest swaps of any comparison-based sort.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through selection sort — one pass at a time</div>
+      <div class="sort-bars" id="conceptBars"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Pass</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Pass" to step through selection sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.2);border:2px solid var(--primary-green)"></div>Sorted</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.2);border:2px solid var(--primary-orange)"></div>Current Min</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.15);border:2px solid var(--primary-rose)"></div>Scanning</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.2);border:2px solid var(--primary-purple)"></div>Swapping</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Selection sort is chosen when writes are expensive, data is small, or simplicity matters more than raw speed.</p>
+  <div class="app-grid">
+
+    <!-- 1. Flash Memory -->
+    <div class="app-card rose">
+      <div class="card-header">
+        <div class="card-icon rose">💾</div>
+        <div class="card-title-wrap">
+          <h3>Flash Memory / Embedded Systems</h3>
+          <p>In flash memory (EEPROM), write operations are expensive and physically wear out the chip. Selection sort's guarantee of exactly <strong>O(n) swaps</strong> minimizes writes — extending hardware lifespan vs bubble sort's O(n²) writes.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort with minimum writes — compare swap counts</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="flashSort()">▶ Sort (count writes)</button>
+            <button class="d-btn reset" onclick="flashReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="flashBars"></div>
+          <div class="status-line" id="flashStatus">Press Sort to see write count</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Writes (swaps): <b id="flashWrites" style="color:var(--primary-rose)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Comparisons: <b id="flashComps" style="color:var(--primary-cyan)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Tournament Seeding -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🏆</div>
+        <div class="card-title-wrap">
+          <h3>Tournament & Match Seeding</h3>
+          <p>When seeding a sports tournament (top team → seed 1, next → seed 2...), organizers scan all teams, pick the best, place them, then repeat — exactly selection sort logic, one seed per pass.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Seed the tournament — best team per round gets placed</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="seedNext()">▶ Pick Next Seed</button>
+            <button class="d-btn reset" onclick="seedReset()">↺ Reset</button>
+          </div>
+          <div id="seedList" style="display:flex;flex-direction:column;gap:.22rem;max-height:150px;overflow-y:auto"></div>
+          <div class="step-info" id="seedInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Playlist Sorter -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🎵</div>
+        <div class="card-title-wrap">
+          <h3>Music Playlist Sorter</h3>
+          <p>Sorting a small local playlist by play count, rating, or duration on a media player with limited memory uses selection sort. Small size (under 100 songs) makes O(n²) perfectly fast enough.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort playlist by play count — one pass at a time</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="playlistStep()">▶ Next Pass</button>
+            <button class="d-btn reset" onclick="playlistReset()">↺ Reset</button>
+          </div>
+          <div id="playlistList" style="display:flex;flex-direction:column;gap:.22rem;max-height:155px;overflow-y:auto"></div>
+          <div class="step-info" id="playlistInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Card Sorting -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🃏</div>
+        <div class="card-title-wrap">
+          <h3>Physical Card / Item Sorting</h3>
+          <p>When people sort physical items — cards, papers, books — they naturally use selection sort: scan all, pick the smallest, place it first, repeat. It's the most intuitive human sorting behavior.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort cards like a human — find minimum, place it</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="cardStep()">▶ Pick Minimum Card</button>
+            <button class="d-btn reset" onclick="cardReset()">↺ Reset</button>
+          </div>
+          <div id="cardRow" style="display:flex;gap:5px;flex-wrap:wrap;min-height:52px;align-items:center;margin-bottom:.6rem"></div>
+          <div class="status-line" id="cardStatus">Click to find and place the minimum card</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Task Priority -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">📋</div>
+        <div class="card-title-wrap">
+          <h3>Task Priority Assignment</h3>
+          <p>Project managers assigning P1/P2/P3 to a small backlog use selection sort logic: find the most critical task, assign P1, then find the next — one pass per priority level.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Assign task priorities — most critical gets P1 first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="taskStep()">▶ Assign Next Priority</button>
+            <button class="d-btn reset" onclick="taskReset()">↺ Reset</button>
+          </div>
+          <div id="taskList" style="display:flex;flex-direction:column;gap:.22rem;max-height:150px;overflow-y:auto"></div>
+          <div class="step-info" id="taskInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Score Ranking -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">📝</div>
+        <div class="card-title-wrap">
+          <h3>Exam Score Ranking</h3>
+          <p>Teachers ranking a small class by score naturally apply selection sort by hand: find the highest score, write rank 1, cross it out, repeat. Simple, visual, and correct.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Rank students — highest score gets rank 1 first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="rankStep()">▶ Assign Next Rank</button>
+            <button class="d-btn reset" onclick="rankReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="rankBars"></div>
+          <div id="rankList" style="display:flex;flex-direction:column;gap:.22rem;max-height:90px;overflow-y:auto;margin-top:.4rem"></div>
+          <div class="step-info" id="rankInfo"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Selection sort's O(n²) time looks bad — but its O(n) swaps and O(1) space tell a different story in the right context.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Swaps (Writes)</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="bad">O(n²)</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">No early exit — scans all even if already sorted</td></tr>
+        <tr><td class="op">Average Case</td><td class="bad">O(n²)</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Always exactly n−1 swaps regardless of input</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n²)</td><td class="good">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Reverse-sorted — same cost as best case!</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="bad">❌ Not stable</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Swaps can reorder equal elements</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Selection sort makes exactly <strong style="color:var(--primary-rose)">at most n−1 swaps</strong> — always. Bubble sort can make O(n²) swaps. This makes selection sort the winner when <strong style="color:var(--primary-rose)">writes are expensive</strong> (flash, EEPROM, SSDs with limited write cycles).
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Selection sort is often dismissed — but it has a real niche where it genuinely beats more complex algorithms.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Minimum swaps — exactly O(n) writes</h4><p>n−1 swaps guaranteed in all cases. Critical for flash memory, EEPROM, SSDs — each write cycle degrades hardware.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) space — truly in-place</h4><p>No auxiliary arrays, no recursion stack — just three variables (i, j, minIdx). Works on severely memory-constrained embedded systems.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Simple to implement correctly</h4><p>Two nested loops, one swap. No partition logic, no merge buffers, no pivot selection. Fewer lines = fewer bugs in critical systems.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Perfectly predictable performance</h4><p>Always O(n²) — no variance. For real-time systems needing consistent timing, quicksort's worst-case spikes are more dangerous than steady selection sort.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Great for finding top-k elements</h4><p>Need only the 3 smallest items? Run just 3 passes and stop. O(k×n) instead of O(n log n) full sort — huge win for small k on large n.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Ideal for teaching sorting concepts</h4><p>The most visually clear sorting algorithm. Find minimum → place it → repeat. Perfect for visualizers, whiteboard interviews, and reference implementations.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) time — unusable on large data</h4><p>1,000 elements = ~500,000 comparisons. 1,000,000 elements? ~500 billion. Quicksort is 1,000x faster at n=10,000.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No early termination</h4><p>Even on a fully sorted array, selection sort does all n² comparisons. Bubble sort with a "swapped" flag stops early — selection sort never does.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Not stable</h4><p>Equal elements may change relative order. Sorting [{A,5},{B,5},{C,3}] by value might give C,B,A instead of C,A,B — original A,B order not preserved.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Outperformed by insertion sort on nearly-sorted data</h4><p>Insertion sort finishes near O(n) if data is almost sorted. Selection sort still scans O(n²) regardless. Use insertion sort for nearly-sorted cases.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Can't sort online (streaming data)</h4><p>Selection sort needs all elements before starting. Insertion sort sorts as elements arrive. Selection sort is inherently an offline algorithm.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance on large arrays</h4><p>Jumps around to find the minimum — lots of cache misses. Insertion sort's sequential access is far more cache-friendly at scale.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Selection Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Selection sort is niche — but in its niche, it's the right answer. Here's exactly when that is.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Selection Sort When...</div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Write operations are expensive</h4><p>Flash memory, EEPROM, NOR flash — each write cycle degrades hardware. Selection sort's O(n) writes vs bubble sort's O(n²) writes extends device life significantly.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Dataset is very small (n ≤ 20)</h4><p>For tiny arrays, quicksort recursion overhead and merge sort's extra buffers cost more than they save. <span class="when-code">for(i) for(j) swap</span> is all you need.</p></div></div>
+      <div class="when-item"><div class="when-icon">🧠</div><div class="when-text"><h4>Memory is severely constrained</h4><p>O(1) auxiliary space. Mergesort needs O(n). Heapsort is O(1) but complex. Selection sort is the simplest O(1)-space sort with guaranteed behavior.</p></div></div>
+      <div class="when-item"><div class="when-icon">⏱️</div><div class="when-text"><h4>Predictable timing is required</h4><p>Quicksort can degrade to O(n²) on bad pivots. Selection sort is always exactly O(n²) — useful in real-time systems where timing guarantees matter more than speed.</p></div></div>
+      <div class="when-item"><div class="when-icon">🏁</div><div class="when-text"><h4>Finding only the top-k smallest</h4><p>Need only 3 smallest from 1000 items? Run k=3 passes and stop — O(k×n) = O(3000) vs O(n log n) = O(10,000) for full sort. Huge win.</p></div></div>
+      <div class="when-item"><div class="when-icon">📝</div><div class="when-text"><h4>Teaching / prototyping / reference</h4><p>Most conceptually clear sort. Perfect for understanding sort mechanics, proving correctness, or building a reference implementation to test against.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Selection Sort When...</div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Dataset is large (n > 1000)</h4><p>Use quicksort, mergesort, or heapsort. At n=10,000, quicksort is roughly 1,000x faster in practice. There is no reason to use O(n²) on large data.</p></div></div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Data is nearly sorted</h4><p>Use insertion sort — it degrades gracefully to O(n) on nearly-sorted data. Selection sort always does O(n²) scans regardless of input order.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability matters</h4><p>If equal elements must preserve their original order (sort by name then by date), use mergesort or insertion sort — both are stable. Selection sort is not.</p></div></div>
+      <div class="when-item"><div class="when-icon">📡</div><div class="when-text"><h4>Streaming / online data</h4><p>Data arriving one at a time — use insertion sort. It sorts as you go, O(1) amortized per insert on nearly-sorted streams. Selection sort needs all data first.</p></div></div>
+      <div class="when-item"><div class="when-icon">🗃️</div><div class="when-text"><h4>General-purpose sorting</h4><p>Use the language's built-in sort (Timsort in Python/Java, introsort in C++). These are O(n log n) and often stable. Never selection sort as a default.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Frequently updated sorted data</h4><p>Use a TreeSet, priority queue, or balanced BST with O(log n) insert — not O(n²) re-sorting after every change.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Sorting problems</span></div>
+    <p class="cta-sub">You've seen how selection sort powers embedded systems, tournament seeding, and priority assignment.<br>Now prove you can implement it and know when to use it vs faster alternatives.</p>
+    <div class="cta-sort-viz">
+      <div class="cta-bar" style="height:22px;background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.3)"></div>
+      <div class="cta-bar" style="height:42px;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)"></div>
+      <div class="cta-bar" style="height:32px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cta-bar" style="height:55px;background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.3)"></div>
+      <div class="cta-bar" style="height:28px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="cta-bar" style="height:48px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+    </div>
+    <a href="practice.html?topic=selectionsort" class="cta-btn">
+      <span>🔀 Solve Sorting Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/selectionsort_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

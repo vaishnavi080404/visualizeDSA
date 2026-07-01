@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/matrix_L2.css">
+  </head>
+  <body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep"> › </span>
+    <a href="matrix_basics.html">Matrix</a><span class="sep"> › </span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Matrix — Interactive Visualizer</h1>
+    <p class="page-subtitle">Visualize Accessing, Traversal, Sorting, and Searching on 2D arrays with step-by-step animation.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- OPERATION SELECTOR -->
+  <div class="op-selector">
+    <div class="op-option active" data-op="access"   onclick="switchOp('access')">
+      <div class="op-icon">🎯</div><div class="op-title">Accessing</div><div class="op-desc">Read mat[i][j]</div>
+    </div>
+    <div class="op-option" data-op="traverse" onclick="switchOp('traverse')">
+      <div class="op-icon">🔄</div><div class="op-title">Traversal</div><div class="op-desc">Row-by-row scan</div>
+    </div>
+    <div class="op-option" data-op="sort"     onclick="switchOp('sort')">
+      <div class="op-icon">🔢</div><div class="op-title">Sorting</div><div class="op-desc">Row / Column wise</div>
+    </div>
+    <div class="op-option" data-op="search"   onclick="switchOp('search')">
+      <div class="op-icon">🔍</div><div class="op-title">Searching</div><div class="op-desc">Linear 2D scan</div>
+    </div>
+  </div>
+
+  <!-- VISUALIZER GRID -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code Panel -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div id="pseudo-steps"></div>
+    </div>
+
+    <!-- Main Viz Card -->
+    <div>
+      <div class="viz-card">
+        <div class="viz-card-header">
+          <h5 id="viz-title">Matrix Visualizer — Accessing</h5>
+        </div>
+        <div class="viz-card-body" id="main-viz-body">
+          <!-- matrix rendered here -->
+          <div id="main-matrix-wrap" class="matrix-wrap"></div>
+          <div class="caption-box" id="main-caption">Choose a row and column, then click Access Cell.</div>
+        </div>
+        <div class="viz-card-footer" id="main-controls"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIOS SECTION -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST CASE -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case — O(1)</h4>
+          <p>Accessing any element by index is always constant time — <strong style="color:var(--primary-green)">O(1)</strong>. No loops required; we directly compute the memory address using row and column indices.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="best-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="best-caption" style="margin-top:14px;">Click "Access [1][2]" to see direct element access.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="bestAccess()">⚡ Access [1][2]</button>
+                <button class="ctl-btn ctl-btn-green"  onclick="bestAccessCorner()">🎯 Access [0][0]</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE CASE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case — O(R × C / 2)</h4>
+          <p>Linear search finds the target somewhere in the <strong style="color:var(--primary-cyan)">middle</strong> of the matrix. Watch it scan row by row until the element is found.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="avg-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="avg-caption" style="margin-top:14px;">Press Next Step to search for <span style="color:var(--primary-cyan);font-weight:700;">25</span> row by row.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()"  id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()"  id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST CASE -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case — O(R × C)</h4>
+          <p>Target element is <strong style="color:var(--primary-orange)">not present</strong> in the matrix. Every single cell must be compared before concluding it's absent.</p>
+          <hr class="scenario-divider">
+          <div class="matrix-stage">
+            <div>
+              <div id="worst-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="worst-caption" style="margin-top:14px;">Searching for <span style="color:var(--primary-red);font-weight:700;">99</span> — not in matrix. Must check ALL cells.</div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Cell</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+            <div><div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM INPUT -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Edit the matrix, choose any row/column, or search for a value. All four operations available.</p>
+          <hr class="scenario-divider">
+
+          <div class="cc-grid">
+            <div class="cc-card" id="ccc-access">
+              <div class="cc-op">🎯 Access</div>
+              <div class="cc-time">Time: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Direct index → address formula</div>
+            </div>
+            <div class="cc-card" id="ccc-traverse">
+              <div class="cc-op">🔄 Traverse</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R×C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Visit every cell exactly once</div>
+            </div>
+            <div class="cc-card" id="ccc-sort">
+              <div class="cc-op">🔢 Sort</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R·C·log C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Sort each row / column individually</div>
+            </div>
+            <div class="cc-card" id="ccc-search">
+              <div class="cc-op">🔍 Search</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(R×C)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Linear scan until found or exhausted</div>
+            </div>
+          </div>
+          <div class="cc-toast" id="cc-toast"><span id="cc-ti"></span><span id="cc-tt"></span></div>
+
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:1rem;align-items:flex-end;">
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Row</div>
+              <input type="number" class="num-input" id="c-row" value="0" min="0" max="3"></div>
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Col</div>
+              <input type="number" class="num-input" id="c-col" value="0" min="0" max="3"></div>
+            <div><div class="input-label-sm" style="margin-bottom:4px;">Search Val</div>
+              <input type="number" class="num-input" id="c-sval" value="17" style="width:80px;"></div>
+          </div>
+          <div class="ctl-row" style="margin-bottom:1.2rem;">
+            <button class="ctl-btn ctl-btn-cyan"   onclick="cAccess()">🎯 Access</button>
+            <button class="ctl-btn ctl-btn-purple"  onclick="cTraverse()">🔄 Traverse</button>
+            <button class="ctl-btn ctl-btn-orange"  onclick="cSortRow()">🔢 Sort Row</button>
+            <button class="ctl-btn ctl-btn-green"   onclick="cSortCol()">🔢 Sort Col</button>
+            <button class="ctl-btn ctl-btn-blue"    onclick="cSearch()">🔍 Search</button>
+            <button class="ctl-btn ctl-btn-ghost"   onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div class="matrix-stage">
+            <div>
+              <div id="custom-matrix" class="matrix-wrap"></div>
+              <div class="caption-box" id="custom-caption" style="margin-top:14px;">Choose an operation above to experiment!</div>
+            </div>
+            <div><div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scenario-panels -->
+  </div><!-- /section-card -->
+
+  <!-- CODE EDITOR -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="code-op-tabs">
+      <button class="code-op-btn active" id="cop-access"   onclick="switchCodeOp('access')">🎯 Accessing</button>
+      <button class="code-op-btn"        id="cop-traverse" onclick="switchCodeOp('traverse')">🔄 Traversal</button>
+      <button class="code-op-btn"        id="cop-sort"     onclick="switchCodeOp('sort')">🔢 Sorting</button>
+      <button class="code-op-btn"        id="cop-search"   onclick="switchCodeOp('search')">🔍 Searching</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp">C++</button>
+      <button class="lang-tab" data-lang="python">Python</button>
+      <button class="lang-tab" data-lang="java">Java</button>
+      <button class="lang-tab" data-lang="c">C</button>
+      <button class="lang-tab" data-lang="javascript">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display" id="lang-display">C++</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p id="modal-msg" style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/matrix_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

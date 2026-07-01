@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Topics - CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/topics.css" />
+    <script src="js/api.js"></script>
+    <script src="js/guard.js"></script>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <a class="logo" href="index.html">
+          <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          <span>CODEANIME</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html" class="active">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="hamburger-btn" id="hamburgerBtn">
+            <span class="ham-line"></span>
+            <span class="ham-line"></span>
+            <span class="ham-line"></span>
+          </button>
+          <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              ></path>
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile nav -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="index.html">Home</a>
+      <a href="topics.html">Topics</a>
+      <a href="prerequisite.html">Prerequisites</a>
+      <a href="codeeditor.html">Code Editor</a>
+    </div>
+
+    <div class="page-wrapper">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          🏆
+          <h2>Your Progress</h2>
+        </div>
+        <div class="overall-progress">
+          <div class="progress-label">
+            <span>Overall</span><span id="overallScore">0 / 54 Levels</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-fill" id="overallFill"></div>
+          </div>
+        </div>
+        <div class="xp-card">
+          <div class="xp-icon" style="font-size: 1.5rem">⚡</div>
+          <div class="xp-info">
+            <span>Total XP Earned</span><b id="totalXP">0 XP</b>
+          </div>
+        </div>
+        <h3
+          style="
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+          "
+        >
+          ⭐ TOPICS
+        </h3>
+        <ul class="topic-list" id="sidebarTopicList"></ul>
+      </aside>
+
+      <main class="main-content">
+        <!--                       ═
+     GREETING SECTION
+                      ═ -->
+        <div
+          class="greeting-section"
+          id="greetingSection"
+          style="margin-bottom: 65px"
+        >
+          <div class="greeting-card">
+            <div class="greeting-left">
+              <span class="greeting-wave">👋</span>
+              <div class="greeting-text-block">
+                <div class="greeting-headline" id="greetingHeadline">
+                  Hey there, loading...
+                </div>
+                <div class="greeting-sub" id="greetingSub">
+                  Pick up where you left off.
+                </div>
+              </div>
+            </div>
+            <div class="greeting-right">
+              <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-levels">0</span>
+                <span class="greeting-stat-lbl">Levels Done</span>
+              </div>
+              <div class="greeting-divider"></div>
+              <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-xp">0</span>
+                <span class="greeting-stat-lbl">XP Earned</span>
+              </div>
+              <div class="greeting-divider"></div>
+              <div class="greeting-stat">
+                <span class="greeting-stat-val" id="g-topics">0</span>
+                <span class="greeting-stat-lbl">Topics Started</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--   RECOMMENDED PATH   -->
+        <details>
+          <summary>Recommended Learning Path</summary>
+          <div class="accordion-content">
+            <div class="accordion-text">
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                  margin-bottom: 1.5rem;
+                "
+              >
+                Follow this order for optimal understanding. Each category
+                builds on the last.
+              </p>
+
+              <p class="path-category">📦 Data Structures — Linear</p>
+              <div class="learning-path">
+                <div class="path-item">
+                  <div class="step-dot">0</div>
+                  <div class="step-info">
+                    <span>Step 0 • Foundation</span>
+                    <h4>Array</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">1</div>
+                  <div class="step-info">
+                    <span>Step 1 • Foundation</span>
+                    <h4>String</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">2</div>
+                  <div class="step-info">
+                    <span>Step 2 • Foundation</span>
+                    <h4>Matrix</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">3</div>
+                  <div class="step-info">
+                    <span>Step 3 • Linear</span>
+                    <h4>Stack</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">4</div>
+                  <div class="step-info">
+                    <span>Step 4 • Linear</span>
+                    <h4>Queue</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">5</div>
+                  <div class="step-info">
+                    <span>Step 5 • Linear</span>
+                    <h4>Linked List</h4>
+                  </div>
+                </div>
+              </div>
+
+              <p class="path-category">🧠 Core Concepts</p>
+              <div class="learning-path">
+                <div class="path-item">
+                  <div class="step-dot">6</div>
+                  <div class="step-info">
+                    <span>Step 6 • Concept</span>
+                    <h4>Recursion</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">7</div>
+                  <div class="step-info">
+                    <span>Step 7 • Concept</span>
+                    <h4>Hashing</h4>
+                  </div>
+                </div>
+              </div>
+
+              <p class="path-category">🌳 Data Structures — Non-Linear</p>
+              <div class="learning-path">
+                <div class="path-item">
+                  <div class="step-dot">8</div>
+                  <div class="step-info">
+                    <span>Step 8 • Non-Linear</span>
+                    <h4>Tree</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">9</div>
+                  <div class="step-info">
+                    <span>Step 9 • Non-Linear</span>
+                    <h4>Heap</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">10</div>
+                  <div class="step-info">
+                    <span>Step 10 • Non-Linear</span>
+                    <h4>Graphs</h4>
+                  </div>
+                </div>
+              </div>
+
+              <p class="path-category">🔍 Searching Algorithms</p>
+              <div class="learning-path">
+                <div class="path-item">
+                  <div class="step-dot">11</div>
+                  <div class="step-info">
+                    <span>Step 11 • Search</span>
+                    <h4>Linear Search</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">12</div>
+                  <div class="step-info">
+                    <span>Step 12 • Search</span>
+                    <h4>Binary Search</h4>
+                  </div>
+                </div>
+              </div>
+
+              <p class="path-category">🔃 Sorting Algorithms</p>
+              <div class="learning-path">
+                <div class="path-item">
+                  <div class="step-dot">13</div>
+                  <div class="step-info">
+                    <span>Step 13 • Sort</span>
+                    <h4>Bubble Sort</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">14</div>
+                  <div class="step-info">
+                    <span>Step 14 • Sort</span>
+                    <h4>Selection Sort</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">15</div>
+                  <div class="step-info">
+                    <span>Step 15 • Sort</span>
+                    <h4>Insertion Sort</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">16</div>
+                  <div class="step-info">
+                    <span>Step 16 • Sort</span>
+                    <h4>Merge Sort</h4>
+                  </div>
+                </div>
+                <div class="path-item">
+                  <div class="step-dot">17</div>
+                  <div class="step-info">
+                    <span>Step 17 • Sort</span>
+                    <h4>Quick Sort</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!--   LANGUAGE PREREQS   -->
+        <details>
+          <summary>Language Prerequisites</summary>
+          <div class="accordion-content">
+            <div class="accordion-text">
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-secondary);
+                  line-height: 1.6;
+                "
+              >
+                Before diving into algorithms, ensure you understand the
+                following basics:<br /><br />
+                • Array declaration and indexing<br />
+                • Basic control flow (Loops and If-Else)<br />
+                • Function creation and parameter passing<br />
+                • Concept of recursion
+              </p>
+            </div>
+            <a href="prerequisite.html" class="btn-primary">→</a>
+          </div>
+        </details>
+
+        <div class="topic-grid" id="topicGrid"></div>
+
+        <div class="not-sure-section">
+          <span style="font-size: 2.5rem; color: var(--primary-green)">❓</span>
+          <h2 style="margin-top: 1rem">Not Sure Where to Start?</h2>
+          <p
+            style="
+              font-size: 0.9rem;
+              color: var(--text-secondary);
+              margin-top: 1rem;
+            "
+          >
+            We recommend starting with Stack and Queue to understand memory
+            management basics.
+          </p>
+          <button
+            class="btn-green"
+            onclick="document.querySelector('details').setAttribute('open', '')"
+          >
+            View Recommended Path
+          </button>
+        </div>
+
+        <footer
+          style="
+            margin-top: 5rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+          "
+        >
+          © 2026 CODEANIME. Built for visual thinkers.
+        </footer>
+      </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/topics.js"></script>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/navbar.js"></script>
+  </body>
+</html>

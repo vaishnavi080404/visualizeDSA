@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/matrix_L3.css">
+  </head>
+  <body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="matrix_L1.html">Matrix</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Matrix in the <span class="highlight">Real World</span></h1>
+  <p>The 2D data structure powering computer graphics, machine learning, pathfinding, image processing, and every algorithm that models grid-based relationships.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — 2D Grid with O(1) Cell Access</div>
+    <p class="concept-desc">A matrix is a <strong>2D array</strong> stored in row-major order: element at row r, column c is accessed as <strong>mat[r][c]</strong> or flat as <strong>arr[r × cols + c]</strong>. This gives O(1) access to any cell. Beyond storage, matrices encode <strong>relationships and transformations</strong> — a graph's adjacency matrix encodes connections, a rotation matrix encodes coordinate transforms, a DP table encodes subproblem solutions. The same O(1) access that makes arrays powerful is amplified to two dimensions.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1rem;text-align:center">🎮 Step through matrix traversal — row-major order visits every cell in O(rows × cols)</div>
+      <div style="display:flex;justify-content:center;margin-bottom:.8rem" id="conceptMatWrap">
+        <div class="mat-grid" id="conceptMat"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Visit Next Cell</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Visit Next Cell" — row-major traversal</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(99,102,241,.2);border:2px solid var(--primary-indigo)"></div>Current cell</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(124,58,237,.08);border:2px solid var(--primary-violet)"></div>Already visited</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Found / result</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(99,102,241,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Matrices are everywhere — from the pixels on your screen to the weights in a neural network. Any time you have rows and columns of related data, a matrix is the right tool.</p>
+  <div class="app-grid">
+
+    <!-- 1. BFS pathfinding -->
+    <div class="app-card indigo">
+      <div class="card-header">
+        <div class="card-icon indigo">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>BFS Pathfinding — Shortest Path in Grid</h3>
+          <p>Game maps, GPS routing, and robotics all use <strong>BFS on a matrix</strong> to find shortest paths. Each cell is a node; walls are obstacles; BFS explores level by level guaranteeing the shortest path in O(rows × cols) time. Used in Pac-Man, Google Maps grid routing, and warehouse robot navigation.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 BFS finds shortest path from S (start) to E (end) — step through the wavefront</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="bfsStep()">▶ BFS Step</button>
+            <button class="d-btn reset" onclick="bfsReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center" id="bfsGridWrap"><div class="sm-grid" id="bfsGrid"></div></div>
+          <div class="status-line" id="bfsStatus">BFS explores level by level from S — guaranteed shortest path</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Visited: <b id="bfsVisited" style="color:var(--primary-indigo)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Path len: <b id="bfsPathLen" style="color:var(--primary-green)">—</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Matrix rotation / image transform -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🔄</div>
+        <div class="card-title-wrap">
+          <h3>Image Rotation — In-Place 90° Transform</h3>
+          <p>Rotating an image 90° clockwise is a <strong>pure matrix transformation</strong>: <code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">result[col][n-1-row] = mat[row][col]</code>. In-place rotation uses transpose + reverse rows — O(n²) time, O(1) extra space. Used in photo apps, GPU texture mapping, and video processing pipelines.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Rotate 4×4 matrix 90° clockwise — transpose then reverse each row in-place</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="rotateStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="rotateReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem">
+            <div style="text-align:center"><div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">Original</div><div class="sm-grid" id="rotateOrigGrid"></div></div>
+            <div style="font-size:1.2rem;color:var(--text-secondary)">→</div>
+            <div style="text-align:center"><div style="font-size:.6rem;color:var(--text-secondary);margin-bottom:.3rem">Result</div><div class="sm-grid" id="rotateResGrid"></div></div>
+          </div>
+          <div class="status-line" id="rotateStatus">Step 1: Transpose the matrix (swap mat[i][j] ↔ mat[j][i])</div>
+          <div class="step-info" id="rotateInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Dynamic programming table -->
+    <div class="app-card blue">
+      <div class="card-header">
+        <div class="card-icon blue">📊</div>
+        <div class="card-title-wrap">
+          <h3>Dynamic Programming — 2D DP Table</h3>
+          <p>Problems like <strong>Longest Common Subsequence</strong>, edit distance, and coin change use a 2D matrix as their DP table — each cell stores the solution to a subproblem. The matrix makes O(1) lookup of previously computed results possible, turning exponential recursion into O(n × m) table filling.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 LCS DP table — fill cell by cell, watch subproblems build the solution</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dpStep()">▶ Fill Next Cell</button>
+            <button class="d-btn reset" onclick="dpReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center" id="dpGridWrap"><div class="sm-grid" id="dpGrid"></div></div>
+          <div class="status-line" id="dpStatus">LCS of "ABCB" and "BDCAB" — fill DP table row by row</div>
+          <div class="step-info" id="dpInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Spiral traversal -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🌀</div>
+        <div class="card-title-wrap">
+          <h3>Spiral Traversal — Layer-by-Layer Peel</h3>
+          <p>Spiral matrix traversal — visiting cells in a clockwise spiral from outside in — appears in <strong>embedded memory layout, image compression (JPEG's zigzag scan), and radar display rendering</strong>. The key insight: peel off the outer ring, recurse on the inner submatrix. O(n²) time visiting every cell exactly once.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Collect elements in clockwise spiral order — peel the outer ring inward</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="spiralStep()">▶ Next Cell</button>
+            <button class="d-btn reset" onclick="spiralReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center" id="spiralWrap"><div class="sm-grid" id="spiralGrid"></div></div>
+          <div class="status-line" id="spiralStatus">Spiral: →→ ↓↓ ←← ↑↑ then inner ring</div>
+          <div class="step-info" id="spiralInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Matrix search (sorted rows & cols) -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🔍</div>
+        <div class="card-title-wrap">
+          <h3>Sorted Matrix Search — O(n + m) Staircase</h3>
+          <p>When rows and columns are both sorted, you can search a matrix in <strong>O(n + m)</strong> — faster than binary search on a flat array. Start top-right: if target is smaller, go left; if larger, go down. Used in database index lookups, sorted grid search, and LeetCode's classic "Search a 2D Matrix II."</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Search for target 14 — staircase search eliminates a row or column each step</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="searchStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="searchReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center" id="searchWrap"><div class="sm-grid" id="searchGrid"></div></div>
+          <div class="status-line" id="searchStatus">Start top-right: if val > target → go left; if val < target → go down</div>
+          <div class="step-info" id="searchInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Graph adjacency matrix -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🕸️</div>
+        <div class="card-title-wrap">
+          <h3>Adjacency Matrix — Graph Representation</h3>
+          <p>A graph with n nodes can be stored as an <strong>n×n adjacency matrix</strong>: <code style="color:var(--primary-green);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">mat[i][j] = 1</code> if an edge exists. O(1) edge-existence check. Used in dense graphs, social network friend-of-friend queries, Floyd-Warshall all-pairs shortest paths, and transitive closure computations.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add edges to graph — watch the adjacency matrix update symmetrically</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="adjStep()">▶ Add Edge</button>
+            <button class="d-btn reset" onclick="adjReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center" id="adjWrap"><div class="sm-grid" id="adjGrid"></div></div>
+          <div class="status-line" id="adjStatus">5-node graph — O(1) edge check with adjacency matrix</div>
+          <div class="step-info" id="adjInfo"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(99,102,241,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Matrix operations scale with rows × cols for traversal — but smart algorithms exploit structure to do far better than brute force.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Access mat[r][c]</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">base + (r × cols + c) × size — one instruction</td></tr>
+        <tr><td class="op">Full traversal</td><td class="ok">O(n × m)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Visit every cell once — row-major for cache efficiency</td></tr>
+        <tr><td class="op">Search (unsorted)</td><td class="bad">O(n × m)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must check every cell in worst case</td></tr>
+        <tr><td class="op">Search (sorted rows+cols)</td><td class="ok">O(n + m)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Staircase search — eliminate one row or column per step</td></tr>
+        <tr><td class="op">BFS / DFS traversal</td><td class="ok">O(n × m)</td><td class="ok">O(n × m)</td><td style="color:var(--text-secondary);font-size:.82rem">Queue/stack up to n×m cells; visited array same size</td></tr>
+        <tr><td class="op">Matrix rotation (in-place)</td><td class="ok">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Transpose + reverse rows — no extra matrix needed</td></tr>
+        <tr><td class="op">Matrix multiplication</td><td class="bad">O(n³)</td><td class="ok">O(n²)</td><td style="color:var(--text-secondary);font-size:.82rem">Naive; Strassen is O(n^2.81) — critical in ML/graphics</td></tr>
+        <tr><td class="op">Space (n×m matrix)</td><td colspan="2" class="ok">O(n × m)</td><td style="color:var(--text-secondary);font-size:.82rem">Exactly n×m elements — no pointer overhead</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(99,102,241,.05);border:1px solid rgba(99,102,241,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Always traverse a matrix in <strong style="color:var(--primary-indigo)">row-major order</strong> (row by row, not column by column). In row-major storage, consecutive row elements are adjacent in memory — so row-major traversal causes only 1 cache miss per cache line (every ~16 integers). Column-major traversal jumps <code style="color:var(--primary-indigo)">cols × 4</code> bytes per step, causing a cache miss on <em>every single access</em>. At n=1000, this difference can be <strong style="color:var(--primary-indigo)">50–100× slower</strong> in wall-clock time.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Matrices are the right tool for any 2D relationship problem — but they come with fixed-size constraints and memory costs that matter at scale.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) access to any cell by (row, col)</h4><p>Direct indexed access to any element without traversal. mat[r][c] computes address in one step. This enables DP table lookups, image pixel reads, and graph edge checks all in constant time.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural model for grid-based problems</h4><p>Game boards, maps, images, spreadsheets, and DP tables all have a natural 2D structure. Forcing these into 1D arrays loses the intuitive row/col semantics. Matrices preserve problem structure in the code.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Excellent cache performance for row-major access</h4><p>Row-major storage makes row-by-row traversal cache-friendly. Sequential access patterns load entire cache lines at once, giving near-array-speed performance on sequential operations like row sums or image convolution.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Encodes transformations mathematically</h4><p>Linear transforms (rotation, scaling, projection) are matrix multiplications. One matrix multiply applies the transform to any vector. Used in 3D graphics, robotics, machine learning, and physics simulations.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(n + m) search on sorted matrix</h4><p>If rows and columns are both sorted, the staircase algorithm finds any value in O(n + m) — far better than binary search on n×m elements. This property is exploited in database and grid search problems.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Enables DP table memoization for 2D subproblems</h4><p>Problems with two varying parameters (LCS, edit distance, knapsack) map naturally to 2D DP tables. The matrix makes O(1) subproblem lookup possible, turning exponential recursive solutions into polynomial table-fills.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Fixed dimensions — resizing requires full copy</h4><p>Adding a new row to an m×n matrix means copying all m×n elements into a new (m+1)×n block. Unlike dynamic arrays, 2D resizing is expensive in both time and memory. Pre-allocate when size is known.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) memory for n×n matrix — expensive for large sparse graphs</h4><p>An adjacency matrix for 10,000 nodes uses 100 million cells — 400MB for integers. If the graph has only 10,000 edges (sparse), an adjacency list uses only 10,000 entries. Matrices waste memory on sparse data.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Column-major access is cache-hostile</h4><p>Iterating column by column on a row-major matrix causes a cache miss on every single element access. At n=1000, this can be 100× slower than row-major. Always design algorithms around row-major traversal.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n × m) BFS/DFS space — large visited array required</h4><p>Graph traversal on a matrix needs an n×m visited array to avoid revisiting cells. For a 1000×1000 grid, that's 1 million booleans. For very large grids, this visited array itself can be a memory bottleneck.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Matrix multiplication is O(n³) — slow for large matrices</h4><p>Naive matrix multiplication of two n×n matrices takes n³ operations. For n=1000, that's 1 billion multiplications. Numerical libraries (NumPy, BLAS) use Strassen or hardware SIMD to cut this, but the base complexity is high.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Awkward for ragged / variable-length rows</h4><p>If rows have different lengths (e.g., a triangular grid or adjacency list), a 2D array wastes space on empty cells or requires complex padding logic. Use arrays of arrays (jagged arrays) for variable-length rows.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Matrices — and When to Avoid Them
+  </div>
+  <p class="section-sub">Matrices shine whenever your problem is inherently 2D. Know the cases where a flat array, adjacency list, or hash map beats a matrix.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Matrices When...</div>
+      <div class="when-item"><div class="when-icon">🗺️</div><div class="when-text"><h4>Grid-based pathfinding (BFS / DFS)</h4><p>Mazes, game maps, robot navigation — any problem modeled as "can I move from cell A to cell B through obstacles?" is a BFS/DFS on a matrix. The row/col indexing makes neighbor lookup trivial: up, down, left, right = 4 index offsets.</p></div></div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>2D dynamic programming</h4><p>When your DP state has two parameters (e.g., LCS: position in string A × position in string B; edit distance: i characters of word1 × j characters of word2), a matrix DP table is the natural and correct representation.</p></div></div>
+      <div class="when-item"><div class="when-icon">🖼️</div><div class="when-text"><h4>Image processing and convolution</h4><p>Images are matrices. Blur, sharpen, edge detection, and all CNN convolutions operate on matrices of pixel values. Store image data in a 2D array for intuitive row/col access and cache-friendly row-major processing.</p></div></div>
+      <div class="when-item"><div class="when-icon">🕸️</div><div class="when-text"><h4>Dense graphs (adjacency matrix)</h4><p>When edge density is high (most pairs of nodes are connected), an adjacency matrix uses less memory than an adjacency list and gives O(1) edge existence check. Good for social networks with millions of edges between thousands of nodes.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔄</div><div class="when-text"><h4>Geometric transformations (rotation, scaling)</h4><p>3D graphics, robotics, and physics simulators represent transformations as matrices. Composing transforms = matrix multiplication. Applying a transform to a point = matrix × vector. The matrix formalism is both clean and GPU-accelerated.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔍</div><div class="when-text"><h4>Sorted 2D search problems</h4><p>When both rows and columns are sorted, use the O(n+m) staircase algorithm. This is the intended solution for "Search a 2D Matrix II" and similar DB index intersection problems — much faster than binary search per row.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Matrices When...</div>
+      <div class="when-item"><div class="when-icon">🌐</div><div class="when-text"><h4>Sparse graphs (use adjacency list instead)</h4><p>For a graph with n=10,000 nodes but only 20,000 edges, an adjacency matrix allocates 10,000² = 100M cells — 99.98% wasted. An adjacency list uses exactly 20,000 entries. Use lists for any graph where edges ≪ n².</p></div></div>
+      <div class="when-item"><div class="when-icon">📏</div><div class="when-text"><h4>1D problems forced into 2D</h4><p>Don't use a matrix for a problem that is fundamentally 1D. If you find yourself using only one row or one column, you're adding complexity without benefit. Keep 1D problems as arrays.</p></div></div>
+      <div class="when-item"><div class="when-icon">📐</div><div class="when-text"><h4>Ragged / jagged row lengths</h4><p>If rows have different numbers of elements, a rectangular matrix wastes space. Use an array of arrays (e.g., <span class="when-code">vector&lt;vector&lt;int&gt;&gt;</span> in C++ or a list of lists in Python) for variable-length rows.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>When you need key-value lookup (use hash map)</h4><p>If rows and columns represent arbitrary keys (not sequential integers), don't use a matrix — use a hash map or nested hash map. Matrices only index by integer offsets efficiently.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Very large grids that don't fit in memory</h4><p>A 100,000×100,000 matrix of integers needs 40GB of RAM. For large sparse grids (e.g., geographic maps), use a hash map of (row, col) tuples as keys — only storing non-empty cells saves orders of magnitude of memory.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Column-by-column access patterns</h4><p>If your algorithm inherently needs to iterate column by column (e.g., some DP formulations), consider storing the transposed matrix or switching to column-major order. Forcing column traversal on a row-major matrix kills cache performance.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Matrix problems</span></div>
+    <p class="cta-sub">You've seen how matrices power BFS pathfinding, image rotation, DP tables, spiral traversal, sorted search, and graph adjacency.<br>Now prove you can apply these patterns to classic grid-based interview and competitive programming problems.</p>
+    <div style="display:flex;justify-content:center">
+      <div class="mat-cta-viz">
+        <div class="mcta-row">
+          <div class="mcta-cell" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.4);color:var(--primary-indigo)">1</div>
+          <div class="mcta-cell" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--primary-violet)">4</div>
+          <div class="mcta-cell" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:var(--primary-indigo)">7</div>
+          <div class="mcta-cell" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)">2</div>
+        </div>
+        <div class="mcta-row">
+          <div class="mcta-cell" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--primary-violet)">5</div>
+          <div class="mcta-cell" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:var(--primary-green)">9</div>
+          <div class="mcta-cell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">3</div>
+          <div class="mcta-cell" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.4);color:var(--primary-indigo)">6</div>
+        </div>
+        <div class="mcta-row">
+          <div class="mcta-cell" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)">8</div>
+          <div class="mcta-cell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">2</div>
+          <div class="mcta-cell" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.3);color:var(--primary-violet)">5</div>
+          <div class="mcta-cell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green)">1</div>
+        </div>
+        <div class="mcta-row">
+          <div class="mcta-cell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">3</div>
+          <div class="mcta-cell" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2);color:var(--primary-indigo)">7</div>
+          <div class="mcta-cell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">4</div>
+          <div class="mcta-cell" style="background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.35);color:var(--primary-violet)">8</div>
+        </div>
+      </div>
+    </div>
+    <a href="practice.html?topic=matrix" class="cta-btn">
+      <span>🗺️ Solve Matrix Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/matrix_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

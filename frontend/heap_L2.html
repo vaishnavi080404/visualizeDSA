@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Heap - Level 2 | DSA Visualizer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="css/heap_L2.css" />
+  </head>
+  <body data-theme="dark">
+    <!--                    NAV                    -->
+    <nav>
+      <div class="nav-inner">
+        <a class="logo" href="index.html">
+          <div class="logo-img">
+            <img
+              src="dsa.gif"
+              alt="Logo"
+              onerror="this.style.display = 'none'"
+            />
+          </div>
+          <span>DSA Visualizer</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <button class="icon-btn" id="menuBtn" aria-label="Menu">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="mobile-drawer" id="drawer">
+      <a href="index.html">Home</a>
+      <a href="topics.html">Topics</a>
+      <a href="prerequisite.html">Prerequisites</a>
+      <a href="codeeditor.html">Code Editor</a>
+    </div>
+
+    <!--                    MAIN                    -->
+    <div class="wrap">
+      <!-- breadcrumb -->
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span>›</span>
+        <a href="heap_basics.html">Heap</a> <span>›</span>
+        <span>Level 2</span>
+      </div>
+
+      <!-- header -->
+      <div class="page-header">
+        <h1 class="page-title">Heap — Interactive Visualizer</h1>
+        <p class="page-sub">
+          Watch Min-Heap, Max-Heap, and Binary Heap operations come alive in
+          real-time.
+        </p>
+        <div class="level-badges">
+          <div class="badge">Level 1 of 3 | Basics</div>
+          <div class="badge active">Level 2 of 3 | Interactive</div>
+        </div>
+      </div>
+
+      <!-- Heap type selector -->
+      <div class="heap-selector">
+        <div
+          class="heap-opt selected"
+          data-type="maxheap"
+          onclick="switchHeapType('maxheap', this)"
+        >
+          <div class="heap-opt-icon">📈</div>
+          <div class="heap-opt-title">Max-Heap</div>
+          <div class="heap-opt-desc">Parent ≥ Children · Root = Max</div>
+        </div>
+        <div
+          class="heap-opt"
+          data-type="minheap"
+          onclick="switchHeapType('minheap', this)"
+        >
+          <div class="heap-opt-icon">📉</div>
+          <div class="heap-opt-title">Min-Heap</div>
+          <div class="heap-opt-desc">Parent ≤ Children · Root = Min</div>
+        </div>
+        <div
+          class="heap-opt"
+          data-type="binary"
+          onclick="switchHeapType('binary', this)"
+        >
+          <div class="heap-opt-icon">🌲</div>
+          <div class="heap-opt-title">Binary Heap</div>
+          <div class="heap-opt-desc">Build heap from any array · O(N)</div>
+        </div>
+      </div>
+
+      <!-- Visualizer grid: pseudocode + tree -->
+      <div class="vis-grid" style="margin-bottom: 1.5rem">
+        <!-- Pseudocode panel -->
+        <div class="pseudo-panel">
+          <div class="pseudo-title">📋 PSEUDO CODE</div>
+          <div class="pseudo-step" id="ps-insert">
+            <strong>INSERT:</strong> Add to end → heapify up<br />
+            <span id="ps-insert-txt"
+              >while i>0 &amp;&amp; arr[(i-1)/2] &lt; arr[i]: swap</span
+            >
+          </div>
+          <div class="pseudo-step" id="ps-extract">
+            <strong>EXTRACT:</strong> Swap root↔last → heapify down<br />
+            <span id="ps-extract-txt"
+              >while largest ≠ i: swap with largest child</span
+            >
+          </div>
+          <div class="pseudo-step" id="ps-peek">
+            <strong>PEEK:</strong> Return root (no removal)<br />
+            <span id="ps-peek-txt">return arr[0] // O(1)</span>
+          </div>
+          <div class="pseudo-step" id="ps-size">
+            <strong>SIZE:</strong> Count elements<br />
+            <span id="ps-size-txt">return heap.length</span>
+          </div>
+          <div class="pseudo-step" id="ps-build">
+            <strong>BUILD:</strong> Heapify all non-leaves bottom-up<br />
+            <span id="ps-build-txt"
+              >for i = N/2-1 downTo 0: heapifyDown(i)</span
+            >
+          </div>
+        </div>
+
+        <!-- Tree + controls -->
+        <div>
+          <div class="vis-card">
+            <div class="vis-card-header">
+              <h3 id="vis-title">
+                Max-Heap Visualizer — Tree &amp; Array View
+              </h3>
+            </div>
+            <div class="vis-body">
+              <!-- tree SVG -->
+              <svg id="heapTreeSvg" viewBox="0 0 560 260">
+                <text
+                  x="280"
+                  y="130"
+                  fill="#2a2a2a"
+                  font-size="16"
+                  text-anchor="middle"
+                  font-family="Inter, sans-serif"
+                >
+                  Heap is empty — insert some values!
+                </text>
+              </svg>
+
+              <!-- array representation -->
+              <div class="array-bar" id="arrayBar">
+                <span
+                  style="
+                    font-size: 0.75rem;
+                    color: var(--txt2);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    margin-right: 4px;
+                  "
+                  >arr[]:</span
+                >
+              </div>
+
+              <div id="msgBox"></div>
+            </div>
+
+            <!-- controls -->
+            <div class="vis-footer">
+              <div class="footer-top">
+                <div class="footer-left">
+                  <input
+                    class="inp"
+                    id="mainInput"
+                    type="number"
+                    placeholder="Value"
+                    min="-9999"
+                    max="9999"
+                  />
+                  <button class="btn btn-green" onclick="mainInsert()">
+                    Insert
+                  </button>
+                </div>
+                <button class="btn btn-red" onclick="mainExtract()">
+                  Extract
+                </button>
+              </div>
+              <div class="footer-btns">
+                <button class="btn btn-cyan" onclick="mainPeek()">Peek</button>
+                <button class="btn btn-info" onclick="mainSize()">Size</button>
+                <button class="btn btn-warn" onclick="mainReset()">
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--       ══ SCENARIOS       ══ -->
+      <div class="sec">
+        <div class="sec-head">
+          <div class="sec-icon">🧪</div>
+          <h2 class="sec-title">Try Different Scenarios</h2>
+        </div>
+
+        <!-- tabs -->
+        <div class="scenario-tabs">
+          <button
+            class="s-tab tab-insert"
+            id="stab-insert"
+            onclick="switchScene('insert')"
+          >
+            ⬆ Insert
+          </button>
+          <button
+            class="s-tab"
+            id="stab-extract"
+            onclick="switchScene('extract')"
+          >
+            ⬇ Extract Root
+          </button>
+          <button class="s-tab" id="stab-peek" onclick="switchScene('peek')">
+            👁 Peek
+          </button>
+          <button class="s-tab" id="stab-build" onclick="switchScene('build')">
+            🔨 Build Heap
+          </button>
+          <button
+            class="s-tab"
+            id="stab-custom"
+            onclick="switchScene('custom')"
+          >
+            ✏ Custom
+          </button>
+        </div>
+
+        <!--   INSERT SCENARIO   -->
+        <div class="s-panel show" id="spanel-insert">
+          <div class="s-inner">
+            <h4>Insert &amp; Heapify Up — O(log N)</h4>
+            <p>
+              Watch how a new element bubbles up the tree to restore the heap
+              property after insertion.
+            </p>
+            <hr class="divider" />
+            <div class="s-layout">
+              <div class="tree-box">
+                <div class="tree-box-title">📋 Heap Tree</div>
+                <svg
+                  id="ins-svg"
+                  viewBox="0 0 340 220"
+                  style="min-height: 160px"
+                ></svg>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 0.7rem;
+                    color: var(--txt2);
+                    margin-top: 0.5rem;
+                  "
+                  id="ins-arr-label"
+                >
+                  arr: []
+                </div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-insert">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button
+                    class="ctl ctl-green"
+                    onclick="insStep()"
+                    id="ins-step-btn"
+                  >
+                    ▶ Next Insert
+                  </button>
+                  <button
+                    class="ctl ctl-orange"
+                    onclick="insAuto()"
+                    id="ins-auto-btn"
+                  >
+                    ⚡ Auto Play
+                  </button>
+                  <button class="ctl ctl-ghost" onclick="insReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--   EXTRACT SCENARIO   -->
+        <div class="s-panel" id="spanel-extract">
+          <div class="s-inner">
+            <h4>Extract Root &amp; Heapify Down — O(log N)</h4>
+            <p>
+              The root (max or min) is removed, the last element takes its
+              place, then sifts down to restore the heap.
+            </p>
+            <hr class="divider" />
+            <div class="s-layout">
+              <div class="tree-box">
+                <div class="tree-box-title">📋 Heap Tree</div>
+                <svg
+                  id="ext-svg"
+                  viewBox="0 0 340 220"
+                  style="min-height: 160px"
+                ></svg>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 0.7rem;
+                    color: var(--txt2);
+                    margin-top: 0.5rem;
+                  "
+                  id="ext-arr-label"
+                >
+                  arr: []
+                </div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-extract">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button
+                    class="ctl ctl-red"
+                    onclick="extStep()"
+                    id="ext-step-btn"
+                  >
+                    ▶ Next Extract
+                  </button>
+                  <button
+                    class="ctl ctl-orange"
+                    onclick="extAuto()"
+                    id="ext-auto-btn"
+                  >
+                    ⚡ Auto Play
+                  </button>
+                  <button class="ctl ctl-ghost" onclick="extReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--   PEEK SCENARIO   -->
+        <div class="s-panel" id="spanel-peek">
+          <div class="s-inner">
+            <h4>Peek — O(1) Always</h4>
+            <p>
+              Peek returns the root element (max or min) without removing it —
+              just read index 0 of the array.
+            </p>
+            <hr class="divider" />
+            <div class="s-layout">
+              <div class="tree-box">
+                <div class="tree-box-title">📋 Heap Tree</div>
+                <svg
+                  id="peek-svg"
+                  viewBox="0 0 340 220"
+                  style="min-height: 160px"
+                ></svg>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 0.7rem;
+                    color: var(--txt2);
+                    margin-top: 0.5rem;
+                  "
+                  id="peek-arr-label"
+                >
+                  arr: []
+                </div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-peek">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button class="ctl ctl-cyan" onclick="doPeek()">
+                    👁 Peek Root
+                  </button>
+                  <button class="ctl ctl-ghost" onclick="peekReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--   BUILD HEAP SCENARIO   -->
+        <div class="s-panel" id="spanel-build">
+          <div class="s-inner">
+            <h4>Build Heap from Array — O(N)</h4>
+            <p>
+              Convert a random array into a valid heap by calling heapify-down
+              on all non-leaf nodes from bottom to top. Much faster than N
+              separate inserts!
+            </p>
+            <hr class="divider" />
+            <div class="s-layout">
+              <div class="tree-box">
+                <div class="tree-box-title">📋 Heap Tree</div>
+                <svg
+                  id="build-svg"
+                  viewBox="0 0 340 220"
+                  style="min-height: 160px"
+                ></svg>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 0.7rem;
+                    color: var(--txt2);
+                    margin-top: 0.5rem;
+                  "
+                  id="build-arr-label"
+                >
+                  arr: []
+                </div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-build">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button
+                    class="ctl ctl-orange"
+                    onclick="buildStep()"
+                    id="build-step-btn"
+                  >
+                    ▶ Heapify Next Node
+                  </button>
+                  <button
+                    class="ctl ctl-orange"
+                    onclick="buildAuto()"
+                    id="build-auto-btn"
+                  >
+                    ⚡ Auto Play
+                  </button>
+                  <button class="ctl ctl-ghost" onclick="buildReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--   CUSTOM SCENARIO   -->
+        <div class="s-panel" id="spanel-custom">
+          <div class="s-inner">
+            <h4>Custom Input — Build Your Own Heap</h4>
+            <p>
+              Choose heap type, insert your values, extract, and peek.
+              Complexity cards highlight on every operation.
+            </p>
+            <hr class="divider" />
+
+            <!-- complexity cards -->
+            <div class="cc-row">
+              <div class="cc-card" id="ccc-insert">
+                <div class="cc-op">⬆ Insert</div>
+                <div class="cc-val cc-orange">O(log N)</div>
+                <div class="cc-note">heapify up</div>
+              </div>
+              <div class="cc-card" id="ccc-extract">
+                <div class="cc-op">⬇ Extract</div>
+                <div class="cc-val cc-orange">O(log N)</div>
+                <div class="cc-note">heapify down</div>
+              </div>
+              <div class="cc-card" id="ccc-peek">
+                <div class="cc-op">👁 Peek</div>
+                <div class="cc-val cc-green">O(1)</div>
+                <div class="cc-note">read root</div>
+              </div>
+            </div>
+
+            <div class="cc-toast" id="cc-toast">
+              <span id="cc-icon"></span>
+              <span id="cc-text"></span>
+            </div>
+
+            <!-- type switch -->
+            <div
+              style="
+                display: flex;
+                gap: 0.5rem;
+                margin-bottom: 0.75rem;
+                flex-wrap: wrap;
+              "
+            >
+              <button
+                class="ctl ctl-cyan"
+                onclick="cSetType('maxheap')"
+                id="ctype-max"
+              >
+                📈 Max-Heap
+              </button>
+              <button
+                class="ctl ctl-ghost"
+                onclick="cSetType('minheap')"
+                id="ctype-min"
+              >
+                📉 Min-Heap
+              </button>
+              <button
+                class="ctl ctl-ghost"
+                onclick="cSetType('binary')"
+                id="ctype-bin"
+              >
+                🌲 Binary
+              </button>
+            </div>
+
+            <div class="c-row">
+              <input
+                class="c-inp"
+                type="number"
+                id="c-val"
+                placeholder="Value"
+                min="-9999"
+                max="9999"
+              />
+              <button class="ctl ctl-green" onclick="customInsert()">
+                ⬆ Insert
+              </button>
+              <button class="ctl ctl-red" onclick="customExtract()">
+                ⬇ Extract
+              </button>
+              <button class="ctl ctl-cyan" onclick="customPeek()">
+                👁 Peek
+              </button>
+              <button class="ctl ctl-ghost" onclick="customReset()">
+                ↺ Reset
+              </button>
+            </div>
+
+            <div class="s-layout">
+              <div class="tree-box">
+                <div class="tree-box-title" id="custom-title">
+                  📋 Max-Heap (size 0)
+                </div>
+                <svg
+                  id="cust-svg"
+                  viewBox="0 0 340 220"
+                  style="min-height: 160px"
+                ></svg>
+                <div
+                  style="
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 0.7rem;
+                    color: var(--txt2);
+                    margin-top: 0.5rem;
+                  "
+                  id="cust-arr-label"
+                >
+                  arr: []
+                </div>
+              </div>
+              <div>
+                <div class="log-panel" id="log-custom">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--       ══ CODE EDITOR       ══ -->
+      <div class="sec">
+        <div class="sec-head">
+          <div class="sec-icon"><i class="fas fa-code"></i></div>
+          <h2 class="sec-title">Interactive Code Editor</h2>
+        </div>
+
+        <div class="lang-bar" data-group="editor">
+          <button class="l-tab on" data-lang="cpp">C++</button>
+          <button class="l-tab" data-lang="python">Python</button>
+          <button class="l-tab" data-lang="java">Java</button>
+          <button class="l-tab" data-lang="c">C</button>
+          <button class="l-tab" data-lang="js">JavaScript</button>
+        </div>
+
+        <div class="editor-wrap">
+          <div class="editor-top">
+            <span class="lang-label" id="lang-display">C++</span>
+            <button class="copy-btn" onclick="copyCode()">Copy</button>
+          </div>
+          <textarea id="code-editor"></textarea>
+        </div>
+
+        <button class="run-btn" onclick="runCode()">
+          <i class="fas fa-play"></i> Run Code
+        </button>
+
+        <div class="output-box">
+          <h6>📤 Output:</h6>
+          <div id="code-out">Click "Run Code" to execute...</div>
+        </div>
+      </div>
+
+      <!-- LEVEL NAV -->
+      <h3
+        style="
+          text-align: center;
+          color: var(--cyan);
+          font-size: 1.1rem;
+          margin-bottom: 2rem;
+        "
+      >
+        Ready to Test Your Knowledge? →
+      </h3>
+      <div class="lvl-row">
+        <button
+          class="lvl-btn"
+          id="l1"
+          onclick="window.location.href = 'heap_basics.html'"
+        >
+          Level 1
+        </button>
+        <div class="lvl-line lit" id="line1"></div>
+        <button class="lvl-btn" id="l2">Level 2</button>
+        <div class="lvl-line" id="line2"></div>
+        <button class="lvl-btn" id="l3">Level 3</button>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal">
+      <div class="modal-box">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem">🔒</div>
+        <h3
+          style="
+            color: var(--purple);
+            font-family: &quot;Space Grotesk&quot;, sans-serif;
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+          "
+        >
+          Level Locked
+        </h3>
+        <p
+          style="color: var(--txt2); font-size: 0.9rem; line-height: 1.6"
+          id="modal-msg"
+        >
+          Pass the Level 2 Quiz to unlock Level 3.
+        </p>
+        <div class="modal-btns">
+          <button id="startQuiz">Start Quiz</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!--             ═ SCRIPTS             ═ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+
+    <script src="js/heap_L2.js"></script>
+  </body>
+</html>

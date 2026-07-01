@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursion — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/recursion_L3.css">
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="recursion_L1.html">Recursion</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Recursion in the <span class="highlight">Real World</span></h1>
+  <p>The self-referential superpower behind file systems, compilers, AI game trees, backtracking solvers, and every divide-and-conquer algorithm that powers modern software.</p>
+</div>
+
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — A Function That Calls Itself on a Smaller Problem</div>
+    <p class="concept-desc">Recursion solves a problem by <strong>reducing it to a smaller instance of the same problem</strong>, until reaching a <strong>base case</strong> that returns directly. Each call pushes a new <strong>stack frame</strong> onto the call stack — storing local variables and return address. When the base case fires, frames <strong>unwind in reverse</strong>, each returning its result upward. The key insight: many real-world problems are <em>self-similar</em> — a directory contains directories, a tree has subtrees, fib(n) depends on fib(n−1) and fib(n−2). Recursion lets the code mirror that structure directly.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1rem;text-align:center">🎮 Step through factorial(5) — watch the call stack grow then unwind</div>
+      <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <div>
+          <div style="font-size:.65rem;color:var(--text-secondary);text-transform:uppercase;font-weight:700;letter-spacing:.5px;margin-bottom:.5rem;text-align:center">Call Stack (top = newest)</div>
+          <div class="stack-wrap" id="conceptStack"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;gap:.5rem;min-width:160px;text-align:center">
+          <div id="conceptFormula" style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text-secondary);min-height:22px;"></div>
+          <div id="conceptResult" style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:800;color:var(--primary-indigo);min-height:36px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Call</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Call" — watch factorial(5) build and unwind the call stack</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.12);border:2px solid var(--primary-indigo)"></div>Calling down</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.1);border:2px solid var(--primary-orange)"></div>Base case (stop!)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.1);border:2px solid var(--primary-green)"></div>Returning (unwinding)</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Recursion is not just a textbook exercise — it's the natural way to express algorithms over self-similar data. From file systems to compilers to AI solvers, recursion appears wherever a problem contains a smaller copy of itself.</p>
+  <div class="app-grid">
+
+    <!-- 1. File System Traversal -->
+    <div class="app-card indigo">
+      <div class="card-header">
+        <div class="card-icon indigo">📁</div>
+        <div class="card-title-wrap">
+          <h3>File System Traversal — Recursive Directory Walk</h3>
+          <p>Every <code style="color:var(--primary-indigo);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">find</code> command, VS Code file search, and <code style="color:var(--primary-indigo);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">du -sh</code> utility is a <strong>recursive DFS on a directory tree</strong>. A folder contains files and more folders — that self-similar structure is exactly what recursion handles naturally. O(total files + dirs) time, O(max depth) stack space.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Recursive DFS through a project directory — enter → recurse → backtrack</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="fsStep()">▶ Visit Next</button>
+            <button class="d-btn reset" onclick="fsReset()">↺ Reset</button>
+          </div>
+          <div id="fsTree" style="min-height:110px;"></div>
+          <div class="status-line" id="fsStatus">DFS enters a dir → recurses into children → backtracks on return</div>
+          <div class="step-info" id="fsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Merge Sort -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🔀</div>
+        <div class="card-title-wrap">
+          <h3>Merge Sort — Divide and Conquer Sorting</h3>
+          <p>Merge Sort is <strong>pure recursion</strong>: split the array in half, recursively sort each half, then merge the two sorted halves. The recurrence T(n) = 2T(n/2) + O(n) solves to <strong>O(n log n)</strong> by Master Theorem. Used in Python's Timsort, Java's Arrays.sort for objects, and Git's diff algorithm.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch merge sort divide the array then merge sorted halves back up the call tree</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="msStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="msReset()">↺ Reset</button>
+          </div>
+          <div id="msViz" style="font-family:'JetBrains Mono',monospace;font-size:.71rem;line-height:1.85;min-height:96px;max-height:130px;overflow-y:auto;"></div>
+          <div class="status-line" id="msStatus">mergeSort([5,3,8,1,9,2]) — divide until single elements, merge back up</div>
+          <div class="step-info" id="msInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. BST Traversal -->
+    <div class="app-card blue">
+      <div class="card-header">
+        <div class="card-icon blue">🌳</div>
+        <div class="card-title-wrap">
+          <h3>BST Traversal — In-Order, Pre-Order, Post-Order</h3>
+          <p>Binary trees are <strong>self-similar by definition</strong> — a tree is a node with a left subtree and a right subtree. All three traversals are naturally recursive: in-order gives sorted output from a BST, pre-order is used by compilers to serialize ASTs, post-order evaluates expression trees bottom-up. O(n) time, O(h) stack depth.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 In-order traversal of a BST — Left → Root → Right produces sorted output</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="bstStep()">▶ Visit Node</button>
+            <button class="d-btn reset" onclick="bstReset()">↺ Reset</button>
+          </div>
+          <div id="bstViz" style="margin-bottom:.5rem;"></div>
+          <div class="status-line" id="bstStatus">In-order traversal produces the BST values in sorted order</div>
+          <div class="step-info" id="bstInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. N-Queens Backtracking -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">♟️</div>
+        <div class="card-title-wrap">
+          <h3>Backtracking — N-Queens Constraint Solver</h3>
+          <p>Backtracking is <strong>recursion with pruning</strong>: place a queen in each row, recurse to the next row trying all valid columns. If a conflict is found — <em>backtrack</em> (undo placement) and try the next option. Powers Sudoku solvers, chess engines, SAT solvers, and all AI constraint-satisfaction problems. The call stack IS the decision trail.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 4-Queens backtracking — place queens row by row, undo on conflict</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="queensStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="queensReset()">↺ Reset</button>
+          </div>
+          <div style="display:flex;justify-content:center;margin-bottom:.5rem;"><div class="q-grid" id="queensViz"></div></div>
+          <div class="status-line" id="queensStatus">Recurse row by row — backtrack when no safe column found</div>
+          <div class="step-info" id="queensInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Tower of Hanoi -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗼</div>
+        <div class="card-title-wrap">
+          <h3>Tower of Hanoi — Recursive Decomposition</h3>
+          <p>Hanoi elegantly demonstrates recursive thinking: to move n disks A→C, move n−1 disks A→B (using C as spare), move the largest disk A→C, then move n−1 disks B→C (using A as spare). This O(2ⁿ) solution is <em>provably optimal</em>. Used to teach recursive decomposition and in OS snapshot/backup scheduling logic.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Tower of Hanoi with 3 disks — every single move is one recursive call</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="hanoiStep()">▶ Next Move</button>
+            <button class="d-btn reset" onclick="hanoiReset()">↺ Reset</button>
+          </div>
+          <div class="peg-area" id="hanoiViz"></div>
+          <div class="status-line" id="hanoiStatus">3 disks → 2³ − 1 = 7 moves total to transfer peg A → peg C</div>
+          <div class="step-info" id="hanoiInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Memoized Fibonacci -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🐇</div>
+        <div class="card-title-wrap">
+          <h3>Memoized Recursion — Top-Down Dynamic Programming</h3>
+          <p>Naive recursive Fibonacci is O(2ⁿ) — it recomputes fib(3) dozens of times. Add a <strong>memo cache</strong> and each subproblem is solved exactly once: O(n) time, O(n) space. This pattern (recursion + caching = memoization) is top-down DP. It underlies Python's <code style="color:var(--primary-green);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">@lru_cache</code> and React's useMemo.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 fib(6) with memo cache — red = computed fresh, cyan = returned from cache</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="memoStep()">▶ Next Call</button>
+            <button class="d-btn reset" onclick="memoReset()">↺ Reset</button>
+          </div>
+          <div id="memoViz" style="font-family:'JetBrains Mono',monospace;font-size:.71rem;line-height:1.85;min-height:96px;max-height:130px;overflow-y:auto;"></div>
+          <div class="status-line" id="memoStatus">fib(6): each unique subproblem computed once, rest from cache</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Computed: <b id="memoComputed" style="color:var(--primary-indigo)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Cache hits: <b id="memoCached" style="color:var(--primary-cyan)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Recursion's complexity depends on both the total number of calls AND how deep the call stack grows. Stack depth = space. Total calls × work per call = time.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Algorithm / Pattern</th><th>Time</th><th>Space (Stack)</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Factorial / linear recursion</td><td class="ok">O(n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">One call per level — stack grows linearly with n</td></tr>
+        <tr><td class="op">Binary search (recursive)</td><td class="good">O(log n)</td><td class="good">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Halves input each call — only log n frames on stack</td></tr>
+        <tr><td class="op">Tree traversal (DFS)</td><td class="ok">O(n)</td><td class="ok">O(h)</td><td style="color:var(--text-secondary);font-size:.82rem">Visits each node once; stack depth = tree height h</td></tr>
+        <tr><td class="op">Merge Sort</td><td class="ok">O(n log n)</td><td class="ok">O(n + log n)</td><td style="color:var(--text-secondary);font-size:.82rem">O(log n) stack frames + O(n) merge buffer; stable sort</td></tr>
+        <tr><td class="op">Fibonacci (naive)</td><td class="bad">O(2ⁿ)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Exponential calls; only n frames live on stack at once</td></tr>
+        <tr><td class="op">Fibonacci (memoized)</td><td class="ok">O(n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Each subproblem solved once; O(n) memo + O(n) stack</td></tr>
+        <tr><td class="op">Tower of Hanoi</td><td class="bad">O(2ⁿ)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">2ⁿ−1 moves are required; call stack only n frames deep</td></tr>
+        <tr><td class="op">Backtracking — N-Queens</td><td class="bad">O(n!)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Worst case explores n! paths; stack depth = n (one per row)</td></tr>
+        <tr><td class="op">Tail recursion (with TCO)</td><td class="ok">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Tail call optimization reuses single frame — iterative speed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Stack depth is your <strong style="color:var(--primary-indigo)">space complexity</strong> — not total call count. Naive Fibonacci makes O(2ⁿ) total calls but only keeps O(n) frames alive at once (it explores depth-first). Stack overflow typically occurs at ~10,000–50,000 frames — so O(n) recursion on large inputs requires iterative conversion, memoization, or tail-call optimization.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Recursion writes complex algorithms in elegant, readable code — but comes with real runtime costs. Know both sides before choosing it in production.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Mirrors self-similar problem structure exactly</h4><p>Tree traversal, file walks, divide-and-conquer, backtracking — these problems ARE recursive by nature. Code that matches the mathematical definition is easier to write, verify, and explain. The recursive structure of the code mirrors the recursive structure of the data.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Dramatically shorter and more readable code</h4><p>A recursive in-order BST traversal is 3 lines. The equivalent iterative version with an explicit stack is 15+ lines. For tree and graph problems the reduction is typically 3–5×. Less code means fewer bugs and faster development.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Call stack manages traversal state automatically</h4><p>Each call gets its own local variables — the runtime stack is a free implicit state machine. You don't need to manually push/pop a data structure or track "where am I in the traversal." The language runtime handles all bookkeeping.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Enables backtracking with clean undo semantics</h4><p>When a recursive call returns, all its local changes are automatically discarded. Backtracking solvers (N-Queens, Sudoku, combinatorial search) get undo for free — just "try, recurse, and the unwind IS the undo." Iterative backtracking requires an explicit undo stack.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Memoization converts to top-down DP trivially</h4><p>Add a cache dictionary to any recursive function and you get memoized top-down DP. Easier to derive than bottom-up iteration when the fill order is unclear. Python's @lru_cache makes this one line. The natural recursive solution becomes the DP solution.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural fit for variable-depth data structures</h4><p>File systems, nested JSON, org charts, XML — when depth is unknown ahead of time, recursion handles any depth cleanly. An iterative version would need a dynamic stack that approximates what recursion gives you for free through the language runtime.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Stack overflow for deep recursion (n &gt; ~10,000)</h4><p>Each function call consumes stack memory (1–8 KB per frame). Python raises RecursionError at depth ~1,000 by default; Java/C throw StackOverflowError around 5,000–20,000 depending on JVM settings. Any O(n) recursion on large n must be converted to iteration for safety.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Function call overhead is significant</h4><p>Each recursive call pushes a stack frame, saves registers, jumps to function entry, then reverses all that on return. For tight inner loops this overhead is 5–20× slower than an equivalent iterative loop. Hot computational paths should always be iterative.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Naive recursion causes exponential redundant work</h4><p>Naive fib(40) makes 331 million calls, recomputing fib(2) 165 million times. Without memoization, overlapping subproblems explode recursion from O(n) to O(2ⁿ). Always ask: "Does this recurse on overlapping subproblems?" before writing naked recursion.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Debugging is painful — stack traces are thousands deep</h4><p>When a bug occurs at recursion depth 500, the stack trace is 500 lines long. Local variable interactions at each depth are non-obvious. Print-debugging recursive code is notoriously difficult. Add depth-limited logging or use a visualizer when debugging.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Most languages don't support tail call optimization (TCO)</h4><p>Tail-recursive functions CAN be compiled to O(1) space loops via TCO. But Python, Java, and JavaScript explicitly do not implement TCO. Only some Scheme, Haskell, and Scala compilers guarantee it. Never rely on TCO unless you control the compiler and runtime.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Base case errors cause infinite recursion or wrong answers</h4><p>An off-by-one in the base case causes either infinite recursion (stack overflow crash) or a silent wrong answer for small inputs. Always test n=0, n=1, and n=2 explicitly. Getting the base case right is the single most common source of bugs in recursive implementations.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Recursion — and When to Avoid It
+  </div>
+  <p class="section-sub">Recursion is the right tool when your problem has self-similar structure. Know when the overhead costs more than the elegance gains.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Recursion When...</div>
+      <div class="when-item"><div class="when-icon">🌳</div><div class="when-text"><h4>The problem is tree or graph structured</h4><p>Tree traversal, DFS in graphs, XML/JSON parsing, AST evaluation — any problem with branching recursive subproblems fits naturally. The recursive code structure mirrors the recursive data structure, making correctness obvious and easy to reason about.</p></div></div>
+      <div class="when-item"><div class="when-icon">✂️</div><div class="when-text"><h4>You can divide into identical smaller subproblems</h4><p>Merge sort (halves), binary search (half), quicksort (partitions), FFT (even/odd halves) — whenever the divide step is clean, recursion expresses the algorithm directly and enables Master Theorem complexity analysis without manual reasoning.</p></div></div>
+      <div class="when-item"><div class="when-icon">♟️</div><div class="when-text"><h4>Backtracking with automatic undo</h4><p>N-Queens, Sudoku, permutations, word search, maze solving — whenever you try an option, recurse, and need to undo on failure. The stack unwind IS the undo. Writing this iteratively requires an explicit undo stack of the same complexity.</p></div></div>
+      <div class="when-item"><div class="when-icon">📁</div><div class="when-text"><h4>Data has variable or unknown depth</h4><p>File systems, nested JSON, category hierarchies — when depth is not known at write time, recursion adapts to any depth. Iterative traversal of variable-depth structures requires a dynamic stack that approximates what the call stack provides automatically.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Top-down memoized DP is easier to derive</h4><p>When the bottom-up fill order is not immediately obvious (interval DP, tree DP, digit DP), write the recursive solution first and add <span class="when-code">@lru_cache</span>. You get correct memoized DP without reasoning about table ordering upfront.</p></div></div>
+      <div class="when-item"><div class="when-icon">📐</div><div class="when-text"><h4>Code clarity matters more than micro-performance</h4><p>In interviews, library code, and educational contexts, the 3-line recursive traversal communicates intent better than a 20-line iterative equivalent. Prefer recursion when correctness and clarity are the primary goals and n is bounded.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Recursion When...</div>
+      <div class="when-item"><div class="when-icon">📏</div><div class="when-text"><h4>Input size n &gt; ~10,000 (stack overflow risk)</h4><p>Python's default recursion limit is 1,000. Java typically allows ~5,000–20,000 frames. For large n, any O(n) recursion depth risks crash. Convert to iteration with an explicit stack, use sys.setrecursionlimit carefully in Python, or convert to bottom-up DP.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Hot inner loops with performance requirements</h4><p>If your function runs millions of times per second (physics engine, renderer, game loop), function call overhead matters. Recursive Fibonacci is ~100× slower than iterative for large n. Convert to iteration or trampolining when performance is critical.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Simple linear iteration with no branching</h4><p>Summing an array, computing a running max, reversing a string — these are O(n) loops with no recursive substructure. Writing them recursively adds overhead and obscures intent. Use a <span class="when-code">for</span> loop. Recursion should not replace iteration for flat sequences.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Overlapping subproblems without memoization</h4><p>Never write recursive Fibonacci, coin change, or LCS without a cache. Naked overlapping recursion is always wrong — exponential when it should be polynomial. Add <span class="when-code">@lru_cache</span> or rewrite as bottom-up DP. There is no excuse for uncached overlapping recursion.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory-constrained environments</h4><p>In embedded systems, microcontrollers, and OS kernels with fixed small stacks, recursion is banned or heavily restricted. Each frame uses memory for locals, saved registers, and return address. Use explicit stacks stored in heap memory instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">🐛</div><div class="when-text"><h4>When you can't clearly identify the base case</h4><p>If defining when recursion should stop is unclear, the problem may not have recursive structure — or you're modeling it wrong. A missing or wrong base case causes infinite recursion. Step back and try an iterative, greedy, or mathematical approach instead.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Recursion problems</span></div>
+    <p class="cta-sub">You've seen how recursion powers file system traversal, merge sort, BST operations, backtracking solvers, Tower of Hanoi, and memoized DP.<br>Now prove you can apply these patterns to classic recursive interview and competitive programming problems.</p>
+    <div style="display:flex;justify-content:center">
+      <div class="rec-cta-viz">
+        <div class="rcta-frame" style="background:rgba(244,63,94,.15);border-color:rgba(244,63,94,.4);color:var(--primary-indigo)">factorial(5) → 5 × factorial(4)</div>
+        <div class="rcta-frame" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-violet)">&nbsp;&nbsp;factorial(4) → 4 × factorial(3)</div>
+        <div class="rcta-frame" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.3);color:var(--primary-blue)">&nbsp;&nbsp;&nbsp;&nbsp;factorial(3) → 3 × factorial(2)</div>
+        <div class="rcta-frame" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factorial(2) → 2 × factorial(1)</div>
+        <div class="rcta-frame" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.35);color:var(--primary-green)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;factorial(1) = 1  ← base case</div>
+      </div>
+    </div>
+    <a href="practice.html?topic=recursion" class="cta-btn">
+      <span>🔁 Solve Recursion Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/recursion_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

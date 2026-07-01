@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Playground — CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link rel="stylesheet" href="css/codeeditor.css" />
+
+    <link rel="stylesheet" href="css/navbar.css" />
+  </head>
+  <body>
+    <nav>
+      <a class="logo" href="index.html">
+        <img src="dsa.gif" alt="Logo" class="logo-icon" />
+        <span>CODEANIME</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="topics.html">Topics</a></li>
+        <li><a href="prerequisite.html">Prerequisites</a></li>
+        <li><a href="codeeditor.html" class="active">Code Editor</a></li>
+      </ul>
+      <div class="nav-right">
+        <div class="server-badge offline" id="serverBadge">
+          <span class="dot"></span><span id="serverText">Checking...</span>
+        </div>
+        <button class="theme-btn" id="themeToggle">
+          <svg viewBox="0 0 24 24" id="themeIcon"></svg>
+        </button>
+      </div>
+      <div id="nav-user-slot"></div>
+    </nav>
+
+    <div class="workspace">
+      <!--   LEFT: INTERACTIVE TERMINAL   -->
+      <div class="terminal-panel">
+        <div class="panel-bar">
+          <span style="font-size: 0.9rem">🖥</span>
+          <span class="panel-label" style="color: var(--primary-green)"
+            >Terminal</span
+          >
+          <div class="panel-bar-actions">
+            <button class="bar-btn" onclick="clearTerminal()">Clear</button>
+            <button class="bar-btn" onclick="killProgram()">Kill</button>
+          </div>
+        </div>
+        <div id="terminal" onclick="focusActiveInput()"></div>
+      </div>
+
+      <!--   RIGHT: CODE EDITOR   -->
+      <div class="editor-panel">
+        <div class="editor-toolbar">
+          <div class="lang-tabs" id="langTabs">
+            <button class="lang-tab active" data-lang="cpp">C++</button>
+            <button class="lang-tab" data-lang="c">C</button>
+            <button class="lang-tab" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="java">Java</button>
+            <button class="lang-tab" data-lang="javascript">JS</button>
+          </div>
+          <button class="run-btn" id="runBtn" onclick="runProgram()">
+            ▶ Run
+          </button>
+        </div>
+        <div class="cm-wrap">
+          <textarea id="codeArea"></textarea>
+        </div>
+        <div class="status-bar">
+          <span class="status-item" id="sb-lang">
+            <span
+              class="status-dot"
+              style="background: var(--primary-cyan)"
+            ></span
+            >C++
+          </span>
+          <span class="status-item" id="sb-lines">Lines: 1</span>
+          <span
+            class="status-item"
+            id="sb-state"
+            style="color: var(--text-secondary)"
+            >Ready</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="js/codeeditor.js"></script>
+
+    <!-- <script src="js/navbar.js"></script> -->
+  </body>
+</html>

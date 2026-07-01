@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort - Level 2 | CODEANIME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/selectionSort_L2.css">
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="selection_sort_basics.html">Selection Sort</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Selection Sort — Interactive Visualizer</h1>
+    <p class="content-text">Watch Selection Sort repeatedly find the minimum element and place it in its correct position. Always <strong style="color:var(--primary-orange)">O(N²)</strong> comparisons — but at most <strong style="color:var(--primary-green)">N−1 swaps</strong>.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="iterative" onclick="switchImplementation('iterative')">
+      <div class="impl-option-icon">🔁</div>
+      <div class="impl-option-title">Iterative</div>
+      <div class="impl-option-desc">Two nested loops, O(1) space</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔃</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">Reduce sub-array each call</div>
+    </div>
+  </div>
+
+  <!--   VISUALIZER GRID   -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+
+      <div id="pseudo-iterative">
+        <div class="pseudo-step" data-step="it-outer">
+          <strong>OUTER LOOP:</strong> Pass index i<br>
+          <span>for i = 0 to n−2</span>
+        </div>
+        <div class="pseudo-step" data-step="it-minidx">
+          <strong>ASSUME MIN:</strong> Set min at i<br>
+          <span>minIdx = i</span>
+        </div>
+        <div class="pseudo-step" data-step="it-inner">
+          <strong>INNER LOOP:</strong> Scan unsorted part<br>
+          <span>for j = i+1 to n−1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-compare">
+          <strong>COMPARE:</strong> Check for smaller<br>
+          <span>if arr[j] &lt; arr[minIdx]</span>
+        </div>
+        <div class="pseudo-step" data-step="it-updatemin">
+          <strong>UPDATE MIN:</strong> New minimum found<br>
+          <span>minIdx = j</span>
+        </div>
+        <div class="pseudo-step" data-step="it-swapcheck">
+          <strong>SWAP CHECK:</strong> Only if needed<br>
+          <span>if minIdx ≠ i</span>
+        </div>
+        <div class="pseudo-step" data-step="it-swap">
+          <strong>SWAP:</strong> Place min in position<br>
+          <span>swap(arr[i], arr[minIdx])</span>
+        </div>
+        <div class="pseudo-step" data-step="it-done">
+          <strong>SORTED:</strong> Array fully sorted<br>
+          <span>all n elements in place ✓</span>
+        </div>
+      </div>
+
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="re-base">
+          <strong>BASE CASE:</strong> One element left<br>
+          <span>if start ≥ n−1: return</span>
+        </div>
+        <div class="pseudo-step" data-step="re-minidx">
+          <strong>ASSUME MIN:</strong> Set min at start<br>
+          <span>minIdx = start</span>
+        </div>
+        <div class="pseudo-step" data-step="re-scan">
+          <strong>SCAN:</strong> Find min in rest<br>
+          <span>for j = start+1 to n−1</span>
+        </div>
+        <div class="pseudo-step" data-step="re-compare">
+          <strong>COMPARE:</strong> Check for smaller<br>
+          <span>if arr[j] &lt; arr[minIdx]</span>
+        </div>
+        <div class="pseudo-step" data-step="re-updatemin">
+          <strong>UPDATE MIN:</strong> New minimum found<br>
+          <span>minIdx = j</span>
+        </div>
+        <div class="pseudo-step" data-step="re-swap">
+          <strong>SWAP:</strong> Place min at start<br>
+          <span>swap(arr[start], arr[minIdx])</span>
+        </div>
+        <div class="pseudo-step" data-step="re-recurse">
+          <strong>RECURSE:</strong> Sort remaining<br>
+          <span>selSort(arr, start+1, n)</span>
+        </div>
+        <div class="pseudo-step" data-step="re-done">
+          <strong>SORTED:</strong> All calls returned ✓<br>
+          <span>array fully sorted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Selection Sort Visualizer — Iterative</h5>
+        </div>
+        <div class="card-body">
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-purple" id="badge-pass">Pass: 0 / 0</div>
+              <div class="stat-badge sb-orange" id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-pink"   id="badge-swaps">Swaps: 0</div>
+              <div class="stat-badge sb-green"  id="badge-sorted">Sorted: 0</div>
+            </div>
+            <div class="bars-area" id="barsArea"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-cyan),#0284c7)"></div>Unsorted</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#f59e0b,#d97706)"></div>Current i</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-red),#dc2626)"></div>Min Found</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-purple),#7c3aed)"></div>Comparing j</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#ec4899,#db2777)"></div>Swapping</div>
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(var(--primary-green),#059669)"></div>Sorted</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g.  64, 25, 12, 22, 11">
+            <button class="btn btn-warning" onclick="startSort()" id="sortBtn">Sort</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSort()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSort()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /visualizer-grid -->
+
+  <!--  ─ SCENARIOS  ─ -->
+  <div class="section-card" id="scenarioSection">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case</h4>
+          <p>Array is <strong style="color:var(--primary-green)">already sorted</strong> — Selection Sort still performs all <strong style="color:var(--primary-orange)">N(N−1)/2 comparisons</strong> but makes <strong style="color:var(--primary-green)">0 swaps</strong>. Time is always O(N²).</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [5, 11, 19, 25, 36, 42] — already sorted, 0 swaps</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap">
+              <div class="mini-bars" id="mbars-best"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case</h4>
+          <p>Randomly arranged array — some swaps occur, comparisons always N(N−1)/2. Watch each pass find the minimum and swap it to position.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [64, 25, 12, 22, 11] — random order</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap">
+              <div class="mini-bars" id="mbars-avg"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case</h4>
+          <p>Array is <strong style="color:var(--primary-red)">reverse sorted</strong> — every pass requires a swap, giving exactly <strong style="color:var(--primary-orange)">N−1 swaps</strong>. Still O(N²) comparisons — same as best case.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [90, 70, 50, 30, 10] — reverse sorted, N−1 swaps</div>
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap">
+              <div class="mini-bars" id="mbars-worst"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own array and watch Selection Sort work step by step. The complexity cards highlight based on how many swaps actually occurred.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Array already sorted — 0 swaps but still N(N−1)/2 comparisons</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Random input — some swaps, always N(N−1)/2 comparisons</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time:  <span class="cc-val cc-red">O(N²)</span></div>
+              <div class="cc-space">Space: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Reverse sorted — maximum N−1 swaps with all comparisons</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Array</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 38, 27, 43, 3, 9" style="width:220px;">
+            <button class="ctl-btn ctl-btn-green"  onclick="customSearch()">▶ Load &amp; Sort</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"    id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div class="mini-sort-stage">
+            <div class="mini-bars-wrap">
+              <div class="mini-bars" id="mbars-custom"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /scenarioSection -->
+
+  <!--  ─ CODE EDITOR  ─ -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-tabs">
+      <button class="impl-tab active" data-impl="iterative" onclick="switchEditorImpl('iterative',this)">🔁 Iterative</button>
+      <button class="impl-tab"        data-impl="recursive"  onclick="switchEditorImpl('recursive', this)">🔃 Recursive</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Iterative</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Selection Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/selectionSort_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

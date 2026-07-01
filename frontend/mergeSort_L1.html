@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Sort - Basics | CODEANIME</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/mergeSort_L1.css">
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span class="sep">&#8250;</span>
+        <a href="algorithms.html">Algorithms</a> <span class="sep">&#8250;</span>
+        <span>Merge Sort</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Merge Sort - Basics</h1>
+        <p class="content-text">An efficient divide-and-conquer sorting algorithm that splits, sorts, and merges.</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3 | Basics</div>
+        </div>
+    </div>
+
+    <!-- Section 1: Intro -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔀</div>
+            <h2 class="section-title">Understanding Merge Sort</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Merge Sort?</h3>
+            <p class="content-text">
+                Merge Sort is an efficient, general-purpose sorting algorithm based on the <b>divide-and-conquer</b> paradigm. It works by <b>recursively dividing</b> the array into two halves until each subarray has only one element, then <b>merging</b> those sorted subarrays back together in the correct order. Because a single element is always sorted, the merge step does all the real work.
+            </p>
+
+            <h3 class="content-title">🤔 Why Use Merge Sort?</h3>
+            <ul style="list-style: none; color: var(--text-secondary); margin-left: 10px;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Guaranteed O(N log N):</b> Unlike Quick Sort, Merge Sort always runs in O(N log N) — even in the worst case.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Stable Sort:</b> Equal elements maintain their original relative order — important for complex data.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Works on Linked Lists:</b> Ideal for linked list sorting where random access is expensive.</li>
+            </ul>
+        </div>
+
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Worst)</div>
+                <div class="complexity-value">O(N log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Best)</div>
+                <div class="complexity-value">O(N log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space Complexity</div>
+                <div class="complexity-value">O(N)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Visual Representation -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🎨</div>
+            <h2 class="section-title">Visual Representation</h2>
+        </div>
+        <div class="sort-visual-img">
+            <h3 style="color: var(--primary-cyan); margin-bottom: 2rem; font-size: 1.3rem;">Merge Sort Structure and Operations</h3>
+            <div class="sort-diagram">
+                <svg viewBox="0 0 900 340" width="100%" style="background:#0a0a0a; border-radius:12px;">
+
+                    <!-- Title -->
+                    <text x="450" y="28" fill="#22d3ee" font-size="19" font-weight="bold" text-anchor="middle">Merge Sort — Divide and Conquer</text>
+
+                    <!--   LEVEL 0: Original array   -->
+                    <text x="450" y="55" fill="#9ca3af" font-size="12" text-anchor="middle">ORIGINAL</text>
+                    <rect x="260" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="287" y="86" fill="white" font-size="15" text-anchor="middle">38</text>
+                    <rect x="325" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="352" y="86" fill="white" font-size="15" text-anchor="middle">27</text>
+                    <rect x="390" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="417" y="86" fill="white" font-size="15" text-anchor="middle">43</text>
+                    <rect x="455" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="482" y="86" fill="white" font-size="15" text-anchor="middle">3</text>
+                    <rect x="520" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="547" y="86" fill="white" font-size="15" text-anchor="middle">9</text>
+                    <rect x="585" y="62" width="55" height="38" rx="6" fill="#6366f1"/>
+                    <text x="612" y="86" fill="white" font-size="15" text-anchor="middle">82</text>
+
+                    <!-- Divide arrows down -->
+                    <line x1="380" y1="101" x2="230" y2="128" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <line x1="520" y1="101" x2="670" y2="128" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <text x="450" y="118" fill="#f59e0b" font-size="11" text-anchor="middle">DIVIDE (mid)</text>
+
+                    <!--   LEVEL 1: Two halves   -->
+                    <!-- Left half: 38 27 43 -->
+                    <rect x="100" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="125" y="152" fill="white" font-size="14" text-anchor="middle">38</text>
+                    <rect x="158" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="183" y="152" fill="white" font-size="14" text-anchor="middle">27</text>
+                    <rect x="216" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="241" y="152" fill="white" font-size="14" text-anchor="middle">43</text>
+
+                    <!-- Right half: 3 9 82 -->
+                    <rect x="590" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="615" y="152" fill="white" font-size="14" text-anchor="middle">3</text>
+                    <rect x="648" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="673" y="152" fill="white" font-size="14" text-anchor="middle">9</text>
+                    <rect x="706" y="130" width="50" height="34" rx="6" fill="#f59e0b"/>
+                    <text x="731" y="152" fill="white" font-size="14" text-anchor="middle">82</text>
+
+                    <!-- Divide further -->
+                    <line x1="155" y1="165" x2="105" y2="192" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <line x1="210" y1="165" x2="245" y2="192" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <line x1="650" y1="165" x2="615" y2="192" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+                    <line x1="700" y1="165" x2="740" y2="192" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+                    <!--   LEVEL 2: Singles   -->
+                    <!-- Left side singles -->
+                    <rect x="60"  y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="80"  y="217" fill="white" font-size="14" text-anchor="middle">38</text>
+                    <rect x="110" y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="130" y="217" fill="white" font-size="14" text-anchor="middle">27</text>
+                    <rect x="220" y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="240" y="217" fill="white" font-size="14" text-anchor="middle">43</text>
+
+                    <!-- Right side singles -->
+                    <rect x="585" y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="605" y="217" fill="white" font-size="14" text-anchor="middle">3</text>
+                    <rect x="635" y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="655" y="217" fill="white" font-size="14" text-anchor="middle">9</text>
+                    <rect x="720" y="195" width="40" height="34" rx="6" fill="#22c55e"/>
+                    <text x="740" y="217" fill="white" font-size="14" text-anchor="middle">82</text>
+
+                    <text x="450" y="218" fill="#22c55e" font-size="11" text-anchor="middle">Base case: single elements</text>
+
+                    <!-- Merge arrows up -->
+                    <line x1="105" y1="229" x2="145" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <line x1="155" y1="229" x2="155" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <line x1="240" y1="229" x2="240" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <line x1="610" y1="229" x2="610" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <line x1="655" y1="229" x2="655" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <line x1="740" y1="229" x2="740" y2="255" stroke="#8b5cf6" stroke-width="1.5"/>
+                    <text x="200" y="250" fill="#8b5cf6" font-size="11" text-anchor="middle">MERGE (sorted)</text>
+                    <text x="690" y="250" fill="#8b5cf6" font-size="11" text-anchor="middle">MERGE (sorted)</text>
+
+                    <!--   LEVEL 3: Merged result   -->
+                    <rect x="260" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="287" y="282" fill="white" font-size="15" text-anchor="middle">3</text>
+                    <rect x="325" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="352" y="282" fill="white" font-size="15" text-anchor="middle">9</text>
+                    <rect x="390" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="417" y="282" fill="white" font-size="15" text-anchor="middle">27</text>
+                    <rect x="455" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="482" y="282" fill="white" font-size="15" text-anchor="middle">38</text>
+                    <rect x="520" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="547" y="282" fill="white" font-size="15" text-anchor="middle">43</text>
+                    <rect x="585" y="258" width="55" height="38" rx="6" fill="#8b5cf6"/>
+                    <text x="612" y="282" fill="white" font-size="15" text-anchor="middle">82</text>
+                    <text x="450" y="315" fill="#8b5cf6" font-size="13" font-weight="bold" text-anchor="middle">SORTED: [3, 9, 27, 38, 43, 82]</text>
+
+                    <!-- Legend -->
+                    <rect x="50"  y="328" width="12" height="12" rx="2" fill="#6366f1"/>
+                    <text x="67"  y="339" fill="#9ca3af" font-size="11">Original</text>
+                    <rect x="150" y="328" width="12" height="12" rx="2" fill="#f59e0b"/>
+                    <text x="167" y="339" fill="#9ca3af" font-size="11">Divide</text>
+                    <rect x="230" y="328" width="12" height="12" rx="2" fill="#22c55e"/>
+                    <text x="247" y="339" fill="#9ca3af" font-size="11">Base Case</text>
+                    <rect x="340" y="328" width="12" height="12" rx="2" fill="#8b5cf6"/>
+                    <text x="357" y="339" fill="#9ca3af" font-size="11">Merged &amp; Sorted</text>
+
+                </svg>
+            </div>
+            <p class="content-text" style="margin-top: 2rem; text-align: center;">
+                Merge Sort recursively divides the array into halves until single elements remain, then merges them back in sorted order.
+            </p>
+        </div>
+    </div>
+
+    <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <h2 class="section-title">Real-World Analogy</h2>
+    </div>
+
+    <p class="content-text" style="margin-bottom: 2rem;">
+        Think of merge sort as breaking a big problem into tiny pieces, solving each piece, then combining the results — just like these everyday situations:
+    </p>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Sorting a Deck of Cards with a Friend</div>
+            <div class="example-desc">Split the deck in half, each person sorts their half, then you interleave the two sorted halves together into one sorted deck.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Organising a Large Library</div>
+            <div class="example-desc">Divide books among shelves, sort each shelf independently, then merge shelf by shelf into one master sorted collection.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Combining Sorted Exam Score Lists</div>
+            <div class="example-desc">Two teachers each grade half the class and return a sorted list. Merging two sorted lists into one is fast — just compare the tops and pick the smaller.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Dividing Chores Among Roommates</div>
+            <div class="example-desc">Split a big task list among roommates. Each independently finishes their portion, then results are combined into one completed ordered list.</div>
+        </div>
+    </div>
+</div>
+
+    <!-- Section 3: How it Works & Key Concepts -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2 class="section-title">How it Works & Key Concepts</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">🔄 The Mechanism</h3>
+            <p class="content-text">
+                Merge Sort has two phases: the <b>Divide phase</b> and the <b>Merge phase</b>. In the divide phase, the array is split at its midpoint recursively until all subarrays have only one element. In the merge phase, pairs of sorted subarrays are combined into a single larger sorted array by comparing elements from each half and picking the smaller one at each step.
+            </p>
+
+            <h3 class="content-title">📚 Basic Terminology</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Divide:</b> Split the array at the midpoint into two halves recursively.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Conquer:</b> Base case — a single-element array is already sorted.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Merge:</b> Combine two sorted halves into one sorted array using a temp array.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Mid:</b> The middle index calculated as (left + right) / 2 to split the array.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Manual Run Through -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚶</div>
+            <h2 class="section-title">Manual Run Through</h2>
+        </div>
+        <p class="content-text">Let's trace through Merge Sort step by step on the array <b>[38, 27, 43, 3]</b>.</p>
+
+        <div class="step-box">
+            <div class="step-header">Step 1: Initial Array</div>
+            <p class="content-text">We start with the full unsorted array.</p>
+            <div class="array-row">
+                <div class="array-cell">38</div>
+                <div class="array-cell">27</div>
+                <div class="array-cell">43</div>
+                <div class="array-cell">3</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 2: Divide — Split [38, 27, 43, 3] into two halves at mid = 1.</div>
+            <p class="content-text">Left half: <b>[38, 27]</b> &nbsp;&nbsp; Right half: <b>[43, 3]</b></p>
+            <div class="array-row">
+                <div class="array-cell scanning">38</div>
+                <div class="array-cell scanning">27</div>
+                <div class="array-cell" style="opacity:0.3;">|</div>
+                <div class="array-cell scanning">43</div>
+                <div class="array-cell scanning">3</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 3: Divide further — [38, 27] splits into [38] and [27]. [43, 3] splits into [43] and [3].</div>
+            <p class="content-text">Each subarray now has 1 element — these are our <b>base cases</b> (already sorted).</p>
+            <div class="array-row">
+                <div class="array-cell found">38</div>
+                <div class="array-cell found">27</div>
+                <div class="array-cell" style="opacity:0.3;">|</div>
+                <div class="array-cell found">43</div>
+                <div class="array-cell found">3</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 4: Merge [38] and [27] → Compare 38 &gt; 27, place 27 first, then 38.</div>
+            <p class="content-text">Result: <b>[27, 38]</b> — a sorted subarray.</p>
+            <div class="array-row">
+                <div class="array-cell merging">27</div>
+                <div class="array-cell merging">38</div>
+                <div class="array-cell" style="opacity:0.3;">|</div>
+                <div class="array-cell">43</div>
+                <div class="array-cell">3</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 5: Merge [43] and [3] → Compare 43 &gt; 3, place 3 first, then 43.</div>
+            <p class="content-text">Result: <b>[3, 43]</b> — a sorted subarray.</p>
+            <div class="array-row">
+                <div class="array-cell sorted">27</div>
+                <div class="array-cell sorted">38</div>
+                <div class="array-cell" style="opacity:0.3;">|</div>
+                <div class="array-cell merging">3</div>
+                <div class="array-cell merging">43</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 6: Final Merge — Merge [27, 38] and [3, 43] into one sorted array.</div>
+            <p class="content-text">Compare 27 vs 3 → 3. Compare 27 vs 43 → 27. Then 38. Then 43. Result: <b>[3, 27, 38, 43]</b>.</p>
+            <div class="array-row">
+                <div class="array-cell sorted">3</div>
+                <div class="array-cell sorted">27</div>
+                <div class="array-cell sorted">38</div>
+                <div class="array-cell sorted">43</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-green);">
+            <h4 style="color: var(--primary-green); margin-bottom: 10px;">What Happened?</h4>
+            <p class="content-text" style="margin-bottom: 0;">The array was recursively divided into single elements (<b>log N levels</b>), then merged back in sorted order. Each merge level processes all N elements, giving a total time complexity of <b>O(N log N)</b>. A temporary array of size N is needed for the merge step, giving <b>O(N) space</b>.</p>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon"><i class="fas fa-code"></i></div>
+            <h2 class="section-title">Implementation</h2>
+        </div>
+
+        <!-- Top-Down Recursive Method -->
+        <div class="op-dropdown">
+            <div class="op-header" onclick="toggleDropdown('iter-drop')">
+                <div style="display: flex; align-items: center;">
+                    <div class="op-number">1</div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">Top-Down Method (Recursive — Classic)</span>
+                </div>
+                <i class="fas fa-chevron-down" id="icon-iter-drop"></i>
+            </div>
+            <div class="op-content" id="iter-drop">
+                <div class="operation-body">
+                    <p class="content-text">
+                        The classic top-down approach uses recursion to divide the array into halves and a separate <b>merge()</b> helper to combine them. This is the standard implementation taught in most courses and textbooks.
+                    </p>
+
+                    <div class="complexity-grid">
+                        <div class="complexity-box">
+                            <div class="complexity-label">Time Complexity</div>
+                            <div class="complexity-value">O(N log N)</div>
+                        </div>
+                        <div class="complexity-box">
+                            <div class="complexity-label">Space Complexity</div>
+                            <div class="complexity-value">O(N)</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                    <ul class="styled-list">
+                        <li><b>mergeSort(arr, left, right):</b> Entry point — divides the array.</li>
+                        <li>If left &gt;= right, return (base case — single element).</li>
+                        <li>Calculate mid = left + (right - left) / 2.</li>
+                        <li>Recursively call mergeSort on left half: [left, mid].</li>
+                        <li>Recursively call mergeSort on right half: [mid+1, right].</li>
+                        <li><b>merge(arr, left, mid, right):</b> Combine two sorted halves using a temp array.</li>
+                    </ul>
+
+                    <div class="lang-tabs" data-group="iterative">
+                        <button class="lang-tab active" data-lang="cpp">C++</button>
+                        <button class="lang-tab" data-lang="python">Python</button>
+                        <button class="lang-tab" data-lang="java">Java</button>
+                        <button class="lang-tab" data-lang="c">C</button>
+                        <button class="lang-tab" data-lang="javascript">JS</button>
+                    </div>
+
+                    <div class="editor-wrapper">
+                        <div class="editor-header">
+                            <span class="lang-display">C++</span>
+                            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <textarea id="editor-iter"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom-Up Iterative Method -->
+        <div class="op-dropdown" style="margin-top: 2rem;">
+            <div class="op-header" onclick="toggleDropdown('recur-drop')">
+                <div style="display: flex; align-items: center;">
+                    <div class="op-number">2</div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">Bottom-Up Method (Iterative)</span>
+                </div>
+                <i class="fas fa-chevron-down" id="icon-recur-drop"></i>
+            </div>
+            <div class="op-content" id="recur-drop">
+                <div class="operation-body">
+                    <p class="content-text">
+                        The bottom-up approach avoids recursion entirely. It starts by treating each element as a sorted subarray of size 1, then iteratively merges subarrays of increasing sizes (1→2→4→8...) until the whole array is sorted. Same complexity, no call stack overhead.
+                    </p>
+
+                    <div class="complexity-grid">
+                        <div class="complexity-box">
+                            <div class="complexity-label">Time Complexity</div>
+                            <div class="complexity-value">O(N log N)</div>
+                        </div>
+                        <div class="complexity-box">
+                            <div class="complexity-label">Space Complexity</div>
+                            <div class="complexity-value">O(N)</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                    <ul class="styled-list">
+                        <li><b>Base:</b> Every single element is a sorted subarray of size 1.</li>
+                        <li>Loop with width = 1, 2, 4, 8, ... (doubling each iteration).</li>
+                        <li>In each pass, merge adjacent pairs of subarrays of the current width.</li>
+                        <li>Calculate left, mid, and right for each pair and call merge().</li>
+                        <li>Continue until width &gt;= N — the full array is now sorted.</li>
+                    </ul>
+
+                    <div class="lang-tabs" data-group="recursive">
+                        <button class="lang-tab active" data-lang="cpp">C++</button>
+                        <button class="lang-tab" data-lang="python">Python</button>
+                        <button class="lang-tab" data-lang="java">Java</button>
+                        <button class="lang-tab" data-lang="c">C</button>
+                        <button class="lang-tab" data-lang="javascript">JS</button>
+                    </div>
+
+                    <div class="editor-wrapper">
+                        <div class="editor-header">
+                            <span class="lang-display">C++</span>
+                            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <textarea id="editor-recur"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Section -->
+    <div class="video-section">
+        <div class="video-info">
+            <span>📺</span>
+            <span>Merge Sort Explained</span>
+        </div>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/cdHEpbBVjRM?si=NTE9GCPLnLmo3Vh9" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Slider Section -->
+    <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="color: var(--primary-purple); font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 10px;">Level Locked</h3>
+        <p style="color: var(--text-secondary);">Pass the Level 1 Quiz to unlock Level 2 and continue your Merge Sort journey.</p>
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/mergeSort_L1.js"></script>
+
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

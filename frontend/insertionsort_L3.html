@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insertion Sort — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/insertionsort_L3.css">
+  </head>
+  <body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="insertionsort_L1.html">Insertion Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Insertion Sort in the <span class="highlight">Real World</span></h1>
+  <p>The secret weapon hiding inside Timsort, introsort, and every production sort — O(n) on nearly-sorted data, online streaming, and the fastest sort for n ≤ 16.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Pick, Shift, Insert</div>
+    <p class="concept-desc">Insertion sort takes each element (the <strong>key</strong>) and slides it <strong>left through the sorted region</strong> until it finds its correct position. Elements to the right of the key shift one place right to make room. The left side is always sorted. Key insight: on <strong>nearly-sorted data</strong>, almost no shifting happens — the inner loop exits immediately, giving <strong>O(n + k) where k = inversions</strong>. This is why Timsort uses it for small runs.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through insertion sort — watch each key slide left into position</div>
+      <div class="sort-bars" id="conceptBars"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Insert Next</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Insert Next" to step through insertion sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(20,184,166,.25);border:2px solid var(--primary-teal)"></div>Key (being inserted)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.18);border:2px solid var(--primary-orange)"></div>Shifting right</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(5,150,105,.15);border:2px solid var(--primary-emerald)"></div>Sorted region</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(20,184,166,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Insertion sort's adaptivity and online nature make it irreplaceable — it's the finishing touch inside every major sorting algorithm and the only sort that works on live data streams.</p>
+  <div class="app-grid">
+
+    <!-- 1. Timsort small runs -->
+    <div class="app-card teal">
+      <div class="card-header">
+        <div class="card-icon teal">🐍</div>
+        <div class="card-title-wrap">
+          <h3>Timsort — Small Run Sorter</h3>
+          <p>Python's <code style="color:var(--primary-teal);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">list.sort()</code> and Java's <code style="color:var(--primary-teal);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">Arrays.sort()</code> use Timsort — which switches to <strong>insertion sort for subarrays of size ≤ 64</strong>. Zero overhead, O(n) on nearly-sorted data, and better cache behavior than merge sort at small n make insertion sort Timsort's workhorse.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort a 7-element subarray — the exact scenario Timsort delegates to insertion sort</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="timsortISStep()">▶ Insert Next</button>
+            <button class="d-btn reset" onclick="timsortISReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="timsortBars"></div>
+          <div class="status-line" id="timsortStatus">n=7 subarray — Timsort picks insertion sort</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Key: <b id="timsortKey" style="color:var(--primary-teal)">—</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Shifts: <b id="timsortShifts" style="color:var(--primary-emerald)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Live stream / online sort -->
+    <div class="app-card emerald">
+      <div class="card-header">
+        <div class="card-icon emerald">📡</div>
+        <div class="card-title-wrap">
+          <h3>Online Sorting — Live Data Streams</h3>
+          <p>Insertion sort is the <strong>only O(n) comparison sort that works online</strong> — elements arrive one by one and are immediately placed in the correct position in the sorted list. Used in financial ticker feeds, IoT sensor streams, and any system where data must be sorted as it arrives without buffering.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Stock prices arrive live — insert each into the sorted list immediately</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="streamInsert()">▶ Receive Next Price</button>
+            <button class="d-btn reset" onclick="streamReset()">↺ Reset</button>
+          </div>
+          <div id="streamList" style="display:flex;flex-direction:column;gap:.2rem;max-height:165px;overflow-y:auto"></div>
+          <div class="step-info" id="streamInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Nearly-sorted re-sort -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🔃</div>
+        <div class="card-title-wrap">
+          <h3>Nearly-Sorted Data Re-Sort</h3>
+          <p>After a database update, a config file change, or a small batch of new records, a nearly-sorted list needs to be re-sorted. Insertion sort's O(n + k) complexity (k = inversions) means <strong>it finishes in O(n) if only a few elements moved</strong>. No other sort achieves this without explicit nearly-sorted detection.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 2 elements went out of order — watch insertion sort fix it in near-O(n)</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="nearlySortedStep()">▶ Insert Next</button>
+            <button class="d-btn reset" onclick="nearlySortedReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="nearlyBars"></div>
+          <div class="status-line" id="nearlyStatus">Almost sorted — 2 elements out of place</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Total shifts: <b id="nearlyShifts" style="color:var(--primary-teal)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(5,150,105,.06);border:1px solid rgba(5,150,105,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Pass: <b id="nearlyPass" style="color:var(--primary-emerald)">0</b> / 9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Card hand sorting -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🃏</div>
+        <div class="card-title-wrap">
+          <h3>Card Hand Sorting — How Humans Sort</h3>
+          <p>When you sort a hand of playing cards, you naturally use insertion sort: pick up one card at a time and <strong>slide it left past cards that are larger</strong> until it's in the right spot. It's the most intuitive sorting method and is used in board game engines, poker apps, and any scenario with human-scale data.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort a hand of cards — pick each card and slide it into place</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="cardStep()">▶ Pick & Insert Card</button>
+            <button class="d-btn reset" onclick="cardReset()">↺ Reshuffle</button>
+          </div>
+          <div id="cardHand" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem;min-height:36px"></div>
+          <div class="status-line" id="cardStatus">Pick the next unsorted card and slide it left</div>
+          <div class="step-info" id="cardInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Introsort small subarrays -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">⚡</div>
+        <div class="card-title-wrap">
+          <h3>Introsort / std::sort Finishing Pass</h3>
+          <p>C++'s introsort and pdqsort use quicksort to get subarrays small, then run a <strong>single insertion sort pass over the whole array</strong> to finish. This is faster than calling insertion sort on each small subarray separately because the final pass has excellent cache locality — all data is nearby.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Quicksort left partial order, then one insertion sort pass finishes it</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="introISStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="introISReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="introISBars"></div>
+          <div class="status-line" id="introISStatus">After quicksort: nearly sorted, few inversions remain</div>
+          <div class="step-info" id="introISInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Binary insertion sort -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🔍</div>
+        <div class="card-title-wrap">
+          <h3>Binary Insertion Sort</h3>
+          <p>Replace the linear scan with <strong>binary search</strong> to find the insertion point — reduces comparisons from O(n²) to O(n log n) while keeping O(n²) shifts. Used when comparisons are expensive (e.g., comparing database records over a network) but shifts are cheap (memory moves).</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Binary search finds the gap — then shift to insert in O(log n) comparisons</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="binaryISStep()">▶ Binary Insert</button>
+            <button class="d-btn reset" onclick="binaryISReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="binaryBars"></div>
+          <div class="status-line" id="binaryStatus">Binary search locates insertion point — fewer comparisons</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Comparisons: <b id="binaryComps" style="color:var(--primary-orange)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">vs Linear: <b id="binaryLinear" style="color:var(--primary-teal)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(20,184,166,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Insertion sort's defining feature: O(n) on nearly-sorted data. The number of inversions k directly controls the runtime — O(n + k).</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Shifts</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n)</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Already sorted — inner loop never executes, zero shifts</td></tr>
+        <tr><td class="op">Nearly Sorted</td><td class="good">O(n + k)</td><td class="good">O(k)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">k = number of inversions. If k=O(n), total is still O(n)</td></tr>
+        <tr><td class="op">Average Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Random data — n²/4 shifts on average</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Reverse-sorted — every element shifts all the way left</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="good">✅ Yes — stable</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Never swaps equal elements — only shifts past strictly greater</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(20,184,166,.05);border:1px solid rgba(20,184,166,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Insertion sort runs in <strong style="color:var(--primary-teal)">O(n + k)</strong> where k is the number of inversions. On data with O(n) inversions (like adding 5 elements to a sorted list of 995), insertion sort finishes in <strong style="color:var(--primary-teal)">O(n)</strong> — faster than any O(n log n) sort. Bubble sort shares this property but makes O(k) swaps while insertion sort makes O(k) shifts — each shift moves exactly one element instead of doing 3-assignment swaps, making insertion sort faster in practice.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Insertion sort is strictly better than bubble sort in almost all real scenarios. Its adaptivity, stability, and online nature make it a genuine production tool — not just a teaching algorithm.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(n) best case — adaptive to existing order</h4><p>On already-sorted data, the inner loop never runs. On nearly-sorted data, it runs proportionally to the number of inversions. This adaptivity is built into the algorithm — no extra detection needed.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Online — can sort data as it arrives</h4><p>The only comparison sort that works on a live stream. Each new element is inserted in O(n) worst case without needing to see all data first. Essential for real-time systems, sensor feeds, and live leaderboards.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Stable — preserves equal element order</h4><p>Only shifts past strictly greater elements — equal keys are never moved past each other. Safe for multi-key sort chains and tie-breaking semantics without any extra logic.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) space — in-place with no extra memory</h4><p>Just one variable for the current key. No auxiliary arrays, no stack frames. Ideal for memory-constrained systems like microcontrollers, embedded firmware, and cache-critical hot paths.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Fastest for small n in practice</h4><p>For n ≤ 16, insertion sort outperforms quicksort, merge sort, and heapsort due to zero overhead (no recursion, no pivot logic, no auxiliary arrays). This is why every production sort switches to it at small sizes.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Strictly better than bubble sort</h4><p>Same O(n) best case, same O(1) space, same stability — but insertion sort makes O(k) shifts vs bubble sort's O(k) swaps. Shifts (1 write) are faster than swaps (3 writes). Insertion sort wins every head-to-head comparison.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) average and worst case</h4><p>On random or reverse-sorted data, the inner loop runs n²/4 times on average. At n=10,000, that's 25 million shifts. Quicksort or merge sort handles the same data in ~130,000 operations.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Slow for large random data</h4><p>Unlike bubble sort's passes, insertion sort's inner loop is harder to parallelize. On random data at n>1000, switch to merge sort or quicksort. Insertion sort's advantage vanishes rapidly beyond this threshold.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) comparisons even with binary search variant</h4><p>Binary insertion sort reduces comparisons to O(n log n) but still does O(n²) shifts. If comparisons are cheap (integers), the benefit is minimal. Binary insertion only wins when comparisons are expensive (e.g. string comparisons).</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Slower than shell sort for medium-sized data</h4><p>Shell sort (insertion sort with gap sequences) runs in O(n^1.5) or better on random data — faster than O(n²) insertion sort. For 100 ≤ n ≤ 5000 where you want O(1) space, shell sort may outperform.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Shifting is expensive on large objects</h4><p>Shifting large structs or objects requires copying each element one position. If objects are large (KB+), each shift is expensive. Better to sort an array of pointers/indices using any O(n log n) sort, then reorder in-place.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Not suitable as a general-purpose sort beyond small n</h4><p>For any production sorting of unknown-size input, don't use insertion sort as a standalone. Use it only as a component (Timsort's inner sort, introsort's finishing pass) or when n is provably small.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Insertion Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Insertion sort fills a precise niche: small n, nearly-sorted data, live streams, and as the finishing touch inside bigger sorts. Outside that niche, use something else.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Insertion Sort When...</div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>n is small (n ≤ 20)</h4><p>Zero overhead beats O(n log n) algorithms whose constant factors dominate at small sizes. Timsort, introsort, and pdqsort all switch to insertion sort below a threshold (typically 16–64 elements).</p></div></div>
+      <div class="when-item"><div class="when-icon">🔃</div><div class="when-text"><h4>Data is nearly sorted</h4><p>If only k ≪ n elements are out of place, insertion sort runs in O(n + k). Sorting 1000 records where 5 changed? Insertion sort finishes in ~1010 operations. Quicksort still does ~10,000.</p></div></div>
+      <div class="when-item"><div class="when-icon">📡</div><div class="when-text"><h4>Online / streaming data — elements arrive one by one</h4><p>Insertion sort is the only comparison sort that can sort a stream as it arrives. Merge sort and quicksort require all data first. Use <span class="when-code">insert(arr, new_element)</span> as each element comes in.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability required + O(1) space + small n</h4><p>The only O(1) space stable sort. Merge sort needs O(n) space. If you need stable sort on tiny data with no extra memory, insertion sort is the answer.</p></div></div>
+      <div class="when-item"><div class="when-icon">🧩</div><div class="when-text"><h4>As a component inside a hybrid sort</h4><p>Always use insertion sort as the inner sorter in Timsort (subarrays ≤ 64), introsort's final pass, or any divide-and-conquer sort when subproblems become small. This is its most valuable real-world role.</p></div></div>
+      <div class="when-item"><div class="when-icon">💡</div><div class="when-text"><h4>When comparisons are expensive, use binary variant</h4><p>If comparing two elements is costly (network round-trip, deep object comparison, encrypted data), binary insertion sort reduces comparisons to O(n log n). The O(n²) shifts stay, but fewer expensive comparisons can be a net win.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Insertion Sort When...</div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Large random datasets (n > 100)</h4><p>O(n²) on random data is unacceptable. At n=10,000, quicksort is 500x faster. Use language built-ins (Timsort/introsort) which include insertion sort where it helps, without requiring you to manage it yourself.</p></div></div>
+      <div class="when-item"><div class="when-icon">📉</div><div class="when-text"><h4>Reverse-sorted input</h4><p>Every element must shift all the way to position 0. n(n-1)/2 shifts — the maximum possible. Insertion sort is at its absolute worst. Reverse + re-sort or use any O(n log n) algorithm instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Sorting large objects by value (not pointer)</h4><p>Shifting large structs (hundreds of bytes) is expensive — each shift copies the whole object. Sort an array of indices or pointers using quicksort, then reorder in one O(n) pass instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔗</div><div class="when-text"><h4>Linked list sorting for large lists</h4><p>Shifting in a linked list is O(n) per element — even worse than arrays. Use merge sort on linked lists. The only exception: very small linked lists (n ≤ 8) where node traversal overhead stays negligible.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>When shell sort would do</h4><p>For 50 ≤ n ≤ 5000 where you want in-place sorting but O(n²) is too slow, shell sort (gap-based insertion) achieves O(n^1.3–1.5) with no extra space. A direct upgrade from insertion sort for this range.</p></div></div>
+      <div class="when-item"><div class="when-icon">🌐</div><div class="when-text"><h4>As a general-purpose default sort</h4><p>Never use standalone insertion sort as your default sort algorithm. Always use the language's built-in (which uses insertion sort internally where appropriate). Don't reimplement what Timsort already does better.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Insertion Sort problems</span></div>
+    <p class="cta-sub">You've seen how insertion sort powers Timsort, online streams, introsort's finishing pass, and binary insertion.<br>Now prove you can implement it — and know exactly when it's the right choice over O(n log n) algorithms.</p>
+    <div class="is-cta-viz">
+      <div class="icbar" style="height:20px;background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.3)"></div>
+      <div class="icbar" style="height:35px;background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.3)"></div>
+      <div class="icbar" style="height:28px;background:rgba(20,184,166,.18);border-color:rgba(20,184,166,.4)"></div>
+      <div class="icbar" style="height:50px;background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.3)"></div>
+      <div class="icbar" style="height:22px;background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.3)"></div>
+      <div class="icbar" style="height:43px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="icbar" style="height:38px;background:rgba(5,150,105,.12);border-color:rgba(5,150,105,.3)"></div>
+    </div>
+    <a href="practice.html?topic=insertion_sort" class="cta-btn">
+      <span>🃏 Solve Insertion Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/insertionsort_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

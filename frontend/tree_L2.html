@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tree - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link rel="stylesheet" href="css/tree_L2.css">
+  </head>
+  <body data-theme="dark">
+    <nav>
+      <div class="nav-c">
+        <a class="logo" href="index.html"
+          ><div class="logo-i">
+            <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          </div>
+          <span>CODEANIME</span></a
+        >
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="tt" id="themeBtn">
+            <svg viewBox="0 0 24 24" id="themeIco">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <button class="hbg" id="hbg" style="display: none">
+            <span></span><span></span><span></span>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+    </nav>
+    <div class="mob-nav" id="mobNav">
+      <a href="index.html">Home</a><a href="topics.html">Topics</a>
+      <a href="prerequisite.html">Prerequisites</a
+      ><a href="codeeditor.html">Editor</a>
+    </div>
+
+    <div class="wrap">
+      <!-- FIX: renamed class from .bc to .bc-trail to avoid collision with JS vars -->
+      <div class="bc-trail">
+        <a href="topics.html">Topics</a><span>›</span
+        ><a href="tree_L1.html">Tree</a><span>›</span><span>Level 2</span>
+      </div>
+      <div class="ph">
+        <h1 class="pt">Tree — Interactive Visualizer</h1>
+        <p class="ps">
+          Explore Binary Tree, BST, and N-ary Tree operations with live SVG
+          animations.
+        </p>
+        <div class="ltabs">
+          <div class="ltab">Level 1 | Basics</div>
+          <div class="ltab on">Level 2 | Interactive</div>
+        </div>
+      </div>
+
+      <!-- TYPE SELECTOR -->
+      <div class="type-sel">
+        <div class="topt on" data-t="binary" onclick="switchType('binary')">
+          <div class="topt-icon">🌲</div>
+          <div class="topt-title">Binary Tree</div>
+          <div class="topt-desc">Level-order insert</div>
+        </div>
+        <div class="topt" data-t="bst" onclick="switchType('bst')">
+          <div class="topt-icon">🔍</div>
+          <div class="topt-title">BST</div>
+          <div class="topt-desc">Binary Search Tree</div>
+        </div>
+        <div class="topt" data-t="nary" onclick="switchType('nary')">
+          <div class="topt-icon">🌳</div>
+          <div class="topt-title">N-ary Tree</div>
+          <div class="topt-desc">Any children count</div>
+        </div>
+      </div>
+
+      <!-- VISUALIZER GRID -->
+      <div class="vg">
+        <!-- Pseudo Code -->
+        <div class="ps-panel">
+          <h5>📋 PSEUDO CODE</h5>
+          <div class="ps-step" id="ps-insert">
+            <strong>INSERT</strong><br /><span id="psi"
+              >if empty: root=node<br />else: level-order BFS</span
+            >
+          </div>
+          <div class="ps-step" id="ps-delete">
+            <strong>DELETE</strong><br /><span id="psd"
+              >leaf: remove directly<br />2 children: replace with<br />inorder
+              successor</span
+            >
+          </div>
+          <div class="ps-step" id="ps-search">
+            <strong>SEARCH</strong><br /><span id="pss"
+              >BST: go left if v&lt;cur<br />else go right</span
+            >
+          </div>
+          <div class="ps-step" id="ps-inorder">
+            <strong>INORDER</strong><br /><span id="psio"
+              >left → root → right<br />gives sorted output (BST)</span
+            >
+          </div>
+          <div class="ps-step" id="ps-preorder">
+            <strong>PREORDER</strong><br /><span id="pspo"
+              >root → left → right<br />used in tree copy/clone</span
+            >
+          </div>
+          <div class="ps-step" id="ps-height">
+            <strong>HEIGHT</strong><br />1 + max(h(left), h(right))
+          </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div>
+          <div class="vc">
+            <div class="vc-head">
+              <h5 id="vizTitle">Tree Visualizer — Binary Tree</h5>
+            </div>
+            <div class="vc-body">
+              <div class="tree-wrap">
+                <svg
+                  id="mainSvg"
+                  class="tree-svg"
+                  viewBox="0 0 700 320"
+                  style="height: auto; min-height: 220px"
+                ></svg>
+              </div>
+              <div class="depth-warn" id="depthWarn">
+                ⚠ Tree depth ≥ 4 — scroll right if nodes overlap. Tip: start
+                with middle values to keep tree balanced.
+              </div>
+              <div class="skew-warn" id="skewWarn">
+                ⚠ Skewed tree detected — inserted in sorted order. Reset and
+                start with a middle value (e.g. 50) first.
+              </div>
+              <div class="msg-box" id="msgBox"></div>
+            </div>
+            <div class="vc-foot">
+              <!-- Binary / BST footer -->
+              <div id="ftBst">
+                <div class="row">
+                  <input
+                    type="number"
+                    id="mainInp"
+                    class="inp"
+                    placeholder="Value"
+                    style="width: 90px"
+                  />
+                  <button class="btn btn-g" onclick="doInsert()">Insert</button>
+                  <button class="btn btn-r" onclick="doDelete()">Delete</button>
+                  <button class="btn btn-c" onclick="doSearch()">Search</button>
+                </div>
+                <div class="row">
+                  <button class="btn btn-p" onclick="doInorder()">
+                    Inorder
+                  </button>
+                  <button class="btn btn-o" onclick="doPreorder()">
+                    Preorder
+                  </button>
+                  <button class="btn btn-gh" onclick="doReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+              <!-- N-ary footer -->
+              <div id="ftNary" style="display: none">
+                <div class="row">
+                  <input
+                    type="text"
+                    id="naryInp"
+                    class="inp"
+                    placeholder="Node value"
+                    style="width: 110px"
+                  />
+                  <button class="btn btn-g" onclick="naryAdd()">
+                    Add Node
+                  </button>
+                  <button class="btn btn-gh" onclick="doReset()">
+                    ↺ Reset
+                  </button>
+                </div>
+                <div class="nary-picker" id="naryPicker">
+                  <div class="nary-picker-label">
+                    📌 Pick a parent node to attach under:
+                  </div>
+                  <div class="nary-picker-btns" id="naryPickerBtns"></div>
+                </div>
+                <div class="row" style="margin-top: 0.7rem">
+                  <button class="btn btn-p" onclick="naryPreorder()">
+                    Preorder
+                  </button>
+                  <button class="btn btn-c" onclick="naryLevelOrder()">
+                    Level-Order
+                  </button>
+                  <button class="btn btn-o" onclick="naryHeight()">
+                    Height
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENARIOS -->
+      <div class="sc">
+        <div class="sh">
+          <div class="si">🧪</div>
+          <h2 class="st">Try Different Scenarios</h2>
+        </div>
+
+        <div class="stabs">
+          <button
+            class="stab s-best"
+            id="stBest"
+            onclick="showScenario('best')"
+          >
+            ⚡ Best Case
+          </button>
+          <button class="stab" id="stAvg" onclick="showScenario('avg')">
+            〜 Average Case
+          </button>
+          <button class="stab" id="stWorst" onclick="showScenario('worst')">
+            ⚠ Worst Case
+          </button>
+          <button class="stab" id="stCustom" onclick="showScenario('custom')">
+            ✏ Custom BST
+          </button>
+        </div>
+
+        <!-- BEST CASE -->
+        <div class="spanel on" id="sp-best">
+          <div class="sin">
+            <!-- BST best -->
+            <div id="sb-bst">
+              <h4>BST — Best Case O(1): target is the root</h4>
+              <p>
+                When what you're looking for
+                <strong style="color: var(--g)">is the root node</strong>, BST
+                finds it in 1 step. Click "Search Root" to see it — then "Search
+                Leaf" to see O(log n).
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-best" class="scsvg" viewBox="0 0 280 200"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-best">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button class="btn btn-c" onclick="scenBestSearchRoot()">
+                      🔍 Search Root
+                    </button>
+                    <button class="btn btn-g" onclick="scenBestSearchLeaf()">
+                      🔍 Search Leaf
+                    </button>
+                    <button class="btn btn-gh" onclick="initBest()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Binary best -->
+            <div id="sb-binary" style="display: none">
+              <h4>Binary Tree — Best Case: Perfect level-order build</h4>
+              <p>
+                Inserting into a Binary Tree always fills
+                <strong style="color: var(--g)"
+                  >left-to-right, level-by-level</strong
+                >
+                — producing the most balanced (minimum height) shape possible.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-best-b" class="scsvg" viewBox="0 0 280 200"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-best-b">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-g"
+                      id="binBestBtn"
+                      onclick="binBestStepFn()"
+                    >
+                      ▶ Insert Next
+                    </button>
+                    <button class="btn btn-o" onclick="binBestAutoFn()">
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initBest()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Nary best -->
+            <div id="sb-nary" style="display: none">
+              <h4>N-ary Tree — Best Case: Wide and shallow</h4>
+              <p>
+                A root with
+                <strong style="color: var(--g)">many children</strong> keeps
+                height = 1. All nodes are just 1 hop from root. The more
+                children per node, the shorter the tree.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-best-n" class="scsvg" viewBox="0 0 280 120"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-best-n">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button class="btn btn-c" onclick="naryBestSearchFn()">
+                      🔍 Search Child
+                    </button>
+                    <button class="btn btn-gh" onclick="initBest()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AVERAGE CASE -->
+        <div class="spanel" id="sp-avg">
+          <div class="sin">
+            <!-- BST avg -->
+            <div id="sa-bst">
+              <h4>BST — Average Case O(log n): half eliminated per step</h4>
+              <p>
+                Each comparison
+                <strong style="color: var(--c)"
+                  >eliminates half the remaining tree</strong
+                >. 7 nodes → 3 steps. 1 million nodes → 20 steps. Step through
+                to see it.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-avg" class="scsvg" viewBox="0 0 280 220"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-avg">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-c"
+                      id="avgStepBtn"
+                      onclick="avgStep()"
+                    >
+                      ▶ Next Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="avgAutoBtn"
+                      onclick="avgAuto()"
+                    >
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initAvg()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Binary avg -->
+            <div id="sa-binary" style="display: none">
+              <h4>Binary Tree — Average Case O(n): Inorder Traversal</h4>
+              <p>
+                Inorder traversal visits
+                <strong style="color: var(--c)">every node exactly once</strong>
+                — Left → Root → Right. Total cost is always O(n) regardless of
+                tree shape.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-avg-b" class="scsvg" viewBox="0 0 280 200"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-avg-b">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-c"
+                      id="binAvgBtn"
+                      onclick="binAvgStepFn()"
+                    >
+                      ▶ Next Node
+                    </button>
+                    <button class="btn btn-o" onclick="binAvgAutoFn()">
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initAvg()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Nary avg -->
+            <div id="sa-nary" style="display: none">
+              <h4>N-ary Tree — Average Case O(n): BFS Level-Order Traversal</h4>
+              <p>
+                BFS visits nodes
+                <strong style="color: var(--c)">level by level</strong>, using a
+                queue. Every node is visited exactly once — total O(n) work.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-avg-n" class="scsvg" viewBox="0 0 280 200"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-avg-n">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-c"
+                      id="naryAvgBtn"
+                      onclick="naryAvgStepFn()"
+                    >
+                      ▶ Next (BFS)
+                    </button>
+                    <button class="btn btn-o" onclick="naryAvgAutoFn()">
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initAvg()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WORST CASE -->
+        <div class="spanel" id="sp-worst">
+          <div class="sin">
+            <!-- BST worst -->
+            <div id="sw-bst">
+              <h4>BST — Worst Case O(n): sorted insertion (skewed tree)</h4>
+              <p>
+                Inserting 10→20→30→40→50→60 creates a
+                <strong style="color: var(--o)">straight-line chain</strong> —
+                every search must traverse all N nodes. This is why real
+                databases use self-balancing trees.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-worst" class="scsvg" viewBox="0 0 120 340"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-worst">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-o"
+                      id="worstStepBtn"
+                      onclick="worstStepFn()"
+                    >
+                      ▶ Check Node
+                    </button>
+                    <button
+                      class="btn btn-r"
+                      id="worstAutoBtn"
+                      onclick="worstAutoFn()"
+                    >
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initWorst()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Binary worst -->
+            <div id="sw-binary" style="display: none">
+              <h4>Binary Tree — Worst Case O(n): linear scan (no ordering)</h4>
+              <p>
+                Binary Trees have
+                <strong style="color: var(--o)">no ordering rule</strong> —
+                searching for a value means checking every node one by one. No
+                shortcut is possible.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg
+                    id="sv-worst-b"
+                    class="scsvg"
+                    viewBox="0 0 280 200"
+                  ></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-worst-b">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-o"
+                      id="binWorstBtn"
+                      onclick="binWorstStepFn()"
+                    >
+                      ▶ Check Node
+                    </button>
+                    <button class="btn btn-r" onclick="binWorstAutoFn()">
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initWorst()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Nary worst -->
+            <div id="sw-nary" style="display: none">
+              <h4>N-ary Tree — Worst Case O(n): chain tree (branching = 1)</h4>
+              <p>
+                When every node has
+                <strong style="color: var(--o)">exactly 1 child</strong>, the
+                N-ary tree becomes a linked list. Height = n, search must visit
+                all nodes.
+              </p>
+              <hr class="sdiv" />
+              <div class="s2">
+                <div>
+                  <svg id="sv-worst-n" class="scsvg" viewBox="0 0 80 340"></svg>
+                </div>
+                <div>
+                  <div class="log" id="lg-worst-n">
+                    <div class="log-title">📋 Log</div>
+                  </div>
+                  <div class="row" style="margin-top: 0.6rem">
+                    <button
+                      class="btn btn-o"
+                      id="naryWorstBtn"
+                      onclick="naryWorstStepFn()"
+                    >
+                      ▶ Check Node
+                    </button>
+                    <button class="btn btn-r" onclick="naryWorstAutoFn()">
+                      ⚡ Auto
+                    </button>
+                    <button class="btn btn-gh" onclick="initWorst()">
+                      ↺ Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CUSTOM BST -->
+        <div class="spanel" id="sp-custom">
+          <div class="sin">
+            <h4>Custom BST — Build your own, watch complexity in real-time</h4>
+            <p>
+              Start with <strong style="color: var(--p)">50</strong>, then add
+              25 and 75 to keep it balanced. Try inserting sorted numbers to see
+              skewing.
+            </p>
+            <hr class="sdiv" />
+            <div class="cc-row">
+              <div class="cc" id="cc-i">
+                <div class="cc-op">➕ Insert</div>
+                <div class="cc-t">
+                  Time: <span class="cv cg">O(log n)</span> avg
+                </div>
+                <div class="cc-sp">Space: <span class="cv cg">O(1)</span></div>
+                <div class="cc-note">Walk tree height to insert position</div>
+              </div>
+              <div class="cc" id="cc-d">
+                <div class="cc-op">🗑 Delete</div>
+                <div class="cc-t">
+                  Time: <span class="cv cg">O(log n)</span> avg
+                </div>
+                <div class="cc-sp">Space: <span class="cv cg">O(1)</span></div>
+                <div class="cc-note">Inorder successor for 2-child case</div>
+              </div>
+              <div class="cc" id="cc-s">
+                <div class="cc-op">🔍 Search</div>
+                <div class="cc-t">
+                  Time: <span class="cv cg">O(log n)</span> avg
+                </div>
+                <div class="cc-sp">Space: <span class="cv cg">O(1)</span></div>
+                <div class="cc-note">Half the tree eliminated per step</div>
+              </div>
+            </div>
+            <div class="cc-toast" id="ccToast">
+              <span id="ccTIcon"></span><span id="ccTText"></span>
+            </div>
+            <div class="row" style="margin-bottom: 0.8rem">
+              <input
+                type="number"
+                class="inp"
+                id="cInp"
+                placeholder="Value"
+                style="width: 85px"
+              />
+              <button class="btn btn-g" onclick="custInsert()">
+                ➕ Insert
+              </button>
+              <button class="btn btn-r" onclick="custDelete()">
+                🗑 Delete
+              </button>
+              <button class="btn btn-c" onclick="custSearch()">
+                🔍 Search
+              </button>
+              <button class="btn btn-gh" onclick="custReset()">↺ Reset</button>
+            </div>
+            <div class="s2">
+              <div>
+                <svg id="sv-custom" class="scsvg" viewBox="0 0 280 260"></svg>
+              </div>
+              <div>
+                <div class="log" id="lg-custom">
+                  <div class="log-title">📋 Log</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODE EDITOR -->
+      <div class="sc">
+        <div class="sh">
+          <div class="si">💻</div>
+          <h2 class="st">Interactive Code Editor</h2>
+        </div>
+        <div class="lt-row" id="ltRow">
+          <button class="lt-btn on" data-lang="cpp">C++</button>
+          <button class="lt-btn" data-lang="python">Python</button>
+          <button class="lt-btn" data-lang="java">Java</button>
+          <button class="lt-btn" data-lang="javascript">JS</button>
+        </div>
+        <div class="ed-wrap">
+          <div class="ed-head">
+            <span class="ed-lang" id="edLang">C++</span
+            ><button class="copy-btn" onclick="copyCode()">Copy</button>
+          </div>
+          <textarea id="codeArea"></textarea>
+        </div>
+        <button class="run-btn" onclick="runCode()">▶ Run Code</button>
+        <div class="out-box">
+          <h6>📤 Output:</h6>
+          <div id="codeOut">Click "Run Code" to execute...</div>
+        </div>
+      </div>
+
+      <!-- LEVEL NAV -->
+      <!-- FIX: renamed .sl to .lslot to avoid collision with variable names -->
+      <p
+        style="
+          text-align: center;
+          color: var(--c);
+          font-family: &quot;Space Grotesk&quot;, sans-serif;
+          font-weight: 700;
+          margin-bottom: 0.3rem;
+        "
+      >
+        Ready to test your knowledge? →
+      </p>
+      <div class="lnav">
+        <button id="lb1">Level 1</button>
+        <div class="lslot on" id="sl1"></div>
+        <button id="lb2">Level 2 ✓</button>
+        <div class="lslot" id="sl2"></div>
+        <button id="lb3">Level 3</button>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="qModal">
+      <div class="modal-card">
+        <div style="font-size: 2.8rem; margin-bottom: 0.8rem">🔒</div>
+        <h3
+          style="
+            color: var(--p);
+            font-family: &quot;Space Grotesk&quot;;
+            font-size: 1.6rem;
+            margin-bottom: 0.6rem;
+          "
+        >
+          Level Locked
+        </h3>
+        <p id="mMsg" style="color: var(--ts); font-size: 0.9rem">
+          Pass the Level 2 Quiz to unlock Level 3.
+        </p>
+        <div class="modal-btns">
+          <button id="mStart">Start Quiz</button
+          ><button id="mCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="js/tree_L2.js"></script>
+  </body>
+</html>

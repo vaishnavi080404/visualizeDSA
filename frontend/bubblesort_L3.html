@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble Sort — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/bubblesort_L3.css">
+  </head>
+  <body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="bubblesort_L1.html">Bubble Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Bubble Sort in the <span class="highlight">Real World</span></h1>
+  <p>The simplest sort that gets a bad reputation — but its early-exit optimization and stability make it genuinely useful in the right situations.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Repeatedly Bubble the Largest Element to the End</div>
+    <p class="concept-desc">Bubble sort makes repeated passes through the array. Each pass: <strong>compare adjacent pairs</strong> and <strong>swap if out of order</strong>. After each pass, the <strong>largest unsorted element "bubbles up"</strong> to its correct position at the right. The key optimization: if <strong>no swaps happen in a pass</strong>, the array is already sorted — stop early. This makes it O(n) on already-sorted data.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through bubble sort — watch the largest bubble to the right each pass</div>
+      <div class="sort-bars" id="conceptBars"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Pass</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Pass" to step through bubble sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.2);border:2px solid var(--primary-green)"></div>Sorted</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.18);border:2px solid var(--primary-orange)"></div>Bubbled to position</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(14,165,233,.15);border:2px solid var(--primary-sky)"></div>Comparing pair</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.2);border:2px solid var(--primary-purple)"></div>Swapping</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(14,165,233,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Bubble sort's early-exit and stability make it genuinely useful in specific scenarios — especially nearly-sorted data and teaching.</p>
+  <div class="app-grid">
+
+    <!-- 1. Live Leaderboard -->
+    <div class="app-card sky">
+      <div class="card-header">
+        <div class="card-icon sky">🏅</div>
+        <div class="card-title-wrap">
+          <h3>Live Leaderboard Re-Sort</h3>
+          <p>In gaming or live competitions, scores change one at a time. After each score update, the leaderboard is "almost sorted" — bubble sort with early-exit detects this and finishes in O(n), far faster than re-running quicksort from scratch.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 A score changes — bubble sort re-sorts in minimal passes</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="lbResort()">▶ Score Update → Re-sort</button>
+            <button class="d-btn reset" onclick="lbReset()">↺ Reset</button>
+          </div>
+          <div id="lbList" style="display:flex;flex-direction:column;gap:.22rem;max-height:160px;overflow-y:auto"></div>
+          <div class="step-info" id="lbInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Nearly Sorted Detection -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">✅</div>
+        <div class="card-title-wrap">
+          <h3>Detecting Already-Sorted Data</h3>
+          <p>Bubble sort with the "swapped" flag is the fastest way to <strong>verify if an array is sorted</strong>: one O(n) pass with zero swaps = confirmed sorted. Used in input validation, CI data checks, and pre-sort detection before choosing an algorithm.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Is this data already sorted? One pass finds out</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="checkSorted('sorted')">✅ Check Sorted</button>
+            <button class="d-btn go" onclick="checkSorted('unsorted')">🔀 Check Unsorted</button>
+            <button class="d-btn reset" onclick="checkSortedReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="checkBars"></div>
+          <div class="status-line" id="checkStatus">Pick a dataset to check</div>
+          <div class="step-info" id="checkInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Network Packet Reordering -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🌐</div>
+        <div class="card-title-wrap">
+          <h3>Network Packet Reordering</h3>
+          <p>Network packets arrive mostly in order with occasional out-of-order packets. Bubble sort's stability and O(n) best case on nearly-sorted data makes it an efficient choice to reorder small packet buffers before processing.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Reorder packets — mostly in order, a few out of place</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="packetStep()">▶ Next Pass</button>
+            <button class="d-btn reset" onclick="packetReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="packetBars"></div>
+          <div class="status-line" id="packetStatus">Packets arrive mostly in order</div>
+          <div class="step-info" id="packetInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Stable Sort Requirement -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗂️</div>
+        <div class="card-title-wrap">
+          <h3>Stable Sort for Records</h3>
+          <p>When sorting student records already sorted by name and then re-sorting by grade, <strong>stability</strong> is critical — same-grade students must stay in original name order. Bubble sort is naturally stable. Selection sort is not.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort by grade — equal grades preserve original name order</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="stableStep()">▶ Next Pass</button>
+            <button class="d-btn reset" onclick="stableReset()">↺ Reset</button>
+          </div>
+          <div id="stableList" style="display:flex;flex-direction:column;gap:.22rem;max-height:150px;overflow-y:auto"></div>
+          <div class="step-info" id="stableInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Small Buffer Sorting -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Microcontroller Sensor Buffer</h3>
+          <p>Sorting a small rolling window of sensor readings (e.g. last 8 temperature readings for median filtering) on an Arduino. With n=8, bubble sort is just as fast as quicksort in practice and needs zero stack space for recursion.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort sensor window for median — n=8, no recursion needed</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="sensorStep()">▶ Bubble Pass</button>
+            <button class="d-btn reset" onclick="sensorReset()">↺ New Window</button>
+          </div>
+          <div class="mini-bars" id="sensorBars"></div>
+          <div class="status-line" id="sensorStatus">Window of 8 sensor readings</div>
+          <div class="step-info" id="sensorInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Education / Visualizer -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">📊</div>
+        <div class="card-title-wrap">
+          <h3>Classroom Sorting Demo</h3>
+          <p>Bubble sort is the canonical teaching algorithm. Students physically stand in a line, compare with their neighbor, and swap if needed — after one pass the tallest is at the end. Every CS course worldwide uses it as the first sorting example.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Full auto animation — watch every comparison and swap</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" id="autoBtn" onclick="autoSort()">▶ Auto Sort</button>
+            <button class="d-btn reset" onclick="autoReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="autoBars"></div>
+          <div class="status-line" id="autoStatus">Press Auto Sort to watch every step</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Swaps: <b id="autoSwaps" style="color:var(--primary-sky)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Passes: <b id="autoPasses" style="color:var(--primary-orange)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(14,165,233,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Bubble sort's best case is its secret weapon — O(n) on already-sorted data beats every O(n log n) algorithm for that specific case.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Swaps</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n)</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Already sorted — 1 pass, 0 swaps, "swapped" flag exits early</td></tr>
+        <tr><td class="op">Average Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Random data — n(n-1)/2 comparisons and swaps</td></tr>
+        <tr><td class="op">Worst Case</td><td class="bad">O(n²)</td><td class="bad">O(n²)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Reverse-sorted — maximum swaps every pass</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="good">✅ Yes — stable</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Only swaps strict > pairs — equal elements never swap</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(14,165,233,.05);border:1px solid rgba(14,165,233,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> The optimized bubble sort with a <strong style="color:var(--primary-sky)">"swapped" flag</strong> is the fastest algorithm for checking if data is <em>already sorted</em> — O(n) with zero overhead. Selection sort always does O(n²) even on sorted input. This is bubble sort's unique advantage.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Bubble sort gets unfairly dismissed. Here's the complete picture — including where it genuinely wins.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(n) best case — fastest for sorted data</h4><p>With the "swapped" flag optimization, one pass with zero swaps exits immediately. No other sorting algorithm detects already-sorted data faster with O(1) space.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Naturally stable</h4><p>Only swaps when left > right — equal elements are never swapped. This preserves the original relative order of equal keys, making it safe for multi-key sort chains.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) space — truly in-place</h4><p>Sorts within the existing array using only a swap buffer variable. No auxiliary arrays. Ideal for memory-constrained environments like embedded systems and microcontrollers.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Simple to implement and verify</h4><p>The simplest swap-based sort to write correctly. The logic is obvious — compare neighbours, swap if wrong order. Easy to proof-read, test, and teach.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Adaptive — faster on nearly-sorted data</h4><p>Fewer inversions = fewer passes and swaps. On nearly-sorted data, bubble sort with early-exit is often faster in practice than selection sort, which always does O(n²).</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Great for teaching sort mechanics</h4><p>The most visually intuitive sort — adjacent swaps are easy to trace by hand, animate, or simulate physically. Every algorithms course uses it to introduce sorting.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n²) average and worst case</h4><p>Random or reverse-sorted data triggers maximum comparisons and swaps. 1,000 elements ≈ 500,000 swaps. Quicksort handles the same data in ~10,000 operations.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Most swaps of any sort — O(n²) writes</h4><p>Unlike selection sort's O(n) swaps, bubble sort can make O(n²) swaps in the worst case. Never use on flash memory or write-limited storage where writes degrade hardware.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Outperformed even by insertion sort</h4><p>Insertion sort is strictly better than bubble sort in almost all cases — fewer comparisons, fewer swaps, same O(n) best case, same space. Hard to justify choosing bubble over insertion.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Turtle problem — small elements are slow to move left</h4><p>Large elements bubble to the right quickly, but small elements near the end (turtles) move left by only one position per pass — causing very slow worst-case behavior.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance on large arrays</h4><p>Repeated adjacent swaps cause many write operations. Large arrays thrash the cache. Merge sort's sequential memory access is far more cache-friendly at scale.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No practical advantage over Timsort</h4><p>Python and Java's built-in Timsort combines merge sort with insertion sort — O(n) on sorted, stable, O(n log n) worst case. Timsort obsoletes bubble sort completely in production.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Bubble Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Bubble sort's niche is narrow but real. Knowing exactly when it helps vs when it hurts separates good engineers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Bubble Sort When...</div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Checking if data is already sorted</h4><p>With the <span class="when-code">swapped</span> flag, one O(n) pass confirms sorted order. Fastest possible check — more efficient than running qsort just to verify order is intact.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔃</div><div class="when-text"><h4>Nearly-sorted data with small n</h4><p>A list of 50 items where 2 are out of place? Bubble sort finishes in 2 passes. Insertion sort is also good here — both are O(n + k) where k = number of inversions.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability is required + data is tiny</h4><p>Must preserve order of equal elements and n ≤ 20? Bubble sort is stable, simple, and correct. No need for the complexity of merge sort at this scale.</p></div></div>
+      <div class="when-item"><div class="when-icon">🧠</div><div class="when-text"><h4>Memory is constrained + stability required</h4><p>O(1) space AND stable. Merge sort needs O(n) auxiliary space. For an embedded system that must sort stably, bubble sort and insertion sort are the only O(1) stable options.</p></div></div>
+      <div class="when-item"><div class="when-icon">📚</div><div class="when-text"><h4>Teaching or illustrating sort mechanics</h4><p>The clearest visual sorting algorithm. Each swap is an obvious adjacent exchange — perfect for animations, whiteboard sessions, and building sorting intuition.</p></div></div>
+      <div class="when-item"><div class="when-icon">📡</div><div class="when-text"><h4>Small live-data windows (n ≤ 20)</h4><p>Re-sorting a leaderboard of 10 players after one score update. The overhead of merge sort or heapsort far exceeds the cost of 2-3 bubble passes on such tiny data.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Bubble Sort When...</div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Large datasets (n > 1000)</h4><p>Use quicksort, mergesort, or heapsort. At n=10,000, bubble sort's O(n²) makes 50 million swaps. Quicksort makes ~130,000 operations. No contest.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Write-limited storage (flash / EEPROM)</h4><p>Use selection sort instead. Bubble sort's O(n²) worst-case swaps would wear out flash memory cells rapidly. Selection sort guarantees only n−1 writes total.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔀</div><div class="when-text"><h4>General-purpose sorting</h4><p>Use the language's built-in sort. Python's Timsort, Java's Arrays.sort, C++'s std::sort — all strictly better. Never use bubble sort as a default sort.</p></div></div>
+      <div class="when-item"><div class="when-icon">📉</div><div class="when-text"><h4>Reverse-sorted data</h4><p>Worst case: every pair needs swapping every pass. n elements in reverse order = n(n-1)/2 swaps. Insertion sort handles the same data with the same n² but fewer actual writes.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Performance-critical code paths</h4><p>Even at n=100 in a tight loop called 10,000 times, bubble sort's 5,000 swaps × 10,000 calls = 50M operations. Insertion sort or std::sort would be 10x+ faster.</p></div></div>
+      <div class="when-item"><div class="when-icon">🗃️</div><div class="when-text"><h4>When insertion sort would work just as well</h4><p>In nearly every situation where you'd consider bubble sort, insertion sort is a strictly better choice — same stability, same O(1) space, same best case, but fewer comparisons and swaps on average.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Sorting problems</span></div>
+    <p class="cta-sub">You've seen how bubble sort powers live leaderboards, network reordering, and stability-required scenarios.<br>Now prove you can implement it — and know exactly when to use it versus faster alternatives.</p>
+    <div class="bubble-viz">
+      <div class="bvbar" style="height:20px;background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)"></div>
+      <div class="bvbar" style="height:40px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+      <div class="bvbar" style="height:30px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="bvbar" style="height:52px;background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3)"></div>
+      <div class="bvbar" style="height:25px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="bvbar" style="height:45px;background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3)"></div>
+    </div>
+    <a href="practice.html?topic=bubblesort" class="cta-btn">
+      <span>🫧 Solve Bubble Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/bubblesort_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

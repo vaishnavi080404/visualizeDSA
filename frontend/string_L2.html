@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>String - Level 2 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/string_L2.css">
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep"> › </span>
+    <a href="string_basics.html">String</a><span class="sep"> › </span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">String — Interactive Visualizer</h1>
+    <p class="content-text">Explore every string operation step-by-step with live animations and explanations.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!--            MAIN VISUALIZER            -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo-code sidebar -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+      <div class="ps-op-label">Length</div>
+      <div class="pseudo-step" data-step="len-loop"><strong>LOOP:</strong> i = 0 → n-1<br>count each char</div>
+      <div class="pseudo-step" data-step="len-ret"><strong>RETURN:</strong> count</div>
+
+      <div class="ps-op-label">Search Char</div>
+      <div class="pseudo-step" data-step="sch-loop"><strong>LOOP:</strong> for i = 0 → n-1</div>
+      <div class="pseudo-step" data-step="sch-cmp"><strong>CMP:</strong> if str[i] == target</div>
+      <div class="pseudo-step" data-step="sch-ret"><strong>RETURN:</strong> index i or -1</div>
+
+      <div class="ps-op-label">Substring</div>
+      <div class="pseudo-step" data-step="sub-loop"><strong>LOOP:</strong> slide window of len(sub)</div>
+      <div class="pseudo-step" data-step="sub-cmp"><strong>CMP:</strong> match each char</div>
+      <div class="pseudo-step" data-step="sub-ret"><strong>FOUND / NOT FOUND</strong></div>
+
+      <div class="ps-op-label">Insert / Delete</div>
+      <div class="pseudo-step" data-step="ins"><strong>INSERT:</strong> shift right, place char</div>
+      <div class="pseudo-step" data-step="del"><strong>DELETE:</strong> shift left, reduce length</div>
+
+      <div class="ps-op-label">Reverse</div>
+      <div class="pseudo-step" data-step="rev-swap"><strong>SWAP:</strong> str[i] ↔ str[n-1-i]</div>
+      <div class="pseudo-step" data-step="rev-done"><strong>DONE:</strong> i reaches mid</div>
+
+      <div class="ps-op-label">Concat / Rotate / Palindrome</div>
+      <div class="pseudo-step" data-step="cat"><strong>CONCAT:</strong> append chars of s2</div>
+      <div class="pseudo-step" data-step="rot"><strong>ROTATE:</strong> shift by k positions</div>
+      <div class="pseudo-step" data-step="pal"><strong>PALINDROME:</strong> check symmetry</div>
+      <div class="pseudo-step" data-step="same"><strong>SAME:</strong> compare char by char</div>
+    </div>
+
+    <!-- Main vis card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="vis-title">String Operations Visualizer</h5>
+        </div>
+        <div class="card-body">
+          <!-- Operation selector -->
+          <div class="op-selector" id="opSelector">
+            <button class="op-btn active" data-op="length"     onclick="setOp('length')">📏 Length</button>
+            <button class="op-btn"        data-op="search"     onclick="setOp('search')">🔍 Search Char</button>
+            <button class="op-btn"        data-op="substring"  onclick="setOp('substring')">📌 Substring</button>
+            <button class="op-btn"        data-op="insert"     onclick="setOp('insert')">➕ Insert</button>
+            <button class="op-btn"        data-op="delete"     onclick="setOp('delete')">✂️ Delete</button>
+            <button class="op-btn"        data-op="same"       onclick="setOp('same')">🔀 Same?</button>
+            <button class="op-btn"        data-op="concat"     onclick="setOp('concat')">🔗 Concat</button>
+            <button class="op-btn"        data-op="reverse"    onclick="setOp('reverse')">↩️ Reverse</button>
+            <button class="op-btn"        data-op="rotate"     onclick="setOp('rotate')">🔄 Rotate</button>
+            <button class="op-btn"        data-op="palindrome" onclick="setOp('palindrome')">🪞 Palindrome</button>
+          </div>
+
+          <!-- String display -->
+          <div class="str-display-wrap" id="mainDisplay">
+            <div class="str-chars" id="mainChars"></div>
+            <div class="str-caption" id="mainCaption">Enter a string and click Run.</div>
+            <div id="mainBadge"></div>
+          </div>
+        </div>
+
+        <div class="card-footer" id="mainControls">
+          <!-- Dynamic controls rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--            SCENARIOS            -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="q-scenario-tabs">
+      <button class="q-scenario-tab qtab-best"  id="qstab-best"   onclick="qSwitch('best')">⚡ Best Case</button>
+      <button class="q-scenario-tab"            id="qstab-avg"    onclick="qSwitch('avg')">〜 Average Case</button>
+      <button class="q-scenario-tab"            id="qstab-worst"  onclick="qSwitch('worst')">⚠ Worst Case</button>
+      <button class="q-scenario-tab"            id="qstab-custom" onclick="qSwitch('custom')">✏ Custom</button>
+    </div>
+
+    <div>
+      <!-- BEST -->
+      <div class="q-scenario-panel active" id="qspanel-best">
+        <div class="q-scenario-inner">
+          <h4>Best Case — O(1)</h4>
+          <p>The target character is found at <strong style="color:var(--primary-green)">index 0</strong> — only 1 comparison needed. Or checking length takes a single read with a pre-stored counter.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 String: "hello" — searching 'h' (index 0)</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-best-chars"></div>
+              <div class="sc-info" id="sc-best-info">Comparisons: 0</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-best-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-cyan"   onclick="scBestStep()"  id="sc-best-step">▶ Next Step</button>
+                <button class="q-btn q-btn-orange" onclick="scBestAuto()"  id="sc-best-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="q-scenario-panel" id="qspanel-avg">
+        <div class="q-scenario-inner">
+          <h4>Average Case — O(N/2)</h4>
+          <p>Searching for a substring in the <strong style="color:var(--primary-cyan)">middle</strong> of the string. On average, N/2 comparisons are needed before a match is found.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 String: "algorithms" — searching "rit" (appears at index 4)</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-avg-chars"></div>
+              <div class="sc-info" id="sc-avg-info">Window position: 0</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-avg-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-cyan"   onclick="scAvgStep()"  id="sc-avg-step">▶ Next Step</button>
+                <button class="q-btn q-btn-orange" onclick="scAvgAuto()"  id="sc-avg-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="q-scenario-panel" id="qspanel-worst">
+        <div class="q-scenario-inner">
+          <h4>Worst Case — O(N)</h4>
+          <p>Reversing a string requires visiting <strong style="color:var(--primary-orange)">every character</strong> exactly once. All N characters must be processed — O(N) time.</p>
+          <hr class="q-divider">
+          <div class="q-input-label">🗄 Reversing "reverse" — all N chars processed</div>
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-worst-chars"></div>
+              <div class="sc-info" id="sc-worst-info">Swaps: 0 / 3</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-worst-log"><div class="q-log-title">📋 Operation Log</div></div>
+              <div class="q-ctl-row">
+                <button class="q-btn q-btn-orange" onclick="scWorstStep()" id="sc-worst-step">▶ Next Swap</button>
+                <button class="q-btn q-btn-red"    onclick="scWorstAuto()" id="sc-worst-auto">⚡ Auto</button>
+                <button class="q-btn q-btn-ghost"  onclick="scInitWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="q-scenario-panel" id="qspanel-custom">
+        <div class="q-scenario-inner">
+          <h4>Custom Input — Explore Operations</h4>
+          <p>Enter your own string and choose any operation to visualize. Live complexity feedback shows which case you're hitting.</p>
+          <hr class="q-divider">
+
+          <div class="q-cc-grid">
+            <div class="q-cc-card" id="qcc-o1">
+              <div class="q-cc-op">⚡ O(1) Operations</div>
+              <div class="q-cc-row">Time: <span class="q-cc-val q-cc-green">O(1)</span></div>
+              <div class="q-cc-row">Length (cached), Peek at index</div>
+              <div class="q-cc-note">Single read — no traversal needed</div>
+            </div>
+            <div class="q-cc-card" id="qcc-on">
+              <div class="q-cc-op">⚠ O(N) Operations</div>
+              <div class="q-cc-row">Time: <span class="q-cc-val q-cc-orange">O(N)</span></div>
+              <div class="q-cc-row">Search, Reverse, Rotate, Palindrome</div>
+              <div class="q-cc-note">Traverse all or half of the string</div>
+            </div>
+          </div>
+
+          <div class="q-cc-toast" id="q-cc-toast">
+            <span id="q-cc-toast-icon"></span>
+            <span id="q-cc-toast-text"></span>
+          </div>
+
+          <div class="q-input-label" style="margin-top:.8rem;">📥 Your String &amp; Operation</div>
+          <div class="q-custom-input-row">
+            <input type="text"   class="q-custom-input" id="cust-str"  placeholder="e.g. hello" style="width:150px;">
+            <input type="text"   class="q-custom-input" id="cust-arg"  placeholder="char/substr/pos" style="width:150px;">
+            <select class="q-custom-input" id="cust-op" style="width:160px;">
+              <option value="length">📏 Length</option>
+              <option value="search">🔍 Search Char</option>
+              <option value="substring">📌 Substring</option>
+              <option value="insert">➕ Insert at pos</option>
+              <option value="delete">✂️ Delete at pos</option>
+              <option value="same">🔀 Same String?</option>
+              <option value="concat">🔗 Concatenate</option>
+              <option value="reverse">↩️ Reverse</option>
+              <option value="rotate">🔄 Rotate by k</option>
+              <option value="palindrome">🪞 Palindrome?</option>
+            </select>
+            <button class="q-btn q-btn-green" onclick="scCustomRun()">▶ Run</button>
+            <button class="q-btn q-btn-ghost" onclick="scCustomReset()">↺ Reset</button>
+          </div>
+
+          <div class="q-stage">
+            <div class="sc-str-wrap">
+              <div class="sc-chars" id="sc-cust-chars"></div>
+              <div class="sc-info" id="sc-cust-info">Result will appear here</div>
+            </div>
+            <div>
+              <div class="q-log-panel" id="sc-cust-log"><div class="q-log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--            CODE EDITOR            -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <!-- Operation selector for code -->
+    <div class="impl-selector" id="codeOpSelector">
+      <div class="impl-opt active" data-cop="length"    onclick="setCodeOp('length')">   <div class="impl-opt-icon">📏</div><div class="impl-opt-title">Length</div></div>
+      <div class="impl-opt"       data-cop="search"    onclick="setCodeOp('search')">    <div class="impl-opt-icon">🔍</div><div class="impl-opt-title">Search</div></div>
+      <div class="impl-opt"       data-cop="substring" onclick="setCodeOp('substring')"> <div class="impl-opt-icon">📌</div><div class="impl-opt-title">Substring</div></div>
+      <div class="impl-opt"       data-cop="insert"    onclick="setCodeOp('insert')">    <div class="impl-opt-icon">➕</div><div class="impl-opt-title">Insert</div></div>
+      <div class="impl-opt"       data-cop="delete"    onclick="setCodeOp('delete')">    <div class="impl-opt-icon">✂️</div><div class="impl-opt-title">Delete</div></div>
+      <div class="impl-opt"       data-cop="same"      onclick="setCodeOp('same')">      <div class="impl-opt-icon">🔀</div><div class="impl-opt-title">Same?</div></div>
+      <div class="impl-opt"       data-cop="concat"    onclick="setCodeOp('concat')">    <div class="impl-opt-icon">🔗</div><div class="impl-opt-title">Concat</div></div>
+      <div class="impl-opt"       data-cop="reverse"   onclick="setCodeOp('reverse')">   <div class="impl-opt-icon">↩️</div><div class="impl-opt-title">Reverse</div></div>
+      <div class="impl-opt"       data-cop="rotate"    onclick="setCodeOp('rotate')">    <div class="impl-opt-icon">🔄</div><div class="impl-opt-title">Rotate</div></div>
+      <div class="impl-opt"       data-cop="palindrome" onclick="setCodeOp('palindrome')"><div class="impl-opt-icon">🪞</div><div class="impl-opt-title">Palindrome</div></div>
+    </div>
+
+    <div class="lang-tabs" id="editorLangTabs">
+      <button class="lang-tab active" data-lang="cpp">C++</button>
+      <button class="lang-tab"        data-lang="python">Python</button>
+      <button class="lang-tab"        data-lang="java">Java</button>
+      <button class="lang-tab"        data-lang="c">C</button>
+      <button class="lang-tab"        data-lang="javascript">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span id="editorLabel" style="font-weight:600;color:var(--primary-cyan);font-family:'Space Grotesk',sans-serif;">C++ — Length of String</span>
+        <button class="code-copy" id="copyBtn" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <!-- Inputs before run -->
+    <div class="input-section">
+      <div class="input-section-title">📥 PROVIDE INPUTS BEFORE RUNNING</div>
+      <div id="runInputArea"></div>
+    </div>
+
+    <button class="run-code-btn" onclick="runCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Select an operation, fill in inputs and click Run...</div>
+    </div>
+  </div>
+
+  <!-- Level Nav -->
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your String journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/string_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>
+</script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>>
+</html>

@@ -1,0 +1,2990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Prerequisites - Complete Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+   <!-- CodeMirror CSS -->
+
+<!-- CodeMirror CSS - Multiple Themes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="css/prerequisites.css">
+     <script src="js/api.js"></script>
+    <script src="js/guard.js"></script>
+
+</head>
+<body>
+       <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">DSA Prerequisites</h1>
+            <p class="page-subtitle">Master the fundamentals of programming languages before diving into Data Structures and Algorithms</p>
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+
+<div class="language-tabs">
+    <div class="lang-tab active" data-lang="c">
+        <i class="devicon-c-plain colored"></i> C
+    </div>
+    <div class="lang-tab" data-lang="cpp">
+        <i class="devicon-cplusplus-plain colored"></i> C++
+    </div>
+    <div class="lang-tab" data-lang="java">
+        <i class="devicon-java-plain colored"></i> Java
+    </div>
+    <div class="lang-tab" data-lang="python">
+        <i class="devicon-python-plain colored"></i> Python
+    </div>
+    <div class="lang-tab" data-lang="javascript">
+        <i class="devicon-javascript-plain colored"></i> JS
+    </div>
+</div>
+
+        <!-- C CONTENT -->
+        <div class="lang-content active" id="c-content">
+            
+            <!-- 1. VARIABLES -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Variables & Data Types in C</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="definition">
+                                   <!-- 1. VARIABLE ANIMATION -->
+        <div class="animation-container">
+            <div class="animation-title">📦 What is a Variable?</div>
+            <div class="variable-visual">
+                <div class="memory-box">
+                    <div class="var-name">age</div>
+                    <div class="var-value" id="varValue">20</div>
+                    <div class="memory-address">0x7fff5c</div>
+                </div>
+                <div class="arrow-right">→</div>
+                <div class="memory-box">
+                    <div class="var-name">height</div>
+                    <div class="var-value" id="heightValue">5.7</div>
+                    <div class="memory-address">0x7fff60</div>
+                </div>
+                <div class="arrow-right">→</div>
+                <div class="memory-box">
+                    <div class="var-name">grade</div>
+                    <div class="var-value" id="gradeValue">'A'</div>
+                    <div class="memory-address">0x7fff64</div>
+                </div>
+            </div>
+            <div class="animation-desc">
+                Variables store data in named memory locations. Each variable has a type, name, and value.
+            </div>
+        </div>
+                            A variable in C is a named piece of memory which is used to store data and access it whenever required. 
+                            It allows us to use the memory without having to memorize the exact memory address.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Data Types in C:</h4>
+                            <ul>
+                                <li><strong>int:</strong> Integer values (4 bytes) - stores whole numbers like 10, -5, 0</li>
+                                <li><strong>float:</strong> Floating-point (4 bytes) - decimal values like 3.14, -0.5</li>
+                                <li><strong>double:</strong> Double precision (8 bytes) - larger decimals with more precision</li>
+                                <li><strong>char:</strong> Character (1 byte) - single character like 'A', 'z', '5'</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">#include</span> &lt;stdio.h&gt;
+
+<span class="keyword">int</span> main() {
+    <span class="comment">// Variable declaration and initialization</span>
+    <span class="keyword">int</span> age = <span class="number">20</span>;
+    <span class="keyword">float</span> height = <span class="number">5.7</span>;
+    <span class="keyword">char</span> grade = <span class="string">'A'</span>;
+
+    printf(<span class="string">"Age: %d\n"</span>, age);
+    printf(<span class="string">"Height: %.1f\n"</span>, height);
+    printf(<span class="string">"Grade: %c\n"</span>, grade);
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Age: 20<br>Height: 5.7<br>Grade: A</div>
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Variable Naming Rules:</h4>
+                            <ul>
+                                <li>Must start with letter or underscore (_)</li>
+                                <li>Can contain letters, digits, underscores only</li>
+                                <li>Cannot use C keywords (int, return, for, while, etc.)</li>
+                                <li>Case-sensitive (age and Age are different variables)</li>
+                                <li>No spaces allowed in variable names</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. LOOPS -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Loops in C</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="animation-container">
+            <div class="animation-title">🔄 How Loops Work</div>
+            <div class="loop-visual">
+                <div class="loop-counter">
+                    <span class="counter-label">for(i = 0; i < 5; i++)</span>
+                    <div class="counter-value" id="loopCounter">0</div>
+                </div>
+                <div class="loop-path">
+                    <div class="loop-iteration">1</div>
+                    <div class="loop-iteration">2</div>
+                    <div class="loop-iteration">3</div>
+                    <div class="loop-iteration">4</div>
+                    <div class="loop-iteration">5</div>
+                </div>
+                <div class="circular-arrow">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+            <div class="animation-desc">
+                Loops repeat code multiple times. Each iteration executes the block until the condition is false.
+            </div>
+        </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Loops in C programming are used to repeat a block of code until the specified condition is met. 
+                            They allow programmers to execute statements multiple times without writing code repeatedly.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Types of Loops:</h4>
+                            <ul>
+                                <li><strong>for loop:</strong> Entry-controlled loop, use when number of iterations is known</li>
+                                <li><strong>while loop:</strong> Entry-controlled loop, condition checked before execution</li>
+                                <li><strong>do-while loop:</strong> Exit-controlled loop, executes at least once</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// For loop - prints 1 to 5</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+        printf(<span class="string">"%d "</span>, i + <span class="number">1</span>);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                       <div class="code-block">
+<pre><code><span class="comment">// While loop - prints 1 to 5</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> i = <span class="number">0</span>;
+
+    <span class="keyword">while</span> (i < <span class="number">5</span>) {
+        printf(<span class="string">"%d "</span>, i + <span class="number">1</span>);
+        i++;
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Do-while loop - executes at least once</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> i = <span class="number">0</span>;
+
+    <span class="keyword">do</span> {
+        printf(<span class="string">"%d "</span>, i + <span class="number">1</span>);
+        i++;
+    } <span class="keyword">while</span> (i < <span class="number">5</span>);
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Nested loops - multiplication table</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i <= <span class="number">3</span>; i++) {
+        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j <= <span class="number">3</span>; j++) {
+            printf(<span class="string">"%d x %d = %d\n"</span>, i, j, i * j);
+        }
+        printf(<span class="string">"\n"</span>);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            1 x 1 = 1<br><br>
+1 x 2 = 2
+<br><br>
+1 x 3 = 3
+<br><br>
+2 x 1 = 2
+<br><br>
+2 x 2 = 4
+<br><br>
+2 x 3 = 6
+<br><br>
+3 x 1 = 3
+<br><br>
+3 x 2 = 6
+<br><br>
+3 x 3 = 9
+</div>
+                        
+
+                        <div class="key-points">
+                            <h4>Loop Control Statements:</h4>
+                            <ul>
+                                <li><strong>break:</strong> Terminates loop immediately and exits</li>
+                                <li><strong>continue:</strong> Skips current iteration, moves to next</li>
+                                <li><strong>goto:</strong> Jumps to labeled statement (avoid if possible)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+
+
+            <!-- Conditional Statements -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Conditional Statements in C</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    
+                    <div class="topic-body">
+                          <div class="animation-container">
+            <div class="animation-title">⚡ Conditional Statements</div>
+            <div class="conditional-visual">
+                <div class="condition-input" id="conditionInput">age >= 18</div>
+                <div class="decision-diamond">
+                    <div class="diamond-text">if?</div>
+                </div>
+                <div class="paths">
+                    <div class="path-box">
+                        <div class="path-arrow true">↓</div>
+                        <div class="result-box true" id="trueResult">✓ Eligible</div>
+                    </div>
+                    <div class="path-box">
+                        <div class="path-arrow false">↓</div>
+                        <div class="result-box false" id="falseResult">✗ Not Eligible</div>
+                    </div>
+                </div>
+            </div>
+            <div class="animation-desc">
+                Conditionals make decisions: if condition is true, execute one block; otherwise, execute another.
+            </div>
+        </div>
+
+                        <div class="definition">
+                            Conditional statements allow programs to make decisions and execute different code based on conditions.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// if-else statement</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> age = <span class="number">20</span>;
+
+    <span class="keyword">if</span> (age >= <span class="number">18</span>) {
+        printf(<span class="string">"Eligible for vote"</span>);
+    } <span class="keyword">else</span> {
+        printf(<span class="string">"Not eligible"</span>);
+    }
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            Eligible for vote
+                        </div>
+<div class="code-block">
+<pre><code><span class="comment">// if-else-if ladder</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> marks = <span class="number">85</span>;
+
+    <span class="keyword">if</span> (marks >= <span class="number">90</span>)
+        printf(<span class="string">"Grade: A"</span>);
+    <span class="keyword">else if</span> (marks >= <span class="number">80</span>)
+        printf(<span class="string">"Grade: B"</span>);
+    <span class="keyword">else if</span> (marks >= <span class="number">70</span>)
+        printf(<span class="string">"Grade: C"</span>);
+    <span class="keyword">else</span>
+        printf(<span class="string">"Grade: F"</span>);
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            Grade: B
+                        </div>
+<div class="code-block">
+<pre><code><span class="comment">// switch statement</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> day = <span class="number">3</span>;
+
+    <span class="keyword">switch</span> (day) {
+        <span class="keyword">case</span> <span class="number">1</span>:
+            printf(<span class="string">"Monday"</span>);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="number">2</span>:
+            printf(<span class="string">"Tuesday"</span>);
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="number">3</span>:
+            printf(<span class="string">"Wednesday"</span>);
+            <span class="keyword">break</span>;
+        <span class="keyword">default</span>:
+            printf(<span class="string">"Other day"</span>);
+    }
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            Wednesday
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Function -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Functions in C</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+
+                    <div class="topic-body">
+                                            <div class="concept-animation">
+                        <div class="animation-title">⚙️ Function Flow</div>
+                        <div class="function-demo">
+                            <div class="function-flow">
+                                <div class="function-box function-input">
+                                    <div class="condition-label">Input</div>
+                                    <div class="condition-value">x = 5</div>
+                                </div>
+                                <div class="function-box function-process">
+                                    <div class="condition-label">square(x)</div>
+                                    <div class="condition-value">x × x</div>
+                                </div>
+                                <div class="function-box function-Output">
+                                    <div class="condition-label">Output</div>
+                                    <div class="condition-value">25</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                        <div class="definition">
+                            A function is a named block of code that performs a specific task. Functions make code reusable, organized, and easier to maintain.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Function definition and usage</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="comment">// Function definition</span>
+<span class="keyword">int</span> square(<span class="keyword">int</span> x) {
+    <span class="keyword">return</span> x * x;
+}
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> result = square(<span class="number">5</span>);
+    printf(<span class="string">"Square of 5: %d"</span>, result);
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Square of 5: 25</div>
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Function Components:</h4>
+                            <ul>
+                                <li><strong>Return type:</strong> Specifies type of value returned (int, float, void)</li>
+                                <li><strong>Function name:</strong> Unique identifier for the function</li>
+                                <li><strong>Parameters:</strong> Input values passed to function (optional)</li>
+                                <li><strong>Function body:</strong> Code enclosed in braces {}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pointers -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Pointers & Dynamic Memory in C</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                           <!-- ANIMATION FIRST -->
+                    <div class="concept-animation">
+                        <div class="animation-title">👉 Pointers Point to Memory</div>
+                        <div class="pointer-demo">
+                            <div class="memory-cell">
+                                <div class="memoryAddress">0x7fff5fbff8ac</div>
+                                <div class="condition-label">int *ptr</div>
+                                <div class="condition-value">Address →</div>
+                            </div>
+                            <div class="pointerArrow">➜</div>
+                            <div class="memory-cell">
+                                <div class="memoryAddress">0x7fff5fbff8b0</div>
+                                <div class="condition-label">int var</div>
+                                <div class="condition-value">10</div>
+                            </div>
+                        </div>
+                    </div>
+
+                            <div class="animation-container">
+            <div class="animation-title">💾 Dynamic Memory Allocation</div>
+            <div class="memory-visual">
+                <div style="font-family: 'JetBrains Mono', monospace; color: var(--primary-cyan); margin-bottom: 1rem;">
+                    int *arr = malloc(5 * sizeof(int));
+                </div>
+                <div class="heap-container" id="heapContainer">
+                    <div class="memory-block" data-index="0">
+                        <span class="malloc-label">malloc</span>
+                        <span class="pointer-arrow">↓</span>
+                        NULL
+                    </div>
+                    <div class="memory-block" data-index="1">NULL</div>
+                    <div class="memory-block" data-index="2">NULL</div>
+                    <div class="memory-block" data-index="3">NULL</div>
+                    <div class="memory-block" data-index="4">NULL</div>
+                </div>
+                <div class="animation-controls">
+                    <button class="control-btn" onclick="allocateMemory()">Allocate Memory</button>
+                    <button class="control-btn" onclick="freeMemory()">Free Memory</button>
+                </div>
+            </div>
+            <div class="animation-desc">
+                Dynamic memory is allocated at runtime using malloc/calloc and must be freed with free().
+            </div>
+        </div>
+
+                        <div class="definition">
+                            A pointer is a variable that stores the memory address of another variable. Pointers enable dynamic memory management and efficient data structure implementation.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Pointer basics</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> var = <span class="number">10</span>;
+    <span class="keyword">int</span> *ptr = &var;  <span class="comment">// ptr stores address of var</span>
+
+    printf(<span class="string">"Value: %d\n"</span>, *ptr);   <span class="comment">// Dereference</span>
+    printf(<span class="string">"Address: %p\n"</span>, ptr); <span class="comment">// Address</span>
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>Value: 10</div>
+    <div>Address: 0x7fff5fbff8b0</div>
+</div>
+
+<div class="code-block">
+<pre><code><span class="comment">// Dynamic memory allocation with malloc</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdio.h&gt;</span>
+<span class="keyword">#include</span> <span class="string">&lt;stdlib.h&gt;</span>
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> *arr = (<span class="keyword">int</span>*)malloc(<span class="number">5</span> * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));
+
+    <span class="keyword">if</span> (arr == <span class="keyword">NULL</span>) {
+        printf(<span class="string">"Memory allocation failed"</span>);
+        <span class="keyword">return</span> <span class="number">1</span>;
+    }
+
+    <span class="comment">// Store values</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+        arr[i] = i + <span class="number">1</span>;
+    }
+
+    <span class="comment">// Print values</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+        printf(<span class="string">"%d "</span>, arr[i]);
+    }
+
+    free(arr);  <span class="comment">// Release memory</span>
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>1 2 3 4 5</div>
+</div>
+
+                        <div class="key-points">
+                            <h4>Memory Functions:</h4>
+                            <ul>
+                                <li><strong>malloc():</strong> Allocates memory block</li>
+                                <li><strong>calloc():</strong> Allocates and initializes to zero</li>
+                                <li><strong>realloc():</strong> Resizes previously allocated memory</li>
+                                <li><strong>free():</strong> Releases allocated memory</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Structures -->
+            <div class="topic-card">
+
+    <div class="topic-header">
+        <div class="topic-title">Structures & Unions in C</div>
+        <div class="expand-icon">▼</div>
+    </div>
+
+    <div class="topic-content">
+        <div class="topic-body">
+
+            <!-- Animation Section -->
+            <div class="animation-container">
+                <div class="animation-title">📋 Structures – Custom Data Types</div>
+
+                <div class="struct-visual">
+                    <div class="struct-container">
+                        <div class="struct-bracket left">{</div>
+                        <div class="struct-bracket right">}</div>
+
+                        <div class="struct-title">struct Student s1</div>
+
+                        <div class="struct-field">
+                            <span class="field-name">name</span>
+                            <span class="field-value">"John"</span>
+                        </div>
+
+                        <div class="struct-field">
+                            <span class="field-name">roll</span>
+                            <span class="field-value">101</span>
+                        </div>
+
+                        <div class="struct-field">
+                            <span class="field-name">marks</span>
+                            <span class="field-value">95.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animation-desc">
+                    Structures group related variables of different data types into a single custom data type.
+                </div>
+            </div>
+
+            <!-- Definition -->
+            <div class="definition">
+                Structures allow you to create custom data types by grouping related variables together.
+                They help in organizing complex data efficiently.
+            </div>
+
+            <!-- Code Block -->
+            <div class="code-block">
+<pre><code><span class="comment">// Structure definition</span>
+<span class="keyword">struct</span> Student {
+    <span class="keyword">char</span> name[<span class="number">50</span>];
+    <span class="keyword">int</span> roll;
+    <span class="keyword">float</span> marks;
+};
+
+<span class="comment">// Creating and using structure</span>
+<span class="keyword">struct</span> Student s1;
+strcpy(s1.name, <span class="string">"John"</span>);
+s1.roll = <span class="number">101</span>;
+s1.marks = <span class="number">95.5</span>;
+
+printf(<span class="string">"Name: %s\n"</span>, s1.name);
+printf(<span class="string">"Roll: %d\n"</span>, s1.roll);
+printf(<span class="string">"Marks: %.1f\n"</span>, s1.marks);</code></pre>
+            </div>
+
+            <!-- Output -->
+            <div class="Output">
+                <div class="Output-label">Output</div>
+                <div>
+                    Name: John<br>
+                    Roll: 101<br>
+                    Marks: 95.5
+                </div>
+            </div>
+
+        </div> <!-- topic-body -->
+    </div> <!-- topic-content -->
+
+</div> <!-- topic-card -->
+
+            </div>
+
+
+
+        <!-- C++ CONTENT -->
+        <div class="lang-content" id="cpp-content">
+            
+            <!-- Variables -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Variables & Data Types in C++</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                            <div class="animation-title">🔷 C++ Enhanced Data Types</div>
+                            <div class="variable-demo">
+                                <div class="memory-box" style="border-color: var(--primary-purple);">
+                                    <div class="memory-label">int age</div>
+                                    <div class="memory-value" id="cpp-age">20</div>
+                                    <div class="memory-type">4 bytes</div>
+                                </div>
+                                <div class="memory-box" style="border-color: var(--primary-cyan); animation-delay: 0.2s;">
+                                    <div class="memory-label">bool passed</div>
+                                    <div class="memory-value" id="cpp-bool">true</div>
+                                    <div class="memory-type">1 byte</div>
+                                </div>
+                                <div class="memory-box" style="border-color: var(--primary-green); animation-delay: 0.4s;">
+                                    <div class="memory-label">string name</div>
+                                    <div class="memory-value" id="cpp-string">"John"</div>
+                                    <div class="memory-type">variable</div>
+                                </div>
+                                <div class="memory-box" style="border-color: #ff7b72; animation-delay: 0.6s;">
+                                    <div class="memory-label">auto count</div>
+                                    <div class="memory-value" id="cpp-auto">100</div>
+                                    <div class="memory-type">deduced: int</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="definition">
+                            C++ is a statically-typed language that supports all C data types plus additional types like bool, string, and more. It also provides the 'auto' keyword for type inference.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Data Types in C++:</h4>
+                            <ul>
+                                <li><strong>int:</strong> Integer values (4 bytes)</li>
+                                <li><strong>float:</strong> Single precision floating-point (4 bytes)</li>
+                                <li><strong>double:</strong> Double precision floating-point (8 bytes)</li>
+                                <li><strong>char:</strong> Single character (1 byte)</li>
+                                <li><strong>bool:</strong> Boolean values - true or false (1 byte)</li>
+                                <li><strong>string:</strong> Sequence of characters (from &lt;string&gt; header)</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Variables & Data Types in C++</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;string&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+    <span class="keyword">int</span> age = <span class="number">20</span>;
+    <span class="keyword">float</span> height = <span class="number">5.7f</span>;
+    <span class="keyword">double</span> pi = <span class="number">3.14159</span>;
+    <span class="keyword">char</span> grade = <span class="string">'A'</span>;
+    <span class="keyword">bool</span> isPassed = <span class="keyword">true</span>;
+    string name = <span class="string">"John"</span>;
+
+    <span class="keyword">auto</span> count = <span class="number">100</span>;
+    <span class="keyword">auto</span> price = <span class="number">99.99</span>;
+
+    cout &lt;&lt; <span class="string">"Name: "</span> &lt;&lt; name &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"Age: "</span> &lt;&lt; age &lt;&lt; endl;
+    cout &lt;&lt; <span class="string">"Passed: "</span> &lt;&lt; isPassed &lt;&lt; endl;
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Name: John<br>Age: 20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loops -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Loops in C++</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                                                <div class="concept-animation">
+                            <div class="animation-title">🔁 Range-Based For Loop (C++11)</div>
+                            <div style="width: 100%; max-width: 600px;">
+                                <div style="text-align: center; margin-bottom: 1.5rem;">
+                                    <div style="font-family: 'JetBrains Mono', monospace; color: var(--primary-cyan); font-size: 0.9rem;">
+                                        vector&lt;int&gt; nums = {1, 2, 3, 4, 5}
+                                    </div>
+                                </div>
+                                <div class="loop-visualization" style="justify-content: center; margin-bottom: 1rem;">
+                                    <div class="loop-box" id="cpp-box-0" style="background: var(--primary-purple); color: white;">1</div>
+                                    <div class="loop-box" id="cpp-box-1" style="background: var(--primary-purple); color: white;">2</div>
+                                    <div class="loop-box" id="cpp-box-2" style="background: var(--primary-purple); color: white;">3</div>
+                                    <div class="loop-box" id="cpp-box-3" style="background: var(--primary-purple); color: white;">4</div>
+                                    <div class="loop-box" id="cpp-box-4" style="background: var(--primary-purple); color: white;">5</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="font-family: 'JetBrains Mono', monospace; color: var(--primary-green); font-size: 1.2rem;" id="cpp-range-value">
+                                        for(auto num : nums)
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;">
+                                        Current value: <span id="cpp-current-num" style="color: var(--primary-cyan); font-weight: 700;">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="definition">
+                            C++ supports all C loop types plus the range-based for loop (C++11) which provides cleaner syntax for iterating through containers.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Traditional for loop</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;vector&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+
+    <span class="comment">// Traditional for loop</span>
+    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) {
+        cout &lt;&lt; i &lt;&lt; <span class="string">" "</span>;
+    }
+    cout &lt;&lt; endl;
+}
+</code></pre>
+
+ </div>
+ <div class="Output"> 
+
+    <div class="Output-label">Output</div>
+    <div>0 1 2 3 4</div>
+    
+</div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Range-based for loop (C++11)</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;vector&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+    vector&lt;<span class="keyword">int</span>&gt; numbers = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+
+    <span class="comment">// Using int</span>
+    <span class="keyword">for</span>(<span class="keyword">int</span> num : numbers) {
+        cout &lt;&lt; num &lt;&lt; <span class="string">" "</span>;
+    }
+
+    cout &lt;&lt; endl;
+
+    <span class="comment">// Using auto</span>
+    <span class="keyword">for</span>(<span class="keyword">auto</span> num : numbers) {
+        cout &lt;&lt; num &lt;&lt; <span class="string">" "</span>;
+    }
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Modern C++ Features:</h4>
+                            <ul>
+                                <li><strong>Range-based for:</strong> Cleaner iteration syntax</li>
+                                <li><strong>auto keyword:</strong> Automatic type deduction</li>
+                                <li><strong>References in loops:</strong> for(auto& item : container)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- functions -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Functions in C++</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                            <div class="animation-title">⚡ Function Overloading</div>
+                            <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center; width: 100%;">
+                                <!-- First overload -->
+                                <div class="function-flow" style="width: 100%; max-width: 500px;">
+                                    <div class="function-box" style="border-color: var(--primary-cyan);">
+                                        <div class="condition-label">add(5, 3)</div>
+                                        <div class="condition-value">int + int</div>
+                                    </div>
+                                    <div class="function-box" style="border-color: var(--primary-green);">
+                                        <div class="condition-label">Result</div>
+                                        <div class="condition-value">8</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Second overload -->
+                                <div class="function-flow" style="width: 100%; max-width: 500px;">
+                                    <div class="function-box" style="border-color: var(--primary-purple); animation-delay: 0.5s;">
+                                        <div class="condition-label">add(5.5, 3.2)</div>
+                                        <div class="condition-value">double + double</div>
+                                    </div>
+                                    <div class="function-box" style="border-color: var(--primary-green); animation-delay: 0.5s;">
+                                        <div class="condition-label">Result</div>
+                                        <div class="condition-value">8.7</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="color: var(--text-secondary); font-size: 0.85rem; text-align: center;">
+                                    Same function name, different parameter types
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="definition">
+                            C++ supports function overloading, default parameters, inline functions, and lambda expressions for more flexible function usage.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Functions in C++</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="keyword">double</span> add(<span class="keyword">double</span> a, <span class="keyword">double</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="keyword">int</span> main() {
+
+    <span class="comment">// Lambda expression</span>
+    <span class="keyword">auto</span> multiply = [](<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a * b;
+    };
+
+    cout &lt;&lt; add(<span class="number">5</span>, <span class="number">3</span>) &lt;&lt; endl;
+    cout &lt;&lt; add(<span class="number">5.5</span>, <span class="number">3.2</span>) &lt;&lt; endl;
+    cout &lt;&lt; multiply(<span class="number">4</span>, <span class="number">5</span>) &lt;&lt; endl;
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+    <pre><code>8
+8.7
+20
+</code></pre>
+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- pointers -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Pointers & References in C++</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                            <div class="animation-title">🔗 Pointer vs Reference</div>
+                            <div style="display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;">
+                                <!-- Pointer -->
+                                <div style="text-align: center;">
+                                    <div style="color: var(--primary-cyan); font-size: 0.9rem; margin-bottom: 1rem; font-weight: 600;">
+                                        POINTER
+                                    </div>
+                                    <div class="pointer-demo">
+                                        <div class="memory-cell" style="border-color: var(--primary-cyan);">
+                                            <div class="memoryAddress">0x100</div>
+                                            <div class="condition-label">int* ptr</div>
+                                            <div class="condition-value">→ 0x200</div>
+                                        </div>
+                                        <div class="pointerArrow">➜</div>
+                                        <div class="memory-cell">
+                                            <div class="memoryAddress">0x200</div>
+                                            <div class="condition-label">int var</div>
+                                            <div class="condition-value">10</div>
+                                        </div>
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.5rem;">
+                                        Stores address
+                                    </div>
+                                </div>
+                                
+                                <!-- Reference -->
+                                <div style="text-align: center;">
+                                    <div style="color: var(--primary-purple); font-size: 0.9rem; margin-bottom: 1rem; font-weight: 600;">
+                                        REFERENCE
+                                    </div>
+                                    <div class="pointer-demo">
+                                        <div class="memory-cell" style="border-color: var(--primary-purple);">
+                                            <div class="memoryAddress">0x200</div>
+                                            <div class="condition-label">int& ref</div>
+                                            <div class="condition-value">= var</div>
+                                        </div>
+                                        <div style="font-size: 1.5rem; color: var(--primary-purple);">≡</div>
+                                        <div class="memory-cell" style="border-color: var(--primary-purple);">
+                                            <div class="memoryAddress">0x200</div>
+                                            <div class="condition-label">int var</div>
+                                            <div class="condition-value">10</div>
+                                        </div>
+                                    </div>
+                                    <div style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.5rem;">
+                                        Alias (same memory)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="definition">
+                            C++ supports pointers like C, plus references and smart pointers for safer memory management.
+                        </div>
+
+                 <div class="code-block">
+<pre><code><span class="comment">// Pointers & References</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;memory&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+
+    <span class="keyword">int</span> var = <span class="number">10</span>;
+    <span class="keyword">int</span>* ptr = &var;
+
+    cout &lt;&lt; <span class="string">"Value using pointer: "</span> &lt;&lt; *ptr &lt;&lt; endl;
+
+    <span class="comment">// Reference</span>
+    <span class="keyword">int</span>& ref = var;
+    ref = <span class="number">20</span>;
+
+    cout &lt;&lt; <span class="string">"Value after reference: "</span> &lt;&lt; var &lt;&lt; endl;
+
+    <span class="comment">// Smart pointer</span>
+    unique_ptr&lt;<span class="keyword">int</span>&gt; smart = make_unique&lt;<span class="keyword">int</span>&gt;(<span class="number">30</span>);
+    cout &lt;&lt; <span class="string">"Smart pointer value: "</span> &lt;&lt; *smart &lt;&lt; endl;
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+
+    <div class="Output-label">Output</div>
+    <div>Value using pointer: 10</div>
+    <div>Value after reference: 20</div>
+    <div>Smart pointer value: 30</div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes and Objects -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Classes & Objects (OOP) in C++</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                         <div class="concept-animation">
+                            <div class="animation-title">🏛️ Class Blueprint → Object Instance</div>
+                            <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; align-items: center;">
+                                <!-- Class Blueprint -->
+                                <div style="background: var(--card-bg); border: 2px dashed var(--primary-cyan); border-radius: 12px; padding: 1.5rem; min-width: 200px;">
+                                    <div style="text-align: center; color: var(--primary-cyan); font-weight: 700; margin-bottom: 1rem; font-family: 'JetBrains Mono', monospace;">
+                                        class Student
+                                    </div>
+                                    <div class="struct-field" style="animation-delay: 0.2s;">
+                                        <span class="field-name">- name</span>
+                                        <span style="color: var(--text-secondary); font-size: 0.75rem;">string</span>
+                                    </div>
+                                    <div class="struct-field" style="animation-delay: 0.4s;">
+                                        <span class="field-name">- roll</span>
+                                        <span style="color: var(--text-secondary); font-size: 0.75rem;">int</span>
+                                    </div>
+                                    <div class="struct-field" style="animation-delay: 0.6s; border: none;">
+                                        <span class="field-name">+ display()</span>
+                                        <span style="color: var(--text-secondary); font-size: 0.75rem;">void</span>
+                                    </div>
+                                </div>
+                                
+                                <div style="font-size: 2rem; color: var(--primary-green);">→</div>
+                                
+                                <!-- Object Instance -->
+                                <div class="structure-demo" style="animation: slideIn 1s ease-out;">
+                                    <div style="text-align: center; margin-bottom: 1rem; color: var(--primary-green); font-family: 'JetBrains Mono', monospace;">
+                                        Student s1
+                                    </div>
+                                    <div class="struct-field" style="animation-delay: 1s;">
+                                        <span class="field-name">name</span>
+                                        <span class="field-value">"John"</span>
+                                    </div>
+                                    <div class="struct-field" style="animation-delay: 1.2s;">
+                                        <span class="field-name">roll</span>
+                                        <span class="field-value">101</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="definition">
+                            C++ is an object-oriented language supporting encapsulation, inheritance, and polymorphism through classes.
+                        </div>
+
+                       <div class="code-block">
+<pre><code><span class="comment">// Classes & Objects in C++</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;string&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">class</span> Student {
+<span class="keyword">private</span>:
+    string name;
+    <span class="keyword">int</span> roll;
+
+<span class="keyword">public</span>:
+    Student(string n, <span class="keyword">int</span> r) {
+        name = n;
+        roll = r;
+    }
+
+    <span class="keyword">void</span> display() {
+        cout &lt;&lt; <span class="string">"Name: "</span> &lt;&lt; name &lt;&lt; endl;
+        cout &lt;&lt; <span class="string">"Roll: "</span> &lt;&lt; roll &lt;&lt; endl;
+    }
+};
+
+<span class="keyword">int</span> main() {
+    Student s1(<span class="string">"John"</span>, <span class="number">101</span>);
+    s1.display();
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+
+    <div class="Output-label">Output</div>
+    <div>Name: John</div>
+    <div>Roll: 101</div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- STL -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Standard Template Library (STL)</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                         <div class="concept-animation">
+                            <div class="animation-title">📦 STL Container Operations</div>
+                            <div style="width: 100%; max-width: 600px;">
+                                <div style="text-align: center; margin-bottom: 1.5rem; font-family: 'JetBrains Mono', monospace; color: var(--primary-cyan);">
+                                    vector&lt;int&gt; nums = {5, 2, 8, 1, 9}
+                                </div>
+                                
+                                <!-- Unsorted -->
+                                <div style="margin-bottom: 2rem;">
+                                    <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem; text-align: center;">
+                                        BEFORE: Original
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <div class="loop-box" style="background: var(--border-color); color: var(--text-primary);">5</div>
+                                        <div class="loop-box" style="background: var(--border-color); color: var(--text-primary);">2</div>
+                                        <div class="loop-box" style="background: var(--border-color); color: var(--text-primary);">8</div>
+                                        <div class="loop-box" style="background: var(--border-color); color: var(--text-primary);">1</div>
+                                        <div class="loop-box" style="background: var(--border-color); color: var(--text-primary);">9</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="text-align: center; margin: 1rem 0; color: var(--primary-purple); font-family: 'JetBrains Mono', monospace;">
+                                    sort(nums.begin(), nums.end())
+                                </div>
+                                
+                                <!-- Sorted -->
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.5rem; text-align: center;">
+                                        AFTER: Sorted
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; justify-content: center;" id="stl-sorted">
+                                        <div class="loop-box" style="background: var(--primary-green); color: white; animation: slideIn 0.5s ease-out;">1</div>
+                                        <div class="loop-box" style="background: var(--primary-green); color: white; animation: slideIn 0.7s ease-out;">2</div>
+                                        <div class="loop-box" style="background: var(--primary-green); color: white; animation: slideIn 0.9s ease-out;">5</div>
+                                        <div class="loop-box" style="background: var(--primary-green); color: white; animation: slideIn 1.1s ease-out;">8</div>
+                                        <div class="loop-box" style="background: var(--primary-green); color: white; animation: slideIn 1.3s ease-out;">9</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="definition">
+                            STL provides generic containers, algorithms, and iterators that make C++ programming efficient and powerful.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>STL Containers:</h4>
+                            <ul>
+                                <li><strong>vector:</strong> Dynamic array</li>
+                                <li><strong>map:</strong> Key-value pairs (sorted)</li>
+                                <li><strong>set:</strong> Unique elements (sorted)</li>
+                                <li><strong>stack:</strong> LIFO data structure</li>
+                                <li><strong>queue:</strong> FIFO data structure</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// STL Example</span>
+<span class="keyword">#include</span> &lt;iostream&gt;
+<span class="keyword">#include</span> &lt;vector&gt;
+<span class="keyword">#include</span> &lt;algorithm&gt;
+<span class="keyword">using namespace</span> std;
+
+<span class="keyword">int</span> main() {
+
+    vector&lt;<span class="keyword">int</span>&gt; nums = {<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">9</span>};
+
+    sort(nums.begin(), nums.end());
+    reverse(nums.begin(), nums.end());
+
+    <span class="keyword">for</span>(<span class="keyword">auto</span> num : nums) {
+        cout &lt;&lt; num &lt;&lt; <span class="string">" "</span>;
+    }
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+</div>
+<div class="Output">
+                            <div class="Output-label">Output</div>
+                            9 8 5 2 1
+
+</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    
+
+
+        <!-- JAVA CONTENT -->
+        <div class="lang-content" id="java-content">
+
+            <!-- variables -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Variables & Data Types in Java</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                    <div class="animation-title">☕ Java Primitive & Reference Types</div>
+                    <div class="variable-demo">
+                        <div class="memory-box" style="border-color: #E76F00;">
+                            <div class="memory-label">int age</div>
+                            <div class="memory-value" id="java-age">20</div>
+                            <div class="memory-type">Primitive</div>
+                        </div>
+                        <div class="memory-box" style="border-color: var(--primary-cyan); animation-delay: 0.2s;">
+                            <div class="memory-label">String name</div>
+                            <div class="memory-value" id="java-string">"John"</div>
+                            <div class="memory-type">Reference (Heap)</div>
+                        </div>
+                    </div>
+                </div>
+
+                        <div class="definition">
+                            
+                            
+                            Java is a strongly-typed language. Every variable must have a declared type - either primitive or reference type.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Primitive Data Types:</h4>
+                            <ul>
+                                <li><strong>int:</strong> Integer values (4 bytes) - whole numbers</li>
+                                <li><strong>double:</strong> Double precision floating-point (8 bytes)</li>
+                                <li><strong>char:</strong> Single character (2 bytes - Unicode)</li>
+                                <li><strong>boolean:</strong> true or false (1 bit)</li>
+                                <li><strong>float:</strong> Single precision floating-point (4 bytes)</li>
+                                <li><strong>long:</strong> Long integer (8 bytes)</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="comment">// Primitive types</span>
+        <span class="keyword">int</span> age = <span class="number">20</span>;
+        <span class="keyword">double</span> height = <span class="number">5.7</span>;
+        <span class="keyword">char</span> grade = <span class="string">'A'</span>;
+        <span class="keyword">boolean</span> isPassed = <span class="keyword">true</span>;
+        
+        <span class="comment">// Reference type</span>
+        String name = <span class="string">"John"</span>;
+        
+        System.out.println(<span class="string">"Name: "</span> + name);
+        System.out.println(<span class="string">"Age: "</span> + age);
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Name: John<br>Age: 20</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- loops -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Loops in Java</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                           <div class="concept-animation">
+                    <div class="animation-title">🔄 The Enhanced For Loop</div>
+                    <div class="loop-demo">
+                        <div class="loop-counter" id="java-loop-val">num: 1</div>
+                        <div class="loop-visualization">
+                            <div class="loop-box" id="java-box-0">1</div>
+                            <div class="loop-box" id="java-box-1">2</div>
+                            <div class="loop-box" id="java-box-2">3</div>
+                            <div class="loop-box" id="java-box-3">4</div>
+                            <div class="loop-box" id="java-box-4">5</div>
+                        </div>
+                    </div>
+                </div>
+                        <div class="definition">
+                            Java supports traditional loops plus enhanced for loop for iterating through arrays and collections.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// for loop</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) {
+            System.out.print(i + <span class="string">" "</span>);
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// while loop</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">int</span> i = <span class="number">1</span>;
+
+        <span class="keyword">while</span>(i &lt;= <span class="number">5</span>) {
+            System.out.print(i + <span class="string">" "</span>);
+            i++;
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// do-while loop</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">int</span> i = <span class="number">1</span>;
+
+        <span class="keyword">do</span> {
+            System.out.print(i + <span class="string">" "</span>);
+            i++;
+        } <span class="keyword">while</span>(i &lt;= <span class="number">5</span>);
+
+    }
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// Enhanced for loop (for-each)</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">int</span>[] numbers = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+
+        <span class="keyword">for</span>(<span class="keyword">int</span> num : numbers) {
+            System.out.print(num + <span class="string">" "</span>);
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                        </div>
+                        <div class="code-block">
+<pre><code><span class="comment">// for loop with break</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) {
+
+            <span class="keyword">if</span>(i == <span class="number">3</span>) {
+                <span class="keyword">break</span>;
+            }
+
+            System.out.print(i + <span class="string">" "</span>);
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 </div>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// for loop with continue</span>
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) {
+
+            <span class="keyword">if</span>(i == <span class="number">3</span>) {
+                <span class="keyword">continue</span>;
+            }
+
+            System.out.print(i + <span class="string">" "</span>);
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 4 5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- methods -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Methods in Java</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">⚙️ Method Execution & Return</div>
+                    <div class="function-demo">
+                        <div class="function-flow">
+                            <div class="function-box function-input" style="border-color: #E76F00;">
+                                <div class="condition-label">Arg</div>
+                                <div class="condition-value">5</div>
+                            </div>
+                            <div class="function-box function-process" style="border-color: var(--primary-purple);">
+                                <div class="condition-label">Logic</div>
+                                <div class="condition-value">5 * 5</div>
+                            </div>
+                            <div class="function-box function-Output" style="border-color: var(--primary-green);">
+                                <div class="condition-label">Return</div>
+                                <div class="condition-value">25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Methods in Java are functions defined within a class. Java supports method overloading - multiple methods with same name but different parameters.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">public class</span> Calculator {
+    <span class="comment">// Method overloading</span>
+    <span class="keyword">public static int</span> add(<span class="keyword">int</span> a, <span class="keyword">int</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="keyword">public static double</span> add(<span class="keyword">double</span> a, <span class="keyword">double</span> b) {
+        <span class="keyword">return</span> a + b;
+    }
+    
+    <span class="keyword">public static void</span> main(String[] args) {
+        System.out.println(add(<span class="number">5</span>, <span class="number">3</span>));       <span class="comment">// Calls int version</span>
+        System.out.println(add(<span class="number">5.5</span>, <span class="number">3.2</span>));  <span class="comment">// Calls double version</span>
+    }
+}</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>8</div>
+                            <div>8.7</div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- classes -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Classes & Objects in Java</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">🏛️ Blueprint vs Instance</div>
+                    <div class="variable-demo">
+                        <div style="border: 2px dashed #E76F00; padding: 1rem; border-radius: 10px;">
+                            <div class="memory-label">class Student</div>
+                            <div style="font-size: 0.7rem; color: var(--text-secondary);">name, roll, display()</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="structure-demo">
+                            <div class="struct-field">
+                                <span class="field-name">name</span>
+                                <span class="field-value">"John"</span>
+                            </div>
+                            <div class="struct-field">
+                                <span class="field-name">roll</span>
+                                <span class="field-value">101</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Java is purely object-oriented. Everything in Java is associated with classes and objects. A class is a blueprint for creating objects.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">public class</span> Student {
+
+    <span class="keyword">private</span> String name;
+    <span class="keyword">private int</span> roll;
+
+    <span class="comment">// Constructor</span>
+    <span class="keyword">public</span> Student(String name, <span class="keyword">int</span> roll) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.roll = roll;
+    }
+
+    <span class="comment">// Display method</span>
+    <span class="keyword">public void</span> display() {
+        System.out.println(<span class="string">"Name: "</span> + name);
+        System.out.println(<span class="string">"Roll: "</span> + roll);
+    }
+
+    <span class="keyword">public static void</span> main(String[] args) {
+        Student s1 = <span class="keyword">new</span> Student(<span class="string">"John"</span>, <span class="number">101</span>);
+        s1.display();
+    }
+}
+</code></pre>
+</div>
+<div class="Output">
+    <div class="Output-title">Output</div>
+    <div class="Output-content">
+        <div class="Output-line">Name: John</div>
+        <div class="Output-line">Roll: 101</div>
+    </div>
+
+</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- collections -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Java Collections Framework</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">📚 Dynamic ArrayList Storage</div>
+                    <div class="loop-visualization">
+                        <div class="loop-box" style="background: rgba(231, 111, 0, 0.2); border-color: #E76F00;">10</div>
+                        <div class="loop-box" style="background: rgba(231, 111, 0, 0.2); border-color: #E76F00;">20</div>
+                        <div class="loop-box" style="background: rgba(231, 111, 0, 0.2); border-color: #E76F00;">30</div>
+                        <div class="loop-box" style="border: 2px dashed #555;">...</div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Java Collections Framework provides ready-to-use data structures and algorithms through interfaces and classes.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Common Collections:</h4>
+                            <ul>
+                                <li><strong>ArrayList:</strong> Dynamic array implementation</li>
+                                <li><strong>HashMap:</strong> Key-value pairs (hash table)</li>
+                                <li><strong>HashSet:</strong> Unique elements (hash table)</li>
+                                <li><strong>Stack:</strong> LIFO data structure</li>
+                                <li><strong>Queue:</strong> FIFO data structure</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">import</span> java.util.*;
+
+<span class="keyword">public class</span> Main {
+    <span class="keyword">public static void</span> main(String[] args) {
+
+        ArrayList&lt;<span class="keyword">Integer</span>&gt; list = <span class="keyword">new</span> ArrayList<>();
+        list.add(<span class="number">10</span>);
+        list.add(<span class="number">20</span>);
+        list.add(<span class="number">30</span>);
+
+        <span class="keyword">for</span>(<span class="keyword">int</span> num : list) {
+            System.out.print(num + <span class="string">" "</span>);
+        }
+
+    }
+}
+</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-title">Output</div>
+    <div class="Output-content">
+        <div class="Output-line">10 20 30</div>
+    </div>
+</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+
+
+        <!-- ============================================ -->
+        <!-- PYTHON LANGUAGE CONTENT -->
+        <!-- ============================================ -->
+        <div class="lang-content" id="python-content">
+
+            <!-- VARIABLES -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Variables & Data Types in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                    <div class="animation-title">🐍 Visualizing Dynamic Typing</div>
+                    <div class="variable-demo">
+                        <div class="memory-box" style="border-color: #3776AB;">
+                            <div class="memory-label">Variable: age</div>
+                            <div class="memory-value" id="py-var-val">20</div>
+                            <div class="memory-type" id="py-var-type">Type: int</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div style="text-align: left; color: var(--text-secondary); font-size: 0.85rem;">
+                            In Python, variables are labels.<br>
+                            They can point to <b>any</b> data type<br>
+                            without explicit declaration.
+                        </div>
+                    </div>
+                </div>
+
+                        <div class="definition">
+                            Python uses dynamic typing - no need to declare variable types. Python automatically determines the type based on the assigned value.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Common Data Types:</h4>
+                            <ul>
+                                <li><strong>int:</strong> Integer values - whole numbers (unlimited precision)</li>
+                                <li><strong>float:</strong> Floating-point numbers - decimal values</li>
+                                <li><strong>str:</strong> String - sequence of characters</li>
+                                <li><strong>bool:</strong> Boolean - True or False</li>
+                                <li><strong>list:</strong> Ordered, mutable collection</li>
+                                <li><strong>tuple:</strong> Ordered, immutable collection</li>
+                                <li><strong>dict:</strong> Key-value pairs (dictionary)</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment"># Dynamic typing - no type declaration needed</span>
+age = <span class="number">20</span>
+height = <span class="number">5.7</span>
+name = <span class="string">"John"</span>
+is_student = <span class="keyword">True</span>
+
+<span class="comment"># Multiple assignment</span>
+x, y, z = <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>
+
+<span class="comment"># Type conversion</span>
+num_str = <span class="string">"25"</span>
+num_int = <span class="function">int</span>(num_str)
+
+<span class="function">print</span>(<span class="string">f"Name: {name}, Age: {age}"</span>)</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Name: John, Age: 20</div>
+                        </div>
+
+                        <div class="advanced-box">
+                            <div class="advanced-title">Python Naming</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                Use snake_case for variables and functions. Use PascalCase for classes. Use UPPERCASE for constants.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOOPS -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Loops in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">✨ List Comprehension Flow</div>
+                    <div class="loop-demo">
+                        <div style="font-family: 'JetBrains Mono'; color: var(--primary-cyan); margin-bottom: 10px;">
+                            [x**2 for x in range(5)]
+                        </div>
+                        <div class="loop-visualization">
+                            <div class="loop-box" id="py-box-0">0</div>
+                            <div class="loop-box" id="py-box-1">1</div>
+                            <div class="loop-box" id="py-box-2">4</div>
+                            <div class="loop-box" id="py-box-3">9</div>
+                            <div class="loop-box" id="py-box-4">16</div>
+                        </div>
+                        <div class="viz-label">Building list... result: <span id="py-loop-res" style="color:var(--primary-green)">[ ]</span></div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Python has for and while loops. The for loop is particularly powerful with its ability to iterate directly over sequences, 
+                            and Python offers list comprehensions for concise loop-based list creation.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">For Loop with range():</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>):
+    <span class="function">print</span>(i, end=<span class="string">" "</span>)</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>0 1 2 3 4</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Iterating Over List:</h4>
+                        <div class="code-block">
+<pre><code>numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+
+<span class="keyword">for</span> num <span class="keyword">in</span> numbers:
+    <span class="function">print</span>(num, end=<span class="string">" "</span>)
+
+<span class="comment"># With enumerate for index</span>
+<span class="keyword">for</span> index, value <span class="keyword">in</span> <span class="function">enumerate</span>(numbers):
+    <span class="function">print</span>(<span class="string">f"{index}: {value}"</span>)</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1 2 3 4 5</div>
+                            <div>0: 1</div>
+                            <div>1: 2</div>
+                            <div>2: 3</div>
+                            <div>3: 4</div>
+                            <div>4: 5</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">List Comprehension:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment"># Create list of squares</span>
+squares = [x**<span class="number">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="number">5</span>)]
+<span class="function">print</span>(squares) <span class="comment"># [0, 1, 4, 9, 16]</span>
+
+<span class="comment"># With condition</span>
+evens = [x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="number">10</span>) <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">0</span>]
+<span class="function">print</span>(evens)
+
+</code></pre>
+                        </div>
+
+                        <div class="Output">    
+                            <div class="Output-label">Output</div>
+                            <div>[0, 1, 4, 9, 16]</div>
+                            <div>[0, 2, 4, 6, 8]</div>
+                        </div>
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">While Loop:</h4>
+                        <div class="code-block">
+<pre><code>i = <span class="number">0</span>
+<span class="keyword">while</span> i < <span class="number">5</span>:
+    <span class="function">print</span>(i, end=<span class="string">" "</span>)
+    i += <span class="number">1</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>0 1 2 3 4</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Do-While Loop:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment"># Do-While loop simulation in Python</span>
+
+i = <span class="number">1</span>
+
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    <span class="function">print</span>(i, end=<span class="string">" "</span>)
+    i += <span class="number">1</span>
+
+    <span class="keyword">if</span> i &gt; <span class="number">5</span>:
+        <span class="keyword">break</span></code></pre>
+</div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>1 2 3 4 5</div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conditional Statements -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Conditional Statements in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="concept-animation">
+                    <div class="animation-title">⚖️ Python logic: Indentation Matters</div>
+                    <div class="condition-demo">
+                        <div class="condition-box" style="border-style: dashed; border-color: #3776AB;">
+                            <div class="condition-label">if score >= 90:</div>
+                            <div class="condition-value" id="py-score-val">85</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="condition-box" id="py-cond-box">
+                            <div class="condition-label">Result</div>
+                            <div class="condition-value" id="py-cond-res">Grade: B</div>
+                        </div>
+                    </div>
+                </div>
+                
+
+
+                    <div class="topic-body">
+                        <div class="definition">
+                            Python uses if-elif-else for conditional statements. Python uses indentation (not braces) to define code blocks.
+                        </div>
+
+                        <div class="code-block">
+<pre><code>score = <span class="number">85</span>
+
+<span class="keyword">if</span> score >= <span class="number">90</span>:
+    grade = <span class="string">"A"</span>
+<span class="keyword">elif</span> score >= <span class="number">80</span>:
+    grade = <span class="string">"B"</span>
+<span class="keyword">elif</span> score >= <span class="number">70</span>:
+    grade = <span class="string">"C"</span>
+<span class="keyword">else</span>:
+    grade = <span class="string">"F"</span>
+
+<span class="function">print</span>(<span class="string">f"Grade: {grade}"</span>)</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Grade: B</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Ternary Operator:</h4>
+                        <div class="code-block">
+<pre><code>score = 85
+result = "Pass" if score >= 50 else "Fail"
+print(result)
+</code></pre>
+                        </div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>Pass
+
+</div>
+                        </div>
+
+                        <div class="advanced-box">
+                            <div class="advanced-title">Python Truthiness</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                Python treats empty sequences ([], "", {}), None, 0, and False as falsy. Everything else is truthy.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          <!-- Functions -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Functions in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="concept-animation">
+                    <div class="animation-title">λ Functional Mapping</div>
+                    <div class="function-demo">
+                        <div class="function-flow">
+                            <div class="function-box" style="border-color: #3776AB;">
+                                <div class="condition-label">def greet(n):</div>
+                                <div class="condition-value">"John"</div>
+                            </div>
+                            <div class="function-box" style="border-color: var(--primary-green);">
+                                <div class="condition-label">Output</div>
+                                <div class="condition-value">"Hello John"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="topic-body">
+                        <div class="definition">
+                            Python functions are defined using the def keyword. Python supports default parameters, *args, **kwargs, and lambda functions.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Basic Function:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">def</span> <span class="function">greet</span>(name):
+    <span class="keyword">return</span> <span class="string">f"Hello, {name}!"</span>
+
+<span class="function">print</span>(<span class="function">greet</span>(<span class="string">"John"</span>))</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Hello, John!</div>
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Default Parameters:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">def</span> <span class="function">power</span>(base, exp=<span class="number">2</span>):
+    <span class="keyword">return</span> base ** exp
+
+<span class="function">print</span>(<span class="function">power</span>(<span class="number">3</span>))      <span class="comment"># 9 (uses default exp=2)</span>
+<span class="function">print</span>(<span class="function">power</span>(<span class="number">3</span>, <span class="number">3</span>))   <span class="comment"># 27</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>9</div>
+                            <div>27</div>
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Lambda Function:</h4>
+                        <div class="code-block">
+<pre><code>square = <span class="keyword">lambda</span> x: x ** <span class="number">2</span>
+<span class="function">print</span>(square(<span class="number">5</span>)) <span class="comment"># 25</span>
+
+<span class="comment"># Used with map, filter</span>
+numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+squared = <span class="function">list</span>(<span class="function">map</span>(<span class="keyword">lambda</span> x: x**<span class="number">2</span>, numbers))</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>25</div>
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">*args and **kwargs:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">def</span> <span class="function">sum_all</span>(*args):
+    <span class="keyword">return</span> <span class="function">sum</span>(args)
+
+<span class="function">print</span>(<span class="function">sum_all</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)) <span class="comment"># 10</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>10</div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- lists -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Lists & Data Structures in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="definition">
+                            Python provides powerful built-in data structures: lists (mutable sequences), tuples (immutable sequences), 
+                            sets (unique elements), and dictionaries (key-value pairs).
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">List Operations:</h4>
+                        <div class="code-block">
+<pre><code>
+<span class="comment"># Creating a list</span>
+numbers = [1, 2, 3, 4, 5]
+numbers.append(6)
+numbers.insert(0, 0)
+
+print(numbers)
+</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>[0, 1, 2, 3, 4, 5, 6]</div>
+</div>
+
+
+                      <div class="code-block">
+<pre><code>
+<span class="comment"># Slicing</span>
+numbers = [0, 1, 2, 3, 4, 5, 6]
+subset = numbers[1:4]
+
+print(subset)
+</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>[1, 2, 3]</div>
+</div>
+
+<div class="code-block">
+<pre><code>
+<span class="comment"># Removing elements</span>
+numbers = [0, 1, 2, 3, 4, 5, 6]
+numbers.remove(0)
+numbers.pop()
+numbers.sort()
+
+print(numbers)
+</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>[1, 2, 3, 4, 5]</div>
+</div>
+
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Dictionary:</h4>
+                        <div class="code-block">
+<pre><code>student = {
+    <span class="string">"name"</span>: <span class="string">"John"</span>,
+    <span class="string">"age"</span>: <span class="number">20</span>,
+    <span class="string">"grades"</span>: [<span class="number">85</span>, <span class="number">90</span>, <span class="number">88</span>]
+}
+
+<span class="function">print</span>(student[<span class="string">"name"</span>])  <span class="comment"># John</span>
+student[<span class="string">"age"</span>] = <span class="number">21</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>John</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Set Operations:</h4>
+                        <div class="code-block">
+<pre><code>unique = {1, 2, 3, 3, 4}
+unique.add(5)
+unique.remove(1)
+
+print(unique)
+</code></pre>
+
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>{2, 3, 4, 5}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- classes -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Classes & Objects (OOP) in Python</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">🏗️ Constructor & Self</div>
+                    <div class="structure-demo" style="border-color: #3776AB;">
+                        <div style="text-align:center; font-family:monospace; color:#3776AB; margin-bottom:10px;">class Student</div>
+                        <div class="struct-field">
+                            <span class="field-name">self.name</span>
+                            <span class="field-value">"Alice"</span>
+                        </div>
+                        <div class="struct-field">
+                            <span class="field-name">self.roll</span>
+                            <span class="field-value">101</span>
+                        </div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            Python supports OOP with classes and objects. Python uses self to refer to instance variables and methods.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">class</span> <span class="function">Student</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(<span class="keyword">self</span>, name, roll):
+        <span class="keyword">self</span>.name = name
+        <span class="keyword">self</span>.roll = roll
+        <span class="keyword">self</span>.grades = []
+    
+    <span class="keyword">def</span> <span class="function">add_grade</span>(<span class="keyword">self</span>, grade):
+        <span class="keyword">self</span>.grades.append(grade)
+    
+    <span class="keyword">def</span> <span class="function">get_average</span>(<span class="keyword">self</span>):
+        <span class="keyword">return</span> <span class="function">sum</span>(<span class="keyword">self</span>.grades) / <span class="function">len</span>(<span class="keyword">self</span>.grades)
+    
+    <span class="keyword">def</span> <span class="function">__str__</span>(<span class="keyword">self</span>):
+        <span class="keyword">return</span> <span class="string">f"Student({self.name}, {self.roll})"</span>
+
+<span class="comment"># Creating object</span>
+s1 = Student(<span class="string">"John"</span>, <span class="number">101</span>)
+s1.add_grade(<span class="number">85</span>)
+<span class="function">print</span>(s1)</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Student(John, 101)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- libraries -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Python Libraries & Built-in Methods</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">📦 heapq & collections</div>
+                    <div class="variable-demo">
+                        <div class="memory-box" style="border-style: dotted;">
+                            <div class="memory-label">Min-Heap</div>
+                            <div class="memory-value">2</div>
+                            <div style="font-size:0.6rem">heapq.heappop()</div>
+                        </div>
+                        <div class="memory-box" style="border-style: dotted;">
+                            <div class="memory-label">Deque</div>
+                            <div class="memory-value">↔️</div>
+                            <div style="font-size:0.6rem">O(1) Ends</div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="topic-body">
+                        
+                        <div class="definition">
+                            Python's standard library is extensive. Key modules include collections, itertools, functools, and math for DSA.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Collections Module:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">from</span> collections <span class="keyword">import</span> Counter, deque, defaultdict
+
+<span class="comment"># Counter for counting elements</span>
+counter = Counter([<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>])
+<span class="function">print</span>(counter)  <span class="comment"># Counter({3: 3, 2: 2, 1: 1})</span>
+
+<span class="comment"># deque for efficient append/pop from both ends</span>
+dq = deque([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])
+dq.appendleft(<span class="number">0</span>)
+dq.append(<span class="number">4</span>)</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Counter({3: 3, 2: 2, 1: 1})</div>
+                            
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">List Methods:</h4>
+                        <div class="code-block">
+<pre><code>numbers = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">9</span>]
+
+numbers.sort()                    <span class="comment"># Sort in-place</span>
+<span class="function">print</span>(numbers)
+
+sorted_nums = <span class="function">sorted</span>(numbers)  <span class="comment"># Return new sorted list</span>
+<span class="function">print</span>(sorted_nums)
+
+numbers.reverse()                  <span class="comment"># Reverse in-place</span>
+<span class="function">print</span>(numbers)
+
+maxNum = <span class="function">max</span>(numbers)
+minNum = <span class="function">min</span>(numbers)
+
+<span class="function">print</span>(maxNum)
+<span class="function">print</span>(minNum)</code></pre>
+</div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>
+        [1, 2, 5, 8, 9]<br>
+        [1, 2, 5, 8, 9]<br>
+        [9, 8, 5, 2, 1]<br>
+        9<br>
+        1
+    </div>
+</div>
+
+
+                        <div class="key-points">
+                            <h4>Useful Built-in Functions:</h4>
+                            <ul>
+                                <li><strong>len():</strong> Returns length of sequence</li>
+                                <li><strong>sum():</strong> Sums all elements</li>
+                                <li><strong>sorted():</strong> Returns sorted list</li>
+                                <li><strong>enumerate():</strong> Returns index-value pairs</li>
+                                <li><strong>zip():</strong> Combines multiple iterables</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+ 
+
+
+        <!-- ============================================ -->
+        <!-- JAVASCRIPT LANGUAGE CONTENT -->
+        <!-- ============================================ -->
+        <div class="lang-content" id="javascript-content">
+         
+            <!-- Variables -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Variables & Data Types in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                     <div class="concept-animation">
+                    <div class="animation-title">💛 Modern Scoping: const vs let</div>
+                    <div class="variable-demo">
+                        <div class="memory-box" style="border-color: #F7DF1E;">
+                            <div class="memory-label" id="js-var-label">const PI</div>
+                            <div class="memory-value" id="js-var-val">3.14</div>
+                            <div class="memory-type">Block Scoped</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div style="text-align: left; color: var(--text-secondary); font-size: 0.85rem;">
+                            <b>const:</b> Constant value.<br>
+                            <b>let:</b> Reassignable.<br>
+                            <b>var:</b> Avoid (Function scoped).
+                        </div>
+                    </div>
+                </div>
+                    <div class="topic-body">
+                        <div class="definition">
+                            JavaScript has three ways to declare variables: var (old, avoid), let (block-scoped), and const (constant, block-scoped). 
+                            JavaScript is dynamically typed.
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Data Types:</h4>
+                            <ul>
+                                <li><strong>number:</strong> Both integers and decimals</li>
+                                <li><strong>string:</strong> Text enclosed in quotes</li>
+                                <li><strong>boolean:</strong> true or false</li>
+                                <li><strong>undefined:</strong> Uninitialized variable</li>
+                                <li><strong>null:</strong> Intentional absence of value</li>
+                                <li><strong>object:</strong> Collections of key-value pairs</li>
+                                <li><strong>array:</strong> Ordered lists (special object)</li>
+                            </ul>
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="comment">// const - cannot be reassigned</span>
+<span class="keyword">const</span> PI = <span class="number">3.14159</span>;
+
+<span class="comment">// let - block-scoped, can be reassigned</span>
+<span class="keyword">let</span> age = <span class="number">20</span>;
+age = <span class="number">21</span>;  <span class="comment">// Valid</span>
+
+<span class="comment">// Multiple declaration with destructuring</span>
+<span class="keyword">const</span> [x, y, z] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+
+<span class="comment">// Template literals</span>
+<span class="keyword">const</span> name = <span class="string">"John"</span>;
+console.log(<span class="string">`Name: ${name}, Age: ${age}`</span>);</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Name: John, Age: 21</div>
+                        </div>
+
+                        <div class="advanced-box">
+                            <div class="advanced-title">Best Practice</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                Use const by default. Use let when reassignment is needed. Avoid var in modern JavaScript.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loops -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Loops in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="concept-animation">
+                    <div class="animation-title">🔄 The for...of iteration</div>
+                    <div class="loop-demo">
+                        <div class="loop-counter" id="js-loop-val">val: 10</div>
+                        <div class="loop-visualization">
+                            <div class="loop-box" id="js-box-0">10</div>
+                            <div class="loop-box" id="js-box-1">20</div>
+                            <div class="loop-box" id="js-box-2">30</div>
+                            <div class="loop-box" id="js-box-3">40</div>
+                            <div class="loop-box" id="js-box-4">50</div>
+                        </div>
+                    </div>
+                </div>
+                        <div class="definition">
+                            JavaScript supports for, while, do-while, for...of (values), for...in (keys), and array methods like forEach, map, filter, reduce.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Traditional For Loop:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment">// Traditional for loop</span>
+<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) {
+    console.log(i);
+}</code></pre>
+</div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+</div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">While Loop:</h4>
+<div class="code-block">
+<pre><code><span class="comment">// While loop</span>
+<span class="keyword">let</span> i = <span class="number">1</span>;
+
+<span class="keyword">while</span>(i &lt;= <span class="number">5</span>) {
+    console.log(i);
+    i++;
+}</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+</div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Do-While Loop:</h4>
+<div class="code-block">
+<pre><code><span class="comment">// Do-While loop</span>
+<span class="keyword">let</span> i = <span class="number">1</span>;
+
+<span class="keyword">do</span> {
+    console.log(i);
+    i++;
+} <span class="keyword">while</span>(i &lt;= <span class="number">5</span>);</code></pre>
+</div>
+
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+    <div>5</div>
+</div>
+
+
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">For...of Loop (Modern):</h4>
+                       <div class="code-block">
+<pre><code><span class="comment">// for...of loop (values)</span>
+<span class="keyword">const</span> arr = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>];
+
+<span class="keyword">for</span>(<span class="keyword">const</span> val <span class="keyword">of</span> arr) {
+    console.log(val);
+}</code></pre>
+</div>
+  <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>10</div>
+                            <div>20</div>
+                            <div>30</div>
+                            
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">For...in Loop:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment">// for...in loop (indexes / keys)</span>
+<span class="keyword">const</span> arr = [<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>];
+
+<span class="keyword">for</span>(<span class="keyword">const</span> index <span class="keyword">in</span> arr) {
+    console.log(index, arr[index]);
+}</code></pre>
+</div>
+<div class="Output">
+    <div class="Output-label">Output</div>
+    <div>0 10</div>
+    <div>1 20</div>
+    <div>2 30</div>
+</div>
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Array Methods:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment">// forEach loop</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+
+numbers.forEach(num =&gt; {
+    console.log(num);
+});</code></pre>
+</div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>1</div>
+                            <div>2</div>
+                            <div>3</div>
+                        </div>
+
+                       <div class="code-block">
+<pre><code><span class="comment">// break and continue</span>
+<span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) {
+
+    <span class="keyword">if</span>(i === <span class="number">3</span>) {
+        <span class="keyword">continue</span>; <span class="comment">// skip 3</span>
+    }
+
+    <span class="keyword">if</span>(i === <span class="number">5</span>) {
+        <span class="keyword">break</span>; <span class="comment">// stop loop</span>
+    }
+
+    console.log(i);
+}</code></pre>
+</div>
+<div class="Output">    
+    <div class="Output-label">Output</div>
+    <div>1</div>
+    <div>2</div>
+    <div>4</div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+<!-- Conditional Statements -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Conditional Statements in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="definition">
+                            JavaScript supports if-else, switch, ternary operators, and modern features like optional chaining and nullish coalescing.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">If-Else:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> score = <span class="number">85</span>;
+
+<span class="keyword">if</span>(score >= <span class="number">90</span>) {
+    console.log(<span class="string">"Grade: A"</span>);
+} <span class="keyword">else if</span>(score >= <span class="number">80</span>) {
+    console.log(<span class="string">"Grade: B"</span>);
+} <span class="keyword">else</span> {
+    console.log(<span class="string">"Grade: C"</span>);
+}</code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Grade: B</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Ternary Operator:</h4>
+                       <div class="code-block">
+<pre><code><span class="keyword">const</span> score = <span class="number">65</span>;
+
+<span class="keyword">const</span> result = score &gt;= <span class="number">50</span>
+    ? <span class="string">"Pass"</span>
+    : <span class="string">"Fail"</span>;
+
+console.log(result);
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Pass</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Optional Chaining (?.):</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> user = { profile: { name: <span class="string">"John"</span> } };
+
+console.log(user?.profile?.name);  <span class="comment">// "John"</span>
+console.log(user?.address?.city);  <span class="comment">// undefined (no error)</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>John</div>
+                               </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Nullish Coalescing (??):</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> value = <span class="keyword">null</span>;
+
+<span class="keyword">const</span> result = value ?? <span class="string">"default"</span>;
+
+console.log(result);
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>default</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- Functions -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Functions in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                         <div class="concept-animation">
+                    <div class="animation-title">🚀 Arrow Function Scope</div>
+                    <div class="condition-demo">
+                        <div class="condition-box" style="border-color: #F7DF1E;">
+                            <div class="condition-label">Arguments</div>
+                            <div class="condition-value">(a, b)</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="condition-box true">
+                            <div class="condition-label">Expression</div>
+                            <div class="condition-value">a + b</div>
+                        </div>
+                    </div>
+                </div>
+                        <div class="definition">
+                            JavaScript supports function declarations, expressions, arrow functions, callbacks, closures, and higher-order functions.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Function Types:</h4>
+                       <div class="code-block">
+<pre><code><span class="comment">// Function declaration</span>
+<span class="keyword">function</span> <span class="function">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Arrow function</span>
+<span class="keyword">const</span> multiply = (a, b) =&gt; a * b;
+
+<span class="comment">// Arrow function with block</span>
+<span class="keyword">const</span> greet = (name) =&gt; {
+    <span class="keyword">return</span> <span class="string">`Hello, ${name}!`</span>;
+};
+
+console.log(add(<span class="number">5</span>, <span class="number">3</span>));
+console.log(multiply(<span class="number">4</span>, <span class="number">2</span>));
+console.log(greet(<span class="string">"John"</span>));
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>8</div>
+                            <div>8</div>
+                            <div>Hello, John!</div>
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Default Parameters:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> greet = (name = <span class="string">"Guest"</span>) => <span class="string">`Hello, ${name}!`</span>;
+
+console.log(greet());         <span class="comment">// "Hello, Guest!"</span>
+console.log(greet(<span class="string">"John"</span>));    <span class="comment">// "Hello, John!"</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>
+                                Hello, Guest!
+                                </div>
+                            <div>  Hello, John!</div>
+                              
+                            
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Rest Parameters:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> sum = (...numbers) => {
+    <span class="keyword">return</span> numbers.reduce((acc, num) => acc + num, <span class="number">0</span>);
+};
+
+console.log(sum(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)); <span class="comment">// 10</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>10</div>
+
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Higher-Order Function:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> createMultiplier = (factor) => {
+    <span class="keyword">return</span> (num) => num * factor;
+};
+
+<span class="keyword">const</span> double = createMultiplier(<span class="number">2</span>);
+console.log(double(<span class="number">5</span>)); <span class="comment">// 10</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>10</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- Arrays -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Arrays & Objects in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                       
+                        <div class="definition">
+                            JavaScript arrays and objects are fundamental data structures. Modern JS provides powerful features like 
+                            destructuring, spread operator, and extensive array methods.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Spread Operator:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> arr2 = [...arr1, <span class="number">4</span>, <span class="number">5</span>];
+
+console.log(arr2);  <span class="comment">// [1, 2, 3, 4, 5]</span>
+
+<span class="keyword">const</span> obj1 = { a: <span class="number">1</span>, b: <span class="number">2</span> };
+<span class="keyword">const</span> obj2 = { ...obj1, c: <span class="number">3</span> };
+
+console.log(obj2);  <span class="comment">// { a: 1, b: 2, c: 3 }</span>
+</code></pre>
+</div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>[1, 2, 3, 4, 5]
+                            </div>
+                            <div>
+{ a: 1, b: 2, c: 3 }
+</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Destructuring:</h4>
+                       <div class="code-block">
+<pre><code><span class="comment">// Array destructuring</span>
+<span class="keyword">const</span> [first, second, ...rest] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+
+console.log(first);   <span class="comment">// 1</span>
+console.log(second);  <span class="comment">// 2</span>
+console.log(rest);    <span class="comment">// [3, 4, 5]</span>
+
+<span class="comment">// Object destructuring</span>
+<span class="keyword">const</span> person = { name: <span class="string">"John"</span>, age: <span class="number">20</span>, city: <span class="string">"NYC"</span> };
+
+<span class="keyword">const</span> { name, age } = person;
+
+console.log(name);  <span class="comment">// John</span>
+console.log(age);   <span class="comment">// 20</span>
+</code></pre>
+</div>
+
+                        <div class="Output">    
+                            <div class="Output-label">Output</div>
+                            <div>1
+                                </div>
+                            <div>
+2
+</div>
+<div>
+[3, 4, 5]
+</div>
+<div>
+John
+</div>
+<div>
+20
+</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Array Method Chaining:</h4>
+                        <div class="code-block">
+<pre><code><span class="keyword">const</span> result = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+    .filter(x => x % <span class="number">2</span> === <span class="number">0</span>)
+    .map(x => x * <span class="number">2</span>)
+    .reduce((acc, x) => acc + x, <span class="number">0</span>);
+
+console.log(result); <span class="comment">// 12</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>12</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!--class and objects-->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">Classes & Objects (OOP) in JavaScript</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                         <div class="concept-animation">
+                    <div class="animation-title">🏗️ ES6 Classes & Data Structures</div>
+                    <div class="structure-demo" style="border-color: #F7DF1E;">
+                        <div style="text-align:center; color:#F7DF1E; font-weight:700; margin-bottom:10px;">new Set([1, 2, 2])</div>
+                        <div class="struct-field">
+                            <span class="field-name">Unique Elements</span>
+                            <span class="field-value">{1, 2}</span>
+                        </div>
+                        <div style="text-align:center; color:#F7DF1E; font-weight:700; margin: 10px 0;">new Map()</div>
+                        <div class="struct-field">
+                            <span class="field-name">'key'</span>
+                            <span class="field-value">'value'</span>
+                        </div>
+                    </div>
+                </div>
+
+                        <div class="definition">
+                            ES6 introduced class syntax for creating objects. JavaScript uses prototypal inheritance underneath.
+                        </div>
+
+                        <div class="code-block">
+<pre><code><span class="keyword">class</span> <span class="function">Student</span> {
+    <span class="function">constructor</span>(name, roll) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.roll = roll;
+        <span class="keyword">this</span>.grades = [];
+    }
+    
+    <span class="function">addGrade</span>(grade) {
+        <span class="keyword">this</span>.grades.push(grade);
+    }
+    
+    <span class="keyword">get</span> <span class="function">average</span>() {
+        <span class="keyword">const</span> sum = <span class="keyword">this</span>.grades.reduce((a, b) => a + b, <span class="number">0</span>);
+        <span class="keyword">return</span> sum / <span class="keyword">this</span>.grades.length;
+    }
+    
+    <span class="keyword">static</span> <span class="function">compareStudents</span>(s1, s2) {
+        <span class="keyword">return</span> s1.average - s2.average;
+    }
+}
+
+<span class="keyword">const</span> student = <span class="keyword">new</span> Student(<span class="string">"John"</span>, <span class="number">101</span>);
+student.addGrade(<span class="number">85</span>);
+console.log(student.average);</code></pre>
+                        </div>
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>85</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- ES6  -->
+            <div class="topic-card">
+                <div class="topic-header">
+                    <div class="topic-title">JavaScript Array Methods & ES6+ Features</div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-body">
+                        <div class="definition">
+                            Modern JavaScript provides powerful array methods and features for data manipulation essential for DSA.
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Essential Array Methods:</h4>
+                       <div class="code-block">
+<pre><code><span class="keyword">const</span> arr = [<span class="number">5</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">1</span>, <span class="number">9</span>];
+
+<span class="comment">// Sort (ascending)</span>
+arr.sort((a, b) => a - b);
+console.log(arr);   <span class="comment">// [1, 2, 5, 8, 9]</span>
+
+<span class="comment">// Find first element greater than 5</span>
+<span class="keyword">const</span> found = arr.find(x => x > <span class="number">5</span>);
+console.log(found); <span class="comment">// 8</span>
+
+<span class="comment">// Some - check if any element > 5</span>
+<span class="keyword">const</span> hasGreater = arr.some(x => x > <span class="number">5</span>);
+console.log(hasGreater); <span class="comment">// true</span>
+
+<span class="comment">// Every - check if all elements > 0</span>
+<span class="keyword">const</span> allPositive = arr.every(x => x > <span class="number">0</span>);
+console.log(allPositive); <span class="comment">// true</span>
+
+<span class="comment">// Slice (does NOT modify original array)</span>
+<span class="keyword">const</span> slice = arr.slice(<span class="number">1</span>, <span class="number">3</span>);
+console.log(slice); <span class="comment">// [2, 5]</span>
+
+<span class="comment">// Splice (modifies original array)</span>
+arr.splice(<span class="number">1</span>, <span class="number">2</span>);
+console.log(arr); <span class="comment">// [1, 8, 9]</span>
+</code></pre>
+</div>
+
+
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>[1, 2, 5, 8, 9] <br> 8 <br> true <br> true <br> [2, 5] <br> [2, 8, 9]</div>
+                        </div>
+
+                        <h4 style="color: var(--accent-purple); margin: 1.5rem 0 1rem;">Set and Map:</h4>
+                        <div class="code-block">
+<pre><code><span class="comment">// Set - unique values</span>
+<span class="keyword">const</span> set = <span class="keyword">new</span> Set([<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>]);
+console.log(set);  <span class="comment">// Set {1, 2, 3}</span>
+
+<span class="comment">// Map - key-value pairs</span>
+<span class="keyword">const</span> map = <span class="keyword">new</span> Map();
+map.set(<span class="string">"name"</span>, <span class="string">"John"</span>);
+map.set(<span class="string">"age"</span>, <span class="number">20</span>);
+console.log(map.get(<span class="string">"name"</span>));  <span class="comment">// "John"</span></code></pre>
+                        </div>
+                        <div class="Output">
+                            <div class="Output-label">Output</div>
+                            <div>Set {1, 2, 3}</div>
+                            <div>John</div>
+
+                        </div>
+
+                        <div class="key-points">
+                            <h4>Important Array Methods:</h4>
+                            <ul>
+                                <li><strong>map():</strong> Transform each element</li>
+                                <li><strong>filter():</strong> Select elements matching condition</li>
+                                <li><strong>reduce():</strong> Aggregate to single value</li>
+                                <li><strong>find():</strong> Find first matching element</li>
+                                <li><strong>sort():</strong> Sort elements (in-place)</li>
+                                <li><strong>includes():</strong> Check if element exists</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+   <!-- CodeMirror JS + Language Modes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+
+<script src="js/prerequisites.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

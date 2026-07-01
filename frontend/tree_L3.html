@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tree — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tree_L3.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html">Home</a>
+  <a href="topics.html">Topics</a>
+  <a href="prerequisite.html">Prerequisites</a>
+  <a href="tree_L1.html">Tree Level 1</a>
+  <a href="tree_L2.html">Tree Level 2</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="tree_L1.html">Tree</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">🌳 Level 3 of 3</div>
+  <h1>Trees in the <span class="highlight">Real World</span></h1>
+  <p>The hierarchical data structure behind every file system, database index, compiler, network router, and AI decision engine — anywhere parent-child relationships and O(log n) search combine to solve real problems at scale.</p>
+</div>
+
+<!-- CONCEPT VISUALIZER -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Hierarchical Structure, O(log n) Search</div>
+    <p class="concept-desc">A tree stores data in <strong>parent-child relationships</strong>. Each node has at most one parent and any number of children. A <strong>Binary Search Tree</strong> enforces the ordering property: left subtree values &lt; node value &lt; right subtree values. This gives <strong>O(log n) average search, insert, and delete</strong> in a balanced tree — and naturally represents any hierarchical data (file systems, DOM, organizational charts). A tree with N nodes has exactly N−1 edges, and the height determines all operation costs.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through BST search — watch how O(log n) eliminates half the tree each step</div>
+      <div class="tree-viz-wrap">
+        <div class="tree-canvas" id="conceptTree"></div>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0">
+        <button class="d-btn go" onclick="conceptStep()">▶ Search Next Value</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Search Next Value" — watch BST halve the search space</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(124,58,237,.2);border:2px solid var(--primary-violet)"></div>Current node</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(139,92,246,.1);border:2px solid rgba(139,92,246,.4)"></div>Visited / eliminated</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:50%;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Found</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLICATIONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(124,58,237,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Trees are the backbone of software infrastructure. File systems, compilers, databases, network routing, and AI — all rely on hierarchical structures and the O(log n) advantage trees provide.</p>
+  <div class="app-grid">
+
+    <!-- 1. File System -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">📁</div>
+        <div class="card-title-wrap">
+          <h3>File System — Directory N-ary Tree</h3>
+          <p>Every operating system stores files in an <strong>N-ary tree of directories</strong>. The root directory (<code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">/</code> or <code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">C:\</code>) is the tree root. Each folder is an internal node with children (files and subfolders). Path resolution like <code style="color:var(--primary-violet);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">/usr/bin/python</code> is a root-to-leaf traversal — O(depth) per lookup.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Navigate a directory tree — watch path resolution from root to target</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="fsStep()">▶ Next Directory</button>
+            <button class="d-btn reset" onclick="fsReset()">↺ Reset</button>
+          </div>
+          <div id="fsDirs" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.8;min-height:80px;margin-bottom:.6rem;color:var(--text-secondary)"></div>
+          <div class="status-line" id="fsStatus">Resolving path: /usr/local/bin/node</div>
+          <div class="step-info" id="fsInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BST Database Index -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🗃️</div>
+        <div class="card-title-wrap">
+          <h3>Database Index — B-Tree for O(log n) Queries</h3>
+          <p>SQL databases (MySQL, PostgreSQL) use <strong>B-Trees</strong> as their primary index structure. A B-Tree is a self-balancing tree where each node holds multiple keys and has many children — optimized for disk I/O. An indexed column lets the database find any row in O(log n) comparisons instead of scanning O(n) rows — crucial for tables with billions of records.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 BST range query — find all IDs between 30 and 70 using tree traversal</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbStep()">▶ Next Node</button>
+            <button class="d-btn reset" onclick="dbReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="dbNodes"></div>
+          <div class="status-line" id="dbStatus">Range query: find all nodes where 30 ≤ value ≤ 70</div>
+          <div class="stat-row">
+            <div class="sp sp-v">Visited: <b id="dbVisited">0</b></div>
+            <div class="sp sp-g">In range: <b id="dbFound">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Compiler AST -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Compiler — Abstract Syntax Tree (AST)</h3>
+          <p>Every compiler parses source code into an <strong>Abstract Syntax Tree</strong>. The expression <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">(3 + 4) × 2</code> becomes a tree with <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">×</code> at the root, <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">+</code> as the left child, and 2 as the right child. Code generation, optimization, and interpretation all happen by traversing this tree — preorder, inorder, and postorder each extract different information.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Evaluate expression tree — postorder traversal computes result bottom-up</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="astStep()">▶ Evaluate Node</button>
+            <button class="d-btn reset" onclick="astReset()">↺ Reset</button>
+          </div>
+          <div class="tree-viz-wrap">
+            <div class="tree-canvas" id="astTree"></div>
+          </div>
+          <div class="status-line" id="astStatus">Postorder: left → right → root (evaluates bottom-up)</div>
+          <div class="step-info" id="astInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DFS Graph traversal -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>DFS Tree — Network & Graph Traversal</h3>
+          <p>Depth-First Search builds an implicit <strong>DFS spanning tree</strong> as it traverses a graph. Used in network topology discovery, social graph analysis (finding connected components), web crawler sitemaps, and maze solving. The DFS tree captures parent-child relationships of discovery — tree edges, back edges, and cross edges together reveal graph structure.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 DFS traversal — explore nodes depth-first, build the spanning tree</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dfsStep()">▶ Next DFS Step</button>
+            <button class="d-btn reset" onclick="dfsReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="dfsNodes"></div>
+          <div class="status-line" id="dfsStatus">DFS from root — explore deepest unvisited child first</div>
+          <div class="stat-row">
+            <div class="sp sp-v">Visited: <b id="dfsVisited">0</b></div>
+            <div class="sp sp-o">Stack depth: <b id="dfsDepth">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Heap Priority Queue -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⬆️</div>
+        <div class="card-title-wrap">
+          <h3>Heap — Priority Queue in O(log n)</h3>
+          <p>A <strong>binary heap</strong> is a complete binary tree stored as an array where parent[i] ≥ children (max-heap). Insert and extract-max each take O(log n) by bubbling up/down. Used in Dijkstra's shortest path (min-heap for edge weights), OS task schedulers (priority-based CPU allocation), Huffman coding (character frequency), and heap sort (O(n log n) in-place).</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Max-heap operations — insert then extract-max with heapify</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="heapInsert()">⬆ Insert</button>
+            <button class="d-btn go" onclick="heapExtract()" style="border-color:var(--primary-orange);color:var(--primary-orange);background:rgba(245,158,11,.08)">⬇ Extract Max</button>
+            <button class="d-btn reset" onclick="heapReset()">↺ Reset</button>
+          </div>
+          <div class="mini-nodes" id="heapNodes"></div>
+          <div class="status-line" id="heapStatus">Max-heap: parent ≥ both children always</div>
+          <div class="stat-row">
+            <div class="sp sp-g">Max: <b id="heapMax">—</b></div>
+            <div class="sp sp-v">Size: <b id="heapSize">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Trie autocomplete -->
+    <div class="app-card blue2">
+      <div class="card-header">
+        <div class="card-icon blue2">🔤</div>
+        <div class="card-title-wrap">
+          <h3>Trie — O(L) Autocomplete & Prefix Search</h3>
+          <p>A <strong>Trie</strong> (prefix tree) stores strings character-by-character — each node is a letter, each root-to-leaf path is a word. Prefix search takes O(L) where L is the prefix length, regardless of how many words are stored. Used in search engine autocomplete (Google, Bing), IDE code completion, spell checkers, IP routing tables (longest prefix match), and T9 phone keyboards.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Trie prefix search — find all words starting with "ca" in O(prefix length)</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="trieStep()">▶ Next Character</button>
+            <button class="d-btn reset" onclick="trieReset()">↺ Reset</button>
+          </div>
+          <div id="trieDisplay" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.9;min-height:60px;margin-bottom:.6rem;color:var(--text-secondary)"></div>
+          <div class="status-line" id="trieStatus">Searching prefix "ca" in word list</div>
+          <div class="step-info" id="trieInfo"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY TABLE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(124,58,237,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Tree performance depends critically on balance. A balanced BST gives O(log n) for everything — a skewed tree degrades to O(n). Always know which tree type your use-case needs.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead><tr><th>Operation</th><th>Balanced BST</th><th>Skewed BST</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="op">Search</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Eliminates half the tree per comparison in balanced case</td></tr>
+        <tr><td class="op">Insert</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Find insertion position + rebalance (AVL/RB) if needed</td></tr>
+        <tr><td class="op">Delete</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Find node + restructure (successor/predecessor replacement)</td></tr>
+        <tr><td class="op">Min / Max</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Leftmost / rightmost node — O(h) where h = height</td></tr>
+        <tr><td class="op">Inorder Traversal</td><td class="ok" colspan="2">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Always visits all n nodes — gives sorted output for BST</td></tr>
+        <tr><td class="op">Height (BST)</td><td class="good">O(log n)</td><td class="bad">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Height governs all operation costs — keep it balanced</td></tr>
+        <tr><td class="op">Space</td><td class="ok" colspan="2">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n nodes + n−1 edges. No extra space for traversal (iterative)</td></tr>
+        <tr><td class="op">Trie Search</td><td class="good" colspan="2">O(L)</td><td style="color:var(--text-secondary);font-size:.82rem">L = prefix/word length — independent of number of stored words</td></tr>
+        <tr><td class="op">Heap Insert/Extract</td><td class="good" colspan="2">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Complete binary tree — always balanced, stored in array</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Trees give <strong style="color:var(--primary-violet)">O(log n) for all operations on ordered data</strong> — insert, search, delete, min, max, floor, ceiling, and range queries. This is something hash tables can't do (they're unordered). The price: O(log n) instead of O(1) for pure lookups. Use trees when you need ordering; use hash maps when you don't. Self-balancing BSTs (AVL, Red-Black) guarantee O(log n) worst-case by maintaining balance automatically.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages &amp; Disadvantages
+  </div>
+  <p class="section-sub">Trees are the right tool for hierarchical data and ordered operations — but they come with real trade-offs in complexity and performance that drive when to choose arrays or hash tables instead.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(log n) for all core operations on ordered data</h4><p>Balanced BSTs give O(log n) for search, insert, delete, min, max, floor, and ceiling — simultaneously. No other structure matches this for ordered data. Hash tables can't do floor/ceiling at all; sorted arrays have O(n) insert.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Natural fit for hierarchical data</h4><p>File systems, DOM trees, organizational charts, XML/JSON documents, and game scene graphs all have inherent parent-child structure. Forcing them into arrays or hash maps loses structural information trees preserve natively.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Inorder traversal gives sorted output for free</h4><p>An inorder traversal of a BST visits nodes in ascending order in O(n) — a sorted sequence without any sort algorithm. This is exploited by database iterators, range scans, and sorted output in compilers.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Dynamic structure — grows/shrinks without reallocation</h4><p>Unlike arrays, trees grow by adding nodes with no copying. Unlike hash maps, no rehashing spike. Each insert/delete is O(log n) in both average and worst case for self-balancing trees — predictable latency.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Range queries in O(log n + k)</h4><p>"Find all elements between 100 and 200" takes O(log n) to find the lower bound then O(k) to enumerate k results — total O(log n + k). Hash tables need O(n) full scan. This is why every SQL database uses B-Trees for indexed range queries.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Foundation of heaps, tries, segment trees, and more</h4><p>Binary heaps (priority queues), tries (prefix search), segment trees (range-sum/min queries), and Fenwick trees all build on the basic tree structure. Mastering trees unlocks the most powerful algorithmic tools in competitive programming and systems design.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(log n) vs O(1) — slower than hash tables for pure lookups</h4><p>If you only need "does key X exist?" or "what value does key X map to?", a hash table answers in O(1) average — up to 30× faster than O(log n) at n = 1 billion. Trees are the wrong choice when ordering is irrelevant.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Complex implementation — rotations, rebalancing</h4><p>Self-balancing trees (AVL, Red-Black) require rotation operations on insert/delete — tricky to implement correctly. Even a basic BST has subtle bugs around deletion (three cases: leaf, one child, two children). Use library implementations in production.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance — pointer chasing</h4><p>Each tree node is a separate heap allocation with pointer fields. Traversing a tree follows pointers across memory — causing cache misses per node. An array-based binary search on a sorted array is 3–5× faster in practice due to cache locality, even though both are O(log n).</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Memory overhead — pointers per node</h4><p>A BST node stores value + left pointer + right pointer = 3 words per element. A sorted array stores only the value. For billions of integers, a BST uses 3× the memory of a sorted array. B-Trees mitigate this by packing many keys per node.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Skewed tree — O(n) worst case without balancing</h4><p>Inserting sorted data (1,2,3,...,n) into a basic BST creates a linked-list-like skewed tree with O(n) height — every operation degrades to O(n). Self-balancing trees (AVL/RB) prevent this at the cost of rotation complexity.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No O(1) access by index</h4><p>"Get the 5th element" requires O(n) traversal unless you augment each node with subtree size (order-statistics tree — complex). Arrays give O(1) indexed access. Trees are not the right structure for positional access patterns.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Trees — and When to Avoid Them
+  </div>
+  <p class="section-sub">Trees are the right default for ordered data and hierarchical relationships. But knowing precisely when a hash table, sorted array, or trie beats them separates good engineers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Trees When...</div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>You need sorted order plus fast search</h4><p>BSTs (and their balanced variants) give both — inorder traversal produces sorted output while O(log n) search/insert/delete maintain the structure dynamically. Use when both ordering and mutation are required.</p></div></div>
+      <div class="when-item"><div class="when-icon">📈</div><div class="when-text"><h4>Range queries: "all values between lo and hi"</h4><p>This is where trees beat hash maps completely. A BST answers range queries in O(log n + k) — the definitive reason databases use B-Trees for every indexed column. <span class="wcode">SELECT * WHERE id BETWEEN 100 AND 200</span> uses a tree.</p></div></div>
+      <div class="when-item"><div class="when-icon">🏔️</div><div class="when-text"><h4>Floor, ceiling, predecessor, successor</h4><p>BSTs support "largest key ≤ x" (floor) and "smallest key ≥ x" (ceiling) in O(log n). Java's TreeMap/TreeSet expose these directly. Essential for scheduling, interval trees, and sliding-window maximum problems.</p></div></div>
+      <div class="when-item"><div class="when-icon">📁</div><div class="when-text"><h4>Hierarchical data representation</h4><p>File systems, XML/HTML parsing, org charts, game scene graphs — whenever the data naturally has parent-child structure, a tree is the most direct representation. Forcing hierarchy into arrays requires complex index arithmetic.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Priority queues — always get the max/min fast</h4><p>Binary heaps (complete binary trees) give O(log n) insert and O(log n) extract-min/max. Used in Dijkstra's algorithm, A* pathfinding, OS scheduling, and Huffman encoding. <span class="wcode">heapq</span> in Python, <span class="wcode">PriorityQueue</span> in Java.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔠</div><div class="when-text"><h4>Prefix search and autocomplete</h4><p>Tries beat hash maps for any query involving string prefixes. "All words starting with 're'" is O(prefix_len) with a trie, O(n × word_len) with a hash set. Used in every autocomplete feature, DNS longest-prefix match, and IP routing.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Trees When...</div>
+      <div class="when-item"><div class="when-icon">🔍</div><div class="when-text"><h4>Pure exact-key lookup (ordering doesn't matter)</h4><p>If your only operation is "does key X exist?" or "what is the value for key X?", a hash table gives O(1) average — always faster than O(log n). Don't pay the tree overhead when you don't need ordering.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Performance-critical sequential access</h4><p>Iterating over tree nodes follows pointers, causing cache misses per step. Iterating over a sorted array is sequential memory access — cache-line-friendly and 5–10× faster in practice. For read-heavy, sorted, static datasets use sorted arrays with binary search.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Random access by index (positional)</h4><p>"Get the 5th element" is O(1) in an array but O(n) or O(log n) in a BST (requiring subtree-size augmentation). Arrays are the only structure with true O(1) positional access. Don't use trees as index-addressable containers.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory-tight environments</h4><p>Each BST node carries left/right pointers — 2× the pointer overhead of a linked list node. For billions of small values, a sorted array or compressed B-Tree is far more memory-efficient than a pointer-heavy BST.</p></div></div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Frequency counting or grouping</h4><p><span class="wcode">count[word]++</span> is trivially O(1) with a hash map. With a BST this is O(log n) — 30× slower at scale. Hash maps are the canonical frequency-counter structure; trees add ordering overhead you don't need.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔄</div><div class="when-text"><h4>Simple membership testing at scale</h4><p>For "have I seen element X before?" (BFS visited set, dedup), a hash set gives O(1) and simpler code than a BST. Only choose a TreeSet over a HashSet when you also need sorted iteration or floor/ceiling queries.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Tree problems</span></div>
+    <p class="cta-sub">You've seen how trees power file systems, database indexes, compilers, DFS traversal, priority queues, and autocomplete.<br>Now prove you can apply BST operations, tree traversals, and hierarchical thinking to classic interview problems.</p>
+    <div class="tree-cta-viz">
+      <div class="tcell" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4);color:var(--primary-violet)">50</div>
+      <div class="tcell" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:var(--primary-purple)">30</div>
+      <div class="tcell" style="background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);color:var(--primary-violet)">70</div>
+      <div class="tcell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green)">✓</div>
+      <div class="tcell" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4);color:var(--primary-violet)">40</div>
+      <div class="tcell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">60</div>
+      <div class="tcell" style="background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.4);color:var(--primary-purple)">80</div>
+      <div class="tcell" style="background:rgba(6,182,212,.1);border-color:rgba(6,182,212,.3);color:var(--primary-cyan)">O(lg)</div>
+    </div>
+    <a href="practice.html?topic=trees" class="cta-btn">
+      <span>🌳 Solve Tree Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/tree_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

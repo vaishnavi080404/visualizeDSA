@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Insertion Sort - Basics | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/insertion_sort_L1.css">
+  </head>
+  <body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span class="sep">&#8250;</span>
+        <a href="algorithms.html">Algorithms</a> <span class="sep">&#8250;</span>
+        <span>Insertion Sort</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Insertion Sort - Basics</h1>
+        <p class="content-text">A simple sorting algorithm that builds the sorted array one element at a time by inserting each into its correct position.</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3 | Basics</div>
+        </div>
+    </div>
+
+    <!-- Section 1: Intro -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🃏</div>
+            <h2 class="section-title">Understanding Insertion Sort</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Insertion Sort?</h3>
+            <p class="content-text">
+                Insertion Sort is a simple comparison-based sorting algorithm that builds the final sorted array <b>one element at a time</b>. It works similarly to how you sort a hand of playing cards — pick a card, and <b>insert it into the correct position</b> among the already-sorted cards in your hand. Elements are shifted right to make space for each new insertion.
+            </p>
+
+            <h3 class="content-title">🤔 Why Use Insertion Sort?</h3>
+            <ul style="list-style: none; color: var(--text-secondary); margin-left: 10px;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Efficient for Small / Nearly Sorted Data:</b> Best case O(N) — extremely fast when the input is already mostly sorted.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Stable Sort:</b> Equal elements keep their original relative order — safe for multi-key sorting.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Online Algorithm:</b> Can sort a list as it receives elements one at a time — no need for the full input upfront.</li>
+            </ul>
+        </div>
+
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Worst)</div>
+                <div class="complexity-value">O(N²)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Best)</div>
+                <div class="complexity-value">O(N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space Complexity</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Visual Representation -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🎨</div>
+            <h2 class="section-title">Visual Representation</h2>
+        </div>
+        <div class="sort-visual-img">
+            <h3 style="color: var(--primary-cyan); margin-bottom: 2rem; font-size: 1.3rem;">Insertion Sort Structure and Operations</h3>
+            <div class="sort-diagram">
+                <svg viewBox="0 0 900 300" width="100%" style="background:#0a0a0a; border-radius:12px;">
+
+                    <!-- Title -->
+                    <text x="450" y="28" fill="#22d3ee" font-size="19" font-weight="bold" text-anchor="middle">Insertion Sort — Inserting key = 15 into sorted portion</text>
+
+                    <!-- Sorted portion label -->
+                    <text x="175" y="58" fill="#8b5cf6" font-size="12" text-anchor="middle">SORTED PORTION</text>
+                    <!-- Unsorted label -->
+                    <text x="580" y="58" fill="#9ca3af" font-size="12" text-anchor="middle">UNSORTED</text>
+
+                    <!-- Sorted elements: 5, 10, 20, 30 -->
+                    <rect x="30"  y="65" width="70" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="65"  y="93" fill="white" font-size="16" text-anchor="middle">5</text>
+                    <rect x="110" y="65" width="70" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="145" y="93" fill="white" font-size="16" text-anchor="middle">10</text>
+                    <rect x="190" y="65" width="70" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="225" y="93" fill="white" font-size="16" text-anchor="middle">20</text>
+                    <rect x="270" y="65" width="70" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="305" y="93" fill="white" font-size="16" text-anchor="middle">30</text>
+
+                    <!-- KEY element: 15 (being inserted) -->
+                    <rect x="350" y="65" width="70" height="46" rx="8" fill="#06b6d4"/>
+                    <text x="385" y="93" fill="white" font-size="16" text-anchor="middle">15</text>
+
+                    <!-- Remaining unsorted -->
+                    <rect x="430" y="65" width="70" height="46" rx="8" fill="#6366f1"/>
+                    <text x="465" y="93" fill="white" font-size="16" text-anchor="middle">25</text>
+                    <rect x="510" y="65" width="70" height="46" rx="8" fill="#6366f1"/>
+                    <text x="545" y="93" fill="white" font-size="16" text-anchor="middle">8</text>
+
+                    <!-- Index labels -->
+                    <text x="65"  y="122" fill="#9ca3af" font-size="11" text-anchor="middle">0</text>
+                    <text x="145" y="122" fill="#9ca3af" font-size="11" text-anchor="middle">1</text>
+                    <text x="225" y="122" fill="#9ca3af" font-size="11" text-anchor="middle">2</text>
+                    <text x="305" y="122" fill="#9ca3af" font-size="11" text-anchor="middle">3</text>
+                    <text x="385" y="122" fill="#22d3ee" font-size="11" text-anchor="middle">KEY</text>
+                    <text x="465" y="122" fill="#9ca3af" font-size="11" text-anchor="middle">5</text>
+                    <text x="545" y="122" fill="#9ca3af" font-size="11" text-anchor="middle">6</text>
+
+                    <!-- KEY pointer -->
+                    <path d="M 385 55 L 385 62" stroke="#22d3ee" stroke-width="2"/>
+                    <text x="385" y="50" fill="#22d3ee" font-size="12" font-weight="bold" text-anchor="middle">KEY = 15</text>
+
+                    <!-- Shift arrows: 20 and 30 shift right -->
+                    <path d="M 225 135 Q 255 175 305 135" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,2"/>
+                    <path d="M 305 135 Q 335 175 385 135" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,2"/>
+                    <text x="305" y="185" fill="#f59e0b" font-size="12" text-anchor="middle">20 and 30 shift right →</text>
+
+                    <!-- After insertion result -->
+                    <text x="750" y="58" fill="#9ca3af" font-size="12" text-anchor="middle">AFTER INSERT</text>
+                    <rect x="660" y="65" width="55" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="687" y="93" fill="white" font-size="14" text-anchor="middle">5</text>
+                    <rect x="722" y="65" width="55" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="749" y="93" fill="white" font-size="14" text-anchor="middle">10</text>
+                    <rect x="784" y="65" width="55" height="46" rx="8" fill="#06b6d4"/>
+                    <text x="811" y="93" fill="white" font-size="14" text-anchor="middle">15</text>
+                    <rect x="846" y="65" width="55" height="46" rx="8" fill="#8b5cf6"/>
+                    <text x="873" y="93" fill="white" font-size="14" text-anchor="middle">20</text>
+                    <text x="811" y="122" fill="#22d3ee" font-size="11" text-anchor="middle">inserted ✓</text>
+
+                    <!-- Legend -->
+                    <rect x="30"  y="240" width="12" height="12" rx="2" fill="#8b5cf6"/>
+                    <text x="48"  y="251" fill="#9ca3af" font-size="12">Sorted Portion</text>
+                    <rect x="190" y="240" width="12" height="12" rx="2" fill="#06b6d4"/>
+                    <text x="208" y="251" fill="#9ca3af" font-size="12">Key (being inserted)</text>
+                    <rect x="390" y="240" width="12" height="12" rx="2" fill="#f59e0b"/>
+                    <text x="408" y="251" fill="#9ca3af" font-size="12">Shifting Right</text>
+                    <rect x="540" y="240" width="12" height="12" rx="2" fill="#6366f1"/>
+                    <text x="558" y="251" fill="#9ca3af" font-size="12">Unsorted</text>
+
+                </svg>
+            </div>
+            <p class="content-text" style="margin-top: 2rem; text-align: center;">
+                Insertion Sort picks each element as a "key" and shifts larger sorted elements right to insert the key in its correct position.
+            </p>
+        </div>
+    </div>
+
+    <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <h2 class="section-title">Real-World Analogy</h2>
+    </div>
+
+    <p class="content-text" style="margin-bottom: 2rem;">
+        Think of insertion sort as picking up one item at a time and sliding it into the right spot among what you've already organised — just like these everyday situations:
+    </p>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Sorting a Hand of Playing Cards</div>
+            <div class="example-desc">You pick up cards one by one. Each new card is slid left past larger cards until it reaches its correct position in your already-sorted hand.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Filing Documents into a Sorted Folder</div>
+            <div class="example-desc">As new invoices arrive daily, you slide each one past the others in the folder until it sits in the correct date-order position.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Inserting a New Student into a Ranked List</div>
+            <div class="example-desc">A new student joins mid-term. Their score is compared against the sorted leaderboard from the bottom up, shifting names down until the right slot is found.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Arranging Books Alphabetically as You Unpack</div>
+            <div class="example-desc">Each book taken from the box is walked along the shelf, shifting books right, until it reaches the correct alphabetical position — one at a time.</div>
+        </div>
+    </div>
+</div>
+    <!-- Section 3: How it Works & Key Concepts -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2 class="section-title">How it Works & Key Concepts</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">🔄 The Mechanism</h3>
+            <p class="content-text">
+                Insertion Sort divides the array into a <b>sorted portion</b> (left) and an <b>unsorted portion</b> (right). In each pass, it picks the first element of the unsorted portion as the <b>key</b>, then scans backwards through the sorted portion — shifting elements one position right as long as they are greater than the key. The key is then dropped into the resulting gap.
+            </p>
+
+            <h3 class="content-title">📚 Basic Terminology</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Key:</b> The current element being picked up and placed into its correct position in the sorted portion.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Sorted Portion:</b> The left part of the array that is always kept in sorted order after each pass.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Shift:</b> Moving an element one position to the right to create a gap for the key to be inserted.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Online Algorithm:</b> Can process elements one at a time as they arrive — does not need the full array up front.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Manual Run Through -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚶</div>
+            <h2 class="section-title">Manual Run Through</h2>
+        </div>
+        <p class="content-text">Let's trace through Insertion Sort step by step on the array <b>[12, 11, 13, 5, 6]</b>.</p>
+
+        <div class="step-box">
+            <div class="step-header">Step 1: Initial Array</div>
+            <p class="content-text">We start with the full unsorted array. The first element is trivially considered sorted.</p>
+            <div class="array-row">
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell">11</div>
+                <div class="array-cell">13</div>
+                <div class="array-cell">5</div>
+                <div class="array-cell">6</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 2: Pass 1 — Key = 11. Compare with 12: 12 &gt; 11 → shift 12 right. Insert 11 at index 0.</div>
+            <p class="content-text">Key <b>11</b> is picked up. 12 shifts right one position, and 11 is inserted before it.</p>
+            <div class="array-row">
+                <div class="array-cell swapping">12</div>
+                <div class="array-cell key">11</div>
+                <div class="array-cell">13</div>
+                <div class="array-cell">5</div>
+                <div class="array-cell">6</div>
+            </div>
+            <div class="array-row" style="margin-top: 0.8rem;">
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell">13</div>
+                <div class="array-cell">5</div>
+                <div class="array-cell">6</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 3: Pass 2 — Key = 13. Compare with 12: 12 &lt; 13 → no shift needed. Insert 13 in place.</div>
+            <p class="content-text">Key <b>13</b> is already greater than all sorted elements. No shifts needed — it stays in place.</p>
+            <div class="array-row">
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell key">13</div>
+                <div class="array-cell">5</div>
+                <div class="array-cell">6</div>
+            </div>
+            <div class="array-row" style="margin-top: 0.8rem;">
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell sorted">13</div>
+                <div class="array-cell">5</div>
+                <div class="array-cell">6</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 4: Pass 3 — Key = 5. 13, 12, 11 all &gt; 5 → shift all right. Insert 5 at index 0.</div>
+            <p class="content-text">Key <b>5</b> is the smallest so far. 13, 12, and 11 all shift right, and 5 is inserted at the front.</p>
+            <div class="array-row">
+                <div class="array-cell swapping">11</div>
+                <div class="array-cell swapping">12</div>
+                <div class="array-cell swapping">13</div>
+                <div class="array-cell key">5</div>
+                <div class="array-cell">6</div>
+            </div>
+            <div class="array-row" style="margin-top: 0.8rem;">
+                <div class="array-cell sorted">5</div>
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell sorted">13</div>
+                <div class="array-cell">6</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 5: Pass 4 — Key = 6. 13, 12, 11 &gt; 6 → shift right. 5 &lt; 6 → stop. Insert 6 at index 1.</div>
+            <p class="content-text">Key <b>6</b> shifts past 13, 12, 11 (all larger), then stops after 5 (which is smaller). 6 is placed at index 1.</p>
+            <div class="array-row">
+                <div class="array-cell sorted">5</div>
+                <div class="array-cell swapping">11</div>
+                <div class="array-cell swapping">12</div>
+                <div class="array-cell swapping">13</div>
+                <div class="array-cell key">6</div>
+            </div>
+            <div class="array-row" style="margin-top: 0.8rem;">
+                <div class="array-cell sorted">5</div>
+                <div class="array-cell sorted">6</div>
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell sorted">13</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 6: Final Sorted Array</div>
+            <p class="content-text">All elements are now in sorted order!</p>
+            <div class="array-row">
+                <div class="array-cell sorted">5</div>
+                <div class="array-cell sorted">6</div>
+                <div class="array-cell sorted">11</div>
+                <div class="array-cell sorted">12</div>
+                <div class="array-cell sorted">13</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-green);">
+            <h4 style="color: var(--primary-green); margin-bottom: 10px;">What Happened?</h4>
+            <p class="content-text" style="margin-bottom: 0;">In each of the <b>N-1 passes</b>, the next unsorted element was picked as the <b>key</b> and shifted into its correct position within the sorted portion. Elements larger than the key were shifted one position right to make room. If the array were already sorted, <b>no shifts would occur at all</b> — giving best-case O(N). Total comparisons in the worst case: <b>N*(N-1)/2</b>.</p>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon"><i class="fas fa-code"></i></div>
+            <h2 class="section-title">Implementation</h2>
+        </div>
+
+        <!-- Iterative Method -->
+        <div class="op-dropdown">
+            <div class="op-header" onclick="toggleDropdown('iter-drop')">
+                <div style="display: flex; align-items: center;">
+                    <div class="op-number">1</div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">Iterative Method (Standard Loop)</span>
+                </div>
+                <i class="fas fa-chevron-down" id="icon-iter-drop"></i>
+            </div>
+            <div class="op-content" id="iter-drop">
+                <div class="operation-body">
+                    <p class="content-text">
+                        The standard iterative approach uses an outer loop to pick each key (from index 1 to N-1), and an inner while-loop that shifts elements rightward until the correct insertion position is found.
+                    </p>
+
+                    <div class="complexity-grid">
+                        <div class="complexity-box">
+                            <div class="complexity-label">Time Complexity</div>
+                            <div class="complexity-value">O(N²)</div>
+                        </div>
+                        <div class="complexity-box">
+                            <div class="complexity-label">Best Case</div>
+                            <div class="complexity-value">O(N)</div>
+                        </div>
+                        <div class="complexity-box">
+                            <div class="complexity-label">Space Complexity</div>
+                            <div class="complexity-value">O(1)</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                    <ul class="styled-list">
+                        <li>Loop i from 1 to N-1 (outer loop — pick each key).</li>
+                        <li>Store arr[i] as the <b>key</b> and set j = i - 1.</li>
+                        <li>While j &gt;= 0 and arr[j] &gt; key: shift arr[j] to arr[j+1], decrement j.</li>
+                        <li>Place the key at arr[j+1] — its correct sorted position.</li>
+                        <li>Repeat until all elements are processed.</li>
+                    </ul>
+
+                    <div class="lang-tabs" data-group="iterative">
+                        <button class="lang-tab active" data-lang="cpp">C++</button>
+                        <button class="lang-tab" data-lang="python">Python</button>
+                        <button class="lang-tab" data-lang="java">Java</button>
+                        <button class="lang-tab" data-lang="c">C</button>
+                        <button class="lang-tab" data-lang="javascript">JS</button>
+                    </div>
+
+                    <div class="editor-wrapper">
+                        <div class="editor-header">
+                            <span class="lang-display">C++</span>
+                            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <textarea id="editor-iter"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recursive Method -->
+        <div class="op-dropdown" style="margin-top: 2rem;">
+            <div class="op-header" onclick="toggleDropdown('recur-drop')">
+                <div style="display: flex; align-items: center;">
+                    <div class="op-number">2</div>
+                    <span style="font-weight: 700; font-size: 1.1rem;">Recursive Method</span>
+                </div>
+                <i class="fas fa-chevron-down" id="icon-recur-drop"></i>
+            </div>
+            <div class="op-content" id="recur-drop">
+                <div class="operation-body">
+                    <p class="content-text">
+                        The recursive approach first sorts the first N-1 elements, then inserts the last element (arr[n-1]) into its correct position within the now-sorted subarray. The key insight is that insertion of one element into a sorted array is the base operation.
+                    </p>
+
+                    <div class="complexity-grid">
+                        <div class="complexity-box">
+                            <div class="complexity-label">Time Complexity</div>
+                            <div class="complexity-value">O(N²)</div>
+                        </div>
+                        <div class="complexity-box">
+                            <div class="complexity-label">Space Complexity</div>
+                            <div class="complexity-value">O(N)</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                    <ul class="styled-list">
+                        <li><b>Base Case:</b> If n &lt;= 1, array is already sorted — return.</li>
+                        <li><b>Recursive Step:</b> Call insertionSort(arr, n-1) to sort the first n-1 elements.</li>
+                        <li>Store the last element arr[n-1] as the <b>key</b>.</li>
+                        <li>Shift all elements in the sorted portion that are &gt; key one position right.</li>
+                        <li>Place the key in the resulting gap at its correct position.</li>
+                    </ul>
+
+                    <div class="lang-tabs" data-group="recursive">
+                        <button class="lang-tab active" data-lang="cpp">C++</button>
+                        <button class="lang-tab" data-lang="python">Python</button>
+                        <button class="lang-tab" data-lang="java">Java</button>
+                        <button class="lang-tab" data-lang="c">C</button>
+                        <button class="lang-tab" data-lang="javascript">JS</button>
+                    </div>
+
+                    <div class="editor-wrapper">
+                        <div class="editor-header">
+                            <span class="lang-display">C++</span>
+                            <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <textarea id="editor-recur"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Section -->
+    <div class="video-section">
+        <div class="video-info">
+            <span>📺</span>
+            <span>Insertion Sort Explained</span>
+        </div>
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/7kIVfVY6Axk?si=MQOtto3vhtnOFx1S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Slider Section -->
+    <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="color: var(--primary-purple); font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 10px;">Level Locked</h3>
+        <p style="color: var(--text-secondary);">Pass the Level 1 Quiz to unlock Level 2 and continue your Insertion Sort journey.</p>
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/insertion_sort_L1.js"></script>
+
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

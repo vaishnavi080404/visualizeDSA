@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="pageTitle">Quiz | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Load Quiz Data -->
+    <script src="quiz_data.js"></script>
+
+    <link rel="stylesheet" href="css/quiz.css">
+  
+</head>
+  <body data-theme="dark">
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+    <!-- Score Tracker (sticky) -->
+    <div class="score-tracker" id="scoreTracker">
+      <div class="st-row">
+        <span class="st-label">✅ Correct</span
+        ><span class="st-val st-correct" id="st-correct">0</span>
+      </div>
+      <div class="st-row">
+        <span class="st-label">❌ Wrong</span>
+        <span class="st-val st-wrong" id="st-wrong">0</span>
+      </div>
+      <div
+        class="st-row"
+        style="
+          border-top: 1px solid var(--border-color);
+          padding-top: 0.4rem;
+          margin-top: 0.2rem;
+        "
+      >
+        <span class="st-label">Score</span
+        ><span class="st-val st-score" id="st-score">0%</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Breadcrumb (dynamically filled) -->
+      <div class="breadcrumb" id="breadcrumb"></div>
+
+      <!-- QUIZ SECTION -->
+      <div id="quizSection">
+        <div class="quiz-header">
+          <h1 class="quiz-title" id="quizTitle">Quiz</h1>
+          <p class="quiz-subtitle" id="quizSubtitle"></p>
+          <div class="quiz-meta" id="quizMeta"></div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-wrap">
+          <div class="progress-top">
+            <span class="progress-label">Progress</span>
+            <span class="progress-count" id="progressCount"
+              >Question 1 of 10</span
+            >
+          </div>
+          <div class="progress-bar-bg">
+            <div
+              class="progress-bar-fill"
+              id="progressBar"
+              style="width: 10%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Question card (dynamically filled) -->
+        <div class="question-card" id="questionCard">
+          <div class="q-number-row">
+            <div class="q-number" id="qNum">1</div>
+            <span class="q-diff" id="qDiff">Easy</span>
+          </div>
+          <div class="q-text" id="qText"></div>
+          <div class="options-grid" id="optionsGrid"></div>
+          <div class="explanation" id="explanation"></div>
+        </div>
+
+        <!-- Nav buttons -->
+        <div class="nav-btns">
+          <button
+            class="btn btn-ghost"
+            id="prevBtn"
+            onclick="prevQuestion()"
+            disabled
+          >
+            ← Previous
+          </button>
+          <button
+            class="btn btn-primary"
+            id="nextBtn"
+            onclick="nextQuestion()"
+            disabled
+          >
+            Next Question →
+          </button>
+        </div>
+      </div>
+
+      <!-- RESULTS SECTION -->
+      <div class="results-screen" id="resultsSection">
+        <div class="result-hero" id="resultHero">
+          <span class="result-emoji" id="resultEmoji">🏆</span>
+          <h2 class="result-title" id="resultTitle">Excellent Work!</h2>
+          <p class="result-subtitle" id="resultSubtitle"></p>
+
+          <div class="score-ring-wrap">
+            <div class="score-ring">
+              <svg viewBox="0 0 120 120" width="160" height="160">
+                <circle class="score-ring-bg" cx="60" cy="60" r="50" />
+                <circle
+                  class="score-ring-fill"
+                  cx="60"
+                  cy="60"
+                  r="50"
+                  id="scoreRingFill"
+                  stroke-dasharray="314"
+                  stroke-dashoffset="314"
+                />
+              </svg>
+              <div class="score-ring-text">
+                <span class="score-ring-pct" id="scoreRingPct">0%</span>
+                <span class="score-ring-lbl">Score</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-stats">
+            <div class="rs-card">
+              <div class="rs-val rs-green" id="rs-correct">0</div>
+              <div class="rs-label">Correct</div>
+            </div>
+            <div class="rs-card">
+              <div class="rs-val rs-red" id="rs-wrong">0</div>
+              <div class="rs-label">Wrong</div>
+            </div>
+            <div class="rs-card">
+              <div class="rs-val rs-cyan" id="rs-pct">0%</div>
+              <div class="rs-label">Final Score</div>
+            </div>
+          </div>
+
+          <div class="result-actions" id="resultActions"></div>
+        </div>
+
+        <!-- Answer Review -->
+        <div class="review-section" id="reviewSection" style="display: none">
+          <div class="review-title">📋 Answer Review</div>
+          <div id="reviewCards"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASS MODAL -->
+    <!-- Final Year Project: Level Success Modal -->
+    <div class="pass-modal" id="passModal">
+      <div class="pass-modal-box">
+        <span class="pm-confetti">🎉</span>
+        <div class="pm-badge">Level Cleared!</div>
+        <h3 class="pm-title" id="pmTitle">Master Unlocked</h3>
+        <p class="pm-tagline" id="pmTagline">
+          You've successfully demonstrated your understanding of this module.
+        </p>
+
+        <div class="pm-score-pill">
+          🏆 Final Score: <span id="pm-score-val">0%</span>
+        </div>
+
+        <div class="pm-divider"></div>
+
+        <!-- Dynamic CTA Text -->
+        <div class="pm-cta-text" id="pmCtaText">
+          Ready to <span>visualize it in action?</span>
+        </div>
+
+        <div class="pm-btn-row">
+          <button class="pm-btn-primary" onclick="goToNextLevel()">
+            <span id="pmBtnIcon">🚀</span>
+            <span id="pmBtnText">Go to Next Level</span>
+          </button>
+          <button class="pm-btn-ghost" onclick="closePassModal()">
+            Stay & Review
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/quiz.js"></script>
+  
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+
+</html>

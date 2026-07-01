@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linked List — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/linkedlist_L3.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          </div>
+          <span>CODEANIME</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+          </button>
+          <button class="theme-toggle" id="themeToggle">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="topics.html">Topics</a>
+        <a href="prerequisite.html">Prerequisites</a>
+        <a href="codeeditor.html">Code Editor</a>
+      </div>
+    </nav>
+
+    <!--   HERO   -->
+    <div class="hero">
+      <div class="breadcrumb-bar">
+        <a href="topics.html">Topics</a><span class="sep">›</span>
+        <a href="linked_list.html">Linked List</a><span class="sep">›</span>
+        <span>Level 3 — Real World</span>
+      </div>
+      <div class="hero-badge">🔗 Level 3 of 3</div>
+      <h1>Linked Lists in the <span class="highlight">Real World</span></h1>
+      <p>
+        Music players, browsers, caches, GPS routes — linked lists are quietly
+        running all of them. Here's exactly how, with live demos.
+      </p>
+    </div>
+
+    <!--                       ═
+     SECTION 1: REAL WORLD APPS
+                      ═ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(6, 182, 212, 0.15)">🌍</div>
+        Real World Applications
+      </div>
+      <p class="section-sub">
+        Six systems you interact with daily — all powered by linked list logic
+        under the hood.
+      </p>
+
+      <div class="app-grid">
+        <!-- 1. MUSIC PLAYLIST — Circular LL -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🎵</div>
+            <div class="card-title-wrap">
+              <h3>Music Playlist</h3>
+              <p>
+                Spotify, Apple Music, YouTube — playlists are circular linked
+                lists. Each song's node points to the next. Loop mode? That's
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >tail.next = head</code
+                >.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Interactive Demo — Control the playlist
+            </div>
+            <div class="demo-box">
+              <div id="playlistTracks"></div>
+              <div class="demo-btn-row" style="margin-top: 0.6rem">
+                <button class="demo-btn active-btn" onclick="playPrev()">
+                  ⏮ Prev
+                </button>
+                <button class="demo-btn active-btn" onclick="playNext()">
+                  Next ⏭
+                </button>
+                <button class="demo-btn" onclick="addSong()">+ Add Song</button>
+                <button class="demo-btn del-btn" onclick="removeSong()">
+                  ✖ Remove
+                </button>
+              </div>
+              <div class="peek-bar">
+                Playing:
+                <span id="playlist-now" style="color: var(--primary-green)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Type:
+                <span style="color: var(--primary-cyan)">Circular LL</span>
+                &nbsp;|&nbsp; Nodes:
+                <span id="playlist-count" style="color: var(--primary-orange)"
+                  >4</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. BROWSER HISTORY — Doubly LL -->
+        <div class="app-card cyan">
+          <div class="card-header">
+            <div class="card-icon cyan">🌐</div>
+            <div class="card-title-wrap">
+              <h3>Browser Back / Forward</h3>
+              <p>
+                Chrome's back and forward buttons use a doubly linked list. Each
+                page has
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >prev</code
+                >
+                and
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >next</code
+                >
+                pointers. Navigating = moving the current pointer.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Interact — Visit sites and go back/forward
+            </div>
+            <div class="demo-box">
+              <div class="browser-url-bar">
+                <div class="browser-dots">
+                  <span style="background: #ef4444"></span>
+                  <span style="background: #f59e0b"></span>
+                  <span style="background: #10b981"></span>
+                </div>
+                <div class="url-display" id="browserUrl2">google.com</div>
+              </div>
+              <div class="demo-btn-row">
+                <button
+                  class="demo-btn"
+                  id="btn-back2"
+                  onclick="browserBack2()"
+                >
+                  ← Back
+                </button>
+                <button class="demo-btn" id="btn-fwd2" onclick="browserFwd2()">
+                  Forward →
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('github.com')"
+                >
+                  github
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('leetcode.com')"
+                >
+                  leetcode
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="browserVisit2('youtube.com')"
+                >
+                  youtube
+                </button>
+              </div>
+              <div class="demo-label" style="margin-bottom: 0.35rem">
+                Doubly LL — current node highlighted, ← prev | next →
+              </div>
+              <div id="historyNodes"></div>
+              <div class="peek-bar">
+                Prev:
+                <span id="hist-prev" style="color: var(--primary-orange)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Next:
+                <span id="hist-next" style="color: var(--primary-cyan)">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. IMAGE CAROUSEL — Circular LL -->
+        <div class="app-card purple">
+          <div class="card-header">
+            <div class="card-icon purple">🎠</div>
+            <div class="card-title-wrap">
+              <h3>Image Carousel</h3>
+              <p>
+                Every website slider — Instagram stories, landing page carousels
+                — is a circular linked list. The last image's next pointer goes
+                back to the first, making infinite looping O(1).
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Click the arrows to cycle through slides
+            </div>
+            <div class="demo-box">
+              <div class="carousel-frame" id="carouselFrame">
+                <div class="carousel-emoji" id="carouselEmoji">🏔️</div>
+                <div class="carousel-title" id="carouselTitle">Mountains</div>
+                <div class="carousel-caption" id="carouselCaption">
+                  node[0] → node[1]
+                </div>
+              </div>
+              <div class="carousel-dots" id="carouselDots"></div>
+              <div class="demo-btn-row">
+                <button class="demo-btn active-btn" onclick="carouselPrev()">
+                  ← Prev
+                </button>
+                <button class="demo-btn active-btn" onclick="carouselNext()">
+                  Next →
+                </button>
+              </div>
+              <div class="demo-label">Node chain (circular):</div>
+              <div class="node-chain" id="carouselChain"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. LRU CACHE — Doubly LL -->
+        <div class="app-card orange">
+          <div class="card-header">
+            <div class="card-icon orange">⚡</div>
+            <div class="card-title-wrap">
+              <h3>LRU Cache</h3>
+              <p>
+                Redis, CPU caches, browser cache — all use LRU eviction. A
+                doubly linked list keeps items ordered by recency.
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >get()</code
+                >
+                moves to head; when full, tail (least used) gets evicted.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 GET or PUT keys — watch eviction happen (capacity: 4)
+            </div>
+            <div class="demo-box">
+              <div class="lru-input-row">
+                <input
+                  class="lru-input"
+                  id="lru-key"
+                  type="text"
+                  placeholder="key (e.g. userA)"
+                  maxlength="8"
+                />
+                <button class="lru-get-btn" onclick="lruGet()">GET</button>
+                <button class="lru-put-btn" onclick="lruPut()">PUT</button>
+              </div>
+              <div class="demo-label" style="margin-bottom: 0.35rem">
+                Doubly LL (HEAD = most recent · TAIL = evict next)
+              </div>
+              <div id="lruList" class="lru-cache-list"></div>
+              <div class="peek-bar">
+                Cache size:
+                <span id="lru-size" style="color: var(--primary-cyan)">0</span
+                >/4 &nbsp;|&nbsp; Last action:
+                <span id="lru-action" style="color: var(--primary-orange)"
+                  >—</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. TASK QUEUE / OS SCHEDULER — Singly LL -->
+        <div class="app-card red">
+          <div class="card-header">
+            <div class="card-icon red">🖥️</div>
+            <div class="card-title-wrap">
+              <h3>OS Process Scheduler</h3>
+              <p>
+                Linux, Windows task schedulers maintain process queues as singly
+                linked lists. Each process node holds state + a next pointer.
+                Adding a process = inserting at tail. Completing = deleting
+                head.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Simulate a process queue — add and dispatch tasks
+            </div>
+            <div class="demo-box">
+              <div class="demo-btn-row">
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('render()')"
+                >
+                  + render()
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('fetchAPI()')"
+                >
+                  + fetchAPI()
+                </button>
+                <button
+                  class="demo-btn active-btn"
+                  onclick="addTask('saveFile()')"
+                >
+                  + saveFile()
+                </button>
+                <button class="demo-btn del-btn" onclick="dispatchTask()">
+                  ▶ Dispatch Head
+                </button>
+              </div>
+              <div class="task-ptr" id="task-head-ptr">HEAD → (empty)</div>
+              <div class="task-list" id="taskList"></div>
+              <div class="peek-bar">
+                Queued:
+                <span id="task-count" style="color: var(--primary-purple)"
+                  >0</span
+                >
+                &nbsp;|&nbsp; Head:
+                <span id="task-head-val" style="color: var(--primary-green)"
+                  >—</span
+                >
+                &nbsp;|&nbsp; Type:
+                <span style="color: var(--primary-cyan)">Singly LL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. TRAIN ROUTE — Singly LL -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🚆</div>
+            <div class="card-title-wrap">
+              <h3>GPS & Transit Routes</h3>
+              <p>
+                Metro rail routes, Google Maps waypoints — linked lists of stops
+                where each node contains station data and a pointer to the next
+                stop. Inserting a new stop mid-route is O(1) once positioned.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Build a train route — add, remove, and trace stops
+            </div>
+            <div class="demo-box">
+              <div class="train-input-row">
+                <input
+                  class="train-input"
+                  id="train-stop-input"
+                  type="text"
+                  placeholder="Station name"
+                  maxlength="10"
+                />
+                <button class="demo-btn active-btn" onclick="addStop()">
+                  + Add Stop
+                </button>
+                <button class="demo-btn del-btn" onclick="removeLastStop()">
+                  ✖ Remove Last
+                </button>
+              </div>
+              <div class="train-route" id="trainRoute"></div>
+              <div class="demo-btn-row">
+                <button class="demo-btn" onclick="traceRoute()">
+                  🔍 Trace Route
+                </button>
+                <button class="demo-btn" onclick="resetRoute()">↺ Reset</button>
+              </div>
+              <div class="peek-bar">
+                Stops:
+                <span id="train-count" style="color: var(--primary-green)"
+                  >2</span
+                >
+                &nbsp;|&nbsp;
+                <span id="train-status" style="color: var(--text-secondary)"
+                  >Click a station to highlight it</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--                       ═
+     SECTION 2: COMPLEXITY TABLE
+                      ═ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(139, 92, 246, 0.15)">⚡</div>
+        Time & Space Complexity
+      </div>
+      <p class="section-sub">
+        Linked lists shine at dynamic insertion/deletion — but pay an access
+        cost. Know the tradeoffs cold.
+      </p>
+      <div class="table-scroll">
+        <div class="table-wrap">
+          <table class="complexity-table">
+            <thead>
+              <tr>
+                <th>Operation</th>
+                <th>Singly LL</th>
+                <th>Doubly LL</th>
+                <th>Circular LL</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="op">Insert at Head</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Redirect head pointer only
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Insert at Tail</td>
+                <td class="slow">O(n)</td>
+                <td class="time">O(1)*</td>
+                <td class="time">O(1)*</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  *O(1) with tail pointer maintained
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete at Head</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td class="time">O(1)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Move head to head.next
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete at Middle</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Must find node via traversal first
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Delete (with ptr)</td>
+                <td class="slow">O(n)</td>
+                <td class="time">O(1)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Doubly LL: use prev pointer directly
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Access by Index</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  No random access — must traverse
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Search</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td class="slow">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Linear scan from head
+                </td>
+              </tr>
+              <tr>
+                <td class="op">Space (total)</td>
+                <td class="space">O(n)</td>
+                <td class="space">O(n)</td>
+                <td class="space">O(n)</td>
+                <td style="color: var(--text-secondary); font-size: 0.82rem">
+                  Doubly uses extra ptr per node
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--                       ═
+     SECTION 3: PROS & CONS
+                      ═ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(16, 185, 129, 0.15)">⚖️</div>
+        Advantages &amp; Disadvantages
+      </div>
+      <p class="section-sub">
+        Every data structure is a tradeoff. Know when linked lists win — and
+        when they lose to arrays.
+      </p>
+      <div class="procon-grid">
+        <div class="procon-card pros">
+          <div class="procon-title" style="color: var(--primary-green)">
+            ✅ Advantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(1) insertion and deletion at head</h4>
+              <p>
+                No shifting like arrays. Prepending or removing the first node
+                just redirects a pointer.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Truly dynamic size</h4>
+              <p>
+                No pre-allocated capacity. Grows and shrinks exactly as needed —
+                no overflow risk, no wasted slots.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(1) middle insertion with a pointer</h4>
+              <p>
+                If you already have a reference to a node, inserting before or
+                after it is just pointer manipulation — no shifting needed.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Foundation for other structures</h4>
+              <p>
+                Stacks, queues, deques, adjacency lists, hash chaining — all
+                built on linked lists. Understand this, understand everything.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Efficient merging and splitting</h4>
+              <p>
+                Merge two sorted linked lists in O(n) without extra memory.
+                Split a list at any point in O(1) — just break a pointer.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="procon-card cons">
+          <div class="procon-title" style="color: var(--primary-red)">
+            ❌ Disadvantages
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>No random access — O(n) indexing</h4>
+              <p>
+                To reach the 10th element you must traverse nodes 1-9. Arrays
+                give you
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >arr[9]</code
+                >
+                in O(1). This is a real pain point.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Extra memory for pointers</h4>
+              <p>
+                Every node stores a pointer (8 bytes on 64-bit). A singly LL of
+                integers uses 2x memory. Doubly uses 3x compared to an array.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Poor cache performance</h4>
+              <p>
+                Array elements are contiguous in memory — the CPU can prefetch
+                them. Linked list nodes are scattered — each access is a cache
+                miss.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>No binary search</h4>
+              <p>
+                Even if the list is sorted, you can't binary search it — you
+                can't jump to the middle in O(1). Must use skip lists for that.
+              </p>
+            </div>
+          </div>
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Reverse traversal (singly)</h4>
+              <p>
+                Singly linked lists can only go forward. Reversing requires
+                either a doubly LL or rebuilding the whole list — O(n) either
+                way.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--                       ═
+     SECTION 4: WHEN TO USE
+                      ═ -->
+    <div class="section">
+      <div class="section-title">
+        <div class="icon" style="background: rgba(245, 158, 11, 0.15)">🎯</div>
+        When to Use Linked List — and When to Avoid It
+      </div>
+      <p class="section-sub">
+        This is the real interview question: "Why a linked list here?" Have a
+        sharp answer.
+      </p>
+      <div class="when-grid">
+        <div class="when-card use">
+          <div class="when-title" style="color: var(--primary-green)">
+            ✅ Use Linked List When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">➕</div>
+            <div class="when-text">
+              <h4>Frequent insertions / deletions at head or middle</h4>
+              <p>
+                Prepend-heavy workloads, task schedulers, message queues —
+                arrays would shift millions of elements. LL does it in O(1).
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📏</div>
+            <div class="when-text">
+              <h4>Size is unknown at compile time</h4>
+              <p>
+                You don't know how many elements you'll get. Linked lists grow
+                on demand without reallocation or copying overhead.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔗</div>
+            <div class="when-text">
+              <h4>Implementing other structures</h4>
+              <p>
+                Building a stack, queue, deque, or adjacency list? Linked list
+                is your building block.
+                <span class="when-code">push = insertHead</span>,
+                <span class="when-code">pop = deleteHead</span>.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔄</div>
+            <div class="when-text">
+              <h4>Circular / round-robin patterns</h4>
+              <p>
+                OS round-robin scheduling, music loops, carousel slides —
+                circular LL gives infinite cycling with O(1) next operation.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">↔️</div>
+            <div class="when-text">
+              <h4>Need bidirectional traversal</h4>
+              <p>
+                Browser history, undo/redo — doubly LL lets you walk forward and
+                backward without rebuilding.
+                <span class="when-code">prev</span> +
+                <span class="when-code">next</span> pointers.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">✂️</div>
+            <div class="when-text">
+              <h4>Merging / splitting sequences</h4>
+              <p>
+                Merge sort on linked lists, polynomial addition, symbol tables —
+                pointer relinks beat any array approach for these.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="when-card avoid">
+          <div class="when-title" style="color: var(--primary-red)">
+            ❌ Avoid Linked List When...
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🎲</div>
+            <div class="when-text">
+              <h4>You need random access</h4>
+              <p>
+                Use an Array or ArrayList. If your code says
+                <code style="font-size: 0.8rem; color: var(--primary-cyan)"
+                  >list.get(i)</code
+                >
+                frequently, you're paying O(n) every time. Switch to array —
+                it's O(1).
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔍</div>
+            <div class="when-text">
+              <h4>Frequent searching by value</h4>
+              <p>
+                Use a HashMap or TreeMap. Searching a linked list is always O(n)
+                — no shortcuts, no binary search, no hash lookup.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">💾</div>
+            <div class="when-text">
+              <h4>Memory is tight</h4>
+              <p>
+                Use a compact array. Every node carries pointer overhead (8+
+                bytes). An array of 1000 ints uses 4KB; a linked list uses
+                12–20KB for the same data.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">⚡</div>
+            <div class="when-text">
+              <h4>Cache performance matters</h4>
+              <p>
+                Use arrays or array-backed structures. Scattered memory =
+                constant cache misses. For read-heavy, performance-critical
+                loops, arrays are 5-10x faster in practice.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">📊</div>
+            <div class="when-text">
+              <h4>You need to sort the data</h4>
+              <p>
+                Use sort() on an array. Sorting a linked list is possible (merge
+                sort) but awkward and has higher constant factors than an
+                in-place array sort.
+              </p>
+            </div>
+          </div>
+          <div class="when-item">
+            <div class="when-icon">🔢</div>
+            <div class="when-text">
+              <h4>Small, fixed-size collections</h4>
+              <p>
+                Just use an array. The pointer overhead and cache miss cost
+                completely dominate for small n. Static arrays are almost always
+                faster for n &lt; 100.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--                       ═
+     CTA
+                      ═ -->
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+        <div class="cta-title">
+          Crack the<br /><span class="glow">Linked List problems</span>
+        </div>
+        <p class="cta-sub">
+          You've seen playlists, browsers, caches, and schedulers built on
+          linked lists.<br />
+          Now go solve the actual interview questions using these exact pointer
+          patterns.
+        </p>
+
+        <div class="cta-visual">
+          <div class="ll-cta-chain">
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(6, 182, 212, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(6, 182, 212, 0.15);
+                    color: var(--primary-cyan);
+                  "
+                >
+                  Reverse LL
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-cyan)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(139, 92, 246, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(139, 92, 246, 0.15);
+                    color: var(--primary-purple);
+                  "
+                >
+                  Detect Cycle
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-purple)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(245, 158, 11, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(245, 158, 11, 0.15);
+                    color: var(--primary-orange);
+                  "
+                >
+                  Merge Sorted
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-orange)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(16, 185, 129, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(16, 185, 129, 0.15);
+                    color: var(--primary-green);
+                  "
+                >
+                  LRU Cache
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-green)">
+                  →
+                </div>
+              </div>
+            </div>
+            <div class="cta-ll-node">
+              <div
+                class="cta-node-box"
+                style="border-color: rgba(239, 68, 68, 0.4)"
+              >
+                <div
+                  class="cta-node-data"
+                  style="
+                    background: rgba(239, 68, 68, 0.15);
+                    color: var(--primary-red);
+                  "
+                >
+                  Nth from End
+                </div>
+                <div class="cta-node-next" style="color: var(--primary-red)">
+                  →
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cta-visual-label">↑ problems waiting for you</div>
+        </div>
+
+        <a href="practice.html?topic=linked-list" class="cta-btn">
+          <span>⚡ Crack the Linked List Problems</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/linkedlist_L3.js"></script>
+  </body>
+</html>

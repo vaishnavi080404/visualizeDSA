@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merge Sort — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/mergesort_L3.css">
+</head>
+<body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="mergesort_L1.html">Merge Sort</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Merge Sort in the <span class="highlight">Real World</span></h1>
+  <p>The divide-and-conquer workhorse behind databases, version control, and the sort algorithms built into Python, Java, and every major language.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Divide, Conquer, Merge</div>
+    <p class="concept-desc">Merge sort splits the array in half recursively until each piece has one element, then <strong>merges sorted halves back together</strong> by comparing front elements. Key property: the merge step always produces a <strong>sorted result</strong> from two sorted inputs in O(n) time. This gives guaranteed <strong>O(n log n) in all cases</strong> — no bad pivots, no worst-case spikes. The cost: O(n) auxiliary space for the merge buffer.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through the split → merge phases on [38, 12, 45, 7, 29, 51, 16, 3]</div>
+      <div id="conceptViz" style="margin-bottom:1rem"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Next Phase</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Next Phase" to step through merge sort</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.15);border:2px solid var(--primary-purple)"></div>Left half</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(99,102,241,.15);border:2px solid var(--primary-indigo)"></div>Right half</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.18);border:2px solid var(--primary-orange)"></div>Merging</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Sorted</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Merge sort's guaranteed O(n log n), stability, and parallelism make it the backbone of production sorting systems worldwide.</p>
+  <div class="app-grid">
+
+    <!-- 1. Database ORDER BY -->
+    <div class="app-card violet">
+      <div class="card-header">
+        <div class="card-icon violet">🗄️</div>
+        <div class="card-title-wrap">
+          <h3>Database External Sort (ORDER BY)</h3>
+          <p>When a SQL <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">ORDER BY</code> query sorts more rows than fit in RAM, databases use <strong>external merge sort</strong>: sort chunks that fit in memory, write sorted runs to disk, then merge the runs. PostgreSQL, MySQL, and SQLite all do this.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge two sorted database chunks into one sorted result</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbMergeStep()">▶ Merge Next Row</button>
+            <button class="d-btn reset" onclick="dbMergeReset()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+            <div>
+              <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-purple);margin-bottom:.3rem">Chunk A (sorted)</div>
+              <div id="dbChunkA" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+            <div>
+              <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-indigo);margin-bottom:.3rem">Chunk B (sorted)</div>
+              <div id="dbChunkB" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+          </div>
+          <div style="font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-green);margin-bottom:.3rem">Merged Output</div>
+          <div id="dbOutput" style="display:flex;gap:.25rem;flex-wrap:wrap;min-height:22px;margin-bottom:.5rem"></div>
+          <div class="status-line" id="dbStatus">Compare front of each chunk — take the smaller</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Git merge -->
+    <div class="app-card indigo">
+      <div class="card-header">
+        <div class="card-icon indigo">🌿</div>
+        <div class="card-title-wrap">
+          <h3>Git / Version Control Merge</h3>
+          <p>Git's 3-way merge is merge sort logic applied to text: split the file into lines, find the common ancestor (base), merge changes from both branches in order. Conflicts occur where both sides changed the same sorted region.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge two branches — pick non-conflicting lines in order</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="gitMergeStep()">▶ Merge Next Line</button>
+            <button class="d-btn reset" onclick="gitMergeReset()">↺ Reset</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.5rem">
+            <div>
+              <div style="font-size:.62rem;font-weight:700;color:var(--primary-purple);margin-bottom:.3rem">main branch</div>
+              <div id="gitBranchA" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+            <div>
+              <div style="font-size:.62rem;font-weight:700;color:var(--primary-indigo);margin-bottom:.3rem">feature branch</div>
+              <div id="gitBranchB" style="display:flex;flex-direction:column;gap:.18rem"></div>
+            </div>
+          </div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.3rem">Merged result</div>
+          <div id="gitOutput" style="display:flex;flex-direction:column;gap:.18rem;min-height:20px;margin-bottom:.4rem"></div>
+          <div class="step-info" id="gitInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Timsort (Python / Java) -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🐍</div>
+        <div class="card-title-wrap">
+          <h3>Timsort — Python & Java's Built-in Sort</h3>
+          <p>Python's <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">list.sort()</code> and Java's <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">Arrays.sort()</code> for objects use Timsort — a hybrid of <strong>merge sort + insertion sort</strong>. It detects natural runs in real data, then merges them. Merge sort provides the O(n log n) guaranteed merge phase.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Detect natural runs, then merge them like Timsort does</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="timsortStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="timsortReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="timsortBars"></div>
+          <div class="status-line" id="timsortStatus">Click to detect natural runs in data</div>
+          <div class="step-info" id="timsortInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Merge sorted files -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">📂</div>
+        <div class="card-title-wrap">
+          <h3>Merging Sorted Log Files</h3>
+          <p>Distributed systems produce multiple sorted log files (one per server). To see a unified timeline, you merge them by timestamp — exactly merge sort's merge step applied to k files. Tools like <code style="color:var(--primary-cyan);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">sort -m</code> and Hadoop do this.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Merge 3 server logs into one unified timeline</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="logMergeStep()">▶ Take Next Event</button>
+            <button class="d-btn reset" onclick="logMergeReset()">↺ Reset</button>
+          </div>
+          <div id="logServers" style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.5rem"></div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.25rem">Unified Timeline</div>
+          <div id="logOutput" style="display:flex;gap:.3rem;flex-wrap:wrap;min-height:20px;margin-bottom:.4rem"></div>
+          <div class="step-info" id="logInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Counting inversions -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">📊</div>
+        <div class="card-title-wrap">
+          <h3>Counting Inversions (Similarity Score)</h3>
+          <p>Recommendation engines measure how "out of order" two preference lists are using <strong>inversion count</strong>. A modified merge sort counts inversions in O(n log n) during the merge phase — used in collaborative filtering, search result ranking, and A/B testing.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Sort while counting inversions — how different are preferences?</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="invStep()">▶ Merge + Count</button>
+            <button class="d-btn reset" onclick="invReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bars" id="invBars"></div>
+          <div class="status-line" id="invStatus">Array represents preference ranking</div>
+          <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace;margin-top:.4rem">Inversions found: <b id="invCount" style="color:var(--primary-purple)">0</b> <span style="color:var(--text-secondary);font-size:.65rem">— (0 = identical preferences)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Parallel merge sort -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">⚡</div>
+        <div class="card-title-wrap">
+          <h3>Parallel / Distributed Sorting</h3>
+          <p>MapReduce, Spark, and multi-core CPU sorting all use parallel merge sort: <strong>split data across cores/nodes</strong>, each sorts its chunk independently (map phase), then chunks are merged (reduce phase). The divide step maps perfectly to parallel execution.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 4 cores sort their chunks in parallel, then merge</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" id="parallelBtn" onclick="parallelStep()">▶ Next Phase</button>
+            <button class="d-btn reset" onclick="parallelReset()">↺ Reset</button>
+          </div>
+          <div id="parallelCores" style="display:flex;flex-direction:column;gap:.3rem;margin-bottom:.5rem"></div>
+          <div style="font-size:.62rem;font-weight:700;color:var(--primary-green);margin-bottom:.25rem">Final Merged Result</div>
+          <div id="parallelOutput" style="display:flex;gap:.25rem;flex-wrap:wrap;min-height:22px;margin-bottom:.4rem"></div>
+          <div class="status-line" id="parallelStatus">4 cores ready — each will sort its chunk</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Merge sort's defining property: O(n log n) in all cases, no exceptions. The cost is O(n) auxiliary space.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Comparisons</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Already sorted — still does all n log n comparisons (no early exit)</td></tr>
+        <tr><td class="op">Average Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Consistent regardless of input distribution</td></tr>
+        <tr><td class="op">Worst Case</td><td class="good">O(n log n)</td><td class="good">O(n log n)</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">No degenerate cases — guaranteed O(n log n) always</td></tr>
+        <tr><td class="op">Stable?</td><td colspan="2" class="good">✅ Yes — stable</td><td class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Equal elements maintain original order during merge step</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(139,92,246,.05);border:1px solid rgba(139,92,246,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Merge sort is the only simple sort with <strong style="color:var(--primary-purple)">guaranteed O(n log n)</strong> in the worst case. Quicksort is O(n²) on bad pivots. Heapsort is O(n log n) but not stable. Merge sort gives you both — <strong style="color:var(--primary-purple)">O(n log n) guaranteed AND stable</strong> — at the cost of O(n) extra memory.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Merge sort is the production-grade sort. Understanding its trade-offs explains why it powers databases, programming languages, and distributed systems.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Guaranteed O(n log n) — no worst case</h4><p>Quicksort degrades to O(n²) on sorted or reverse-sorted input without randomization. Merge sort always takes O(n log n) — critical for production systems that can't tolerate timing spikes.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Stable — preserves equal element order</h4><p>Merge step only takes from right when strictly less than left, preserving original order for equal elements. Essential for multi-key sorts (sort by name then by date) and database query plans.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Perfect for external sort (disk/distributed)</h4><p>Sequential access pattern — reads and writes data in long sequential chunks, not random jumps. Ideal for HDDs, tapes, and distributed file systems where sequential I/O is 100x faster than random.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Naturally parallelizable</h4><p>The divide phase creates independent subproblems. Give each half to a different CPU core or server node. Merge sort scales linearly with hardware — a rare property that makes it central to MapReduce.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Optimal for linked lists</h4><p>Merge sort on linked lists requires no extra space (just pointer reassignment) and runs in O(n log n). Quicksort on linked lists needs O(log n) stack or loses random access. Merge sort is the clear winner for linked structures.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Inversion counting as a bonus</h4><p>A modified merge sort counts the number of inversions in O(n log n) — a useful metric for measuring similarity between ranked lists, detecting nearly-sorted data, and collaborative filtering.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n) auxiliary space — not in-place</h4><p>Requires a temporary array of size n for merging. At 1 billion integers (4GB RAM), merge sort needs another 4GB working buffer. Heapsort and in-place quicksort avoid this entirely.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Slower than quicksort in practice</h4><p>Quicksort's in-place swaps have better cache locality and lower constant factors. On random data in memory, quicksort with good pivot selection is typically 2-3x faster than merge sort.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>No early termination</h4><p>Even on nearly-sorted data, merge sort does all n log n operations. Insertion sort exits at O(n) on nearly-sorted input. Timsort (Python) detects natural runs to avoid this overhead.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Recursive stack overhead</h4><p>log n levels of recursion = O(log n) stack frames. For n = 1 billion, that's 30 stack frames — minimal but not zero. Iterative bottom-up merge sort avoids this entirely.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Overkill for small arrays</h4><p>For n ≤ 20, insertion sort's O(n²) is faster in practice due to zero overhead. Production merge sorts (Timsort) switch to insertion sort for small subarrays to avoid this inefficiency.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor cache performance during merge</h4><p>The merge step accesses two separate arrays alternately — causing cache misses when they don't fit in L1/L2 cache. Quicksort's in-place partitioning is more cache-friendly for typical problem sizes.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Merge Sort — and When to Avoid It
+  </div>
+  <p class="section-sub">Merge sort is the right default for production systems that need guarantees. Here's the precise breakdown.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Merge Sort When...</div>
+      <div class="when-item"><div class="when-icon">🛡️</div><div class="when-text"><h4>Worst-case guarantee is required</h4><p>Latency-sensitive production systems can't tolerate quicksort's O(n²) worst case. Merge sort's guaranteed O(n log n) means no timing spikes regardless of input distribution.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Stability matters</h4><p>Sorting records by multiple keys, preserving tie-break order, or database <span class="when-code">ORDER BY</span> semantics all require stable sort. Merge sort and Timsort are the production-grade stable O(n log n) options.</p></div></div>
+      <div class="when-item"><div class="when-icon">💿</div><div class="when-text"><h4>Data doesn't fit in memory (external sort)</h4><p>Sorting files larger than RAM: sort chunks in memory, write sorted runs to disk, merge them. The sequential disk I/O pattern of merge sort is optimal — random access sorts would be 100x slower.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔗</div><div class="when-text"><h4>Data is in a linked list</h4><p>Merge sort on a linked list runs in O(n log n) with O(1) auxiliary space (just pointer rewiring, no array copy). Quicksort on linked lists loses random access and performs poorly.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Parallel / distributed sorting needed</h4><p>MapReduce sort, multi-threaded sort, GPU sort — all use merge sort's split-then-merge pattern. Independent subproblems map directly to parallel workers with a final merge phase.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Need to count inversions</h4><p>Modified merge sort counts inversions in O(n log n) as a by-product of sorting — used for recommendation similarity, test answer comparison, and rank correlation metrics.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Merge Sort When...</div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Memory is severely constrained</h4><p>O(n) auxiliary space is non-negotiable for merge sort. On 256KB microcontrollers sorting large arrays, use heapsort (O(1) space, O(n log n)) or in-place quicksort instead.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Raw speed on random in-memory data</h4><p>Use std::sort (introsort) or pdqsort. Quicksort's cache-friendly in-place swaps make it 2-3x faster than merge sort in practice on random data that fits in RAM.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>Small datasets (n ≤ 20)</h4><p>Insertion sort wins at this size — zero overhead, O(n) on nearly-sorted, and the O(n²) cost is negligible. Merge sort's divide and recurse overhead dominates at small n.</p></div></div>
+      <div class="when-item"><div class="when-icon">✅</div><div class="when-text"><h4>Nearly-sorted data with adaptive needs</h4><p>Timsort (Python/Java) handles this better by detecting natural runs. Pure merge sort does full O(n log n) even on nearly-sorted input — no adaptation built in.</p></div></div>
+      <div class="when-item"><div class="when-icon">💡</div><div class="when-text"><h4>Primitive (integer/float) arrays in memory</h4><p>Use radix sort O(n) or introsort. For primitives where stability doesn't matter, unstable sorts with better cache behavior outperform merge sort significantly.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔁</div><div class="when-text"><h4>Frequent insertions into sorted structure</h4><p>Use a balanced BST, skip list, or B-tree — O(log n) per insertion. Re-running merge sort after each insert is O(n log n) per change, far too expensive for dynamic data.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Merge Sort problems</span></div>
+    <p class="cta-sub">You've seen how merge sort powers databases, version control, Python's sort, and distributed systems.<br>Now prove you can implement it and apply it to classic divide-and-conquer problems.</p>
+    <div class="merge-cta-viz">
+      <div class="cvbar" style="height:20px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:38px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+      <div class="cvbar" style="height:28px;background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3)"></div>
+      <div class="cvbar" style="height:52px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:18px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+      <div class="cvbar" style="height:44px;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)"></div>
+      <div class="cvbar" style="height:32px;background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3)"></div>
+      <div class="cvbar" style="height:48px;background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)"></div>
+    </div>
+    <a href="practice.html?topic=merge_sort" class="cta-btn">
+      <span>🔀 Solve Merge Sort Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/mergesort_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

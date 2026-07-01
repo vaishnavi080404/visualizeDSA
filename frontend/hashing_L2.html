@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashing - Level 2 | DSA Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/hashing_L2.css">
+</head>
+<body data-theme="dark">
+
+<!-- ===== NAVBAR — same pattern as hashing_basics (file 2) ===== -->
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="index.html">
+            <div class="logo-icon">
+                <img src="dsa.gif" alt="Logo" onerror="this.style.display='none'">
+            </div>
+            <span>DSA Visualizer</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="topics.html">Topics</a></li>
+            <li><a href="prerequisite.html">Prerequisites</a></li>
+            <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+                <span class="ham-line"></span>
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                </svg>
+            </button>
+            <div id="nav-user-slot"></div>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="container">
+
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a>
+        <span>›</span>
+        <a href="hashing_basics.html">Hashing</a>
+        <span>›</span>
+        <span>Level 2</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Hashing — Interactive Visualizer</h1>
+        <p class="content-text">Visualize Hash Map and Hash Set operations in real-time — insert, search, delete and collision handling.</p>
+        <div class="level-tabs">
+            <div class="level-tab">Level 1 of 3 | Basics</div>
+            <div class="level-tab active">Level 2 of 3 | Interactive</div>
+        </div>
+    </div>
+
+    <!-- Implementation Selector -->
+    <div class="implementation-selector">
+        <div class="impl-option active" data-type="hashmap" onclick="switchImpl('hashmap')">
+            <div class="impl-option-icon">🗂️</div>
+            <div class="impl-option-title">Hash Map</div>
+            <div class="impl-option-desc">Key → Value pairs</div>
+        </div>
+        <div class="impl-option" data-type="hashset" onclick="switchImpl('hashset')">
+            <div class="impl-option-icon">🔑</div>
+            <div class="impl-option-title">Hash Set</div>
+            <div class="impl-option-desc">Unique keys only</div>
+        </div>
+    </div>
+
+    <!-- Visualizer Grid -->
+    <div class="visualizer-grid">
+        <!-- Pseudocode -->
+        <div class="pseudo-code-container">
+            <h5>📋 PSEUDO CODE</h5>
+            <div class="pseudo-step" data-step="insert">
+                <strong>INSERT:</strong> Add key to table<br>
+                <span id="pseudo-insert-text">idx = hash(key) mod size<br>table[idx].add(key→val)</span>
+            </div>
+            <div class="pseudo-step" data-step="search">
+                <strong>SEARCH:</strong> Lookup by key<br>
+                <span id="pseudo-search-text">idx = hash(key) mod size<br>return table[idx].find(key)</span>
+            </div>
+            <div class="pseudo-step" data-step="delete">
+                <strong>DELETE:</strong> Remove key<br>
+                <span id="pseudo-delete-text">idx = hash(key) mod size<br>table[idx].remove(key)</span>
+            </div>
+            <div class="pseudo-step" data-step="contains">
+                <strong>CONTAINS:</strong> Check key exists<br>
+                <span id="pseudo-contains-text">idx = hash(key) mod size<br>return key in table[idx]</span>
+            </div>
+            <div class="pseudo-step" data-step="size">
+                <strong>SIZE:</strong> Count of entries<br>
+                <span id="pseudo-size-text">return total entries</span>
+            </div>
+        </div>
+
+        <!-- Main Visualizer -->
+        <div>
+            <div class="visualization-card">
+                <div class="card-header">
+                    <h5 id="visualizer-title">Hash Map Visualizer — Chaining (size = 7)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="hash-vis-container">
+                        <div class="hash-table-grid" id="mainHashTable"></div>
+                        <div id="msg_show"></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="footer-top">
+                        <div class="footer-top-left">
+                            <input type="text" id="keyInput" class="form-control" placeholder="Key (e.g. apple)">
+                            <input type="text" id="valInput" class="form-control" placeholder="Value (optional)">
+                            <button class="btn btn-success" onclick="mainInsert()">Insert</button>
+                        </div>
+                        <button class="btn btn-danger" onclick="mainDelete()">Delete</button>
+                    </div>
+                    <div class="footer-bottom-btns">
+                        <button class="btn btn-primary" onclick="mainSearch()">Search</button>
+                        <button class="btn btn-info"    onclick="mainContains()">Contains</button>
+                        <button class="btn btn-warning" onclick="mainSize()">Size</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCENARIOS ===== -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🧪</div>
+            <h2 class="section-title">Try Different Scenarios</h2>
+        </div>
+
+        <div class="scenario-tabs">
+            <button class="scenario-tab active-insert" id="stab-insert" onclick="switchScenario('insert')">⬆ Insert</button>
+            <button class="scenario-tab" id="stab-search" onclick="switchScenario('search')">🔍 Search</button>
+            <button class="scenario-tab" id="stab-delete" onclick="switchScenario('delete')">🗑 Delete</button>
+            <button class="scenario-tab" id="stab-collide" onclick="switchScenario('collide')">💥 Collision</button>
+            <button class="scenario-tab" id="stab-custom" onclick="switchScenario('custom')">✏ Custom</button>
+        </div>
+
+        <div class="scenario-panels">
+
+            <!-- INSERT -->
+            <div class="scenario-panel active" id="spanel-insert">
+                <div class="scenario-inner">
+                    <h4>Insert Operation — O(1) Average</h4>
+                    <p>Watch how a key is hashed, the bucket index is computed, and the entry is added to the chain at that slot.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Inserting preset entries step by step</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="ins-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-insert"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-green"  onclick="insStep()" id="ins-step-btn">▶ Next Insert</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="insAuto()" id="ins-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetInsert()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="scenario-panel" id="spanel-search">
+                <div class="scenario-inner">
+                    <h4>Search Operation — O(1) Average</h4>
+                    <p>The key is hashed to find its bucket, then the chain is scanned for the exact key match. Watch each step.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Table pre-loaded — searching for <span style="color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;" id="srch-target-label">"grape"</span></div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="srch-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-search"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-cyan"   onclick="srchStep()" id="srch-step-btn">▶ Next Step</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="srchAuto()" id="srch-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetSearch()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE -->
+            <div class="scenario-panel" id="spanel-delete">
+                <div class="scenario-inner">
+                    <h4>Delete Operation — O(1) Average</h4>
+                    <p>Deletion locates the bucket, traverses the chain, and removes the matching node. Observe the chain update.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Deleting entries one by one</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="del-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-delete"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-red"    onclick="delStep()" id="del-step-btn">▶ Next Delete</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="delAuto()" id="del-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetDelete()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLLISION -->
+            <div class="scenario-panel" id="spanel-collide">
+                <div class="scenario-inner">
+                    <h4>Collision — Chaining Resolution</h4>
+                    <p>Multiple keys can hash to the same bucket. With chaining, a linked list at that slot stores all of them — still O(1) average.</p>
+                    <hr class="scenario-divider">
+                    <div class="input-label">🗄 Keys that collide at the same index</div>
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title">📋 Hash Table (size 7)</div>
+                                <div class="ht-rows" id="col-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-collide"><div class="log-title">📋 Operation Log</div></div>
+                            <div class="ctl-row">
+                                <button class="ctl-btn ctl-btn-orange" onclick="colStep()" id="col-step-btn">▶ Insert Next</button>
+                                <button class="ctl-btn ctl-btn-orange" onclick="colAuto()" id="col-auto-btn">⚡ Auto Play</button>
+                                <button class="ctl-btn ctl-btn-ghost"  onclick="resetCollide()">↺ Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOM -->
+            <div class="scenario-panel" id="spanel-custom">
+                <div class="scenario-inner">
+                    <h4>Custom Input</h4>
+                    <p>Build your own hash map or hash set from scratch. Switch between both types and experiment freely.</p>
+                    <hr class="scenario-divider">
+
+                    <div class="cc-grid">
+                        <div class="cc-card" id="ccc-insert"><div class="cc-op">⬆ Insert</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-search"><div class="cc-op">🔍 Search</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-delete"><div class="cc-op">🗑 Delete</div><div class="cc-val cc-green">O(1)</div><div class="cc-label">avg time</div></div>
+                        <div class="cc-card" id="ccc-worst"><div class="cc-op">⚠ Worst</div><div class="cc-val cc-red">O(N)</div><div class="cc-label">all collide</div></div>
+                    </div>
+                    <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+                    <div class="input-label" style="margin-top:1rem;">🗄 Your Hash Structure</div>
+                    <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+                        <button class="ctl-btn ctl-btn-cyan"   onclick="cSwitchType('hashmap')"  id="ctype-map">🗂 Hash Map</button>
+                        <button class="ctl-btn ctl-btn-ghost"  onclick="cSwitchType('hashset')"  id="ctype-set">🔑 Hash Set</button>
+                    </div>
+
+                    <div class="custom-input-row">
+                        <input type="text" class="custom-val-input" id="c-key" placeholder="Key">
+                        <input type="text" class="custom-val-input" id="c-val" placeholder="Value (map)">
+                        <button class="ctl-btn ctl-btn-green"  onclick="customInsert()">⬆ Insert</button>
+                        <button class="ctl-btn ctl-btn-red"    onclick="customDelete()">🗑 Delete</button>
+                        <button class="ctl-btn ctl-btn-cyan"   onclick="customSearch()">🔍 Search</button>
+                        <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+                    </div>
+
+                    <div class="hash-stage">
+                        <div>
+                            <div class="ht-panel">
+                                <div class="ht-panel-title" id="custom-panel-title">📋 Hash Map (size 7)</div>
+                                <div class="ht-rows" id="custom-table"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== CODE EDITOR ===== -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon"><i class="fas fa-code"></i></div>
+            <h2 class="section-title">Interactive Code Editor</h2>
+        </div>
+
+        <div class="lang-tabs" data-group="code-editor">
+            <button class="lang-tab active" data-lang="cpp">C++</button>
+            <button class="lang-tab" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="java">Java</button>
+            <button class="lang-tab" data-lang="c">C</button>
+            <button class="lang-tab" data-lang="javascript">JS</button>
+        </div>
+
+        <div class="editor-wrapper">
+            <div class="editor-header">
+                <span class="lang-display" id="lang-display-label">C++</span>
+                <button class="code-copy" onclick="copyCode()">Copy</button>
+            </div>
+            <textarea id="code-editor"></textarea>
+        </div>
+
+        <button class="run-code-btn" onclick="runCode()">
+            <i class="fas fa-play"></i> Run Code
+        </button>
+
+        <div class="output-container">
+            <h6>📤 Output:</h6>
+            <div id="codeOutput">Click "Run Code" to execute...</div>
+            <div id="inputPrompt" style="display:none;" class="input-prompt">
+                <span id="promptText"></span>
+                <input type="text" id="userInput" placeholder="Enter value">
+                <button onclick="submitInput()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== LEVEL NAV ===== -->
+    <h3 class="content-title" style="justify-content:center;margin-bottom:2rem;">Ready to Test Your Knowledge? →</h3>
+    <div class="level-wrapper">
+        <button id="l1" onclick="window.location.href='hashing_basics.html'">Level 1</button>
+        <div class="slider active" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size:3rem;margin-bottom:0.75rem;">🔒</div>
+        <h3 style="color:var(--primary-purple);font-family:'Space Grotesk',sans-serif;font-size:1.75rem;margin-bottom:0.5rem;">Level Locked</h3>
+        <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;" id="modalMsg">Pass the Level 2 Quiz to unlock Level 3.</p>
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/hashing_L2.js"></script>
+
+<!-- shared navbar component — same as hashing_basics -->
+<script src="js/navbar.js"></script>
+</body>
+</html>

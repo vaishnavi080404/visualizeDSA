@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linear Search - Basics | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CodeMirror CSS -->
+    <!-- CodeMirror Core CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+
+    <!-- CodeMirror Themes -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/linearSearch_L1.css">
+  </head>
+  <body data-theme="dark">
+
+ <nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span class="sep">&#8250;</span> 
+        <a href="algorithms.html">Algorithms</a> <span class="sep">&#8250;</span> 
+        <span>Linear Search</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Linear Search - Basics</h1>
+        <p class="content-text">The most fundamental searching algorithm for checking sequential data.</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3 | Basics</div>
+        </div>
+    </div>
+
+    <!-- Section 1: Intro -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔎</div>
+            <h2 class="section-title">Understanding Linear Search</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Linear Search?</h3>
+            <p class="content-text">
+                Linear search is a searching algorithm where the data set is traversed from one end to the other until the desired value is found. 
+                It is also known as <b>Sequential Search</b> because it checks every element in sequence.
+            </p>
+            
+            <h3 class="content-title">🤔 Why Use Linear Search?</h3>
+            <ul style="list-style: none; color: var(--text-secondary); margin-left: 10px;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>No Sorting Required:</b> Unlike Binary Search, it works on unsorted lists.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Simple Implementation:</b> Very easy to write and understand for beginners.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Small Datasets:</b> Efficient enough for lists with a few hundred elements.</li>
+            </ul>
+        </div>
+        
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Worst)</div>
+                <div class="complexity-value">O(N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space Complexity</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+        </div>
+    </div>
+
+      <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">🎨</div>
+                <h2 class="section-title">Visual Representation</h2>
+            </div>
+
+            <div class="search-visual-img">
+                <h3 style="color: var(--primary-cyan); margin-bottom: 2rem; font-size: 1.3rem;">Stack Structure and Operations</h3>
+                <div class="search-diagram">
+                    <svg viewBox="0 0 900 260" width="100%" style="background:#0a0a0a; border-radius:12px;">
+
+    <!-- Title -->
+    <text x="450" y="30" fill="#22d3ee" font-size="20" font-weight="bold" text-anchor="middle">
+        Linear Search (Searching for 40)
+    </text>
+
+    <!-- Array boxes -->
+    <!-- Box 10 -->
+    <rect x="80" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="120" y="140" fill="white" font-size="16" text-anchor="middle">10</text>
+
+    <!-- Box 20 -->
+    <rect x="180" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="220" y="140" fill="white" font-size="16" text-anchor="middle">20</text>
+
+    <!-- Box 30 -->
+    <rect x="280" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="320" y="140" fill="white" font-size="16" text-anchor="middle">30</text>
+
+    <!-- Box 40 (Found) -->
+    <rect x="380" y="110" width="80" height="50" rx="8" fill="#22c55e"/>
+    <text x="420" y="140" fill="white" font-size="16" text-anchor="middle">40</text>
+
+    <!-- Box 50 -->
+    <rect x="480" y="110" width="80" height="50" rx="8" fill="#6366f1"/>
+    <text x="520" y="140" fill="white" font-size="16" text-anchor="middle">50</text>
+
+    <!-- Index labels -->
+    <text x="120" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">0</text>
+    <text x="220" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">1</text>
+    <text x="320" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">2</text>
+    <text x="420" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">3</text>
+    <text x="520" y="180" fill="#9ca3af" font-size="12" text-anchor="middle">4</text>
+
+    <!-- Arrow pointer -->
+    <path d="M 420 80 L 420 105" stroke="#22c55e" stroke-width="3"/>
+    <polygon points="415,105 425,105 420,115" fill="#22c55e"/>
+
+    <!-- Pointer text -->
+    <text x="420" y="70" fill="#22c55e" font-size="14" text-anchor="middle">
+        Match Found
+    </text>
+
+    <!-- Description -->
+    <text x="450" y="220" fill="#e5e7eb" font-size="14" text-anchor="middle">
+        Elements are checked sequentially until the target value is found
+    </text>
+
+</svg>
+
+                </div>
+                <p class="content-text" style="margin-top: 2rem; text-align: center;">
+                    Stack follows LIFO (Last In First Out) - Elements are added and removed from the same end (TOP)
+                </p>
+            </div>
+        </div>
+
+        <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <h2 class="section-title">Real-World Analogy</h2>
+    </div>
+
+    <p class="content-text" style="margin-bottom: 2rem;">
+        Think of linear search as scanning through a list one item at a time until you find what you're looking for — just like these everyday situations:
+    </p>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Finding a Name in a Phone Book (Unsorted)</div>
+            <div class="example-desc">If names aren't alphabetical, you must read every entry from top to bottom until you find the right one.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Searching a Drawer for Keys</div>
+            <div class="example-desc">You dig through a messy drawer item by item — no order, no shortcut, just check each one until the keys appear.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Watching a Movie for a Scene</div>
+            <div class="example-desc">Without timestamps, you scrub through the video from the start, second by second, until you spot the scene you want.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Checking Roll Call in Class</div>
+            <div class="example-desc">A teacher reads every student's name from the top of the list until the absent student's name is found.</div>
+        </div>
+    </div>
+</div>
+    <!-- Section 2: How it works & Terminology -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2 class="section-title">How it Works & Key Concepts</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">🔄 The Mechanism</h3>
+            <p class="content-text">
+                Linear search works by sequentially checking each element in the list until the desired value is found or the end of the list is reached. 
+                If the element is found, the algorithm returns its <b>index</b>. If the loop finishes without a match, it returns <b>-1</b>.
+            </p>
+
+            <h3 class="content-title">📚 Basic Terminology</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Target:</b> The specific value you are searching for.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Traversal:</b> The process of visiting each element in order.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Sentinel:</b> A special value (like -1) used to signal "Not Found".
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Manual Run Through -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚶</div>
+            <h2 class="section-title">Manual Run Through</h2>
+        </div>
+        <p class="content-text">Let's try to do the searching manually to understand the logic before coding. We will search for the value <b>11</b>.</p>
+        
+        <div class="step-box">
+            <div class="step-header"><span>Step 1:</span> Initialize Array</div>
+            <p class="content-text">We start with an array of random values.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 2:</span> Index 0</div>
+            <p class="content-text">Is 12 equal to 11? <b>No</b>. Move to the next.</p>
+            <div class="array-row">
+                <div class="array-cell scanning">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 3:</span> Index 1 & 2</div>
+            <p class="content-text">Compare 8 and 9 to 11. Both are <b>No</b>. Keep moving.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell scanning">8</div><div class="array-cell scanning">9</div><div class="array-cell">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header"><span>Step 4:</span> Index 3 (Found!)</div>
+            <p class="content-text">Is 11 equal to 11? <b>Yes!</b> The search stops here.</p>
+            <div class="array-row">
+                <div class="array-cell">12</div><div class="array-cell">8</div><div class="array-cell">9</div><div class="array-cell found">11</div><div class="array-cell">5</div><div class="array-cell">11</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-green);">
+            <h4 style="color: var(--primary-green); margin-bottom: 10px;">What Happened?</h4>
+            <p class="content-text" style="margin-bottom: 0;">Every value was checked from the start. When 11 was found, the index <b>3</b> was returned. If we had searched for 100, the algorithm would finish the whole array and return <b>-1</b>.</p>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon"><i class="fas fa-code"></i></div>
+        <h2 class="section-title">Implementation</h2>
+    </div>
+
+    <!-- Iterative Method -->
+    <div class="op-dropdown">
+        <div class="op-header" onclick="toggleDropdown('iter-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">1</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Iterative Method (Standard Loop)</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-iter-drop"></i>
+        </div>
+        <div class="op-content" id="iter-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The iterative approach uses a simple loop to traverse the array from index 0 to N-1. In each iteration, it compares the current element with the target value.
+                </p>
+
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(N)</div>
+                    </div>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li>Start from the first element (index 0).</li>
+                    <li>Compare the target value with the current element of the array.</li>
+                    <li>If the target matches, return the current index.</li>
+                    <li>If the target does not match, move to the next element.</li>
+                    <li>Repeat until the element is found or the end of the array is reached.</li>
+                    <li>If the end is reached without a match, return -1.</li>
+                </ul>
+
+                <!-- Language Tabs -->
+                <div class="lang-tabs" data-group="iterative">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-iter"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recursive Method -->
+    <div class="op-dropdown" style="margin-top: 2rem;">
+        <div class="op-header" onclick="toggleDropdown('recur-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">2</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Recursive Method</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-recur-drop"></i>
+        </div>
+        <div class="op-content" id="recur-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The recursive approach breaks the problem into smaller sub-problems. It checks the current element and then calls itself to check the rest of the array.
+                </p>
+
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(N)</div>
+                    </div>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(N)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li><b>Base Case 1:</b> If index is out of bounds, return -1 (Not Found).</li>
+                    <li><b>Base Case 2:</b> If element at current index == target, return index (Found).</li>
+                    <li><b>Recursive Step:</b> Return the result of the search function called with index + 1.</li>
+                </ul>
+
+                <div class="lang-tabs" data-group="recursive">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-recur"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Video Section -->
+        <div class="video-section">
+            <div class="video-info">
+                <span>📺</span>
+                <span>Linear Search Explained</span>
+            </div>
+            
+            <div class="video-container">
+                <div class="video-wrapper">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/C46QfTjVCNU?si=xcrqBqgp9Ns0cJdc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+
+
+
+<!-- Level Slider Section -->
+
+    <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+    </div>
+
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="color: var(--primary-purple); font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 10px;">Level Locked</h3>
+        <p style="color: var(--text-secondary);">Pass the Level 1 Quiz to unlock Level 2 and continue your Stack journey.</p>
+        
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<!-- LANGUAGE MODES (REQUIRED FOR SYNTAX HIGHLIGHTING) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/linearSearch_L1.js"></script>
+
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Search — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/binarysearch_L3.css">
+  </head>
+  <body>
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="binarysearch_L1.html">Binary Search</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Binary Search in the <span class="highlight">Real World</span></h1>
+  <p>The algorithm that turns 1,000,000 comparisons into 20. Binary search is the foundation of databases, autocomplete, version control, and more.</p>
+</div>
+
+<!-- CONCEPT EXPLAINER -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Eliminate Half the Search Space Every Step</div>
+    <p class="concept-desc">Binary search works on a <strong>sorted array</strong>. It starts at the <strong>middle element</strong>. If the target is smaller, it ignores the right half entirely. If larger, it ignores the left half. Each comparison <strong>eliminates half</strong> the remaining elements — turning O(n) into O(log n). Finding one item in 1,000,000 takes just <strong>20 comparisons</strong>.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Watch it halve — searching for <strong style="color:var(--primary-teal)">31</strong></div>
+      <div class="bs-array" id="conceptBSArray"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="bsConceptStep()">▶ Next Step</button>
+        <button class="d-btn reset" onclick="bsConceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptBSStatus">Click "Next Step" to run binary search step by step</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.2);border:2px solid var(--primary-green)"></div>Low pointer</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(239,68,68,.1);border:2px solid var(--primary-red)"></div>High pointer</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(20,184,166,.2);border:2px solid var(--primary-teal)"></div>Mid (checking)</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;opacity:.2;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1)"></div>Eliminated</div>
+    </div>
+  </div>
+</div>
+
+<!-- REAL WORLD APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(20,184,166,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Binary search is everywhere — every time a system needs to find something fast in sorted data, binary search is working behind the scenes.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. Dictionary / Autocomplete -->
+    <div class="app-card teal">
+      <div class="card-header">
+        <div class="card-icon teal">📖</div>
+        <div class="card-title-wrap">
+          <h3>Dictionary & Autocomplete</h3>
+          <p>Every spell checker, dictionary app, and autocomplete system stores words in sorted order and uses binary search. Typing "zoo" in Google search triggers binary search on millions of sorted keywords.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type a word — binary search finds it in the sorted dictionary</div>
+        <div class="demo-box">
+          <input class="search-input" id="dictInput" type="text" placeholder="Search the dictionary (e.g. mango, tiger...)" oninput="dictSearch(this.value)"/>
+          <div id="dictResult"></div>
+          <div class="step-info" id="dictSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Database Index -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🗄️</div>
+        <div class="card-title-wrap">
+          <h3>Database Index Lookup</h3>
+          <p>When you query a database with a WHERE clause on an indexed column, the database engine uses binary search on a B-Tree index. Without it, every query would be O(n) — scanning millions of rows.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Search user by ID — database uses binary search on the index</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dbSearch(1042)">Find ID 1042</button>
+            <button class="d-btn go" onclick="dbSearch(1078)">Find ID 1078</button>
+            <button class="d-btn go" onclick="dbSearch(1099)">Find ID 1099</button>
+            <button class="d-btn reset" onclick="dbReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bs" id="dbArray"></div>
+          <div class="status-line" id="dbStatus">Select a user ID to search</div>
+          <div class="step-info" id="dbSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Git Bisect -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🔀</div>
+        <div class="card-title-wrap">
+          <h3>Git Bisect — Bug Finder</h3>
+          <p><code style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--primary-purple)">git bisect</code> is literally binary search on your commit history. It finds which commit introduced a bug in O(log n) steps instead of checking all commits one by one.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Bisect the commit history to find the buggy commit</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="bisectStep('good')">✅ Good (no bug)</button>
+            <button class="d-btn" style="border-color:var(--primary-red);color:var(--primary-red)" onclick="bisectStep('bad')">❌ Bad (has bug)</button>
+            <button class="d-btn reset" onclick="bisectReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bs" id="bisectArray"></div>
+          <div class="status-line" id="bisectStatus">Start: mark commits as good or bad</div>
+          <div class="step-info" id="bisectSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Leaderboard Rank Lookup -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🏆</div>
+        <div class="card-title-wrap">
+          <h3>Leaderboard Rank Search</h3>
+          <p>Gaming leaderboards and competitive platforms like Codeforces store scores in sorted order. Finding your rank or a player's position uses binary search — instant lookup among millions of players.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Find a player's rank — binary search on sorted scores</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="lbSearch('Alice')">Find Alice</button>
+            <button class="d-btn go" onclick="lbSearch('Eve')">Find Eve</button>
+            <button class="d-btn go" onclick="lbSearch('Zara')">Find Zara</button>
+            <button class="d-btn reset" onclick="lbReset()">↺ Reset</button>
+          </div>
+          <div id="lbList" style="max-height:150px;overflow-y:auto"></div>
+          <div class="step-info" id="lbSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Version / Release Finder -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">📦</div>
+        <div class="card-title-wrap">
+          <h3>First Bad Version (npm / App Store)</h3>
+          <p>Package managers and app stores use binary search to find the first version that introduced a breaking change. "Find the first version ≥ X" is a classic binary search variant used in software deployment.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Find the first broken version — binary search on version numbers</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" id="versionBtn" onclick="versionSearch()">▶ Find First Bad Version</button>
+            <button class="d-btn reset" onclick="versionReset()">↺ Reset</button>
+          </div>
+          <div class="mini-bs" id="versionArray"></div>
+          <div class="status-line" id="versionStatus">Press button to find the first bad version</div>
+          <div class="step-info" id="versionSteps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Sorted Inventory / Product Search -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">🛒</div>
+        <div class="card-title-wrap">
+          <h3>E-Commerce Price Range Filter</h3>
+          <p>Amazon, Flipkart, and other e-commerce sites store products sorted by price. Applying a price range filter uses binary search to find the first product above the minimum price in O(log n) time.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Set a price range — binary search finds the boundary</div>
+        <div class="demo-box">
+          <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;">
+            <span style="font-size:.75rem;color:var(--text-secondary)">Min: ₹</span>
+            <input type="range" id="priceSlider" min="0" max="900" step="50" value="300" oninput="priceFilter()" style="flex:1;accent-color:var(--primary-teal)"/>
+            <span style="font-size:.78rem;color:var(--primary-teal);font-family:'JetBrains Mono',monospace;min-width:50px" id="priceVal">₹300</span>
+          </div>
+          <div class="mini-bs" id="priceArray"></div>
+          <div id="priceResults" style="display:flex;flex-direction:column;gap:.2rem;max-height:100px;overflow-y:auto"></div>
+          <div class="step-info" id="priceSteps"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(20,184,166,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">The power of binary search is in its O(log n) time — each step cuts the problem in half. Here's the complete picture.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Case</th><th>Time</th><th>Space (Iterative)</th><th>Space (Recursive)</th><th>When it happens</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Best Case</td><td class="good">O(1)</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Target is the middle element on first check</td></tr>
+        <tr><td class="op">Average Case</td><td class="good">O(log n)</td><td class="good">O(1)</td><td class="ok">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Target found after ~log₂(n) halving steps</td></tr>
+        <tr><td class="op">Worst Case</td><td class="good">O(log n)</td><td class="good">O(1)</td><td class="ok">O(log n)</td><td style="color:var(--text-secondary);font-size:.82rem">Target not found or at extreme ends</td></tr>
+        <tr><td class="op">Preprocessing</td><td class="ok">O(n log n)</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Array must be sorted first — one-time cost</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">The log n magic:</strong> With <strong style="color:var(--primary-teal)">1,000,000</strong> elements, binary search takes at most <strong style="color:var(--primary-teal)">20</strong> steps. With <strong style="color:var(--primary-teal)">1,000,000,000</strong>? Just <strong style="color:var(--primary-teal)">30</strong> steps. Each doubling of data adds only 1 more step.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Binary search is powerful — but it comes with real constraints. Here's the honest picture.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(log n) — blazing fast</h4><p>Searching 1 billion sorted elements takes just 30 comparisons. No other comparison-based search beats this on sorted data.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) space (iterative)</h4><p>The iterative implementation uses only three variables (low, high, mid). No extra arrays, no recursion stack overhead.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Predictable, consistent performance</h4><p>Worst case is always O(log n) — no bad inputs that degrade to O(n). Unlike hash tables, there are no collision edge cases.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Excellent for range queries</h4><p>Find "first element ≥ X" or "last element ≤ Y" in O(log n). These variants power database range scans and leaderboard lookups.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Cache-friendly on sorted arrays</h4><p>Accessing mid = (low+high)/2 in a sorted array is cache-efficient — far better than random-access patterns in hash tables.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Works on answers, not just arrays</h4><p>"Binary search on the answer" solves problems like minimum speed, kth element, or allocation problems — not just array lookups.</p></div>
+      </div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Requires sorted data</h4><p>Binary search is completely useless on unsorted arrays. Sorting costs O(n log n) — only worth it if you search many times on the same data.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Requires random access</h4><p>Works only on arrays. Cannot be used on linked lists (no O(1) mid access), streams, or data structures without direct indexing.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Off-by-one errors are common</h4><p>Getting low/high/mid boundaries wrong causes infinite loops or missed results. <span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--primary-teal)">mid = low + (high-low)/2</span> vs <span style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--primary-red)">(low+high)/2</span> overflow bug.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Slow for single searches on small data</h4><p>For n &lt; 10, linear search is faster in practice — binary search has overhead from calculating mid and doing comparisons that isn't worth it.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Insertion keeps sorted order — expensive</h4><p>After inserting a new element, you must re-sort or insert in the right position (O(n) shift). Binary search + sorted arrays are bad for frequent inserts.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Not the fastest for exact lookups</h4><p>For exact key lookups in dynamic data, HashMap gives O(1) average. Binary search is best for ordered data where range queries also matter.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Binary Search — and When to Avoid It
+  </div>
+  <p class="section-sub">Binary search is the right tool in very specific situations. Knowing the difference is what separates good developers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Binary Search When...</div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text"><h4>Data is sorted (or can be sorted once)</h4><p>If your array is sorted and you'll search it many times, binary search pays for itself. Sort once O(n log n), then each search is O(log n).</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔁</div>
+        <div class="when-text"><h4>Searching the same data repeatedly</h4><p>Sort once + binary search for each query beats linear scanning every time. 1000 queries on 1M elements: O(n log n + 1000 × log n) vs O(1000n).</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎯</div>
+        <div class="when-text"><h4>Finding boundaries — "first ≥ X" or "last ≤ Y"</h4><p>Lower bound / upper bound variants. <span class="when-code">lower_bound(arr, x)</span> finds first element ≥ x. Powers database range queries and price filters.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📦</div>
+        <div class="when-text"><h4>Large datasets where O(n) is too slow</h4><p>1 million+ elements. Linear search takes ~1M ops, binary takes ~20. This difference matters in real systems processing thousands of requests per second.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🧮</div>
+        <div class="when-text"><h4>"Binary search on the answer" problems</h4><p>When the answer has monotonic property — "is X feasible?" is true for all values above a threshold. Minimize max, maximize min, kth smallest.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔀</div>
+        <div class="when-text"><h4>Version control / monotonic sequences</h4><p>Finding first bad version, first true in a boolean array, first time a condition changes — all binary search on the transition point.</p></div>
+      </div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Binary Search When...</div>
+      <div class="when-item">
+        <div class="when-icon">🔀</div>
+        <div class="when-text"><h4>Data is unsorted and you search only once</h4><p>Sorting costs O(n log n) — more than just doing linear search O(n). Only sort if you'll reuse the sorted data for multiple searches.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔗</div>
+        <div class="when-text"><h4>Data is in a linked list</h4><p>No random access = no O(1) mid element. Use linear search or convert to array first. Binary search on a linked list is O(n) — no benefit.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔑</div>
+        <div class="when-text"><h4>You need O(1) exact lookups</h4><p>Use a HashMap. If you just want "does X exist?" or "what's the value for key X?", HashMap is O(1) average — faster than binary search's O(log n).</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">➕</div>
+        <div class="when-text"><h4>Data changes frequently (many inserts/deletes)</h4><p>Each insert into a sorted array shifts elements O(n). Use a balanced BST (TreeMap/TreeSet) or skip list instead — they maintain sorted order with O(log n) inserts.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text"><h4>Dataset is tiny (n &lt; 15)</h4><p>For very small arrays, linear search is simpler and often faster due to zero overhead. The overhead of binary search calculations isn't worth it.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📡</div>
+        <div class="when-text"><h4>Streaming or real-time data</h4><p>You can't binary search a stream — elements arrive one at a time and there's no random access. Use a sliding window or hash-based approach instead.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Binary Search problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how binary search powers databases, Git, dictionaries, and leaderboards.<br>
+      Now prove you can implement it — including the tricky variants — under pressure.
+    </p>
+    <div class="halve-visual">
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="halve-label">16 items →</span>
+        <div class="halve-row" style="gap:3px">
+          <div class="halve-block" style="width:180px;background:rgba(20,184,166,.08);border-color:rgba(20,184,166,.25);color:var(--primary-teal)">████████████████</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="halve-label">8 items →</span>
+        <div class="halve-row" style="gap:3px">
+          <div class="halve-block" style="width:88px;background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.25);color:var(--primary-cyan)">████████</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="halve-label">4 items →</span>
+        <div class="halve-row">
+          <div class="halve-block" style="width:42px;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.25);color:var(--primary-green)">████</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span class="halve-label">Found! →</span>
+        <div class="halve-row">
+          <div class="halve-block" style="width:20px;background:rgba(16,185,129,.25);border-color:var(--primary-green);color:var(--primary-green)">✓</div>
+        </div>
+      </div>
+    </div>
+    <a href="practice.html?topic=binarysearch" class="cta-btn">
+      <span>⚡ Solve Binary Search Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/binarysearch_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

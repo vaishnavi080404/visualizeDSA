@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heap — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link rel="stylesheet" href="css/heap_L3.css">
+</head>
+<body data-theme="dark">
+
+<!--  NAV  -->
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!--           ═ HERO           ═ -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="heap_basics.html">Heap</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+
+  <div class="hero-badge">🏆 Level 3 of 3</div>
+
+  <h1>Heaps in the <span class="highlight">Real World</span></h1>
+
+  <p>From hospital triage systems to GPS navigation, from streaming platforms to operating system schedulers — heaps quietly power the most critical systems in computing with their O(log N) magic.</p>
+
+  <div class="level-badges">
+    <div class="lvl-badge">Level 1 of 3 | Basics</div>
+    <div class="lvl-badge">Level 2 of 3 | Interactive</div>
+    <div class="lvl-badge active">Level 3 of 3 | Real World</div>
+  </div>
+</div>
+
+<!--           ═ CONCEPT           ═ -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Why Heaps Are Everywhere</div>
+    <p class="concept-desc">
+      Basically, a heap answers one question <strong>faster than any other data structure</strong>:
+      <em>"What is the current maximum (or minimum) element?"</em> in O(1), and can
+      remove it and restore order in O(log N). Think of it this way — whenever a system
+      needs to <strong>always process the most important thing next</strong>, a heap is the answer.
+      Priority queues, Dijkstra's shortest path, the top-K problem, median tracking, heap sort —
+      all of these live on this single elegant property.
+    </p>
+
+    <!-- Concept visualizer: animated root highlight -->
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--txt2);margin-bottom:1rem;text-align:center">
+        🎮 Step through — see how O(1) peek + O(log N) extract works
+      </div>
+      <div style="text-align:center;margin-bottom:.75rem">
+        <svg id="conceptSvg" viewBox="0 0 400 160" style="width:100%;max-width:440px;overflow:visible;display:inline-block;">
+          <!-- Drawn by JS -->
+        </svg>
+      </div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Extract Max</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--txt2)" id="conceptMsg">
+        Click "Extract Max" — watch how the heap fixes itself in O(log N)
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(139,92,246,.15);border:2px solid var(--purple)"></div>Root (max)
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.18);border:2px solid var(--rose)"></div>Being extracted
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--txt2)">
+        <div style="width:14px;height:14px;border-radius:3px;background:rgba(245,158,11,.12);border:2px solid var(--orange)"></div>Sifting down
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--           ═ APPLICATIONS           ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">
+    In simple terms, wherever you need the "best next item" instantly, a heap shows up.
+    These six applications touch almost every computer you've ever used.
+  </p>
+
+  <div class="app-grid">
+
+    <!--   1. PRIORITY QUEUE   -->
+    <div class="app-card rose">
+      <div class="card-header">
+        <div class="card-icon rose">🏥</div>
+        <div class="card-info">
+          <h3>Priority Queue — Hospital Triage</h3>
+          <p>
+            The classic use case. Basically, a priority queue wraps a heap so you
+            always treat the <strong>most critical patient first</strong>, regardless of arrival order.
+            OS task schedulers, print spoolers, and event-driven simulations all
+            use this pattern. Insert = O(log N), get-min/max = <code>O(1)</code>.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Admit patients — highest priority always served first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="pqAdmit()">▶ Admit Patient</button>
+            <button class="d-btn go-cyan" onclick="pqTreat()">✓ Treat Next</button>
+            <button class="d-btn reset" onclick="pqReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="pqCells"></div>
+          <div class="status-line" id="pqStatus">Priority Queue empty — admit patients to begin</div>
+          <div class="stat-row two" style="margin-top:.5rem">
+            <div class="stat-pill rose">Waiting: <b class="rv" id="pqWaiting">0</b></div>
+            <div class="stat-pill green">Treated: <b class="gv" id="pqTreated">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--   2. DIJKSTRA'S   -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🗺️</div>
+        <div class="card-info">
+          <h3>Dijkstra's Algorithm — GPS Navigation</h3>
+          <p>
+            Google Maps computes shortest paths using Dijkstra's — and at its heart is a
+            <strong>min-heap</strong> of unvisited nodes sorted by distance.
+            The heap ensures we always explore the <strong>nearest unvisited node next</strong>,
+            giving O((V + E) log V) overall. Without a heap, this drops to O(V²).
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Explore shortest path — min-heap picks nearest node each step</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dijkStep()">▶ Explore Next Node</button>
+            <button class="d-btn reset" onclick="dijkReset()">↺ Reset</button>
+          </div>
+          <!-- Node distance cells -->
+          <div class="mini-cells" id="dijkNodes"></div>
+          <div class="status-line" id="dijkStatus">Min-heap frontier: start from node A (dist 0)</div>
+          <div class="step-info" id="dijkInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!--   3. HEAP SORT   -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">📊</div>
+        <div class="card-info">
+          <h3>Heap Sort — In-Place O(N log N) Sorting</h3>
+          <p>
+            Think of it this way: build a max-heap in O(N), then repeatedly extract the max
+            to sorted position. The result is an <strong>in-place, O(N log N) sort</strong>
+            with O(1) extra space — better than merge sort's O(N) space.
+            Used in embedded systems where memory is tight.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch heap sort in action — extract max to sorted position</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="hsStep()">▶ Sort Next</button>
+            <button class="d-btn go-cyan" onclick="hsAuto()">⚡ Auto Play</button>
+            <button class="d-btn reset" onclick="hsReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="hsCells"></div>
+          <div class="status-line" id="hsStatus">Array ready — step through heap sort</div>
+          <div class="stat-row two" style="margin-top:.5rem">
+            <div class="stat-pill orange">Heap size: <b class="ov" id="hsHeapSz">8</b></div>
+            <div class="stat-pill green">Sorted: <b class="gv" id="hsSorted">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--   4. K-TH LARGEST   -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🏆</div>
+        <div class="card-info">
+          <h3>K-th Largest — Leaderboards & Top-K</h3>
+          <p>
+            Finding the top-K items in a stream (top 10 trending videos, top 100
+            leaderboard scores) uses a <strong>min-heap of size K</strong>.
+            Stream in values; if larger than heap root, replace root and heapify.
+            Result: O(N log K) — much better than sorting the entire dataset.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Stream values — min-heap of size K keeps only the top K</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="topkStep()">▶ Stream Next</button>
+            <button class="d-btn reset" onclick="topkReset()">↺ Reset</button>
+          </div>
+          <div style="font-size:.62rem;color:var(--txt2);margin-bottom:.3rem;font-family:'JetBrains Mono',monospace">Input stream:</div>
+          <div class="mini-cells" id="topkStream"></div>
+          <div style="font-size:.62rem;color:var(--cyan);margin:.4rem 0 .3rem;font-family:'JetBrains Mono',monospace">Top-3 heap (min-heap):</div>
+          <div class="mini-cells" id="topkHeap"></div>
+          <div class="status-line" id="topkStatus">Stream 9 values — keep top 3 using min-heap</div>
+        </div>
+      </div>
+    </div>
+
+    <!--   5. MEDIAN STREAM   -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">📈</div>
+        <div class="card-info">
+          <h3>Median of Data Stream — Two Heaps Trick</h3>
+          <p>
+            Real-time analytics (stock prices, sensor readings) need the median continuously.
+            The trick: maintain a <strong>max-heap of the lower half</strong> and a
+            <strong>min-heap of the upper half</strong>. Median = root of one (or average of both).
+            Insert O(log N), get-median <code>O(1)</code>.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Stream numbers — two heaps always track the median</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="medStep()">▶ Add Next Number</button>
+            <button class="d-btn reset" onclick="medReset()">↺ Reset</button>
+          </div>
+          <div style="font-size:.62rem;color:var(--green);margin-bottom:.3rem;font-family:'JetBrains Mono',monospace">Max-Heap (lower half):</div>
+          <div class="mini-cells" id="medLow"></div>
+          <div style="font-size:.62rem;color:var(--cyan);margin:.4rem 0 .3rem;font-family:'JetBrains Mono',monospace">Min-Heap (upper half):</div>
+          <div class="mini-cells" id="medHigh"></div>
+          <div class="status-line" id="medStatus">Stream numbers one by one — median stays O(1)</div>
+        </div>
+      </div>
+    </div>
+
+    <!--   6. JOB SCHEDULING   -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">⚙️</div>
+        <div class="card-info">
+          <h3>Job Scheduling — OS Task Manager</h3>
+          <p>
+            Every modern OS scheduler (Linux CFS, Windows HPET) uses a heap-based
+            priority queue. Jobs arrive with deadlines or priorities; the scheduler
+            always picks the <strong>highest-priority ready task</strong> in O(log N).
+            Deadline scheduling, CPU time-slicing, and I/O request ordering all depend on this.
+          </p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add jobs with priority — scheduler always picks highest priority next</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="schedAdd()">▶ Add Job</button>
+            <button class="d-btn go-cyan" onclick="schedRun()">✓ Run Next</button>
+            <button class="d-btn reset" onclick="schedReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="schedCells"></div>
+          <div class="status-line" id="schedStatus">Job queue empty — add jobs to begin scheduling</div>
+          <div class="stat-row three" style="margin-top:.5rem">
+            <div class="stat-pill rose">Queued: <b class="rv" id="schedQ">0</b></div>
+            <div class="stat-pill green">Completed: <b class="gv" id="schedDone">0</b></div>
+            <div class="stat-pill cyan">CPU Time: <b class="cv" id="schedTime">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-grid -->
+</div><!-- /section -->
+
+<div class="divider"></div>
+
+<!--           ═ COMPLEXITY TABLE           ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time &amp; Space Complexity
+  </div>
+  <p class="section-sub">
+    Heaps are ridiculously efficient for what they do. Note: O(1) peek is what makes
+    priority queue and median operations so powerful — you never scan the whole array.
+  </p>
+
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Binary Heap</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="op">Peek (get max/min)</td>
+          <td class="good">O(1)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Root is always the answer — just read arr[0], no traversal</td>
+        </tr>
+        <tr>
+          <td class="op">Insert</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Append + heapify-up — at most log N swaps up the tree</td>
+        </tr>
+        <tr>
+          <td class="op">Extract max / min</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Remove root, place last element, heapify-down</td>
+        </tr>
+        <tr>
+          <td class="op">Build Heap (N items)</td>
+          <td class="good">O(N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Floyd's algorithm — NOT O(N log N) — proven tighter bound</td>
+        </tr>
+        <tr>
+          <td class="op">Heap Sort</td>
+          <td class="ok">O(N log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Build heap O(N) + N extractions O(N log N) — in-place</td>
+        </tr>
+        <tr>
+          <td class="op">Decrease Key (Dijkstra)</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Update priority + heapify-up — critical for graph algorithms</td>
+        </tr>
+        <tr>
+          <td class="op">Delete arbitrary node</td>
+          <td class="ok">O(log N)</td>
+          <td class="good">O(1)</td>
+          <td class="note">Replace with last element + heapify-up or down as needed</td>
+        </tr>
+        <tr>
+          <td class="op">Merge two heaps</td>
+          <td class="bad">O(N)</td>
+          <td class="ok">O(N)</td>
+          <td class="note">Merge arrays + rebuild — Fibonacci heap does O(1) amortized</td>
+        </tr>
+        <tr>
+          <td class="op">Space overall</td>
+          <td colspan="2" class="ok">O(N)</td>
+          <td class="note">Array storage — zero pointer overhead, perfect cache locality</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="insight-box">
+    💡 <strong>Key insight:</strong> Heaps are the <span class="hi">only data structure with O(1) max/min access
+    AND O(log N) insertion/deletion</span>. A sorted array gives O(1) max but O(N) insert.
+    A BST gives O(log N) for everything but no O(1) max without augmentation. Heaps hit the
+    sweet spot for any workload that says "always give me the best thing, efficiently."
+    For Dijkstra's on dense graphs, Fibonacci heaps push decrease-key to amortized O(1) —
+    but for most real-world use cases, a simple binary heap is the right call.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--           ═ PROS & CONS           ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages &amp; Disadvantages
+  </div>
+  <p class="section-sub">
+    Heaps are not a silver bullet — they're perfect for priority access but terrible for
+    search. Knowing the trade-offs is what makes a good engineer.
+  </p>
+
+  <div class="procon-grid">
+    <!-- PROS -->
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--green)">✅ Advantages</div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>O(1) access to max/min — unbeatable</h4>
+          <p>No other general-purpose structure gives you the extreme element in constant time
+          with O(log N) updates. Arrays give O(1) read but O(N) insert. Heaps win on this trade-off.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>O(N) build via Floyd's algorithm</h4>
+          <p>Converting any unsorted array to a valid heap costs O(N), not O(N log N).
+          This is a non-obvious but proven result — bottom-up heapification is faster
+          than inserting N elements one by one.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Cache-friendly array storage</h4>
+          <p>Heaps live in a contiguous array — parent at i, children at 2i+1 and 2i+2.
+          No pointer chasing. Sequential memory access means excellent cache performance
+          compared to pointer-based trees.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>In-place heap sort — O(1) extra space</h4>
+          <p>Heap sort sorts in-place with no auxiliary array. Merge sort needs O(N) space.
+          For embedded systems or memory-constrained environments, heap sort is a serious
+          contender for O(N log N) sorting.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Dynamic — handles streaming data naturally</h4>
+          <p>Unlike sorted arrays that need O(N) inserts, heaps accept new elements in
+          O(log N) and immediately maintain the priority invariant. Perfect for real-time
+          data streams where you continuously insert and query.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text">
+          <h4>Enables O((V+E) log V) Dijkstra's and Prim's</h4>
+          <p>Graph algorithms that repeatedly extract the minimum-distance node run in
+          O((V+E) log V) with a heap — vs O(V²) with a simple array. For sparse graphs,
+          this is a massive speedup: 10× faster on a million-node graph.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONS -->
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--red)">❌ Disadvantages</div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>No O(log N) search for arbitrary values</h4>
+          <p>Heaps are NOT sorted arrays. Finding an arbitrary value requires O(N) scan.
+          "Is 42 in this heap?" requires checking every element. Hash sets do this in O(1).
+          If you need search, a BST or hash map is the right choice.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Decrease-key requires knowing the index</h4>
+          <p>Dijkstra's needs to decrease the priority of an already-inserted node.
+          In a standard binary heap, you need an index map to find it in O(1) before
+          updating. This adds implementation complexity and extra O(N) space.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Merging two heaps is O(N) — expensive</h4>
+          <p>Merging two binary heaps of size N each costs O(N) — you concat and rebuild.
+          Leftist heaps, skew heaps, and Fibonacci heaps support O(log N) or O(1) merge.
+          If frequent merging is needed, binary heaps lose the battle.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Not stable — equal priority ordering not guaranteed</h4>
+          <p>Two elements with equal priority can emerge in any order during extraction.
+          For scheduling systems that need FIFO among equal-priority items, you'd need
+          a tie-breaking secondary key, adding implementation overhead.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Heap sort has poor cache locality in practice</h4>
+          <p>Despite being in-place, heap sort accesses memory in non-sequential patterns
+          during heapify-down — jumping between parent/child indices. In practice,
+          quicksort runs 2–3× faster due to far better cache utilization.</p>
+        </div>
+      </div>
+
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text">
+          <h4>Only root is O(1) — second element is O(log N)</h4>
+          <p>Heaps only guarantee the root is the max/min. Finding the 2nd or 3rd largest
+          still requires extraction (destructive) or O(N) scan. For "top-K smallest"
+          queries on a static dataset, a sorted array + binary search beats a heap.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--           ═ WHEN TO USE           ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="s-icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Heaps — and When to Avoid Them
+  </div>
+  <p class="section-sub">
+    Heaps have a very specific sweet spot. Recognizing it instantly separates
+    great engineers from good ones.
+  </p>
+
+  <div class="when-grid">
+    <!-- USE -->
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--green)">✅ Use Heaps When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text">
+          <h4>You repeatedly need the max or min element</h4>
+          <p>If your main operation is "give me the best/worst element," heaps are unbeatable.
+          Job schedulers, event queues, and simulation engines all follow this pattern.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🗺️</div>
+        <div class="when-text">
+          <h4>Implementing Dijkstra's, Prim's, or A*</h4>
+          <p>Graph algorithms that extract minimum distance nodes use <span class="when-code">minHeap.poll()</span>
+          as their inner loop. Without a heap, these drop from O((V+E)logV) to O(V²).</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🏆</div>
+        <div class="when-text">
+          <h4>Finding K largest or K smallest efficiently</h4>
+          <p>A min-heap of size K processes a stream in O(N log K) — much faster than sorting
+          the entire dataset O(N log N) when K is small relative to N.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text">
+          <h4>Tracking median of a data stream</h4>
+          <p>The two-heap trick (max-heap + min-heap) gives O(log N) insert and O(1) median —
+          no other standard structure does better. Used in real-time analytics dashboards.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📦</div>
+        <div class="when-text">
+          <h4>Memory-tight environments needing O(1) space sort</h4>
+          <p>Heap sort is the only O(N log N) comparison sort with O(1) auxiliary space.
+          Use it when you can't afford merge sort's O(N) buffer — embedded systems, firmware.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">⚡</div>
+        <div class="when-text">
+          <h4>Dynamic priority — items change priority frequently</h4>
+          <p>With an index map, decrease-key is O(log N). Event-driven simulations, network
+          packet schedulers, and real-time operating systems update priorities continuously.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVOID -->
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--red)">❌ Avoid Heaps When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text">
+          <h4>You need to search for arbitrary values</h4>
+          <p>Heaps don't support O(log N) search by value. "Find element 42" is O(N) scan.
+          Use a hash map for O(1) lookup or a BST for O(log N) ordered search.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🔄</div>
+        <div class="when-text">
+          <h4>You need to traverse in sorted order repeatedly</h4>
+          <p>A heap is NOT a sorted structure — only the root is guaranteed. If you need to
+          iterate elements in sorted order, a balanced BST (<span class="when-code">TreeSet</span>) or sorted
+          array does it in O(N) vs O(N log N) with repeated extractions.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🤝</div>
+        <div class="when-text">
+          <h4>You need to frequently merge two collections</h4>
+          <p>Binary heap merge is O(N). If merging priority queues is common in your workload,
+          consider leftist heaps, skew heaps, or Fibonacci heaps — they merge in O(log N) or O(1).</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">🎯</div>
+        <div class="when-text">
+          <h4>Your data is already sorted — just use an array</h4>
+          <p>If data arrives pre-sorted, a sorted array + binary search gives O(log N) lookup
+          and O(1) max/min access. Building a heap from sorted data is wasted effort.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">📈</div>
+        <div class="when-text">
+          <h4>Stable ordering matters at equal priority</h4>
+          <p>Heaps provide no FIFO guarantee for equal-priority items. If ties must break
+          by insertion order, a deque or stable priority queue implementation is needed.</p>
+        </div>
+      </div>
+
+      <div class="when-item">
+        <div class="when-icon">💨</div>
+        <div class="when-text">
+          <h4>You need fastest possible sorting in practice</h4>
+          <p>Despite O(N log N) worst-case, quicksort beats heap sort empirically due to
+          cache locality. Timsort (Python, Java) also beats heap sort on real-world data.
+          Heap sort is a theoretical weapon, not always a practical one.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--           ═ CTA           ═ -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Heap problems</span></div>
+    <p class="cta-sub">
+      You've seen heaps power hospital triage, GPS navigation, heap sort, leaderboards,
+      median tracking, and OS schedulers.<br>
+      Now prove you can apply these patterns to classic interview and competitive programming problems.
+    </p>
+
+    <!-- Animated heap cells -->
+    <div class="heap-cta-viz">
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">90</div>
+      <div class="hcell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--pink)">80</div>
+      <div class="hcell" style="background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.5);color:var(--rose)">70</div>
+      <div class="hcell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)">60</div>
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">50</div>
+      <div class="hcell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--pink)">40</div>
+      <div class="hcell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--orange)">30</div>
+      <div class="hcell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--rose)">20</div>
+    </div>
+
+    <a href="practice.html?topic=heap" class="cta-btn">
+      <span>🏔 Solve Heap Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+<script src="js/api.js"></script>
+    <script src="js/heap_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

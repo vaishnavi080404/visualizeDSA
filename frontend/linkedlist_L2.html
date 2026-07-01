@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linked List - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/linkedlist_L2.css" />
+  </head>
+  <body data-theme="dark">
+    <nav>
+      <div class="nav-container">
+        <div class="logo">
+          <div class="logo-icon">
+            <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          </div>
+          <span>CODEANIME</span>
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="#about">Code Editor</a></li>
+        </ul>
+        <div style="display: flex; align-items: center; gap: 0.8rem">
+          <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+          </button>
+          <button class="theme-toggle" id="themeToggle">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+      <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="topics.html">Topics</a>
+        <a href="prerequisite.html">Prerequisites</a>
+        <a href="#about">Code Editor</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span>›</span>
+        <a href="linked_list.html">Linked List</a> <span>›</span>
+        <span>Level 2</span>
+      </div>
+
+      <div class="page-header" style="margin-bottom: 3rem">
+        <h1 class="page-title">Linked List - Interactive Visualizer</h1>
+        <p class="content-text">
+          Explore all three types of linked lists with live operations,
+          step-by-step scenarios, and a full code editor.
+        </p>
+        <div class="level-tabs">
+          <div class="level-tab">Level 1 of 3 | Basics</div>
+          <div class="level-tab active">Level 2 of 3 | Interactive</div>
+        </div>
+      </div>
+
+      <!--   TYPE SELECTOR   -->
+      <div class="implementation-selector">
+        <div
+          class="impl-option active"
+          data-type="singly"
+          onclick="switchType('singly')"
+        >
+          <div class="impl-option-icon">➡️</div>
+          <div class="impl-option-title">Singly</div>
+          <div class="impl-option-desc">One direction, next pointer</div>
+        </div>
+        <div
+          class="impl-option"
+          data-type="doubly"
+          onclick="switchType('doubly')"
+        >
+          <div class="impl-option-icon">↔️</div>
+          <div class="impl-option-title">Doubly</div>
+          <div class="impl-option-desc">Bidirectional, prev + next</div>
+        </div>
+        <div
+          class="impl-option"
+          data-type="circular"
+          onclick="switchType('circular')"
+        >
+          <div class="impl-option-icon">🔄</div>
+          <div class="impl-option-title">Circular</div>
+          <div class="impl-option-desc">Tail loops back to head</div>
+        </div>
+      </div>
+
+      <!--   MAIN VISUALIZER GRID   -->
+      <div class="visualizer-grid">
+        <!-- Pseudo-code -->
+        <div class="pseudo-code-container">
+          <h5>📋 PSEUDO CODE</h5>
+          <div class="pseudo-step" data-step="insert-head">
+            <strong>INSERT HEAD:</strong><br />
+            <span id="ps-insert-head"
+              >newNode.next = head<br />head = newNode</span
+            >
+          </div>
+          <div class="pseudo-step" data-step="insert-tail">
+            <strong>INSERT TAIL:</strong><br />
+            <span id="ps-insert-tail"
+              >traverse to last node<br />last.next = newNode</span
+            >
+          </div>
+          <div class="pseudo-step" data-step="delete">
+            <strong>DELETE:</strong><br />
+            <span id="ps-delete">prev.next = curr.next<br />free(curr)</span>
+          </div>
+          <div class="pseudo-step" data-step="search">
+            <strong>SEARCH:</strong><br />
+            <span id="ps-search"
+              >ptr = head<br />while ptr ≠ NULL:<br />&nbsp;&nbsp;if ptr.data ==
+              key: found</span
+            >
+          </div>
+          <div class="pseudo-step" data-step="traverse">
+            <strong>TRAVERSE:</strong><br />
+            <span id="ps-traverse"
+              >ptr = head<br />while ptr ≠ NULL:<br />&nbsp;&nbsp;visit ptr; ptr
+              = ptr.next</span
+            >
+          </div>
+        </div>
+
+        <!-- Visualizer -->
+        <div>
+          <div class="visualization-card">
+            <div class="card-header">
+              <h5 id="viz-title">Linked List Visualizer — Singly</h5>
+            </div>
+            <div class="card-body">
+              <div class="ll-canvas" id="ll-canvas">
+                <!-- nodes rendered here by JS -->
+              </div>
+              <div id="ll-msg"></div>
+            </div>
+            <div class="card-footer">
+              <div class="footer-grid">
+                <div style="display: flex; gap: 10px">
+                  <input
+                    type="text"
+                    id="ll-input"
+                    class="form-control"
+                    placeholder="Enter value"
+                  />
+                  <button class="btn btn-success" onclick="vizInsertHead()">
+                    Insert Head
+                  </button>
+                </div>
+                <button class="btn btn-danger" onclick="vizDeleteHead()">
+                  Delete Head
+                </button>
+              </div>
+              <div class="footer-row">
+                <button class="btn btn-primary" onclick="vizInsertTail()">
+                  Insert Tail
+                </button>
+                <button class="btn btn-info" onclick="vizSearch()">
+                  Search
+                </button>
+                <button class="btn btn-warning" onclick="vizTraverse()">
+                  Traverse
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--   SCENARIOS   -->
+      <div class="section-card" id="scenarioSection">
+        <div class="section-header">
+          <div class="section-icon">🧪</div>
+          <h2 class="section-title">Try Different Scenarios</h2>
+        </div>
+        <p
+          class="content-text"
+          id="scenario-type-note"
+          style="margin-bottom: 1.5rem"
+        >
+          Scenarios update automatically based on the selected list type above.
+          Currently showing:
+          <strong id="scenario-type-name" style="color: var(--primary-cyan)"
+            >Singly Linked List</strong
+          >
+        </p>
+
+        <div class="scenario-tabs">
+          <button
+            class="scenario-tab active-best"
+            id="stab-best"
+            onclick="switchScenario('best')"
+          >
+            ⚡ Best Case
+          </button>
+          <button
+            class="scenario-tab"
+            id="stab-avg"
+            onclick="switchScenario('avg')"
+          >
+            〜 Average Case
+          </button>
+          <button
+            class="scenario-tab"
+            id="stab-worst"
+            onclick="switchScenario('worst')"
+          >
+            ⚠ Worst Case
+          </button>
+          <button
+            class="scenario-tab"
+            id="stab-custom"
+            onclick="switchScenario('custom')"
+          >
+            ✏ Custom Input
+          </button>
+        </div>
+
+        <div class="scenario-panels">
+          <!-- BEST -->
+          <div class="scenario-panel active" id="spanel-best">
+            <div class="scenario-inner">
+              <h4 id="best-title">Best Case</h4>
+              <p id="best-desc">
+                Insert at head — always
+                <strong style="color: var(--primary-green)">O(1)</strong>. No
+                traversal needed, just redirect head pointer.
+              </p>
+              <hr class="scenario-divider" />
+              <div class="input-label">🗄 List State</div>
+              <div class="scene-stage">
+                <div class="scene-ll-wrap" id="scene-best"></div>
+                <div class="log-panel" id="log-best">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button class="ctl-btn ctl-btn-green" onclick="bestInsert()">
+                    ⬆ Insert Head
+                  </button>
+                  <button class="ctl-btn ctl-btn-red" onclick="bestDelete()">
+                    ✖ Delete Head
+                  </button>
+                  <button
+                    class="ctl-btn ctl-btn-cyan"
+                    id="best-extra-btn"
+                    onclick="bestExtra()"
+                  >
+                    👁 Peek Head
+                  </button>
+                  <button class="ctl-btn ctl-btn-ghost" onclick="resetBest()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AVERAGE -->
+          <div class="scenario-panel" id="spanel-avg">
+            <div class="scenario-inner">
+              <h4 id="avg-title">Average Case</h4>
+              <p id="avg-desc">
+                Search for a node — traverses ~N/2 nodes on average. Watch each
+                step until found.
+              </p>
+              <hr class="scenario-divider" />
+              <div class="input-label">
+                🗄 Searching for
+                <span
+                  id="avg-target-label"
+                  style="
+                    color: var(--primary-cyan);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                  >30</span
+                >
+              </div>
+              <div class="scene-stage">
+                <div class="scene-ll-wrap" id="scene-avg"></div>
+                <div class="log-panel" id="log-avg">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button
+                    class="ctl-btn ctl-btn-cyan"
+                    onclick="avgStep()"
+                    id="avg-step-btn"
+                  >
+                    ▶ Next Step
+                  </button>
+                  <button
+                    class="ctl-btn ctl-btn-orange"
+                    onclick="avgAuto()"
+                    id="avg-auto-btn"
+                  >
+                    ⚡ Auto Play
+                  </button>
+                  <button class="ctl-btn ctl-btn-ghost" onclick="resetAvg()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORST -->
+          <div class="scenario-panel" id="spanel-worst">
+            <div class="scenario-inner">
+              <h4 id="worst-title">Worst Case</h4>
+              <p id="worst-desc">
+                Search or insert at tail — must traverse all N nodes. O(N) time.
+              </p>
+              <hr class="scenario-divider" />
+              <div class="input-label">
+                🗄 Traversing to
+                <span
+                  id="worst-target-label"
+                  style="
+                    color: var(--primary-red);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                  >TAIL</span
+                >
+              </div>
+              <div class="scene-stage">
+                <div class="scene-ll-wrap" id="scene-worst"></div>
+                <div class="log-panel" id="log-worst">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+                <div class="ctl-row">
+                  <button
+                    class="ctl-btn ctl-btn-orange"
+                    onclick="worstStep()"
+                    id="worst-step-btn"
+                  >
+                    ▶ Next Step
+                  </button>
+                  <button
+                    class="ctl-btn ctl-btn-red"
+                    onclick="worstAuto()"
+                    id="worst-auto-btn"
+                  >
+                    ⚡ Auto Play
+                  </button>
+                  <button class="ctl-btn ctl-btn-ghost" onclick="resetWorst()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CUSTOM -->
+          <div class="scenario-panel" id="spanel-custom">
+            <div class="scenario-inner">
+              <h4>Custom Input</h4>
+              <p id="custom-desc">
+                Build your own list. Operations and complexity reflect the
+                active list type.
+              </p>
+              <hr class="scenario-divider" />
+
+              <div class="custom-complexity-grid">
+                <div class="custom-complexity-card" id="cc-insert">
+                  <div class="cc-op">⬆ Insert Head</div>
+                  <div class="cc-time">
+                    Time: <span class="cc-val cc-green">O(1)</span>
+                  </div>
+                  <div class="cc-space">
+                    Space: <span class="cc-val cc-green">O(1)</span>
+                  </div>
+                  <div class="cc-reason" id="cc-insert-reason">
+                    Direct head redirect — no traversal
+                  </div>
+                </div>
+                <div class="custom-complexity-card" id="cc-delete">
+                  <div class="cc-op">✖ Delete</div>
+                  <div class="cc-time">
+                    Time:
+                    <span class="cc-val cc-orange" id="cc-delete-time"
+                      >O(n)</span
+                    >
+                  </div>
+                  <div class="cc-space">
+                    Space: <span class="cc-val cc-green">O(1)</span>
+                  </div>
+                  <div class="cc-reason" id="cc-delete-reason">
+                    Must find node first via traversal
+                  </div>
+                </div>
+                <div class="custom-complexity-card" id="cc-search">
+                  <div class="cc-op">🔍 Search</div>
+                  <div class="cc-time">
+                    Time: <span class="cc-val cc-orange">O(n)</span>
+                  </div>
+                  <div class="cc-space">
+                    Space: <span class="cc-val cc-green">O(1)</span>
+                  </div>
+                  <div class="cc-reason" id="cc-search-reason">
+                    Linear scan from head to tail
+                  </div>
+                </div>
+              </div>
+
+              <div class="cc-toast" id="cc-toast">
+                <span id="cc-toast-icon"></span>
+                <span id="cc-toast-text"></span>
+              </div>
+
+              <div class="input-label" style="margin-top: 1.2rem">
+                🗄 Your List (max 8 nodes)
+              </div>
+              <div class="custom-input-row">
+                <input
+                  type="number"
+                  class="custom-val-input"
+                  id="custom-val"
+                  placeholder="Value"
+                  min="-999"
+                  max="9999"
+                />
+                <button
+                  class="ctl-btn ctl-btn-green"
+                  onclick="customInsertHead()"
+                >
+                  ⬆ Head
+                </button>
+                <button
+                  class="ctl-btn ctl-btn-purple"
+                  onclick="customInsertTail()"
+                >
+                  ⬇ Tail
+                </button>
+                <button
+                  class="ctl-btn ctl-btn-red"
+                  onclick="customDeleteHead()"
+                >
+                  ✖ Del Head
+                </button>
+                <button class="ctl-btn ctl-btn-cyan" onclick="customSearch()">
+                  🔍 Search
+                </button>
+                <button class="ctl-btn ctl-btn-ghost" onclick="resetCustom()">
+                  ↺ Reset
+                </button>
+              </div>
+
+              <div class="scene-stage">
+                <div class="scene-ll-wrap" id="scene-custom"></div>
+                <div class="log-panel" id="log-custom">
+                  <div class="log-title">📋 Operation Log</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--   CODE EDITOR   -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-icon"><i class="fas fa-code"></i></div>
+          <h2 class="section-title">Interactive Code Editor</h2>
+        </div>
+
+        <div class="lang-tabs">
+          <button class="lang-tab active" data-lang="cpp">C++</button>
+          <button class="lang-tab" data-lang="python">Python</button>
+          <button class="lang-tab" data-lang="java">Java</button>
+          <button class="lang-tab" data-lang="c">C</button>
+          <button class="lang-tab" data-lang="javascript">JS</button>
+        </div>
+
+        <div class="editor-wrapper">
+          <div class="editor-header">
+            <span class="lang-display">C++</span>
+            <button class="code-copy" onclick="copyEditorCode()">Copy</button>
+          </div>
+          <textarea id="code-editor"></textarea>
+        </div>
+
+        <button class="run-code-btn" onclick="runCode()">
+          <i class="fas fa-play"></i> Run Code
+        </button>
+
+        <div class="output-container">
+          <h6>📤 Output:</h6>
+          <div id="codeOutput">Click "Run Code" to execute...</div>
+          <div id="inputPrompt" style="display: none" class="input-prompt">
+            <span id="promptText"></span>
+            <input type="text" id="userInput" placeholder="Enter value" />
+            <button onclick="submitInput()">Submit</button>
+          </div>
+        </div>
+      </div>
+
+      <!--   LEVEL SLIDER   -->
+      <h3
+        style="
+          text-align: center;
+          color: var(--primary-cyan);
+          margin-bottom: 2.5rem;
+        "
+      >
+        Ready to Test Your Knowledge? →
+      </h3>
+      <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider active" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="quizModal" class="level-modal">
+      <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem">🔒</div>
+        <h3
+          style="
+            color: var(--primary-purple);
+            font-family: &quot;Space Grotesk&quot;;
+            font-size: 2rem;
+            margin-bottom: 10px;
+          "
+        >
+          Level Locked
+        </h3>
+        <p id="modalMsg" style="color: var(--text-secondary)">
+          Pass the Level 2 Quiz to unlock Level 3 and complete your Linked List
+          journey.
+        </p>
+        <div class="level-modal-buttons">
+          <button id="startQuiz">Start Quiz</button>
+          <button id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="js/linkedlist_L2.js"></script>
+  </body>
+</html>

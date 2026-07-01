@@ -1,0 +1,332 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Sort - Level 2 | CODEANIME</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/quickSort_L2.css">
+
+</head>
+<body data-theme="dark">
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">&rsaquo;</span>
+    <a href="quick_sort_basics.html">Quick Sort</a><span class="sep">&rsaquo;</span>
+    <span>Level 2</span>
+  </div>
+  <div class="page-header">
+    <h1 class="page-title">Quick Sort &mdash; Interactive Visualizer</h1>
+    <p class="content-text">Watch Quick Sort pick a <strong style="color:var(--primary-orange)">pivot</strong>, partition all elements around it, then recursively sort each side. Average <strong style="color:var(--primary-green)">O(N log N)</strong> but degrades to <strong style="color:var(--primary-red)">O(N&sup2;)</strong> on sorted input with a poor pivot choice.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="lomuto" onclick="switchImpl('lomuto')">
+      <div class="impl-option-icon">&#128282;</div>
+      <div class="impl-option-title">Lomuto Partition</div>
+      <div class="impl-option-desc">Last element as pivot &mdash; i pointer grows inward</div>
+    </div>
+    <div class="impl-option" data-type="hoare" onclick="switchImpl('hoare')">
+      <div class="impl-option-icon">&#128283;</div>
+      <div class="impl-option-title">Hoare Partition</div>
+      <div class="impl-option-desc">First element as pivot &mdash; two pointers converge</div>
+    </div>
+  </div>
+
+  <div class="visualizer-grid">
+    <div class="pseudo-code-container">
+      <h5>&#128203; PSEUDO CODE</h5>
+      <div id="pseudo-lomuto">
+        <div class="pseudo-step" data-step="lo-base"><strong>BASE CASE:</strong> 0 or 1 element<br><span>if low &ge; high: return</span></div>
+        <div class="pseudo-step" data-step="lo-pivot"><strong>PIVOT:</strong> Last element<br><span>pivot = arr[high]</span></div>
+        <div class="pseudo-step" data-step="lo-iinit"><strong>i POINTER:</strong> Boundary init<br><span>i = low &minus; 1</span></div>
+        <div class="pseudo-step" data-step="lo-scan"><strong>SCAN j:</strong> Traverse left&rarr;right<br><span>for j = low to high&minus;1</span></div>
+        <div class="pseudo-step" data-step="lo-compare"><strong>COMPARE:</strong> Is arr[j] &le; pivot?<br><span>if arr[j] &le; pivot</span></div>
+        <div class="pseudo-step" data-step="lo-swap-ij"><strong>SWAP i&harr;j:</strong> Grow left region<br><span>i++ ; swap(arr[i], arr[j])</span></div>
+        <div class="pseudo-step" data-step="lo-place"><strong>PLACE PIVOT:</strong> Final position<br><span>swap(arr[i+1], arr[high])</span></div>
+        <div class="pseudo-step" data-step="lo-recurse"><strong>RECURSE:</strong> Left &amp; right sub-arrays<br><span>quickSort(low, i)<br>quickSort(i+2, high)</span></div>
+        <div class="pseudo-step" data-step="lo-done"><strong>SORTED:</strong> All partitions done &#10003;<br><span>pivot in its final position</span></div>
+      </div>
+      <div id="pseudo-hoare" style="display:none;">
+        <div class="pseudo-step" data-step="ho-base"><strong>BASE CASE:</strong> 0 or 1 element<br><span>if low &ge; high: return</span></div>
+        <div class="pseudo-step" data-step="ho-pivot"><strong>PIVOT:</strong> First element<br><span>pivot = arr[low]</span></div>
+        <div class="pseudo-step" data-step="ho-init"><strong>INIT POINTERS:</strong> i &amp; j from ends<br><span>i = low&minus;1 ; j = high+1</span></div>
+        <div class="pseudo-step" data-step="ho-advance-i"><strong>ADVANCE i:</strong> Find element &ge; pivot<br><span>do i++ while arr[i] &lt; pivot</span></div>
+        <div class="pseudo-step" data-step="ho-advance-j"><strong>ADVANCE j:</strong> Find element &le; pivot<br><span>do j-- while arr[j] &gt; pivot</span></div>
+        <div class="pseudo-step" data-step="ho-check"><strong>CHECK:</strong> Pointers crossed?<br><span>if i &ge; j: return j (boundary)</span></div>
+        <div class="pseudo-step" data-step="ho-swap"><strong>SWAP i&harr;j:</strong> Move elements<br><span>swap(arr[i], arr[j])</span></div>
+        <div class="pseudo-step" data-step="ho-recurse"><strong>RECURSE:</strong> Two sub-arrays<br><span>quickSort(low, j)<br>quickSort(j+1, high)</span></div>
+        <div class="pseudo-step" data-step="ho-done"><strong>SORTED:</strong> All partitions done &#10003;<br><span>array fully sorted</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="visualization-card">
+        <div class="card-header"><h5 id="visualizer-title">Quick Sort Visualizer &mdash; Lomuto Partition (Last Element Pivot)</h5></div>
+        <div class="card-body">
+          <div class="sort-display">
+            <div class="stat-row">
+              <div class="stat-badge sb-orange" id="badge-pivot">Pivot: &mdash;</div>
+              <div class="stat-badge sb-cyan" id="badge-comps">Comparisons: 0</div>
+              <div class="stat-badge sb-purple" id="badge-swaps">Swaps: 0</div>
+              <div class="stat-badge sb-yellow" id="badge-parts">Partitions: 0</div>
+              <div class="stat-badge sb-green" id="badge-sorted">Sorted: 0</div>
+            </div>
+            <div class="arr-strip" id="ptrStrip" style="margin-bottom:0;"></div>
+            <div class="arr-strip" id="arrStrip"></div>
+            <div class="arr-strip" id="idxStrip" style="margin-top:0;"></div>
+            <div class="range-row" id="rangeRow"></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:linear-gradient(#f59e0b,#d97706)"></div>Pivot</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-cyan)"></div>i pointer</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-pink)"></div>j pointer</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-purple)"></div>Swapping</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-yellow)"></div>Pivot placed</div>
+              <div class="leg-item"><div class="leg-dot" style="background:var(--primary-green)"></div>Sorted</div>
+            </div>
+            <div class="caption-box" id="captionBox">Enter an array and click Sort to begin.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput" class="form-control" placeholder="e.g. 10, 80, 30, 90, 40, 50, 70">
+            <button class="btn btn-warning" onclick="startSort()">Sort</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSort()" id="stepBtn" disabled>Step &#9654;</button>
+            <button class="btn btn-info" onclick="autoSort()" id="autoBtn" disabled>Auto &#9654;&#9654;</button>
+            <button class="btn btn-danger" onclick="resetSort()" id="resetBtn">Reset &#8635;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">&#129514;</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best" id="stab-best" onclick="switchScenario('best')">&#9889; Best Case</button>
+      <button class="scenario-tab" id="stab-avg" onclick="switchScenario('avg')">&#12316; Average Case</button>
+      <button class="scenario-tab" id="stab-worst" onclick="switchScenario('worst')">&#9888; Worst Case</button>
+      <button class="scenario-tab" id="stab-custom" onclick="switchScenario('custom')">&#9999; Custom Input</button>
+    </div>
+
+    <div class="scenario-panel active" id="spanel-best">
+      <div class="scenario-inner">
+        <h4>Best Case &mdash; Balanced Partitions</h4>
+        <p>Pivot always lands near the <strong style="color:var(--primary-green)">middle</strong> of the sub-array. Each partition creates two roughly equal halves, so recursion depth stays at <strong style="color:var(--primary-green)">log&#8322;(N)</strong>, giving <strong style="color:var(--primary-green)">O(N log N)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [3, 10, 20, 30, 40, 50, 60] &mdash; pivot lands near middle</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-best" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-best"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-green" onclick="bestStep()" id="best-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetBest()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-panel" id="spanel-avg">
+      <div class="scenario-inner">
+        <h4>Average Case &mdash; Random Input</h4>
+        <p>Random array &mdash; pivot lands somewhere in the middle on average, giving roughly balanced partitions. This is Quick Sort&rsquo;s typical real-world performance at <strong style="color:var(--primary-cyan)">O(N log N)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [10, 80, 30, 90, 40, 50, 70] &mdash; random order</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-avg" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-avg"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-cyan" onclick="avgStep()" id="avg-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetAvg()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-panel" id="spanel-worst">
+      <div class="scenario-inner">
+        <h4>Worst Case &mdash; Already Sorted (Lomuto)</h4>
+        <p>With <strong style="color:var(--primary-red)">sorted input and Lomuto&rsquo;s last-element pivot</strong>, every pivot is the largest element &mdash; partitions into 0 + (N&minus;1) sub-arrays. Recursion depth = N, giving <strong style="color:var(--primary-red)">O(N&sup2;)</strong>.</p>
+        <hr class="scenario-divider">
+        <div class="input-label">&#128452; Array: [10, 20, 30, 40, 50, 60] &mdash; sorted: worst for Lomuto</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-worst" style="max-width:350px;"></div></div>
+          <div>
+            <div class="log-panel" id="log-worst"><div class="log-title">&#128203; Operation Log</div></div>
+            <div class="ctl-row">
+              <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">&#9654; Next Step</button>
+              <button class="ctl-btn ctl-btn-red" onclick="worstAuto()" id="worst-auto-btn">&#9889; Auto Play</button>
+              <button class="ctl-btn ctl-btn-ghost" onclick="resetWorst()">&#8635; Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-panel" id="spanel-custom">
+      <div class="scenario-inner">
+        <h4>Custom Input</h4>
+        <p>Enter your own array. Complexity cards highlight based on how many partitions were needed vs. optimal log&#8322;(N) depth &mdash; revealing best, average, or worst-case behaviour.</p>
+        <hr class="scenario-divider">
+        <div class="custom-complexity-grid">
+          <div class="custom-complexity-card" id="cc-best">
+            <div class="cc-op">&#9889; Best Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-green">O(N log N)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-green">O(log N)</span></div>
+            <div class="cc-reason">Pivot lands at midpoint &mdash; balanced partitions, depth = log&#8322;N</div>
+          </div>
+          <div class="custom-complexity-card" id="cc-avg">
+            <div class="cc-op">&#12316; Average Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-green">O(N log N)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-green">O(log N)</span></div>
+            <div class="cc-reason">Random input &mdash; partitions roughly balanced on average</div>
+          </div>
+          <div class="custom-complexity-card" id="cc-worst">
+            <div class="cc-op">&#9888; Worst Case</div>
+            <div class="cc-time">Time: <span class="cc-val cc-red">O(N&sup2;)</span></div>
+            <div class="cc-space">Space: <span class="cc-val cc-red">O(N)</span></div>
+            <div class="cc-reason">Sorted/reverse-sorted with last-element pivot &mdash; depth = N</div>
+          </div>
+        </div>
+        <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+        <div class="input-label" style="margin-top:1.2rem;">&#128452; Your Array</div>
+        <div class="custom-input-row">
+          <input type="text" class="custom-wide-input" id="custom-arr" placeholder="e.g. 15, 3, 9, 8, 27, 5, 12" style="width:250px;">
+          <button class="ctl-btn ctl-btn-green" onclick="customLoad()">&#9654; Load &amp; Sort</button>
+          <button class="ctl-btn ctl-btn-cyan" onclick="customStep()" id="custom-step-btn" disabled>&#9654; Step</button>
+          <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>&#9889; Auto</button>
+          <button class="ctl-btn ctl-btn-ghost" onclick="resetCustom()">&#8635; Reset</button>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+          <div><div class="s-arr-strip" id="sarr-custom" style="max-width:480px;flex-wrap:wrap;"></div></div>
+          <div><div class="log-panel" id="log-custom"><div class="log-title">&#128203; Operation Log</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+    <div class="impl-tabs">
+      <button class="impl-tab active" onclick="switchEditorImpl('lomuto',this)">&#128282; Lomuto Partition (Last Pivot)</button>
+      <button class="impl-tab" onclick="switchEditorImpl('hoare',this)">&#128283; Hoare Partition (First Pivot)</button>
+    </div>
+    <div class="lang-tabs">
+      <button class="lang-tab active" onclick="switchLang('cpp',this)">C++</button>
+      <button class="lang-tab" onclick="switchLang('python',this)">Python</button>
+      <button class="lang-tab" onclick="switchLang('java',this)">Java</button>
+      <button class="lang-tab" onclick="switchLang('c',this)">C</button>
+      <button class="lang-tab" onclick="switchLang('javascript',this)">JS</button>
+    </div>
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ &mdash; Lomuto Partition (Last Pivot)</span>
+        <button class="code-copy" onclick="copyCode()" title="Copy code"><i class="fas fa-copy"></i></button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+    <button class="run-code-btn" onclick="runCode()"><i class="fas fa-play"></i> Run Code</button>
+    <div class="output-container">
+      <h6>&#128228; Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? &rarr;</h3>
+  <div class="level-wrapper">
+    <button id="l1" onclick="window.location.href='quick_sort_basics.html'">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3" onclick="document.getElementById('quizModal').style.display='flex'">Level 3</button>
+  </div>
+</div>
+
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">&#128274;</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Quick Sort journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz" onclick="window.location.href='quick_sort_quiz.html'">Start Quiz</button>
+      <button id="cancelBtn" onclick="document.getElementById('quizModal').style.display='none'">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/quickSort_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

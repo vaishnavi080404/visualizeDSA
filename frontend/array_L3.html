@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arrays — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/array_L3.css">
+  </head>
+  <body>
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="arrays_L1.html">Arrays</a><span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Arrays in the <span class="highlight">Real World</span></h1>
+  <p>The most fundamental data structure in computing — powering image pixels, database tables, CPU caches, sliding windows, and every algorithm that needs O(1) random access.</p>
+</div>
+
+<!-- CONCEPT -->
+<div class="concept-section">
+  <div class="concept-box">
+    <div class="concept-title">🧠 The Core Idea — Contiguous Memory, O(1) Access</div>
+    <p class="concept-desc">An array stores elements in <strong>contiguous memory locations</strong>. Given a base address and an index, the CPU computes the exact address in one step: <strong>address = base + index × element_size</strong>. This gives O(1) random access to any element — a property no other data structure matches. The trade-off: insertion and deletion in the middle require O(n) shifting, and resizing requires allocating a new block.</p>
+    <div style="margin-bottom:1.5rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-secondary);margin-bottom:1.2rem;text-align:center">🎮 Step through array access — see how O(1) indexing works in memory</div>
+      <div class="addr-row" id="conceptAddrs"></div>
+      <div class="mem-row" id="conceptCells"></div>
+      <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="d-btn go" onclick="conceptStep()">▶ Access Next Index</button>
+        <button class="d-btn reset" onclick="conceptReset()">↺ Reset</button>
+      </div>
+      <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-secondary)" id="conceptStatus">Click "Access Next Index" — watch O(1) direct access</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(244,63,94,.15);border:2px solid var(--primary-rose)"></div>Current access</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(236,72,153,.08);border:2px solid var(--primary-pink)"></div>Previously visited</div>
+      <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-secondary)"><div style="width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.15);border:2px solid var(--primary-green)"></div>Found / result</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">Arrays are the bedrock of modern computing. Every image you see, every video frame, every database row, every CPU cache line — all built on contiguous memory access.</p>
+  <div class="app-grid">
+
+    <!-- 1. Image pixels -->
+    <div class="app-card rose">
+      <div class="card-header">
+        <div class="card-icon rose">🖼️</div>
+        <div class="card-title-wrap">
+          <h3>Image Pixels — 2D Array Buffer</h3>
+          <p>Every digital image is a <strong>2D array of pixel values</strong>. A 1920×1080 image is a flat array of 2,073,600 integers — each accessed as <code style="color:var(--primary-rose);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">pixel[row * width + col]</code>. GPUs process entire rows in parallel because contiguous memory maps perfectly to SIMD registers.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Access pixels in a 6×5 grid — row × width + col = direct memory address</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="pixelStep()">▶ Access Next Pixel</button>
+            <button class="d-btn reset" onclick="pixelReset()">↺ Reset</button>
+          </div>
+          <div id="pixelGrid" style="display:flex;flex-direction:column;gap:2px;margin-bottom:.6rem;align-items:center"></div>
+          <div class="status-line" id="pixelStatus">Row-major order — arr[row × width + col]</div>
+          <div class="step-info" id="pixelInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Sliding window -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🪟</div>
+        <div class="card-title-wrap">
+          <h3>Sliding Window — Subarray Algorithms</h3>
+          <p>Array's O(1) index access enables the <strong>sliding window technique</strong> — maintain a window of size k that slides across the array, adding one element and dropping another each step. Used for max subarray, moving averages, longest substring, and rate limiting in APIs.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Find the max sum subarray of size 3 — O(n) with sliding window</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="windowStep()">▶ Slide Window</button>
+            <button class="d-btn reset" onclick="windowReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="windowCells"></div>
+          <div class="status-line" id="windowStatus">Slide a window of size 3 across the array</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Current sum: <b id="windowSum" style="color:var(--primary-rose)">—</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Max sum: <b id="windowMax" style="color:var(--primary-green)">—</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Dynamic array / ArrayList -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">📦</div>
+        <div class="card-title-wrap">
+          <h3>Dynamic Array — ArrayList / std::vector</h3>
+          <p>Python lists, Java ArrayLists, C++ vectors are all <strong>dynamic arrays</strong>: when full, allocate a new array 2× the size and copy all elements. Amortized O(1) append because doubling means each element is copied at most once on average over all insertions.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Append elements — watch the array double in capacity when full</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="dynAppend()">▶ Append Element</button>
+            <button class="d-btn reset" onclick="dynReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="dynCells"></div>
+          <div class="status-line" id="dynStatus">Dynamic array: size=0, capacity=4</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.5rem">
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Size: <b id="dynSize" style="color:var(--primary-rose)">0</b></div>
+            <div style="padding:.35rem .6rem;border-radius:6px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);font-size:.72rem;font-family:'JetBrains Mono',monospace">Capacity: <b id="dynCap" style="color:var(--primary-orange)">4</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Two pointers -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">👆</div>
+        <div class="card-title-wrap">
+          <h3>Two Pointers — In-Place O(n) Algorithms</h3>
+          <p>Array's direct indexing makes <strong>two-pointer techniques</strong> possible: a left and right pointer march toward each other (or in the same direction) to solve problems in O(n) that would naively take O(n²). Used for two-sum on sorted arrays, reverse in-place, merge sorted arrays, and partition algorithms.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Two-sum on sorted array — left and right pointers converge in O(n)</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="twoPointerStep()">▶ Next Move</button>
+            <button class="d-btn reset" onclick="twoPointerReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="tpCells"></div>
+          <div class="status-line" id="tpStatus">Find two numbers that sum to 17</div>
+          <div class="step-info" id="tpInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Prefix sum array -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">∑</div>
+        <div class="card-title-wrap">
+          <h3>Prefix Sum — O(1) Range Queries</h3>
+          <p>Build a prefix sum array in O(n), then answer any "sum of elements from index i to j" query in <strong>O(1)</strong> using <code style="color:var(--primary-purple);background:var(--code-bg);padding:.1rem .3rem;border-radius:3px;font-size:.8rem">prefix[j+1] - prefix[i]</code>. Used in database aggregations, image integral arrays (face detection), financial running totals, and competitive programming.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Build prefix sum array — then answer range sum queries in O(1)</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="prefixStep()">▶ Next Step</button>
+            <button class="d-btn reset" onclick="prefixReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="prefixOrigCells"></div>
+          <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-secondary);margin:.35rem 0 .25rem;text-align:center">Prefix Sum Array</div>
+          <div class="mini-cells" id="prefixSumCells"></div>
+          <div class="status-line" id="prefixStatus">Build the prefix sum array step by step</div>
+          <div class="step-info" id="prefixInfo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Circular buffer -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🔄</div>
+        <div class="card-title-wrap">
+          <h3>Circular Buffer — O(1) Queue in Fixed Memory</h3>
+          <p>A <strong>circular (ring) buffer</strong> uses a fixed-size array as a queue: a head pointer advances on dequeue, tail advances on enqueue, both wrap around using modulo. Used in audio/video streaming buffers, OS kernel I/O queues, network packet buffers, and producer-consumer pipelines with zero allocation.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Enqueue and dequeue — head and tail wrap around in a fixed array</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn go" onclick="circEnqueue()">▶ Enqueue</button>
+            <button class="d-btn go" onclick="circDequeue()" style="border-color:var(--primary-cyan);color:var(--primary-cyan);background:rgba(6,182,212,.08)">◀ Dequeue</button>
+            <button class="d-btn reset" onclick="circReset()">↺ Reset</button>
+          </div>
+          <div class="mini-cells" id="circCells"></div>
+          <div class="status-line" id="circStatus">Circular buffer: head=0, tail=0, size=0</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;margin-top:.5rem">
+            <div style="padding:.3rem .4rem;border-radius:6px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">Head: <b id="circHead" style="color:var(--primary-rose)">0</b></div>
+            <div style="padding:.3rem .4rem;border-radius:6px;background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">Tail: <b id="circTail" style="color:var(--primary-cyan)">0</b></div>
+            <div style="padding:.3rem .4rem;border-radius:6px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);font-size:.68rem;font-family:'JetBrains Mono',monospace;text-align:center">Size: <b id="circSize" style="color:var(--primary-green)">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(244,63,94,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Arrays have the best possible access time — O(1) — and the worst possible insertion/deletion at arbitrary positions. Know when each operation is called.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Access arr[i]</td><td class="good">O(1)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">base + i × size — single CPU instruction, no traversal</td></tr>
+        <tr><td class="op">Search (unsorted)</td><td class="bad">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must scan every element — linear scan</td></tr>
+        <tr><td class="op">Search (sorted)</td><td class="ok">O(log n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Binary search — only possible because of O(1) access</td></tr>
+        <tr><td class="op">Insert at end</td><td class="good">O(1)*</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">*Amortized for dynamic arrays — O(n) on resize</td></tr>
+        <tr><td class="op">Insert at middle</td><td class="bad">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">All elements after insertion point must shift right</td></tr>
+        <tr><td class="op">Delete at middle</td><td class="bad">O(n)</td><td class="good">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">All elements after deletion point must shift left</td></tr>
+        <tr><td class="op">Space overall</td><td colspan="2" class="ok">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">Exactly n elements — no pointer overhead unlike linked list</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:1rem;padding:1rem 1.2rem;background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.2);border-radius:10px;font-size:.85rem;color:var(--text-secondary);line-height:1.7">
+    💡 <strong style="color:var(--text-primary)">Key insight:</strong> Arrays are the <strong style="color:var(--primary-rose)">only data structure with O(1) random access</strong>. This single property unlocks binary search, two pointers, sliding windows, prefix sums, and direct index lookups — none of which work on linked lists. The cost is O(n) insertion/deletion anywhere except the end. Dynamic arrays (Python list, C++ vector) add amortized O(1) append via doubling, accepting a 2× memory overhead at most.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Arrays are the default data structure for good reason — but every advantage comes with a paired limitation that drives when to choose a linked list, hash map, or tree instead.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>O(1) random access — the fastest possible</h4><p>No other data structure can match O(1) access by index. Linked lists need O(n) traversal. Trees need O(log n). Arrays let the CPU jump directly to any element in a single multiply-add instruction.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Excellent cache performance</h4><p>Contiguous memory means sequential access loads a whole cache line (64 bytes) per miss. Accessing arr[0] through arr[15] (integers) causes only 1 cache miss. A linked list of the same 16 elements causes up to 16 cache misses — 16× slower in practice.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Memory efficient — no pointer overhead</h4><p>Each element stores only its value. A linked list node stores a value plus 8-byte pointer — 2× the memory for integers. For a billion integers, arrays need 4GB; linked lists need 12GB.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Enables binary search — O(log n) lookup</h4><p>Binary search requires jumping to arr[mid] — impossible without O(1) access. On a sorted array, binary search finds any element in log₂(n) steps: 1 billion elements in just 30 comparisons.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>SIMD / vectorization — hardware-level parallelism</h4><p>Modern CPUs process 8–16 array elements in a single instruction via SIMD (AVX-512). This is only possible because array elements are adjacent in memory. Sorted arrays, image buffers, and numeric computations all benefit.</p></div></div>
+      <div class="procon-item"><div class="procon-dot pro">✓</div><div class="procon-text"><h4>Foundation for other data structures</h4><p>Hash tables use arrays of buckets. Heaps are stored in arrays. Stacks and queues are implemented as arrays. Timsort, radix sort, and counting sort all use arrays as working storage. Arrays are the substrate of computing.</p></div></div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n) insertion/deletion at arbitrary positions</h4><p>Inserting at index i requires shifting all n-i elements right. For a 1 million element array, inserting at the front copies 1 million elements. Linked lists do this in O(1) with a pointer change.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Fixed size — resizing requires full copy</h4><p>Static arrays can't grow. Dynamic arrays double in size when full — requiring O(n) copy. At the moment of resize, you need 3× the original memory (old array + new array + copy buffer). Can cause out-of-memory spikes.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Wasted memory in dynamic arrays</h4><p>A dynamic array at capacity n+1 allocates 2n slots — up to 50% wasted. A Python list of 1 element can hold 4. A list of 5 holds 8. This overhead is acceptable for most use cases but matters at scale.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Poor for frequent mid-sequence modifications</h4><p>If your workload is "insert at the front" or "delete from the middle" repeatedly, an array performs O(n) per operation while a doubly-linked list or deque does O(1). Use the right structure for your access pattern.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>Requires contiguous memory — fragmentation issues</h4><p>A 1GB array requires 1GB of contiguous virtual memory. A fragmented heap may have 1GB free total but no 1GB contiguous block. Linked structures can be spread across memory — arrays can't.</p></div></div>
+      <div class="procon-item"><div class="procon-dot con">✗</div><div class="procon-text"><h4>O(n) search on unsorted data</h4><p>Finding a value in an unsorted array requires checking every element. Hash maps do this in O(1) average. For "does this value exist?" queries on large datasets, a hash set is almost always faster than an array scan.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Arrays — and When to Avoid Them
+  </div>
+  <p class="section-sub">Arrays are the right default for most problems. But knowing exactly when a linked list, hash map, or tree beats them is what separates good engineers from great ones.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Arrays When...</div>
+      <div class="when-item"><div class="when-icon">🔢</div><div class="when-text"><h4>You need O(1) random access by index</h4><p>If your primary operation is "get the 5th element" or "read element at position i", arrays are unbeatable. No other data structure provides constant-time indexed access.</p></div></div>
+      <div class="when-item"><div class="when-icon">📊</div><div class="when-text"><h4>Data size is known and fixed (or bounded)</h4><p>Hash tables, fixed-size buffers, game boards, image pixel grids — when you know the size at creation time, a static or pre-allocated array is ideal: zero overhead, perfect memory layout.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔍</div><div class="when-text"><h4>Sorted data with binary search</h4><p>A sorted array + binary search gives O(log n) lookup with O(1) space — better memory than a BST (no pointer overhead) with the same O(log n) search time. Use for read-heavy, write-light datasets.</p></div></div>
+      <div class="when-item"><div class="when-icon">🪟</div><div class="when-text"><h4>Sliding window / two-pointer algorithms</h4><p>These techniques require O(1) access to both ends and arbitrary indices. They only work on arrays — linked lists can't jump to <span class="when-code">arr[i]</span> in O(1). Maximize their O(n) power by using arrays.</p></div></div>
+      <div class="when-item"><div class="when-icon">⚡</div><div class="when-text"><h4>Cache-critical / performance-sensitive code</h4><p>Arrays dominate in numerical computing, game engines, graphics, signal processing, and any hot path where cache performance matters. Sequential access = cache-friendly = 10–100× faster than pointer-chasing structures.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔄</div><div class="when-text"><h4>Implementing other structures (heap, hash table, stack)</h4><p>Use arrays as the underlying storage for heaps (parent at i, children at 2i+1 and 2i+2), hash table buckets, fixed-size stacks, and circular buffers. Arrays are the most versatile backing store.</p></div></div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Arrays When...</div>
+      <div class="when-item"><div class="when-icon">➕</div><div class="when-text"><h4>Frequent insertion / deletion in the middle</h4><p>If your workload is "insert after the 3rd element" frequently, use a doubly-linked list (O(1) insert given a node pointer) or a skip list. An array shifts O(n) elements every time.</p></div></div>
+      <div class="when-item"><div class="when-icon">❓</div><div class="when-text"><h4>Frequent "does value X exist?" lookups</h4><p>For membership queries on large datasets, use a hash set (O(1) average). A linear scan through an array is O(n). Even a sorted array with binary search is only O(log n) — 30× slower than a hash set at n=1B.</p></div></div>
+      <div class="when-item"><div class="when-icon">🌳</div><div class="when-text"><h4>Data with hierarchical / graph relationships</h4><p>Parent-child or graph relationships are naturally modeled by trees or adjacency lists — not arrays. An array of parent IDs works for trees but loses structural clarity and makes tree traversal awkward.</p></div></div>
+      <div class="when-item"><div class="when-icon">📈</div><div class="when-text"><h4>Highly dynamic size with unpredictable growth</h4><p>If size can jump from 10 to 10,000 unpredictably, dynamic array resizing wastes memory and causes latency spikes. A linked list or tree grows in O(1) per node with no copying or doubling.</p></div></div>
+      <div class="when-item"><div class="when-icon">🔑</div><div class="when-text"><h4>Key-value lookups (non-integer keys)</h4><p>Arrays are indexed by integers 0..n-1. If you need to look up by string, UUID, or composite key, use a hash map. Arrays can't directly support arbitrary-key access without a mapping layer.</p></div></div>
+      <div class="when-item"><div class="when-icon">💾</div><div class="when-text"><h4>Very large data that doesn't fit in contiguous memory</h4><p>If you need a 10GB dataset and heap fragmentation prevents a contiguous block, chunk it into smaller arrays, use a B-tree, or store it on disk. Arrays require the whole block to be contiguous in virtual address space.</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">Challenge yourself with<br><span class="glow">real Array problems</span></div>
+    <p class="cta-sub">You've seen how arrays power image buffers, sliding windows, dynamic resizing, two pointers, prefix sums, and circular queues.<br>Now prove you can apply these patterns to classic interview and competitive programming problems.</p>
+    <div class="arr-cta-viz">
+      <div class="acell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--primary-rose)">7</div>
+      <div class="acell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--primary-pink)">2</div>
+      <div class="acell" style="background:rgba(244,63,94,.18);border-color:rgba(244,63,94,.5);color:var(--primary-rose)">9</div>
+      <div class="acell" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--primary-green)">4</div>
+      <div class="acell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--primary-rose)">6</div>
+      <div class="acell" style="background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:var(--primary-pink)">1</div>
+      <div class="acell" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--primary-orange)">8</div>
+      <div class="acell" style="background:rgba(244,63,94,.12);border-color:rgba(244,63,94,.35);color:var(--primary-rose)">3</div>
+    </div>
+    <a href="practice.html?topic=arrays" class="cta-btn">
+      <span>📦 Solve Array Problems</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</div>
+
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+
+<script src="js/array_L3.js"></script>
+</body>
+</html>

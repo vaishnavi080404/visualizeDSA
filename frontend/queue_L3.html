@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queue — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/queue_L3.css">
+</head>
+<body>
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="queue_L1.html">Queue</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Queue in the <span class="highlight">Real World</span></h1>
+  <p>Every time you wait in line — digitally — a queue is managing the order. From OS task scheduling to WhatsApp messages, FIFO is everywhere.</p>
+</div>
+
+
+
+<!-- REAL WORLD APPLICATIONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">These aren't textbook examples — these are the actual queues running in systems you use every day.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. OS Print Queue -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🖨️</div>
+        <div class="card-title-wrap">
+          <h3>OS Printer Queue</h3>
+          <p>When multiple apps send print jobs, the OS stores them in a queue. Documents print in the exact order they were submitted — classic FIFO.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add print jobs and watch them process</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="addPrintJob('Report.pdf')">+ Report.pdf</button>
+            <button class="d-btn enq" onclick="addPrintJob('Invoice.doc')">+ Invoice.doc</button>
+            <button class="d-btn enq" onclick="addPrintJob('Photo.png')">+ Photo.png</button>
+            <button class="d-btn deq" onclick="printNext()">🖨️ Print Next</button>
+          </div>
+          <div class="printer-visual">
+            <div class="printer-icon-box">🖨️</div>
+            <div class="print-arrow">←</div>
+            <div style="flex:1">
+              <div class="demo-label" style="margin-bottom:.3rem">Print Queue (FIFO — first added = first printed)</div>
+              <div class="q-row" id="printQueue"></div>
+            </div>
+          </div>
+          <div class="q-status" id="printStatus">Queue is empty — add some print jobs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BFS Pathfinder -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>BFS Shortest Path</h3>
+          <p>Breadth-First Search uses a queue to explore level by level. Every GPS app, social network "degrees of separation", and game AI uses BFS.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch BFS explore the grid level by level using a queue</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="bfsStart()">▶ Start BFS</button>
+            <button class="d-btn deq" onclick="bfsReset()">↺ Reset</button>
+          </div>
+          <div class="demo-label" style="margin-bottom:.4rem">BFS Queue (cells waiting to be explored):</div>
+          <div class="bfs-queue-show" id="bfsQueueShow"></div>
+          <div class="bfs-grid" id="bfsGrid"></div>
+          <div class="q-status" id="bfsStatus"><span style="color:var(--primary-green)">S</span>=Start &nbsp;<span style="color:var(--primary-red)">E</span>=End &nbsp;<span style="color:var(--primary-purple)">■</span>=In Queue &nbsp;<span style="color:var(--primary-cyan)">■</span>=Visited &nbsp;<span style="color:var(--primary-orange)">■</span>=Path</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Priority Queue — Hospital ER -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">🏥</div>
+        <div class="card-title-wrap">
+          <h3>Hospital ER Priority Queue</h3>
+          <p>Emergency rooms don't serve patients in arrival order — they use priority. Critical patients jump to the front. That's a priority queue.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Add patients — critical ones get seen first</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn pri" onclick="addPatient('Alice','Critical',1)">+ Critical</button>
+            <button class="d-btn" style="border-color:var(--primary-orange);color:var(--primary-orange)" onclick="addPatient('Bob','Urgent',2)">+ Urgent</button>
+            <button class="d-btn" onclick="addPatient('Carol','Normal',3)">+ Normal</button>
+            <button class="d-btn deq" onclick="treatNext()">🩺 Treat Next</button>
+          </div>
+          <div class="pq-list" id="patientQueue"></div>
+          <div class="q-status" id="patientStatus">Queue empty — add patients</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. WhatsApp Message Queue -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">💬</div>
+        <div class="card-title-wrap">
+          <h3>Message Queue (WhatsApp / Kafka)</h3>
+          <p>When you send messages, they go into a queue. If you're offline, messages wait. When you reconnect, they deliver in order. WhatsApp, Kafka, RabbitMQ — all queues.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Send messages while "offline" — they queue up, then deliver</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="sendMsg('Hey, you there?')">Send "Hey"</button>
+            <button class="d-btn enq" onclick="sendMsg('Meeting at 3pm?')">Send "Meeting"</button>
+            <button class="d-btn enq" onclick="sendMsg('I sent the file!')">Send "File"</button>
+            <button class="d-btn" style="border-color:var(--primary-cyan);color:var(--primary-cyan)" onclick="deliverMsgs()" id="deliverBtn">📶 Go Online & Deliver</button>
+          </div>
+          <div class="chat-demo" id="chatDemo"></div>
+          <div class="q-status" id="msgStatus">Offline — messages will queue up</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Ticket Counter -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">🎟️</div>
+        <div class="card-title-wrap">
+          <h3>Token / Ticket Counter System</h3>
+          <p>Banks, hospitals, and govt offices use token systems. You take a ticket and wait for your number — pure FIFO queue in real life.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Simulate a real ticket counter</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" onclick="takeTicket()">🎟️ Take Ticket</button>
+            <button class="d-btn deq" onclick="callNext()">📢 Call Next</button>
+          </div>
+          <div class="ticket-demo">
+            <div class="ticket-counter">
+              <div class="ticket-display">
+                <div class="ticket-num" id="nowServing">—</div>
+                <div class="ticket-lbl">Now Serving</div>
+              </div>
+              <div class="ticket-display" style="margin-top:.3rem">
+                <div class="ticket-num" id="nextTicket" style="font-size:1.1rem;color:var(--text-secondary)">001</div>
+                <div class="ticket-lbl">Next ticket no.</div>
+              </div>
+            </div>
+            <div class="waiting-line">
+              <div class="waiting-title">Waiting line</div>
+              <div class="waiting-persons" id="waitingLine"></div>
+            </div>
+          </div>
+          <div class="q-status" id="ticketStatus">No one waiting</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CPU Round Robin -->
+    <div class="app-card pink">
+      <div class="card-header">
+        <div class="card-icon pink">🖥️</div>
+        <div class="card-title-wrap">
+          <h3>CPU Round-Robin Scheduling</h3>
+          <p>Operating systems use a circular queue to give each process a time slice. When a process's time is up, it goes back to the rear of the queue.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Watch CPU time slices cycle through processes</div>
+        <div class="demo-box">
+          <div class="demo-btns">
+            <button class="d-btn enq" id="cpuStartBtn" onclick="cpuStart()">▶ Start Scheduler</button>
+            <button class="d-btn deq" onclick="cpuReset()">↺ Reset</button>
+          </div>
+          <div class="cpu-demo" id="cpuDemo"></div>
+          <div class="q-row" id="cpuQueue" style="margin-top:.5rem"></div>
+          <div class="q-status" id="cpuStatus">Processes waiting in circular queue</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- COMPLEXITY -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">Queue operations are all O(1) when implemented with a linked list or circular array — that's the beauty of it.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Operation</th><th>Time (Linked List)</th><th>Time (Array)</th><th>Space</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">enqueue(val)</td><td class="time">O(1)</td><td class="time">O(1)*</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Add to rear — just update pointer</td></tr>
+        <tr><td class="op">dequeue()</td><td class="time">O(1)</td><td class="time">O(1)*</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Remove from front — no shifting with circular array</td></tr>
+        <tr><td class="op">peek() / front()</td><td class="time">O(1)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Read front without removing</td></tr>
+        <tr><td class="op">isEmpty()</td><td class="time">O(1)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Check front == rear (circular) or size == 0</td></tr>
+        <tr><td class="op">search(val)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must scan all elements — use a HashMap instead</td></tr>
+        <tr><td class="op">Space (total)</td><td class="time">—</td><td class="time">—</td><td class="space">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n = number of elements stored</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.78rem;color:var(--text-secondary);margin-top:.7rem">* O(1) amortized for dynamic arrays. Plain array without circular indexing costs O(n) for dequeue due to shifting.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- QUEUE vs STACK comparison -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(6,182,212,.15)">⚖️</div>
+    Queue vs Stack — Key Differences
+  </div>
+  <p class="section-sub">They look similar but behave oppositely. Knowing when to use each is critical in interviews.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Property</th><th style="color:var(--primary-orange)">Queue</th><th style="color:var(--primary-cyan)">Stack</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">Order</td><td class="q-val">FIFO</td><td class="s-val">LIFO</td></tr>
+        <tr><td class="op">Insert at</td><td class="q-val">Rear</td><td class="s-val">Top</td></tr>
+        <tr><td class="op">Remove from</td><td class="q-val">Front</td><td class="s-val">Top</td></tr>
+        <tr><td class="op">Operation names</td><td class="q-val">enqueue / dequeue</td><td class="s-val">push / pop</td></tr>
+        <tr><td class="op">Real-world analogy</td><td class="q-val">Queue at a bank</td><td class="s-val">Stack of plates</td></tr>
+        <tr><td class="op">Traversal algorithm</td><td class="q-val">BFS (level-by-level)</td><td class="s-val">DFS (depth-first)</td></tr>
+        <tr><td class="op">Use for</td><td class="q-val">Scheduling, BFS, streaming</td><td class="s-val">Undo, backtracking, parsing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PROS & CONS -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Every data structure is a tradeoff. Here's the full honest picture of Queue.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) enqueue and dequeue</h4><p>Both core operations are constant time with linked list or circular array — no looping, no shifting.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Fair ordering guaranteed</h4><p>FIFO ensures no starvation — every item is processed in the order it arrived. Perfect for fair scheduling.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Essential for BFS</h4><p>Breadth-first search requires a queue. Shortest path, social networks, web crawlers — all depend on queue-based BFS.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Decouples producers and consumers</h4><p>Message queues (Kafka, RabbitMQ) let producers and consumers run at different speeds without blocking each other.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Handles async workloads</h4><p>Background job processing, event loops, task schedulers — queues are the backbone of asynchronous system design.</p></div>
+      </div>
+    </div>
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No random access</h4><p>You can only see the front element. To access the 5th item, you must dequeue 4 items first — destructive operation.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Memory waste in simple arrays</h4><p>A plain array queue leaves empty slots at the front after dequeue. Need circular array or linked list to fix this.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No priority without extra complexity</h4><p>Basic queue treats all items equally. If you need priority, you must upgrade to a priority queue (heap-based), which is more complex.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Searching is O(n)</h4><p>Finding a specific element requires scanning everything from front to rear. Use a HashMap if you need lookups.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Wrong order for LIFO problems</h4><p>If you need the most recent thing first (undo, backtracking, DFS), queue gives you the wrong order — use a Stack instead.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- WHEN TO USE -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Queue — and When to Avoid It
+  </div>
+  <p class="section-sub">The right tool for the right job. Here's the decision framework every developer needs.</p>
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Queue When...</div>
+      <div class="when-item">
+        <div class="when-icon">🚶</div>
+        <div class="when-text"><h4>You need FIFO order</h4><p>Order of arrival must be preserved. Print jobs, customer service tickets, task queues — anything where fairness matters.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🗺️</div>
+        <div class="when-text"><h4>BFS / Level-order traversal</h4><p>Shortest path in unweighted graphs, social networks "mutual friends", web crawlers — all need <span class="when-code">queue.enqueue(neighbor)</span>.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📡</div>
+        <div class="when-text"><h4>Async message passing</h4><p>Producer sends data, consumer reads later. Kafka, RabbitMQ, SQS — decoupled systems where speed difference exists between sender and receiver.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🖥️</div>
+        <div class="when-text"><h4>CPU / IO scheduling</h4><p>Round-robin, FCFS scheduling. Give each process a time slice, rotate back to rear. Operating systems are built on this.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🪟</div>
+        <div class="when-text"><h4>Sliding window problems</h4><p>Use a <span class="when-code">Deque</span> for sliding window maximum/minimum. Efficiently track which element is valid as the window moves.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌊</div>
+        <div class="when-text"><h4>Stream / buffer processing</h4><p>Network packets, video frames, audio samples — arrive in order, must be processed in order. Classic circular queue buffer.</p></div>
+      </div>
+    </div>
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Queue When...</div>
+      <div class="when-item">
+        <div class="when-icon">↩️</div>
+        <div class="when-text"><h4>You need LIFO / undo behavior</h4><p>Use a Stack. Undo/Redo, function call management, backtracking — the last thing added must leave first, not the first.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text"><h4>You need to search or lookup elements</h4><p>Use a HashMap or Set. Searching a queue is O(n) and you can't do it without destroying the queue's order.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎲</div>
+        <div class="when-text"><h4>You need random access</h4><p>Use an Array or ArrayList. If you need the 3rd or 10th element without removing items before it, queue is the wrong choice.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">⭐</div>
+        <div class="when-text"><h4>Items need priority ordering</h4><p>Use a Priority Queue (heap). Basic queue treats everyone equally — if "critical" items should jump the line, you need a heap-based PQ.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌀</div>
+        <div class="when-text"><h4>DFS / depth-first exploration</h4><p>Use a Stack. DFS goes deep before wide — that's inherently LIFO. Using a queue for DFS gives you BFS behavior instead.</p></div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text"><h4>You need to sort the data</h4><p>Use Arrays with built-in sort. Sorting a queue requires dequeuing all elements, sorting, then re-enqueueing — very inefficient.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Queue problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how queues power BFS, OS scheduling, message systems, and emergency rooms.<br>
+      Now prove you can implement these patterns under interview pressure.
+    </p>
+    <div class="queue-lane">
+      <span class="lane-block" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--primary-red);">Sliding Win</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-purple);">BFS Grid</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);">Circular Q</span>
+      <span class="lane-arrow">→</span>
+      <span class="lane-block" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--primary-green);">Design Hit</span>
+    </div>
+    <a href="practice.html?topic=queue" class="cta-btn">
+      <span>🎯 Tackle the Queue Problems</span>
+      <span class="arrow">→</span>
+    </a>
+    <div class="cta-stats">
+      <div class="cta-stat"><div class="cta-stat-val">4</div><div class="cta-stat-lbl">Languages</div></div>
+      <div class="cta-stat"><div class="cta-stat-lbl" style="font-size:.9rem;color:var(--primary-orange);font-weight:700;margin-top:.5rem">C++ · Python · Java · JS</div></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/queue_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

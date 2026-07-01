@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CODEANIME — Practice</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link rel="stylesheet" href="css/practice.css">
+  </head>
+  <body>
+    <!-- Loading screen shown until data file loads -->
+    <div class="loading-screen" id="loadingScreen">
+      <div
+        class="spinner"
+        style="width: 28px; height: 28px; border-width: 3px"
+      ></div>
+      <div class="loading-text" id="loadingText">Loading problems...</div>
+    </div>
+
+    <nav>
+      <div class="nav-container">
+        <a class="logo" href="index.html">
+          <img src="dsa.gif" alt="Logo" class="logo-icon" />
+          <span>CODEANIME</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="topics.html">Topics</a></li>
+          <li><a href="prerequisite.html">Prerequisites</a></li>
+          <li><a href="codeeditor.html">Code Editor</a></li>
+        </ul>
+        <div class="nav-right">
+          <div class="server-status offline" id="serverStatus">
+            <!-- <span class="status-dot"></span> -->
+            <span id="serverStatusText">Server Offline</span>
+          </div>
+          <button class="theme-toggle" id="themeToggle">
+            <svg viewBox="0 0 24 24" id="themeIcon">
+              <path
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+          </button>
+          <div id="nav-user-slot"></div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top-bar">
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a>
+        <span class="sep">›</span>
+        <a href="#" id="breadcrumbTopicLink">Topic</a>
+        <span class="sep">›</span>
+        <span>Level 3 — Problems</span>
+      </div>
+      <span class="level-badge" id="levelBadge">Problems</span>
+    </div>
+
+    <div class="app-layout" id="appLayout">
+      <!-- COL 1: Problem List -->
+      <div class="problem-sidebar">
+        <div class="sidebar-header">
+          <h3 id="sidebarTitle">Problems</h3>
+          <div style="position: relative; margin-bottom: 0.6rem">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="🔍 Search problems..."
+              oninput="searchProblems(this.value)"
+              style="
+                width: 100%;
+                background: var(--code-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 0.4rem 0.7rem 0.4rem 2rem;
+                font-size: 0.78rem;
+                color: var(--text-primary);
+                outline: none;
+                transition: border-color 0.2s;
+              "
+              onfocus="this.style.borderColor = 'var(--primary-cyan)'"
+              onblur="this.style.borderColor = 'var(--border-color)'"
+            />
+            <span
+              style="
+                position: absolute;
+                left: 0.6rem;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 0.75rem;
+                opacity: 0.5;
+              "
+              >🔍</span
+            >
+          </div>
+          <div class="filter-row">
+            <button
+              class="filter-btn active"
+              onclick="filterProblems('all', this)"
+            >
+              All
+            </button>
+            <button
+              class="filter-btn f-easy"
+              onclick="filterProblems('Easy', this)"
+            >
+              Easy
+            </button>
+            <button
+              class="filter-btn f-medium"
+              onclick="filterProblems('Medium', this)"
+            >
+              Medium
+            </button>
+            <button
+              class="filter-btn f-hard"
+              onclick="filterProblems('Hard', this)"
+            >
+              Hard
+            </button>
+          </div>
+        </div>
+
+        <div class="problem-list" id="problemList"></div>
+      </div>
+
+      <!-- COL 2: Problem Description -->
+      <div class="problem-panel" id="problemPanel" style="position: relative">
+        <button
+          class="sidebar-toggle-btn"
+          id="sidebarToggle"
+          onclick="toggleSidebar()"
+          title="Toggle problem list"
+        >
+          ‹
+        </button>
+        <div class="problem-content" id="problemContent"></div>
+      </div>
+
+      <!-- COL 3: Code Editor -->
+      <div class="editor-panel" id="editorPanel">
+        <div class="overlay-panel" id="hintOverlay">
+          <div class="overlay-card hint-card">
+            <button class="overlay-close" onclick="closeOverlay('hintOverlay')">
+              ✕
+            </button>
+            <div class="overlay-title" style="color: var(--primary-purple)">
+              💡 Hint
+            </div>
+            <div
+              id="hintContent"
+              style="
+                color: var(--text-secondary);
+                font-size: 0.9rem;
+                line-height: 1.75;
+              "
+            ></div>
+          </div>
+        </div>
+        <div class="overlay-panel" id="solOverlay">
+          <div class="overlay-card sol-card">
+            <button class="overlay-close" onclick="closeOverlay('solOverlay')">
+              ✕
+            </button>
+            <div class="overlay-title" style="color: var(--primary-orange)">
+              📖 Solution
+            </div>
+            <div id="solContent"></div>
+          </div>
+        </div>
+        <div class="editor-topbar">
+          <div class="lang-tabs" id="langTabs">
+            <button class="lang-tab active" data-lang="cpp">C++</button>
+            <button class="lang-tab" data-lang="python">Python</button>
+            <button class="lang-tab" data-lang="java">Java</button>
+            <button class="lang-tab" data-lang="javascript">JS</button>
+          </div>
+          <div class="editor-actions">
+            <button class="action-btn btn-hint" onclick="showHint()">
+              💡 Hint
+            </button>
+            <button class="action-btn btn-solution" onclick="showSolution()">
+              📖 Solution
+            </button>
+            <button class="action-btn btn-run" id="runBtn" onclick="runCode()">
+              ▶ Run
+            </button>
+            <button
+              class="action-btn btn-submit"
+              id="submitBtn"
+              onclick="submitCode()"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="cm-wrapper" id="cmWrapper">
+          <textarea id="codeEditor"></textarea>
+        </div>
+        <div class="result-banner" id="resultBanner"></div>
+        <div class="bottom-panel">
+          <div class="bottom-tabs">
+            <button
+              class="bottom-tab active"
+              onclick="switchBottom('testcases', this)"
+            >
+              Test Cases
+            </button>
+            <button class="bottom-tab" onclick="switchBottom('output', this)">
+              Output
+            </button>
+          </div>
+          <div class="bottom-content">
+            <div id="tab-testcases">
+              <div class="test-cases" id="testCasesList"></div>
+            </div>
+            <div id="tab-output" style="display: none">
+              <div class="output-area" id="outputArea">
+                Click "Run" to execute your code...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+
+    <script src="js/practice.js"></script>
+  </body>
+</html>

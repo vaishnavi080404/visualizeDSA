@@ -1,0 +1,1223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphs — Level 3 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="css/graph_L3.css">
+  </head>
+  <body data-theme="dark">
+    <!--     NAV     -->
+    
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+    <!--     HERO     -->
+    <div class="hero">
+      <div class="breadcrumb-bar">
+        <a href="topics.html">Topics</a><span class="sep">›</span>
+        <a href="graph_basics.html">Graphs</a><span class="sep">›</span>
+        <span>Level 3 — Real World</span>
+      </div>
+      <div class="hero-badge">🌐 Level 3 of 3</div>
+      <h1>Graphs in the <span class="highlight">Real World</span></h1>
+      <p>
+        Behind every GPS route, every social network, every web search, and
+        every network packet — there's a graph. The most versatile data
+        structure in computer science, powering the systems billions of people
+        use every day.
+      </p>
+      <div class="level-badges">
+        <div class="lvl-badge">Level 1 of 3 | Basics</div>
+        <div class="lvl-badge">Level 2 of 3 | Interactive</div>
+        <div class="lvl-badge active">Level 3 of 3 | Real World</div>
+      </div>
+    </div>
+
+    <!--     CONCEPT     -->
+    <div class="concept-section">
+      <div class="concept-box">
+        <div class="concept-title">
+          🧠 The Core Idea — Vertices, Edges, and Traversal
+        </div>
+        <p class="concept-desc">
+          Basically, a graph is just
+          <strong>nodes (vertices) connected by edges</strong>. That's it. But
+          this simple structure lets you model almost any real-world
+          relationship — friendships, roads, web links, dependencies, electrical
+          circuits. The trick is that
+          <strong>how you traverse a graph</strong> determines what problems you
+          can solve: BFS finds shortest paths in unweighted graphs, DFS explores
+          all reachable nodes, Dijkstra's handles weighted shortest paths, and
+          topological sort handles dependencies. Think of it this way — if your
+          problem has "connections between things," a graph is probably the
+          answer.
+        </p>
+
+        <!-- Concept visualizer: BFS step-by-step on a 7-node graph -->
+        <div style="margin-bottom: 1.5rem">
+          <div
+            style="
+              font-size: 0.72rem;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 0.8px;
+              color: var(--txt2);
+              margin-bottom: 1rem;
+              text-align: center;
+            "
+          >
+            🎮 Step through BFS — watch how it explores level by level from the
+            source node
+          </div>
+
+          <div
+            style="
+              background: var(--code-bg);
+              border: 1px solid var(--border);
+              border-radius: 12px;
+              padding: 1rem;
+              margin-bottom: 0.75rem;
+              overflow: hidden;
+            "
+          >
+            <!-- Graph SVG — drawn by JS -->
+            <svg
+              id="conceptSvg"
+              viewBox="0 0 460 200"
+              style="
+                width: 100%;
+                display: block;
+                overflow: visible;
+                min-height: 150px;
+              "
+            ></svg>
+
+            <!-- BFS queue display -->
+            <div
+              style="
+                margin-top: 0.5rem;
+                border-top: 1px solid var(--border);
+                padding-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.6rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.6px;
+                  color: var(--txt2);
+                  margin-bottom: 0.35rem;
+                  text-align: center;
+                "
+              >
+                BFS Queue
+              </div>
+              <div
+                id="bfsQueue"
+                style="
+                  display: flex;
+                  gap: 3px;
+                  justify-content: center;
+                  flex-wrap: wrap;
+                  min-height: 24px;
+                "
+              ></div>
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 0.6rem;
+              justify-content: center;
+              flex-wrap: wrap;
+              margin-bottom: 0.75rem;
+            "
+          >
+            <button class="d-btn go" onclick="doBfsStep()">
+              ▶ BFS Next Step
+            </button>
+            <button class="d-btn reset" onclick="doBfsReset()">↺ Reset</button>
+          </div>
+          <div
+            style="
+              text-align: center;
+              font-family: &quot;JetBrains Mono&quot;, monospace;
+              font-size: 0.78rem;
+              color: var(--txt2);
+              padding: 0.45rem 0.75rem;
+              background: rgba(255, 255, 255, 0.03);
+              border: 1px solid var(--border);
+              border-radius: 7px;
+            "
+            id="conceptMsg"
+          >
+            Click "BFS Next Step" — nodes explored level by level, shortest path
+            guaranteed
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(244, 63, 94, 0.25);
+                border: 2px solid #f43f5e;
+              "
+            ></div>
+            Source
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(245, 158, 11, 0.2);
+                border: 2px solid #f59e0b;
+              "
+            ></div>
+            In queue
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(16, 185, 129, 0.2);
+                border: 2px solid #10b981;
+              "
+            ></div>
+            Visited
+          </div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-size: 0.8rem;
+              color: var(--txt2);
+            "
+          >
+            <div
+              style="
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid #333;
+              "
+            ></div>
+            Unvisited
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--     APPLICATIONS     -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(244, 63, 94, 0.15)">🌍</div>
+        Real World Applications
+      </div>
+      <p class="section-sub">
+        In simple terms, if a problem involves "things connected to other
+        things," it's a graph problem. These six applications touch systems that
+        billions of people use every single day.
+      </p>
+
+      <div class="app-grid">
+        <!-- 1. GPS / Shortest Path -->
+        <div class="app-card rose">
+          <div class="card-header">
+            <div class="card-icon rose">🗺️</div>
+            <div class="card-info">
+              <h3>GPS Navigation — Dijkstra's Shortest Path</h3>
+              <p>
+                Google Maps, Waze, and every GPS device model roads as a
+                <strong>weighted directed graph</strong>. Intersections are
+                vertices, roads are edges, travel time is the weight. Dijkstra's
+                algorithm finds the shortest path in O((V+E) log V). Without a
+                graph, computing "fastest route" across a city is literally
+                unsolvable.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Step through Dijkstra's — watch shortest distances update one
+              node at a time
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="dijkStep()">
+                  ▶ Explore Next
+                </button>
+                <button class="d-btn reset" onclick="dijkReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="dijkSvg"
+                viewBox="0 0 300 160"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 120px;
+                "
+              ></svg>
+              <div class="status-line" id="dijkStatus">
+                Dijkstra from A — min-heap picks nearest unvisited node
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill rose">
+                  Settled: <b class="rv" id="dijkSettled">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Remaining: <b class="gv" id="dijkRemain">6</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Social Network -->
+        <div class="app-card pink">
+          <div class="card-header">
+            <div class="card-icon pink">👥</div>
+            <div class="card-info">
+              <h3>Social Networks — BFS Friend Suggestions</h3>
+              <p>
+                Facebook, LinkedIn, and Instagram model users as vertices and
+                friendships as edges. BFS from your profile finds
+                friends-of-friends at each "degree of separation."
+                <strong>"People you may know"</strong> = BFS level 2 from your
+                node. With 3B users, Facebook's graph has more edges than the
+                Milky Way has stars.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 BFS from "You" — find 1st and 2nd degree connections
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="socialStep()">
+                  ▶ BFS Next Level
+                </button>
+                <button class="d-btn reset" onclick="socialReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="socialCells"></div>
+              <div class="status-line" id="socialStatus">
+                Starting from "You" — explore friend network
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill rose">
+                  Degree: <b class="rv" id="socialDeg">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Found: <b class="gv" id="socialFound">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Web Crawler / PageRank -->
+        <div class="app-card orange">
+          <div class="card-header">
+            <div class="card-icon orange">🕷️</div>
+            <div class="card-info">
+              <h3>Web Crawler — DFS over the Internet Graph</h3>
+              <p>
+                Google's crawler treats the entire web as a
+                <strong>directed graph</strong> — pages are vertices, hyperlinks
+                are edges. DFS follows links recursively, BFS explores
+                level-by-level. PageRank then assigns importance based on how
+                many edges point to each node. The web has ~60 trillion edges.
+                Graph algorithms index all of it.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 DFS crawl — follow links depth-first, mark visited pages
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="crawlStep()">
+                  ▶ Follow Link
+                </button>
+                <button class="d-btn go-cyan" onclick="crawlAuto()">
+                  ⚡ Auto Crawl
+                </button>
+                <button class="d-btn reset" onclick="crawlReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div class="mini-cells" id="crawlCells"></div>
+              <div class="status-line" id="crawlStatus">
+                DFS from homepage — follow links depth-first
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill orange">
+                  Stack depth: <b class="ov" id="crawlDepth">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Crawled: <b class="gv" id="crawlCount">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Course Prerequisites / Topological Sort -->
+        <div class="app-card cyan">
+          <div class="card-header">
+            <div class="card-icon cyan">📚</div>
+            <div class="card-info">
+              <h3>Task Dependencies — Topological Sort</h3>
+              <p>
+                University course prerequisites, build systems (Make, Webpack),
+                and CI/CD pipelines all use <strong>topological sort</strong> on
+                a Directed Acyclic Graph (DAG). "You must take Calc before
+                Linear Algebra" = a directed edge. Topo sort gives a valid
+                ordering in O(V+E). If there's a cycle, no valid order exists.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Kahn's algorithm — build valid course order step by step
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="topoStep()">
+                  ▶ Next Course
+                </button>
+                <button class="d-btn reset" onclick="topoReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  color: var(--txt2);
+                  margin-bottom: 0.3rem;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                Available (in-degree 0):
+              </div>
+              <div class="mini-cells" id="topoQueue"></div>
+              <div
+                style="
+                  font-size: 0.6rem;
+                  color: var(--green);
+                  margin: 0.4rem 0 0.3rem;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                "
+              >
+                Sorted order so far:
+              </div>
+              <div class="mini-cells" id="topoResult"></div>
+              <div class="status-line" id="topoStatus">
+                Kahn's algorithm — process nodes with no prerequisites first
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Network Flow / Matching -->
+        <div class="app-card purple">
+          <div class="card-header">
+            <div class="card-icon purple">🔗</div>
+            <div class="card-info">
+              <h3>Network Flow — Routing & Bipartite Matching</h3>
+              <p>
+                Internet packet routing, power grid distribution, and
+                job-to-candidate matching all use
+                <strong>max-flow algorithms</strong> on flow networks. Every
+                pipe, wire, or network link is an edge with capacity.
+                Ford-Fulkerson finds maximum throughput in O(VE²). Bipartite
+                matching (students ↔ dorms) is a special case.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Max-flow — find how much can flow from source S to sink T
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="flowStep()">
+                  ▶ Augment Path
+                </button>
+                <button class="d-btn reset" onclick="flowReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="flowSvg"
+                viewBox="0 0 300 140"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 110px;
+                "
+              ></svg>
+              <div class="status-line" id="flowStatus">
+                Find augmenting paths from S to T — Ford-Fulkerson
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill purple">
+                  Max flow: <b class="pv" id="flowTotal">0</b>
+                </div>
+                <div class="stat-pill green">
+                  Paths found: <b class="gv" id="flowPaths">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Spanning Tree / MST -->
+        <div class="app-card green">
+          <div class="card-header">
+            <div class="card-icon green">🌲</div>
+            <div class="card-info">
+              <h3>Minimum Spanning Tree — Network Design</h3>
+              <p>
+                Laying cables to connect N cities at minimum cost, designing
+                circuit boards, clustering in machine learning — all solved by
+                <strong>Minimum Spanning Tree</strong>. Prim's and Kruskal's
+                find the MST in O(E log V). The MST connects all vertices with
+                the minimum total edge weight — no cycle, no redundancy.
+              </p>
+            </div>
+          </div>
+          <div class="card-demo">
+            <div class="demo-label">
+              🎮 Kruskal's algorithm — add cheapest edge that doesn't form a
+              cycle
+            </div>
+            <div class="demo-box">
+              <div class="demo-btns">
+                <button class="d-btn go" onclick="mstStep()">▶ Add Edge</button>
+                <button class="d-btn reset" onclick="mstReset()">
+                  ↺ Reset
+                </button>
+              </div>
+              <svg
+                id="mstSvg"
+                viewBox="0 0 300 160"
+                style="
+                  width: 100%;
+                  display: block;
+                  margin-bottom: 0.5rem;
+                  overflow: visible;
+                  min-height: 120px;
+                "
+              ></svg>
+              <div class="status-line" id="mstStatus">
+                Sort edges by weight — add cheapest non-cycle edge
+              </div>
+              <div class="stat-row two" style="margin-top: 0.5rem">
+                <div class="stat-pill green">
+                  MST cost: <b class="gv" id="mstCost">0</b>
+                </div>
+                <div class="stat-pill cyan">
+                  Edges added: <b class="cv" id="mstEdges">0</b>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--     COMPLEXITY TABLE     -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(244, 63, 94, 0.15)">⚡</div>
+        Time &amp; Space Complexity
+      </div>
+      <p class="section-sub">
+        Graph algorithm complexity depends on both V (vertices) and E (edges).
+        Sparse graphs (few edges, E ≈ V) and dense graphs (many edges, E ≈ V²)
+        behave very differently.
+      </p>
+      <div class="table-wrap">
+        <table class="complexity-table">
+          <thead>
+            <tr>
+              <th>Algorithm</th>
+              <th>Time</th>
+              <th>Space</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="op">BFS (unweighted)</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Shortest path in hops. Queue-based. Visits every reachable
+                vertex once.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">DFS (recursive/iterative)</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Stack-based. Used for cycle detection, topological sort,
+                connected components.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Dijkstra's (min-heap)</td>
+              <td class="ok">O((V+E) log V)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Weighted shortest path. Requires non-negative weights. Fails
+                with negative edges.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Bellman-Ford</td>
+              <td class="bad">O(VE)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Handles negative edges. Detects negative cycles. Slower but more
+                general than Dijkstra.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Floyd-Warshall</td>
+              <td class="bad">O(V³)</td>
+              <td class="bad">O(V²)</td>
+              <td class="note">
+                All-pairs shortest path. Dynamic programming on adjacency
+                matrix. Only for small V.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Topological Sort</td>
+              <td class="good">O(V + E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Only for DAGs. Kahn's (BFS) or DFS-based. Detects cycles if none
+                found.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Kruskal's MST</td>
+              <td class="ok">O(E log E)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Sort edges + Union-Find. Best for sparse graphs. E log E ≈ E log
+                V since E ≤ V².
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Prim's MST (heap)</td>
+              <td class="ok">O(E log V)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Greedy. Grows MST from one node. Better for dense graphs with
+                adjacency matrix.
+              </td>
+            </tr>
+            <tr>
+              <td class="op">Union-Find (DSU)</td>
+              <td class="good">O(α(V)) ≈ O(1)</td>
+              <td class="ok">O(V)</td>
+              <td class="note">
+                Amortized near-constant with path compression + union by rank.
+                Powers Kruskal's.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box">
+        💡 <strong>Key insight:</strong> Most graph problems boil down to one of
+        these:
+        <span class="hi"
+          >BFS for shortest hops, Dijkstra for shortest weighted path, DFS for
+          connectivity/cycles/topo-sort, MST for minimum cost spanning</span
+        >. The representation matters too — adjacency list is O(V+E) space and
+        better for sparse graphs; adjacency matrix is O(V²) but gives O(1) edge
+        lookup and is better for dense graphs or Floyd-Warshall. In interviews,
+        always clarify: directed or undirected? Weighted? Can there be cycles or
+        negative weights?
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--     PROS & CONS     -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(16, 185, 129, 0.15)">
+          ⚖️
+        </div>
+        Advantages &amp; Disadvantages
+      </div>
+      <p class="section-sub">
+        Graphs are the most expressive data structure — but that power comes
+        with real complexity in implementation and memory.
+      </p>
+      <div class="procon-grid">
+        <div class="procon-card pros">
+          <div class="procon-title" style="color: var(--green)">
+            ✅ Advantages
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Models any relationship — the most general structure</h4>
+              <p>
+                Any problem that involves "things connected to other things" is
+                a graph. Roads, friendships, dependencies, web links, electrical
+                circuits — graphs represent them all naturally. No other data
+                structure is this general.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>O(V + E) traversal — linear in graph size</h4>
+              <p>
+                BFS and DFS visit every vertex and edge exactly once. For a road
+                network with millions of intersections, finding all reachable
+                nodes is linear — as efficient as it can possibly be for this
+                kind of problem.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Handles complex dependency and ordering problems</h4>
+              <p>
+                Topological sort on a DAG solves scheduling, build order, and
+                prerequisite problems in O(V+E). No other structure handles "A
+                must come before B" constraints this elegantly.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Shortest path algorithms cover a huge class of problems</h4>
+              <p>
+                Dijkstra, Bellman-Ford, and Floyd-Warshall cover unweighted,
+                weighted, negative-weight, and all-pairs shortest paths. These
+                algorithms power GPS, network routing, and game AI pathfinding.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>
+                Flexible representation — list or matrix to fit any workload
+              </h4>
+              <p>
+                Adjacency lists save memory for sparse graphs (social networks,
+                road maps). Adjacency matrices give O(1) edge queries for dense
+                graphs. You pick the representation that fits your access
+                pattern — most structures don't give you that choice.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot pro">✓</div>
+            <div class="procon-text">
+              <h4>Foundation of network flow, matching, and optimization</h4>
+              <p>
+                Max-flow, bipartite matching, min-cut — entire fields of
+                combinatorial optimization are built on graphs. Transportation
+                planning, supply chain routing, and resource allocation all rely
+                on graph flow algorithms.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="procon-card cons">
+          <div class="procon-title" style="color: var(--red)">
+            ❌ Disadvantages
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>High memory usage for dense graphs</h4>
+              <p>
+                An adjacency matrix for V vertices uses O(V²) space — a graph
+                with 100,000 nodes needs 10GB just for the matrix. Adjacency
+                lists are better for sparse graphs, but even those use O(V + E)
+                which grows fast on large networks.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Complex to implement correctly — many edge cases</h4>
+              <p>
+                Cycles, disconnected components, negative weights, self-loops,
+                and directed vs undirected all create subtle bugs. Dijkstra
+                silently gives wrong answers with negative edges. Graph code is
+                notoriously tricky to get right under interview pressure.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>
+                No O(1) "find shortest path" — must run an algorithm each time
+              </h4>
+              <p>
+                Unlike arrays (O(1) access) or hash maps (O(1) lookup), graphs
+                don't give you any answer in O(1). Every query — shortest path,
+                connectivity, cycle detection — requires running an algorithm.
+                Precomputation is possible but expensive.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Poor cache performance — pointer-chasing adjacency lists</h4>
+              <p>
+                Following edges in an adjacency list means chasing pointers
+                across memory — causing cache misses per hop. On large sparse
+                graphs, BFS/DFS can be memory-bound. CSR (Compressed Sparse Row)
+                format helps but adds implementation complexity.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>Negative cycles break most shortest-path algorithms</h4>
+              <p>
+                A negative weight cycle means "shortest path" is −∞ — undefined.
+                Dijkstra can't handle negative edges at all. Bellman-Ford
+                detects negative cycles but is O(VE) — slow for large graphs.
+                This limitation constrains where graph algorithms apply.
+              </p>
+            </div>
+          </div>
+
+          <div class="procon-item">
+            <div class="procon-dot con">✗</div>
+            <div class="procon-text">
+              <h4>
+                All-pairs shortest path is O(V³) — only feasible for small
+                graphs
+              </h4>
+              <p>
+                Floyd-Warshall runs in O(V³) and needs O(V²) space. For V =
+                10,000 nodes, that's a trillion operations. In practice, you run
+                Dijkstra from each source separately (O(V × (V+E) log V)) or use
+                heuristics like A*.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--     WHEN TO USE     -->
+    <div class="section">
+      <div class="section-title">
+        <div class="s-icon" style="background: rgba(245, 158, 11, 0.15)">
+          🎯
+        </div>
+        When to Use Graphs — and When to Avoid Them
+      </div>
+      <p class="section-sub">
+        The trick is recognizing graph problems fast. Once you see "nodes and
+        connections," the algorithm usually follows naturally.
+      </p>
+      <div class="when-grid">
+        <div class="when-card use">
+          <div class="when-title" style="color: var(--green)">
+            ✅ Use Graphs When...
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🛣️</div>
+            <div class="when-text">
+              <h4>Finding shortest path between two points</h4>
+              <p>
+                GPS routing, game pathfinding, network routing — any "get from A
+                to B" problem. Unweighted? BFS. Weighted non-negative? Dijkstra.
+                Negative weights? Bellman-Ford.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔗</div>
+            <div class="when-text">
+              <h4>Checking if things are connected</h4>
+              <p>
+                Is user X reachable from user Y? Is the network split into
+                components? BFS/DFS from a source in O(V+E). Union-Find for
+                dynamic connectivity in near-O(1) per query.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">📋</div>
+            <div class="when-text">
+              <h4>Ordering tasks with dependencies</h4>
+              <p>
+                Build systems, course scheduling, spreadsheet recalculation —
+                anything with "A must happen before B." Model as a DAG, run
+                topological sort in O(V+E). Detect impossible cases (cycles)
+                automatically.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔄</div>
+            <div class="when-text">
+              <h4>Detecting cycles in a system</h4>
+              <p>
+                Deadlock detection in OS, circular dependency detection in
+                compilers, import cycle detection in module systems — all DFS on
+                a directed graph.
+                <span class="when-code">back edge in DFS = cycle found</span>.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">💰</div>
+            <div class="when-text">
+              <h4>Minimizing connection cost across all nodes</h4>
+              <p>
+                Laying network cables, designing circuit boards, clustering data
+                — Kruskal's or Prim's MST gives minimum total weight spanning
+                tree in O(E log V). Classic interview problem: connect all
+                cities at minimum cost.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🌊</div>
+            <div class="when-text">
+              <h4>Maximizing flow through a network</h4>
+              <p>
+                Network bandwidth, supply chain capacity, resource assignment —
+                max-flow algorithms find maximum throughput from source to sink.
+                <span class="when-code">Ford-Fulkerson</span> / Edmonds-Karp
+                handle these in O(VE²) or O(VE log V).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="when-card avoid">
+          <div class="when-title" style="color: var(--red)">
+            ❌ Avoid Graphs When...
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔢</div>
+            <div class="when-text">
+              <h4>Data is naturally sequential or hierarchical</h4>
+              <p>
+                If your data is a list, array, or tree — use those structures. A
+                binary search tree is faster than a graph for ordered key
+                lookups. Don't model a sorted list as a graph just to feel
+                fancy.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔍</div>
+            <div class="when-text">
+              <h4>You just need key-value lookups</h4>
+              <p>
+                If the question is "does key X map to value Y?", use a hash map
+                — O(1) average. Don't model a dictionary as a graph. Graphs
+                answer relationship questions, not lookup questions.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">💾</div>
+            <div class="when-text">
+              <h4>Memory is severely constrained and graph is dense</h4>
+              <p>
+                A dense graph with V=10,000 needs ~100MB just for the adjacency
+                matrix. If memory is tight and the graph is dense, consider
+                implicit graph representations or specialized algorithms that
+                don't materialize the full adjacency structure.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">⚡</div>
+            <div class="when-text">
+              <h4>You need real-time O(1) answers</h4>
+              <p>
+                Graph queries are expensive — O(V+E) minimum for most questions.
+                If you need "is A connected to B?" answered in O(1) offline
+                (static graph), precompute connected components and store in a
+                hash map instead.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">🔀</div>
+            <div class="when-text">
+              <h4>The "graph" has no meaningful edge semantics</h4>
+              <p>
+                If you're forcing graph structure onto data that doesn't have
+                natural connections, you're overcomplicating it. Ask yourself:
+                "what does an edge actually mean here?" If the answer is vague,
+                a simpler structure probably fits better.
+              </p>
+            </div>
+          </div>
+
+          <div class="when-item">
+            <div class="when-icon">📉</div>
+            <div class="when-text">
+              <h4>Graph has negative cycles and you need shortest paths</h4>
+              <p>
+                Negative cycles make shortest paths undefined. If your graph can
+                have negative cycles, either detect and report them
+                (Bellman-Ford) or restructure the problem — no standard
+                shortest-path algorithm handles them correctly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!--     CTA     -->
+    <div class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+        <div class="cta-title">
+          Challenge yourself with<br /><span class="glow"
+            >real Graph problems</span
+          >
+        </div>
+        <p class="cta-sub">
+          You've seen graphs power GPS navigation, social networks, web
+          crawlers, task scheduling, network flow, and MST.<br />
+          Now prove you can apply BFS, DFS, Dijkstra's, and topological sort to
+          classic interview problems.
+        </p>
+        <div class="graph-cta-viz">
+          <div
+            class="gcell"
+            style="
+              background: rgba(244, 63, 94, 0.15);
+              border-color: rgba(244, 63, 94, 0.4);
+              color: var(--rose);
+            "
+          >
+            A
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(236, 72, 153, 0.1);
+              border-color: rgba(236, 72, 153, 0.3);
+              color: var(--pink);
+            "
+          >
+            B
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(16, 185, 129, 0.12);
+              border-color: rgba(16, 185, 129, 0.35);
+              color: var(--green);
+            "
+          >
+            C
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(6, 182, 212, 0.1);
+              border-color: rgba(6, 182, 212, 0.3);
+              color: var(--cyan);
+            "
+          >
+            D
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(244, 63, 94, 0.18);
+              border-color: rgba(244, 63, 94, 0.5);
+              color: var(--rose);
+            "
+          >
+            E
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(245, 158, 11, 0.1);
+              border-color: rgba(245, 158, 11, 0.3);
+              color: var(--orange);
+            "
+          >
+            F
+          </div>
+          <div
+            class="gcell"
+            style="
+              background: rgba(139, 92, 246, 0.12);
+              border-color: rgba(139, 92, 246, 0.35);
+              color: var(--purple);
+            "
+          >
+            G
+          </div>
+        </div>
+        <a href="practice.html?topic=graphs" class="cta-btn">
+          <span>🌐 Solve Graph Problems</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+ 
+
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+
+    <!--  
+     JAVASCRIPT — student-dev style
+     let/const throughout, named vars like adj, dist, vis, q
+       -->
+    <script src="js/graph_L3.js"></script>
+  </body>
+</html>

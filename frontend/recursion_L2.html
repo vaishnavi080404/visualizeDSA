@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursion - Level 2 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="css/recursion_L2.css">
+
+</head>
+<body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a> <span>›</span>
+    <a href="recursion_basics.html">Recursion</a> <span>›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Recursion — Interactive Visualizer</h1>
+    <p class="page-subtitle">Watch the call stack grow and unwind with live animated visualizations of classic recursive problems.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!--            MAIN VISUALIZER            -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo-code panel -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+
+      <div class="ps-op-label">Factorial</div>
+      <div class="pseudo-step" data-step="fact-base"><strong>BASE:</strong> if n == 0, return 1</div>
+      <div class="pseudo-step" data-step="fact-call"><strong>CALL:</strong> return n × factorial(n-1)</div>
+      <div class="pseudo-step" data-step="fact-ret"><strong>RETURN:</strong> unwind, multiply back</div>
+
+      <div class="ps-op-label">Fibonacci</div>
+      <div class="pseudo-step" data-step="fib-base"><strong>BASE:</strong> if n ≤ 1, return n</div>
+      <div class="pseudo-step" data-step="fib-left"><strong>LEFT:</strong> fib(n-1) branch</div>
+      <div class="pseudo-step" data-step="fib-right"><strong>RIGHT:</strong> fib(n-2) branch</div>
+      <div class="pseudo-step" data-step="fib-ret"><strong>RETURN:</strong> left + right</div>
+
+      <div class="ps-op-label">Sum of N / Power</div>
+      <div class="pseudo-step" data-step="sum-base"><strong>BASE:</strong> if n == 0, return 0</div>
+      <div class="pseudo-step" data-step="sum-call"><strong>CALL:</strong> return n + sum(n-1)</div>
+      <div class="pseudo-step" data-step="pow-base"><strong>BASE:</strong> if exp == 0, return 1</div>
+      <div class="pseudo-step" data-step="pow-call"><strong>CALL:</strong> return b × power(b, exp-1)</div>
+
+      <div class="ps-op-label">Countdown / Print Digits</div>
+      <div class="pseudo-step" data-step="cd-base"><strong>BASE:</strong> if n &lt; 0, return</div>
+      <div class="pseudo-step" data-step="cd-call"><strong>CALL:</strong> print n, countdown(n-1)</div>
+      <div class="pseudo-step" data-step="digits-base"><strong>BASE:</strong> if n == 0, return</div>
+      <div class="pseudo-step" data-step="digits-call"><strong>CALL:</strong> printDigits(n/10), print n%10</div>
+
+      <div class="ps-op-label">Reverse String / Palindrome</div>
+      <div class="pseudo-step" data-step="rev-base"><strong>BASE:</strong> if len ≤ 1, return s</div>
+      <div class="pseudo-step" data-step="rev-call"><strong>CALL:</strong> reverse(s[1:]) + s[0]</div>
+      <div class="pseudo-step" data-step="pal-base"><strong>BASE:</strong> if len ≤ 1, return true</div>
+      <div class="pseudo-step" data-step="pal-call"><strong>CALL:</strong> s[0]==s[-1] &amp;&amp; isPal(s[1:-1])</div>
+
+      <div class="ps-op-label">Binary Search / GCD</div>
+      <div class="pseudo-step" data-step="bs-base"><strong>BASE:</strong> lo &gt; hi → -1</div>
+      <div class="pseudo-step" data-step="bs-call"><strong>CALL:</strong> split at mid, recurse half</div>
+      <div class="pseudo-step" data-step="gcd-base"><strong>BASE:</strong> if b == 0, return a</div>
+      <div class="pseudo-step" data-step="gcd-call"><strong>CALL:</strong> return gcd(b, a % b)</div>
+    </div>
+
+    <!-- Main vis card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="vis-title">Recursion — Call Stack Visualizer</h5>
+        </div>
+        <div class="card-body" id="mainCardBody">
+
+          <div class="op-selector" id="opSelector">
+            <button class="op-btn active" data-op="factorial"  onclick="setOp('factorial')">📐 Factorial</button>
+            <button class="op-btn"        data-op="fibonacci"  onclick="setOp('fibonacci')">🌿 Fibonacci</button>
+            <button class="op-btn"        data-op="sum"        onclick="setOp('sum')">➕ Sum of N</button>
+            <button class="op-btn"        data-op="power"      onclick="setOp('power')">⚡ Power</button>
+            <button class="op-btn"        data-op="countdown"  onclick="setOp('countdown')">⏱ Countdown</button>
+            <button class="op-btn"        data-op="printdigits" onclick="setOp('printdigits')">🔢 Print Digits</button>
+            <button class="op-btn"        data-op="reversestr" onclick="setOp('reversestr')">↩️ Reverse Str</button>
+            <button class="op-btn"        data-op="palindrome" onclick="setOp('palindrome')">🪞 Palindrome</button>
+            <button class="op-btn"        data-op="binarysearch" onclick="setOp('binarysearch')">🔍 Binary Search</button>
+            <button class="op-btn"        data-op="gcd"        onclick="setOp('gcd')">🧮 GCD</button>
+          </div>
+
+          <!-- Call stack display -->
+          <div id="mainStackArea" style="min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+            <div style="color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:.9rem;">
+              Set input and click 🔨 Build to begin
+            </div>
+          </div>
+
+          <!-- depth indicator -->
+          <div class="depth-bar-wrap" id="depthBarWrap" style="display:none;">
+            <span class="depth-bar-label">Stack Depth</span>
+            <div class="depth-bar-track"><div class="depth-bar-fill" id="depthBarFill" style="width:0%"></div></div>
+            <span class="depth-bar-label" id="depthLabel">0</span>
+          </div>
+
+          <div class="vis-caption" id="mainCaption">Choose an operation above and build to start.</div>
+          <div style="text-align:center;margin-top:6px;" id="mainBadgeWrap"></div>
+        </div>
+
+        <div class="card-footer" id="mainControls">
+          <div class="ctrl-grid">
+            <div><label style="font-size:.8rem;color:var(--text-secondary);display:block;margin-bottom:4px;" id="input1Label">n (value)</label>
+            <input type="number" id="mc-n" class="form-control" value="5" min="0" max="10"></div>
+            <button class="btn btn-purple" id="btnStep" onclick="mainStep()" disabled>▶ Step</button>
+            <button class="btn btn-warning" id="btnAuto" onclick="mainAuto()" disabled>⚡ Auto</button>
+          </div>
+          <div class="ctrl-row">
+            <button class="btn btn-success" onclick="mainBuild()">🔨 Build</button>
+            <button class="btn btn-ghost"   onclick="mainReset()">↺ Reset</button>
+            <div class="speed-wrap">
+              <span class="speed-label">Speed</span>
+              <input type="range" class="speed-slider" id="speedSlider" min="200" max="1200" value="700" step="100">
+              <span class="speed-label" id="speedLabel">Normal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end visualizer-grid -->
+
+  <!--            SCENARIOS            -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="q-scenario-tabs">
+      <button class="q-scenario-tab qtab-best"   onclick="qSwitch('best')">⚡ Best Case</button>
+      <button class="q-scenario-tab"             onclick="qSwitch('avg')">〜 Average Case</button>
+      <button class="q-scenario-tab"             onclick="qSwitch('worst')">⚠ Worst Case</button>
+      <button class="q-scenario-tab"             onclick="qSwitch('custom')">✏ Custom</button>
+    </div>
+
+    <!-- BEST -->
+    <div class="q-scenario-panel active" id="qspanel-best">
+      <div class="q-scenario-inner">
+        <h4>Best Case — O(1) Base Case Hit Immediately</h4>
+        <p>When the input is already the base case (n=0 for factorial, n≤1 for Fibonacci), the function returns immediately — <strong style="color:var(--primary-green)">no recursive calls made</strong>, constant time O(1).</p>
+        <hr class="q-divider">
+        <div class="q-input-label">🔢 factorial(0) — base case, returns 1 instantly</div>
+        <div class="q-stage">
+          <div>
+            <div class="sc-mini-stack" id="sc-best-stack"></div>
+            <div class="sc-info" id="sc-best-info">Stack depth: 0</div>
+          </div>
+          <div>
+            <div class="q-log-panel" id="sc-best-log"><div class="q-log-title">📋 Call Log</div></div>
+            <div class="q-ctl-row">
+              <button class="q-btn q-btn-green"  onclick="scBestStep()" id="sc-best-step">▶ Next</button>
+              <button class="q-btn q-btn-orange" onclick="scBestAuto()" id="sc-best-auto">⚡ Auto</button>
+              <button class="q-btn q-btn-ghost"  onclick="scInitBest()">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AVERAGE -->
+    <div class="q-scenario-panel" id="qspanel-avg">
+      <div class="q-scenario-inner">
+        <h4>Average Case — O(N) Linear Depth</h4>
+        <p>Computing <strong style="color:var(--primary-cyan)">factorial(4)</strong> makes N recursive calls before hitting the base case, then unwinds multiplying results back up. Stack depth = N.</p>
+        <hr class="q-divider">
+        <div class="q-input-label">🔢 factorial(4) — 4 recursive calls, stack depth = 4</div>
+        <div class="q-stage">
+          <div>
+            <div class="sc-mini-stack" id="sc-avg-stack"></div>
+            <div class="sc-info" id="sc-avg-info">Stack depth: 0</div>
+          </div>
+          <div>
+            <div class="q-log-panel" id="sc-avg-log"><div class="q-log-title">📋 Call Log</div></div>
+            <div class="q-ctl-row">
+              <button class="q-btn q-btn-purple" onclick="scAvgStep()" id="sc-avg-step">▶ Next Step</button>
+              <button class="q-btn q-btn-orange" onclick="scAvgAuto()" id="sc-avg-auto">⚡ Auto</button>
+              <button class="q-btn q-btn-ghost"  onclick="scInitAvg()">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WORST -->
+    <div class="q-scenario-panel" id="qspanel-worst">
+      <div class="q-scenario-inner">
+        <h4>Worst Case — O(2ⁿ) Exponential Branching</h4>
+        <p>Fibonacci creates a <strong style="color:var(--primary-orange)">binary call tree</strong> — each call spawns two more calls. fib(5) makes ~2⁵=32 total calls. Space: O(N) stack depth.</p>
+        <hr class="q-divider">
+        <div class="q-input-label">🌿 fib(5) — exponential O(2ⁿ) calls, deep branching tree</div>
+        <div class="q-stage">
+          <div>
+            <div class="sc-mini-stack" id="sc-worst-stack"></div>
+            <div class="sc-info" id="sc-worst-info">Total calls: 0</div>
+          </div>
+          <div>
+            <div class="q-log-panel" id="sc-worst-log"><div class="q-log-title">📋 Call Log</div></div>
+            <div class="q-ctl-row">
+              <button class="q-btn q-btn-orange" onclick="scWorstStep()" id="sc-worst-step">▶ Next Call</button>
+              <button class="q-btn q-btn-purple" onclick="scWorstAuto()" id="sc-worst-auto">⚡ Auto</button>
+              <button class="q-btn q-btn-ghost"  onclick="scInitWorst()">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM -->
+    <div class="q-scenario-panel" id="qspanel-custom">
+      <div class="q-scenario-inner">
+        <h4>Custom Input — Explore Any Recursion</h4>
+        <p>Choose any recursive problem and input value. Watch the live complexity cards update and see how stack depth changes.</p>
+        <hr class="q-divider">
+
+        <div class="q-cc-grid">
+          <div class="q-cc-card" id="qcc-linear">
+            <div class="q-cc-op">📏 Linear O(N)</div>
+            <div class="q-cc-row">Time: <span class="q-cc-val q-cc-orange">O(N)</span></div>
+            <div class="q-cc-row">Stack: <span class="q-cc-val q-cc-orange">O(N)</span></div>
+            <div class="q-cc-row">Factorial, Sum, Power, GCD, Countdown</div>
+            <div class="q-cc-note">Single recursive call per step</div>
+          </div>
+          <div class="q-cc-card" id="qcc-expo">
+            <div class="q-cc-op">💥 Exponential O(2ⁿ)</div>
+            <div class="q-cc-row">Time: <span class="q-cc-val q-cc-red">O(2ⁿ)</span></div>
+            <div class="q-cc-row">Stack: <span class="q-cc-val q-cc-orange">O(N)</span></div>
+            <div class="q-cc-row">Fibonacci (naïve), binary tree recursion</div>
+            <div class="q-cc-note">Two recursive calls per step — avoid for large N</div>
+          </div>
+        </div>
+
+        <div class="q-cc-toast" id="q-cc-toast">
+          <span id="q-cc-toast-icon">ℹ</span>
+          <span id="q-cc-toast-text"></span>
+        </div>
+
+        <div class="q-input-label" style="margin-top:.6rem;">📥 Your Recursion Problem</div>
+        <div class="q-custom-input-row">
+          <select class="q-custom-input" id="cust-op" style="width:175px;">
+            <option value="factorial">📐 Factorial(n)</option>
+            <option value="fibonacci">🌿 Fibonacci(n)</option>
+            <option value="sum">➕ Sum(n)</option>
+            <option value="power">⚡ Power(b,exp)</option>
+            <option value="countdown">⏱ Countdown(n)</option>
+            <option value="printdigits">🔢 PrintDigits(n)</option>
+            <option value="reversestr">↩️ Reverse(str)</option>
+            <option value="palindrome">🪞 Palindrome(str)</option>
+            <option value="binarysearch">🔍 BinarySearch</option>
+            <option value="gcd">🧮 GCD(a,b)</option>
+          </select>
+          <input type="number" class="q-custom-input" id="cust-n"   placeholder="n / a" value="5" style="width:80px;">
+          <input type="text"   class="q-custom-input" id="cust-arg" placeholder="b / str / target" value="" style="width:140px;">
+          <button class="q-btn q-btn-green" onclick="scCustomRun()">▶ Run</button>
+          <button class="q-btn q-btn-ghost" onclick="scCustomReset()">↺ Reset</button>
+        </div>
+
+        <div class="q-stage">
+          <div>
+            <div class="sc-mini-stack" id="sc-cust-stack"></div>
+            <div class="sc-info" id="sc-cust-info">Result will appear here</div>
+          </div>
+          <div>
+            <div class="q-log-panel" id="sc-cust-log"><div class="q-log-title">📋 Call Log</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--            CODE EDITOR            -->
+  <div class="section-card" id="editor">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-selector" id="codeOpSelector">
+      <div class="impl-opt active" data-cop="factorial"   onclick="setCodeOp('factorial')">  <div class="impl-opt-icon">📐</div><div class="impl-opt-title">Factorial</div></div>
+      <div class="impl-opt"       data-cop="fibonacci"   onclick="setCodeOp('fibonacci')">   <div class="impl-opt-icon">🌿</div><div class="impl-opt-title">Fibonacci</div></div>
+      <div class="impl-opt"       data-cop="sum"         onclick="setCodeOp('sum')">         <div class="impl-opt-icon">➕</div><div class="impl-opt-title">Sum of N</div></div>
+      <div class="impl-opt"       data-cop="power"       onclick="setCodeOp('power')">       <div class="impl-opt-icon">⚡</div><div class="impl-opt-title">Power</div></div>
+      <div class="impl-opt"       data-cop="countdown"   onclick="setCodeOp('countdown')">   <div class="impl-opt-icon">⏱</div><div class="impl-opt-title">Countdown</div></div>
+      <div class="impl-opt"       data-cop="printdigits" onclick="setCodeOp('printdigits')"> <div class="impl-opt-icon">🔢</div><div class="impl-opt-title">Print Digits</div></div>
+      <div class="impl-opt"       data-cop="reversestr"  onclick="setCodeOp('reversestr')">  <div class="impl-opt-icon">↩️</div><div class="impl-opt-title">Reverse Str</div></div>
+      <div class="impl-opt"       data-cop="palindrome"  onclick="setCodeOp('palindrome')">  <div class="impl-opt-icon">🪞</div><div class="impl-opt-title">Palindrome</div></div>
+      <div class="impl-opt"       data-cop="binarysearch" onclick="setCodeOp('binarysearch')"><div class="impl-opt-icon">🔍</div><div class="impl-opt-title">Bin. Search</div></div>
+      <div class="impl-opt"       data-cop="gcd"         onclick="setCodeOp('gcd')">         <div class="impl-opt-icon">🧮</div><div class="impl-opt-title">GCD</div></div>
+    </div>
+
+    <div class="lang-tabs" id="editorLangTabs">
+      <button class="lang-tab active" data-lang="cpp">C++</button>
+      <button class="lang-tab"        data-lang="python">Python</button>
+      <button class="lang-tab"        data-lang="java">Java</button>
+      <button class="lang-tab"        data-lang="c">C</button>
+      <button class="lang-tab"        data-lang="javascript">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span id="editorLabel" style="font-weight:600;color:var(--primary-purple);font-family:'Space Grotesk',sans-serif;">C++ — Factorial</span>
+        <button class="code-copy" id="copyBtn" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <div class="input-section">
+      <div class="input-section-title">📥 PROVIDE INPUTS BEFORE RUNNING</div>
+      <div id="runInputArea"></div>
+    </div>
+
+    <button class="run-code-btn" onclick="runCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Select an operation, fill in inputs and click Run...</div>
+    </div>
+  </div>
+
+  <!-- Level Nav -->
+  <div class="level-container">
+    <h3 style="font-family:'Space Grotesk',sans-serif;color:var(--text-primary);margin-bottom:1rem;">Ready to Test Your Knowledge?</h3>
+    <div class="level-wrapper">
+      <button id="l1">Level 1</button>
+      <div class="slider-line active" id="slider1"></div>
+      <button id="l2">Level 2</button>
+      <div class="slider-line" id="slider2"></div>
+      <button id="l3">Level 3</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Recursion journey.</p>
+    <div style="margin-top:1.5rem;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/recursion_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>
+</script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Search - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/binarySearch_L2.css">
+  </head>
+  <body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+  <div class="breadcrumb">
+    <a href="topics.html">Topics</a><span class="sep">›</span>
+    <a href="binary_search_basics.html">Binary Search</a><span class="sep">›</span>
+    <span>Level 2</span>
+  </div>
+
+  <div class="page-header">
+    <h1 class="page-title">Binary Search — Interactive Visualizer</h1>
+    <p class="content-text">Watch Binary Search halve the search space on every iteration. Requires a <strong style="color:var(--primary-cyan)">sorted array</strong>.</p>
+    <div class="level-tabs">
+      <div class="level-tab">Level 1 of 3 | Basics</div>
+      <div class="level-tab active">Level 2 of 3 | Interactive</div>
+    </div>
+  </div>
+
+  <!-- Implementation Selector -->
+  <div class="implementation-selector">
+    <div class="impl-option active" data-type="iterative" onclick="switchImplementation('iterative')">
+      <div class="impl-option-icon">🔁</div>
+      <div class="impl-option-title">Iterative</div>
+      <div class="impl-option-desc">While-loop, O(1) space</div>
+    </div>
+    <div class="impl-option" data-type="recursive" onclick="switchImplementation('recursive')">
+      <div class="impl-option-icon">🔃</div>
+      <div class="impl-option-title">Recursive</div>
+      <div class="impl-option-desc">Divide & conquer, call stack</div>
+    </div>
+  </div>
+
+  <!--   VISUALIZER GRID   -->
+  <div class="visualizer-grid">
+
+    <!-- Pseudo Code -->
+    <div class="pseudo-code-container">
+      <h5>📋 PSEUDO CODE</h5>
+
+      <div id="pseudo-iterative">
+        <div class="pseudo-step" data-step="it-init">
+          <strong>INIT:</strong> Set search boundaries<br>
+          <span>low = 0 ; high = n − 1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-loop">
+          <strong>LOOP:</strong> While range is valid<br>
+          <span>while low ≤ high</span>
+        </div>
+        <div class="pseudo-step" data-step="it-mid">
+          <strong>MID:</strong> Find middle index<br>
+          <span>mid = low + (high − low) / 2</span>
+        </div>
+        <div class="pseudo-step" data-step="it-compare">
+          <strong>COMPARE:</strong> Check mid element<br>
+          <span>if arr[mid] == target</span>
+        </div>
+        <div class="pseudo-step" data-step="it-found">
+          <strong>FOUND:</strong> Return index<br>
+          <span>return mid</span>
+        </div>
+        <div class="pseudo-step" data-step="it-goright">
+          <strong>GO RIGHT:</strong> Target is larger<br>
+          <span>if arr[mid] &lt; target → low = mid+1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-goleft">
+          <strong>GO LEFT:</strong> Target is smaller<br>
+          <span>if arr[mid] &gt; target → high = mid−1</span>
+        </div>
+        <div class="pseudo-step" data-step="it-notfound">
+          <strong>NOT FOUND:</strong> Range exhausted<br>
+          <span>return −1</span>
+        </div>
+      </div>
+
+      <div id="pseudo-recursive" style="display:none;">
+        <div class="pseudo-step" data-step="re-base">
+          <strong>BASE CASE:</strong> Range invalid<br>
+          <span>if low &gt; high: return −1</span>
+        </div>
+        <div class="pseudo-step" data-step="re-mid">
+          <strong>MID:</strong> Find middle index<br>
+          <span>mid = low + (high − low) / 2</span>
+        </div>
+        <div class="pseudo-step" data-step="re-compare">
+          <strong>COMPARE:</strong> Check mid element<br>
+          <span>if arr[mid] == target</span>
+        </div>
+        <div class="pseudo-step" data-step="re-found">
+          <strong>FOUND:</strong> Return index<br>
+          <span>return mid</span>
+        </div>
+        <div class="pseudo-step" data-step="re-goright">
+          <strong>RECURSE RIGHT:</strong><br>
+          <span>return search(arr, mid+1, high)</span>
+        </div>
+        <div class="pseudo-step" data-step="re-goleft">
+          <strong>RECURSE LEFT:</strong><br>
+          <span>return search(arr, low, mid−1)</span>
+        </div>
+        <div class="pseudo-step" data-step="re-notfound">
+          <strong>NOT FOUND:</strong> −1 propagates<br>
+          <span>return −1 ← all calls unwind</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualization Card -->
+    <div>
+      <div class="visualization-card">
+        <div class="card-header">
+          <h5 id="visualizer-title">Binary Search Visualizer — Iterative</h5>
+        </div>
+        <div class="card-body">
+          <div class="array-display">
+            <div id="iterBadge" class="iter-badge">Iteration: 0 &nbsp;|&nbsp; Comparisons: 0</div>
+            <div class="pointer-row"  id="ptrRow"></div>
+            <div class="range-bar-row" id="rangeBarRow"></div>
+            <div class="array-row"    id="arrRow"></div>
+            <div class="index-row"    id="idxRow"></div>
+            <div class="caption-box"  id="captionBox">Enter a <strong>sorted</strong> array and a target, then click Search.</div>
+          </div>
+          <div id="msg_show"></div>
+        </div>
+        <div class="card-footer">
+          <div style="display:grid;grid-template-columns:1fr 1fr 100px;gap:12px;margin-bottom:14px;">
+            <input type="text" id="arrayInput"  class="form-control" placeholder="Sorted e.g. 2,5,8,12,16,23,38">
+            <input type="text" id="targetInput" class="form-control" placeholder="Target e.g. 23">
+            <button class="btn btn-warning" onclick="startSearch()" id="searchBtn">Search</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <button class="btn btn-primary" onclick="stepSearch()"  id="stepBtn"  disabled>Step ▶</button>
+            <button class="btn btn-info"    onclick="autoSearch()"  id="autoBtn"  disabled>Auto ▶▶</button>
+            <button class="btn btn-danger"  onclick="resetSearch()" id="resetBtn">Reset ↺</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /visualizer-grid -->
+
+  <!--  ─ SCENARIOS  ─ -->
+  <div class="section-card" id="scenarioSection">
+    <div class="section-header">
+      <div class="section-icon">🧪</div>
+      <h2 class="section-title">Try Different Scenarios</h2>
+    </div>
+
+    <div class="scenario-tabs">
+      <button class="scenario-tab active-best"   id="stab-best"   onclick="switchScenario('best')">⚡ Best Case</button>
+      <button class="scenario-tab"               id="stab-avg"    onclick="switchScenario('avg')">〜 Average Case</button>
+      <button class="scenario-tab"               id="stab-worst"  onclick="switchScenario('worst')">⚠ Worst Case</button>
+      <button class="scenario-tab"               id="stab-custom" onclick="switchScenario('custom')">✏ Custom Input</button>
+    </div>
+
+    <div class="scenario-panels">
+
+      <!-- BEST -->
+      <div class="scenario-panel active" id="spanel-best">
+        <div class="scenario-inner">
+          <h4>Best Case</h4>
+          <p>Target is the <strong style="color:var(--primary-green)">middle element</strong> — found on the <strong style="color:var(--primary-green)">very first comparison</strong>. O(1) time.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [2, 5, 8, <span style="color:var(--primary-green);font-family:'JetBrains Mono',monospace;">12</span>, 16, 23, 38] &nbsp;|&nbsp; Target: <span style="color:var(--primary-green);font-family:'JetBrains Mono',monospace;">12</span> (mid)</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="scenario-array-wrap">
+              <div class="s-ptr-row"   id="sptr-best"></div>
+              <div class="s-range-row" id="srange-best"></div>
+              <div class="s-arr-row"   id="sarr-best"></div>
+              <div class="s-idx-row"   id="sidx-best"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-best"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-green"  onclick="bestStep()" id="best-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="bestAuto()" id="best-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetBest()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVERAGE -->
+      <div class="scenario-panel" id="spanel-avg">
+        <div class="scenario-inner">
+          <h4>Average Case</h4>
+          <p>Target requires a <strong style="color:var(--primary-cyan)">few iterations</strong> to locate — roughly log₂(N)/2 comparisons on average. Watch the range halve each step.</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19] &nbsp;|&nbsp; Target: <span style="color:var(--primary-cyan);font-family:'JetBrains Mono',monospace;">13</span></div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="scenario-array-wrap">
+              <div class="s-ptr-row"   id="sptr-avg"></div>
+              <div class="s-range-row" id="srange-avg"></div>
+              <div class="s-arr-row"   id="sarr-avg"></div>
+              <div class="s-idx-row"   id="sidx-avg"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-avg"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-cyan"   onclick="avgStep()" id="avg-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-orange" onclick="avgAuto()" id="avg-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetAvg()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORST -->
+      <div class="scenario-panel" id="spanel-worst">
+        <div class="scenario-inner">
+          <h4>Worst Case</h4>
+          <p>Target is <strong style="color:var(--primary-red)">not present</strong> — must exhaust all log₂(N) halvings before concluding. Still only O(log N) — far better than linear!</p>
+          <hr class="scenario-divider">
+          <div class="input-label">🗄 Array: [2, 5, 8, 12, 16, 23, 38, 56] &nbsp;|&nbsp; Target: <span style="color:var(--primary-red);font-family:'JetBrains Mono',monospace;">99</span> (absent)</div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="scenario-array-wrap">
+              <div class="s-ptr-row"   id="sptr-worst"></div>
+              <div class="s-range-row" id="srange-worst"></div>
+              <div class="s-arr-row"   id="sarr-worst"></div>
+              <div class="s-idx-row"   id="sidx-worst"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-worst"><div class="log-title">📋 Operation Log</div></div>
+              <div class="ctl-row">
+                <button class="ctl-btn ctl-btn-orange" onclick="worstStep()" id="worst-step-btn">▶ Next Step</button>
+                <button class="ctl-btn ctl-btn-red"    onclick="worstAuto()" id="worst-auto-btn">⚡ Auto Play</button>
+                <button class="ctl-btn ctl-btn-ghost"  onclick="resetWorst()">↺ Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM -->
+      <div class="scenario-panel" id="spanel-custom">
+        <div class="scenario-inner">
+          <h4>Custom Input</h4>
+          <p>Enter your own <strong>sorted</strong> array and target. Watch Binary Search halve the range step by step and see which complexity case applies.</p>
+          <hr class="scenario-divider">
+
+          <div class="custom-complexity-grid">
+            <div class="custom-complexity-card" id="cc-best">
+              <div class="cc-op">⚡ Best Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-space">Space(I): <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Target is at mid on the very first comparison</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-avg">
+              <div class="cc-op">〜 Average Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-orange">O(log N)</span></div>
+              <div class="cc-space">Space(I): <span class="cc-val cc-green">O(1)</span></div>
+              <div class="cc-reason">Target found after a few halvings, roughly log₂(N)/2 steps</div>
+            </div>
+            <div class="custom-complexity-card" id="cc-worst">
+              <div class="cc-op">⚠ Worst Case</div>
+              <div class="cc-time">Time: <span class="cc-val cc-red">O(log N)</span></div>
+              <div class="cc-space">Space(R): <span class="cc-val cc-orange">O(log N)</span></div>
+              <div class="cc-reason">Target absent or at boundary — all log₂(N) iterations exhausted</div>
+            </div>
+          </div>
+
+          <div class="cc-toast" id="cc-toast"><span id="cc-toast-icon"></span><span id="cc-toast-text"></span></div>
+
+          <div class="input-label" style="margin-top:1.2rem;">🗄 Your Sorted Array &amp; Target</div>
+          <div class="custom-input-row">
+            <input type="text" class="custom-wide-input" id="custom-arr"    placeholder="e.g. 1,3,6,10,15,21,28" style="width:200px;">
+            <input type="text" class="custom-val-input"  id="custom-target" placeholder="Target">
+            <button class="ctl-btn ctl-btn-green"  onclick="customSearch()">🔍 Search</button>
+            <button class="ctl-btn ctl-btn-cyan"   onclick="customStep()"    id="custom-step-btn" disabled>▶ Step</button>
+            <button class="ctl-btn ctl-btn-orange" onclick="customAutoPlay()" id="custom-auto-btn" disabled>⚡ Auto</button>
+            <button class="ctl-btn ctl-btn-ghost"  onclick="resetCustom()">↺ Reset</button>
+          </div>
+
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;margin-top:1rem;">
+            <div class="scenario-array-wrap">
+              <div class="s-ptr-row"   id="sptr-custom"></div>
+              <div class="s-range-row" id="srange-custom"></div>
+              <div class="s-arr-row"   id="sarr-custom"></div>
+              <div class="s-idx-row"   id="sidx-custom"></div>
+            </div>
+            <div>
+              <div class="log-panel" id="log-custom"><div class="log-title">📋 Operation Log</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /scenarioSection -->
+
+  <!--  ─ CODE EDITOR  ─ -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon"><i class="fas fa-code"></i></div>
+      <h2 class="section-title">Interactive Code Editor</h2>
+    </div>
+
+    <div class="impl-tabs" id="editorImplTabs">
+      <button class="impl-tab active" data-impl="iterative" onclick="switchEditorImpl('iterative',this)">🔁 Iterative</button>
+      <button class="impl-tab"        data-impl="recursive"  onclick="switchEditorImpl('recursive', this)">🔃 Recursive</button>
+    </div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" data-lang="cpp"        onclick="switchLang('cpp',        this)">C++</button>
+      <button class="lang-tab"        data-lang="python"     onclick="switchLang('python',     this)">Python</button>
+      <button class="lang-tab"        data-lang="java"       onclick="switchLang('java',       this)">Java</button>
+      <button class="lang-tab"        data-lang="c"          onclick="switchLang('c',          this)">C</button>
+      <button class="lang-tab"        data-lang="javascript" onclick="switchLang('javascript', this)">JS</button>
+    </div>
+
+    <div class="editor-wrapper">
+      <div class="editor-header">
+        <span class="lang-display">C++ — Iterative</span>
+        <button class="code-copy" onclick="copyCode()">Copy</button>
+      </div>
+      <textarea id="code-editor"></textarea>
+    </div>
+
+    <button class="run-code-btn" onclick="runInteractiveCode()">
+      <i class="fas fa-play"></i> Run Code
+    </button>
+
+    <div class="output-container">
+      <h6>📤 Output:</h6>
+      <div id="codeOutput">Click "Run Code" to execute...</div>
+      <div id="inputPrompt" style="display:none;" class="input-prompt">
+        <span id="promptText"></span>
+        <input type="text" id="userInput" placeholder="Enter value">
+        <button onclick="submitInput()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="content-title" style="justify-content:center;margin-bottom:2.5rem;">Ready to Test Your Knowledge? →</h3>
+  <div class="level-wrapper">
+    <button id="l1">Level 1</button>
+    <div class="slider active" id="slider1"></div>
+    <button id="l2">Level 2</button>
+    <div class="slider" id="slider2"></div>
+    <button id="l3">Level 3</button>
+  </div>
+</div>
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+  <div class="level-modal-content">
+    <div style="font-size:3.5rem;margin-bottom:1rem;">🔒</div>
+    <h3 style="color:var(--primary-purple);font-family:'Space Grotesk';font-size:2rem;margin-bottom:10px;">Level Locked</h3>
+    <p style="color:var(--text-secondary);">Pass the Level 2 Quiz to unlock Level 3 and complete your Binary Search journey.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+      <button id="startQuiz">Start Quiz</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/api.js"></script>
+    <script src="js/binarySearch_L2.js"></script>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

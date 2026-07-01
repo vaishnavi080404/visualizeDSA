@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Search - Basics | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CodeMirror CSS -->
+    <!-- CodeMirror Core CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+
+    <!-- CodeMirror Themes -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/nord.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/binarySearch_L1.css">
+  </head>
+  <body data-theme="dark">
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span class="sep">&#8250;</span> 
+        <a href="algorithms.html">Algorithms</a> <span class="sep">&#8250;</span> 
+        <span>Binary Search</span>
+    </div>
+
+    <div class="page-header">
+        <h1 class="page-title">Binary Search - Basics</h1>
+        <p class="content-text">An efficient divide-and-conquer searching algorithm for sorted arrays.</p>
+        <div class="level-tabs">
+            <div class="level-tab active">Level 1 of 3 | Basics</div>
+        </div>
+    </div>
+
+    <!-- Section 1: Intro -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🔎</div>
+            <h2 class="section-title">Understanding Binary Search</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">💡 What is Binary Search?</h3>
+            <p class="content-text">
+                Binary search is an efficient searching algorithm that works on <b>sorted arrays</b>. It repeatedly divides the search interval in half, 
+                eliminating half of the remaining elements in each step. This divide-and-conquer approach makes it significantly faster than linear search 
+                for large datasets.
+            </p>
+            
+            <h3 class="content-title">🤔 Why Use Binary Search?</h3>
+            <ul style="list-style: none; color: var(--text-secondary); margin-left: 10px;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Logarithmic Time:</b> Much faster than linear search - O(log N) vs O(N).</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Scalability:</b> Performs exceptionally well on large sorted datasets.</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-check-circle" style="color: var(--primary-green); margin-right: 10px;"></i><b>Divide and Conquer:</b> Teaches fundamental algorithmic thinking patterns.</li>
+            </ul>
+        </div>
+        
+        <div class="complexity-grid">
+            <div class="complexity-box">
+                <div class="complexity-label">Time Complexity (Worst)</div>
+                <div class="complexity-value">O(log N)</div>
+            </div>
+            <div class="complexity-box">
+                <div class="complexity-label">Space Complexity</div>
+                <div class="complexity-value">O(1)</div>
+            </div>
+        </div>
+    </div>
+
+      <div class="section-card">
+            <div class="section-header">
+                <div class="section-icon">🎨</div>
+                <h2 class="section-title">Visual Representation</h2>
+            </div>
+
+            <div class="search-visual-img">
+                <h3 style="color: var(--primary-cyan); margin-bottom: 2rem; font-size: 1.3rem;">Binary Search Structure and Operations</h3>
+                <div class="search-diagram">
+    <svg width="900" height="300" viewBox="0 0 900 300"
+     xmlns="http://www.w3.org/2000/svg"
+     style="background:#0f172a; border-radius:12px; padding:10px;">
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle"
+        font-size="22" fill="#38bdf8" font-weight="bold">
+    Binary Search (Divide & Conquer)
+  </text>
+
+  <!-- Array boxes -->
+  <g font-size="16" fill="#fff" text-anchor="middle">
+    <!-- Boxes -->
+    <rect x="80" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+    <rect x="170" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+    <rect x="260" y="120" width="80" height="50" rx="8" fill="#22c55e"/>
+    <rect x="350" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+    <rect x="440" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+    <rect x="530" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+    <rect x="620" y="120" width="80" height="50" rx="8" fill="#1e293b"/>
+
+    <!-- Values -->
+    <text x="120" y="150">10</text>
+    <text x="210" y="150">20</text>
+    <text x="300" y="150">30</text>
+    <text x="390" y="150">40</text>
+    <text x="480" y="150">50</text>
+    <text x="570" y="150">60</text>
+    <text x="660" y="150">70</text>
+  </g>
+
+  <!-- Index labels -->
+  <g font-size="14" fill="#94a3b8" text-anchor="middle">
+    <text x="120" y="190">0</text>
+    <text x="210" y="190">1</text>
+    <text x="300" y="190">2</text>
+    <text x="390" y="190">3</text>
+    <text x="480" y="190">4</text>
+    <text x="570" y="190">5</text>
+    <text x="660" y="190">6</text>
+  </g>
+
+  <!-- Pointers -->
+  <g font-size="14" fill="#facc15" text-anchor="middle">
+    <text x="120" y="100">low</text>
+    <text x="300" y="100">mid</text>
+    <text x="660" y="100">high</text>
+  </g>
+
+  <!-- Arrows -->
+  <g stroke="#facc15" stroke-width="2">
+    <line x1="120" y1="105" x2="120" y2="120"/>
+    <line x1="300" y1="105" x2="300" y2="120"/>
+    <line x1="660" y1="105" x2="660" y2="120"/>
+  </g>
+
+  <!-- Explanation text -->
+  <text x="450" y="250" text-anchor="middle"
+        font-size="16" fill="#e5e7eb">
+    Target = 30 → Compare with middle → Found ✔
+  </text>
+
+</svg>
+
+
+                </div>
+                <p class="content-text" style="margin-top: 2rem; text-align: center;">
+                    Binary Search follows Divide and Conquer - Search space is halved in each iteration
+                </p>
+            </div>
+        </div>
+
+        <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon">🌍</div>
+        <h2 class="section-title">Real-World Analogy</h2>
+    </div>
+
+    <p class="content-text" style="margin-bottom: 2rem;">
+        Think of binary search as the smart way to find something when the data is already sorted — you always eliminate half the possibilities with each guess:
+    </p>
+
+    <div class="example-grid">
+        <div class="example-card">
+            <div class="example-number">1</div>
+            <div class="example-title">Guessing a Number Game</div>
+            <div class="example-desc">Someone picks a number 1–100. You guess 50. They say "lower" — now you guess 25. Each guess cuts the range in half.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">2</div>
+            <div class="example-title">Finding a Word in a Dictionary</div>
+            <div class="example-desc">You open the dictionary in the middle. If your word comes later alphabetically, you ignore the first half entirely and repeat.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">3</div>
+            <div class="example-title">Opening a Book to a Page</div>
+            <div class="example-desc">To reach page 300 in a 400-page book, you open near the middle, see page 200, then flip to the right half — done in a few moves.</div>
+        </div>
+        <div class="example-card">
+            <div class="example-number">4</div>
+            <div class="example-title">Finding a Contact in a Sorted List</div>
+            <div class="example-desc">Contacts sorted A–Z: jump to "M", the name starts with "T" so skip the first half, then narrow down within T's quickly.</div>
+        </div>
+    </div>
+</div>
+
+    <!-- Section 2: How it works & Terminology -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <h2 class="section-title">How it Works & Key Concepts</h2>
+        </div>
+        <div class="content-block">
+            <h3 class="content-title">🔄 The Mechanism</h3>
+            <p class="content-text">
+                Binary search works by maintaining three pointers: <b>low</b>, <b>high</b>, and <b>mid</b>. 
+                It calculates the middle element and compares it with the target. Based on the comparison:
+            </p>
+            <ul class="styled-list">
+                <li>If <b>target == mid</b>: Element found! Return the index.</li>
+                <li>If <b>target > mid</b>: Search in the right half (low = mid + 1).</li>
+                <li>If <b>target < mid</b>: Search in the left half (high = mid - 1).</li>
+            </ul>
+            <p class="content-text">
+                This process repeats until the element is found or low > high (element doesn't exist).
+            </p>
+
+            <h3 class="content-title">📚 Basic Terminology</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Low:</b> Starting index of the current search space.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">High:</b> Ending index of the current search space.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Mid:</b> Middle index calculated as (low + high) / 2.
+                </div>
+                <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <b style="color: var(--primary-cyan);">Sorted Array:</b> Binary search ONLY works on sorted data.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Manual Run Through -->
+    <div class="section-card">
+        <div class="section-header">
+            <div class="section-icon">🚶</div>
+            <h2 class="section-title">Manual Run Through</h2>
+        </div>
+        <p class="content-text">Let's manually trace binary search to understand the logic. We will search for the value <b>45</b> in a sorted array.</p>
+        
+        <div class="step-box">
+            <div class="step-header">Step 1: Initialize</div>
+            <p class="content-text">Start with a sorted array. Set <b>low = 0</b>, <b>high = 8</b>.</p>
+            <div class="array-row">
+                <div class="array-cell">10</div><div class="array-cell">20</div><div class="array-cell">30</div><div class="array-cell">40</div><div class="array-cell">45</div><div class="array-cell">50</div><div class="array-cell">60</div><div class="array-cell">70</div><div class="array-cell">80</div>
+            </div>
+            <p class="content-text" style="margin-top: 1rem;"><b>mid = (0 + 8) / 2 = 4</b></p>
+        </div>
+
+        <div class="step-box">
+            <div class="step-header">Step 2: Check Middle Element</div>
+            <p class="content-text">arr[4] = 45. Is 45 equal to target (45)? <b>Yes!</b></p>
+            <div class="array-row">
+                <div class="array-cell">10</div><div class="array-cell">20</div><div class="array-cell">30</div><div class="array-cell">40</div><div class="array-cell found">45</div><div class="array-cell">50</div><div class="array-cell">60</div><div class="array-cell">70</div><div class="array-cell">80</div>
+            </div>
+            <p class="content-text" style="margin-top: 1rem;"><b>Match found at index 4!</b></p>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-green); margin-top: 2rem;">
+            <h4 style="color: var(--primary-green); margin-bottom: 10px;">Example 2: Search for 70</h4>
+            <p class="content-text" style="margin-bottom: 0;">
+                <b>Iteration 1:</b> mid = 4 (45), target > mid → search right half (low = 5)<br>
+                <b>Iteration 2:</b> mid = 6 (60), target > mid → search right half (low = 7)<br>
+                <b>Iteration 3:</b> mid = 7 (70), target == mid → <b>Found at index 7!</b>
+            </p>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--primary-red); margin-top: 1.5rem;">
+            <h4 style="color: var(--primary-red); margin-bottom: 10px;">Example 3: Search for 55 (Not Found)</h4>
+            <p class="content-text" style="margin-bottom: 0;">
+                <b>Iteration 1:</b> mid = 4 (45), target > mid → search right half (low = 5)<br>
+                <b>Iteration 2:</b> mid = 6 (60), target < mid → search left half (high = 5)<br>
+                <b>Iteration 3:</b> mid = 5 (50), target > mid → low = 6, but low > high → <b>Not Found (-1)</b>
+            </p>
+        </div>
+    </div>
+
+    <!-- Implementation Section -->
+    <div class="section-card">
+    <div class="section-header">
+        <div class="section-icon"><i class="fas fa-code"></i></div>
+        <h2 class="section-title">Implementation</h2>
+    </div>
+
+    <!-- Iterative Method -->
+    <div class="op-dropdown">
+        <div class="op-header" onclick="toggleDropdown('iter-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">1</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Iterative Method (Standard Loop)</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-iter-drop"></i>
+        </div>
+        <div class="op-content" id="iter-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The iterative approach uses a while loop to repeatedly narrow down the search space by adjusting the low and high pointers based on comparisons with the middle element.
+                </p>
+
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(log N)</div>
+                    </div>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li>Initialize low = 0 and high = n - 1.</li>
+                    <li>While low <= high:</li>
+                    <li>&nbsp;&nbsp;&nbsp;Calculate mid = (low + high) / 2.</li>
+                    <li>&nbsp;&nbsp;&nbsp;If arr[mid] == target, return mid.</li>
+                    <li>&nbsp;&nbsp;&nbsp;If arr[mid] < target, set low = mid + 1 (search right).</li>
+                    <li>&nbsp;&nbsp;&nbsp;If arr[mid] > target, set high = mid - 1 (search left).</li>
+                    <li>If loop exits, return -1 (not found).</li>
+                </ul>
+
+                <!-- Language Tabs -->
+                <div class="lang-tabs" data-group="iterative">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-iter"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recursive Method -->
+    <div class="op-dropdown" style="margin-top: 2rem;">
+        <div class="op-header" onclick="toggleDropdown('recur-drop')">
+            <div style="display: flex; align-items: center;">
+                <div class="op-number">2</div>
+                <span style="font-weight: 700; font-size: 1.1rem;">Recursive Method</span>
+            </div>
+            <i class="fas fa-chevron-down" id="icon-recur-drop"></i>
+        </div>
+        <div class="op-content" id="recur-drop">
+            <div class="operation-body">
+                <p class="content-text">
+                    The recursive approach uses function calls to divide the problem. Each recursive call works on a smaller portion of the array until the target is found or the search space is exhausted.
+                </p>
+
+                <div class="complexity-grid">
+                    <div class="complexity-box">
+                        <div class="complexity-label">Time Complexity</div>
+                        <div class="complexity-value">O(log N)</div>
+                    </div>
+                    <div class="complexity-box">
+                        <div class="complexity-label">Space Complexity</div>
+                        <div class="complexity-value">O(log N)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem; color: var(--primary-cyan);">Algorithm:</h4>
+                <ul class="styled-list">
+                    <li><b>Base Case 1:</b> If low > high, return -1 (not found).</li>
+                    <li>Calculate mid = (low + high) / 2.</li>
+                    <li><b>Base Case 2:</b> If arr[mid] == target, return mid.</li>
+                    <li>If arr[mid] < target, recursively search the right half.</li>
+                    <li>If arr[mid] > target, recursively search the left half.</li>
+                </ul>
+
+                <div class="lang-tabs" data-group="recursive">
+                    <button class="lang-tab active" data-lang="cpp">C++</button>
+                    <button class="lang-tab" data-lang="python">Python</button>
+                    <button class="lang-tab" data-lang="java">Java</button>
+                    <button class="lang-tab" data-lang="c">C</button>
+                    <button class="lang-tab" data-lang="javascript">JS</button>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-header">
+                        <span class="lang-display">C++</span>
+                        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <textarea id="editor-recur"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Video Section -->
+        <div class="video-section">
+            <div class="video-info">
+                <span>📺</span>
+                <span>Binary Search Explained</span>
+            </div>
+            
+            <div class="video-container">
+                <div class="video-wrapper">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/YJeoQBevNVo?si=OrLncrpvyWOHydjs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+
+
+
+<!-- Level Slider Section -->
+
+    <h3 class="content-title" style="justify-content: center; margin-bottom: 2.5rem;">Ready to See it in Action? →</h3>
+    <div class="level-wrapper">
+        <button id="l1">Level 1</button>
+        <div class="slider" id="slider1"></div>
+        <button id="l2">Level 2</button>
+        <div class="slider" id="slider2"></div>
+        <button id="l3">Level 3</button>
+    </div>
+    </div>
+
+
+<!-- Quiz Modal -->
+<div id="quizModal" class="level-modal">
+    <div class="level-modal-content">
+        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔒</div>
+        <h3 style="color: var(--primary-purple); font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 10px;">Level Locked</h3>
+        <p style="color: var(--text-secondary);">Pass the Level 1 Quiz to unlock Level 2 and continue your Binary Search journey.</p>
+        
+        <div class="level-modal-buttons">
+            <button id="startQuiz">Start Quiz</button>
+            <button id="cancelBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<!-- LANGUAGE MODES (REQUIRED FOR SYNTAX HIGHLIGHTING) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="js/binarySearch_L1.js"></script>
+
+
+</body>
+</html>

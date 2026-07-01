@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack — Level 3 | CODEANIME</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/stack_L3.css">
+</head>
+<body>
+
+<nav>
+        <div class="nav-container">
+            <div class="logo">
+               <img src="dsa.gif" alt="Logo" class="logo-icon">
+                <span>CODEANIME</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="topics.html">Topics</a></li>
+                <li><a href="prerequisite.html">Prerequisites</a></li>
+                <li><a href="codeeditor.html">Code Editor</a></li>
+            </ul>
+            
+        <div class="nav-right">
+  <!-- hamburger (mobile only, hidden on desktop via CSS) -->
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+    <span class="ham-line"></span>
+  </button>
+
+ <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                </svg>
+            </button>
+
+  <!-- this is the only new div you need per page -->
+  <div id="nav-user-slot"></div>
+</div>
+                
+            </div>
+        </div>
+        
+    </nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="breadcrumb-bar">
+    <a href="topics.html">Topics</a>
+    <span class="sep">›</span>
+    <a href="stack_L1.html">Stack</a>
+    <span class="sep">›</span>
+    <span>Level 3 — Real World</span>
+  </div>
+  <div class="hero-badge">📚 Level 3 of 3</div>
+  <h1>Stack in the <span class="highlight">Real World</span></h1>
+  <p>Every app you use today runs on stacks under the hood. See exactly how — with live interactive demos you can play with.</p>
+</div>
+
+<!--                       ═
+     SECTION 1: REAL WORLD APPS
+                      ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(6,182,212,.15)">🌍</div>
+    Real World Applications
+  </div>
+  <p class="section-sub">These aren't theory — these are the actual algorithms running in software you use every day.</p>
+
+  <div class="app-grid">
+
+    <!-- 1. Browser History -->
+    <div class="app-card cyan">
+      <div class="card-header">
+        <div class="card-icon cyan">🌐</div>
+        <div class="card-title-wrap">
+          <h3>Browser Back / Forward</h3>
+          <p>Every browser maintains two stacks — one for back history, one for forward. When you navigate, pages get pushed and popped.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Interactive Demo — Click to navigate</div>
+        <div class="browser-demo">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <span style="background:#ef4444"></span>
+              <span style="background:#f59e0b"></span>
+              <span style="background:#10b981"></span>
+            </div>
+            <div class="browser-url" id="browserUrl">google.com</div>
+          </div>
+          <div class="browser-btns">
+            <button class="b-btn" id="btnBack" onclick="browserBack()">← Back</button>
+            <button class="b-btn" id="btnFwd" onclick="browserFwd()">Forward →</button>
+            <button class="b-btn visit" onclick="browserVisit('github.com')">github</button>
+            <button class="b-btn visit" onclick="browserVisit('leetcode.com')">leetcode</button>
+            <button class="b-btn visit" onclick="browserVisit('youtube.com')">youtube</button>
+          </div>
+          <div class="demo-label" style="margin-bottom:.4rem">Back Stack (top = current page)</div>
+          <div class="history-stack" id="historyStack"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Undo/Redo -->
+    <div class="app-card purple">
+      <div class="card-header">
+        <div class="card-icon purple">↩️</div>
+        <div class="card-title-wrap">
+          <h3>Undo / Redo (Ctrl+Z)</h3>
+          <p>Every text editor, Photoshop, VS Code — undo uses a stack. Each action is pushed. Undo pops it. Redo is a second stack.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type words then undo them</div>
+        <div class="editor-demo">
+          <div class="editor-area" id="editorArea">Hello</div>
+          <div class="editor-btns">
+            <button class="e-btn type" onclick="typeWord('World')">+ World</button>
+            <button class="e-btn type" onclick="typeWord('!')">+ !</button>
+            <button class="e-btn type" onclick="typeWord(' DSA')">+ DSA</button>
+            <button class="e-btn type" onclick="typeWord(' Rocks')">+ Rocks</button>
+            <button class="e-btn" id="btnUndo" onclick="undoAction()">↩ Undo</button>
+            <button class="e-btn" id="btnRedo" onclick="redoAction()">↪ Redo</button>
+          </div>
+          <div class="stack-peek">Undo stack size: <span id="undoSize">0</span> &nbsp;|&nbsp; Redo stack size: <span id="redoSize">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Code Validator -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🔍</div>
+        <div class="card-title-wrap">
+          <h3>Code Bracket Validator</h3>
+          <p>VS Code's error squiggles for mismatched brackets? That's a stack. Opening brackets push, closing brackets pop and verify.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Type brackets and watch the stack validate</div>
+        <div class="validator-demo">
+          <div class="val-input-wrap">
+            <input class="val-input" id="valInput" type="text" value="{[()]}" placeholder="Type brackets: { [ ( ) ] }" oninput="validateLive()"/>
+            <button class="val-btn" onclick="validateBrackets()">Check</button>
+          </div>
+          <div class="demo-label">Stack state while processing:</div>
+          <div class="val-steps" id="valSteps"></div>
+          <div class="val-result" id="valResult" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Expression Evaluator -->
+    <div class="app-card orange">
+      <div class="card-header">
+        <div class="card-icon orange">🧮</div>
+        <div class="card-title-wrap">
+          <h3>Expression Evaluator</h3>
+          <p>Calculators, compilers, and spreadsheets convert math to postfix (RPN) notation and evaluate using two stacks: numbers & operators.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Pick an expression to evaluate step-by-step</div>
+        <div class="expr-demo">
+          <div class="expr-presets">
+            <button class="expr-preset" onclick="evalExpr('3 + 4 * 2')">3 + 4 × 2</button>
+            <button class="expr-preset" onclick="evalExpr('(2 + 3) * 4')">( 2 + 3 ) × 4</button>
+            <button class="expr-preset" onclick="evalExpr('10 - 2 * 3')">10 − 2 × 3</button>
+          </div>
+          <div class="expr-display">
+            <span id="exprDisplay" style="color:var(--text-secondary)">Pick an expression above</span>
+            <span id="exprResult" style="color:var(--primary-green);font-weight:700"></span>
+          </div>
+          <div class="expr-stacks">
+            <div class="mini-stack-wrap">
+              <div class="mini-stack-label">Numbers Stack</div>
+              <div class="mini-stack-items" id="numStack">—</div>
+            </div>
+            <div class="mini-stack-wrap">
+              <div class="mini-stack-label">Operators Stack</div>
+              <div class="mini-stack-items" id="opStack">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Call Stack -->
+    <div class="app-card red">
+      <div class="card-header">
+        <div class="card-icon red">⚙️</div>
+        <div class="card-title-wrap">
+          <h3>Function Call Stack</h3>
+          <p>Every program runtime uses a call stack. When a function calls another, a frame is pushed. When it returns, the frame is popped.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Simulate function calls and returns</div>
+        <div class="callstack-demo">
+          <div class="call-btns">
+            <button class="c-btn call" onclick="callFn('main()')">Call main()</button>
+            <button class="c-btn call" onclick="callFn('calculate()')">Call calculate()</button>
+            <button class="c-btn call" onclick="callFn('add(3,4)')">Call add(3,4)</button>
+            <button class="c-btn call" onclick="callFn('print()')">Call print()</button>
+            <button class="c-btn ret" onclick="returnFn()">↩ Return</button>
+          </div>
+          <div class="call-stack-viz" id="callStackViz"></div>
+          <div class="stack-bottom">— Stack bottom —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Path Navigation -->
+    <div class="app-card green">
+      <div class="card-header">
+        <div class="card-icon green">🗺️</div>
+        <div class="card-title-wrap">
+          <h3>GPS Path & Backtracking</h3>
+          <p>Maze solvers, GPS rerouting, and game AI use a stack to track visited paths. Hit a dead end? Pop back and try another route.</p>
+        </div>
+      </div>
+      <div class="card-demo">
+        <div class="demo-label">🎮 Navigate the maze — stack tracks your path</div>
+        <div class="browser-demo" style="padding:.8rem">
+          <div id="mazeGrid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:3px;margin-bottom:.7rem"></div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem">
+            <button class="b-btn" onclick="mazeMove('up')">↑ Up</button>
+            <button class="b-btn" onclick="mazeMove('down')">↓ Down</button>
+            <button class="b-btn" onclick="mazeMove('left')">← Left</button>
+            <button class="b-btn" onclick="mazeMove('right')">→ Right</button>
+            <button class="b-btn" onclick="mazeBacktrack()" style="border-color:var(--primary-orange);color:var(--primary-orange)">↩ Backtrack</button>
+            <button class="b-btn" onclick="mazeReset()" style="border-color:var(--primary-red);color:var(--primary-red)">↺ Reset</button>
+          </div>
+          <div class="stack-peek">Path stack: <span id="mazeStackSize" style="color:var(--primary-green);font-weight:700">0</span> steps &nbsp;|&nbsp; <span id="mazeStatus">Navigate to reach 🏁</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--                       ═
+     SECTION 2: COMPLEXITY
+                      ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(139,92,246,.15)">⚡</div>
+    Time & Space Complexity
+  </div>
+  <p class="section-sub">All core stack operations run in constant time — that's what makes it so powerful.</p>
+  <div class="table-wrap">
+    <table class="complexity-table">
+      <thead>
+        <tr>
+          <th>Operation</th>
+          <th>Time Complexity</th>
+          <th>Space</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="op">push(val)</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Add to top — no shifting needed</td></tr>
+        <tr><td class="op">pop()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Remove from top — direct access</td></tr>
+        <tr><td class="op">peek() / top()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Read top without removing</td></tr>
+        <tr><td class="op">isEmpty()</td><td class="time">O(1)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Check if stack has elements</td></tr>
+        <tr><td class="op">search(val)</td><td class="time" style="color:var(--primary-orange)">O(n)</td><td class="space">O(1)</td><td style="color:var(--text-secondary);font-size:.82rem">Must scan all elements — use a map instead</td></tr>
+        <tr><td class="op">Space (total)</td><td class="time">—</td><td class="space">O(n)</td><td style="color:var(--text-secondary);font-size:.82rem">n = number of elements stored</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--                       ═
+     SECTION 3: PROS & CONS
+                      ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(16,185,129,.15)">⚖️</div>
+    Advantages & Disadvantages
+  </div>
+  <p class="section-sub">Every data structure is a tradeoff. Know when stack shines — and when it doesn't.</p>
+  <div class="procon-grid">
+    <div class="procon-card pros">
+      <div class="procon-title" style="color:var(--primary-green)">✅ Advantages</div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>O(1) push and pop</h4><p>All core operations are constant time — no looping, no shifting, no searching.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Simple mental model</h4><p>LIFO is intuitive — like a stack of plates. Easy to reason about, easy to implement.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Perfect for reversal</h4><p>Push everything in, pop everything out — you get the reverse. No extra code needed.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Recursion management</h4><p>Every recursive function implicitly uses the call stack. Explicit stacks let you convert recursion to iteration.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot pro">✓</div>
+        <div class="procon-text"><h4>Minimal memory overhead</h4><p>No pointers between nodes (with array implementation). Cache-friendly and memory-efficient.</p></div>
+      </div>
+    </div>
+
+    <div class="procon-card cons">
+      <div class="procon-title" style="color:var(--primary-red)">❌ Disadvantages</div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No random access</h4><p>You can only access the top element. Reaching the 5th item means popping 4 items first.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Stack overflow risk</h4><p>Too many pushes (especially in recursion) can exceed memory limits and crash your program.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>No searching</h4><p>Finding a specific value requires O(n) time — you must pop everything to find something in the middle.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Fixed order only</h4><p>You're locked into LIFO. If you need FIFO (first-in, first-out), you need a queue instead.</p></div>
+      </div>
+      <div class="procon-item">
+        <div class="procon-dot con">✗</div>
+        <div class="procon-text"><h4>Not suitable for sorting</h4><p>Sorting a stack requires popping all elements, sorting them, then pushing back — very inefficient.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--                       ═
+     SECTION 4: WHEN TO USE
+                      ═ -->
+<div class="section">
+  <div class="section-title">
+    <div class="icon" style="background:rgba(245,158,11,.15)">🎯</div>
+    When to Use Stack — and When to Avoid It
+  </div>
+  <p class="section-sub">Choosing the right data structure is half the interview. Here's the decision framework.</p>
+
+  <div class="when-grid">
+    <div class="when-card use">
+      <div class="when-title" style="color:var(--primary-green)">✅ Use Stack When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔢</div>
+        <div class="when-text">
+          <h4>You need LIFO order</h4>
+          <p>Last operation must be undone first. Undo/Redo, back navigation, function calls — all LIFO.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔤</div>
+        <div class="when-text">
+          <h4>Matching / nesting problems</h4>
+          <p>Brackets, parentheses, HTML tags, XML. Opening tags push, closing tags pop and verify. <span class="when-code">( [ { } ] )</span></p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">↔️</div>
+        <div class="when-text">
+          <h4>Reversing a sequence</h4>
+          <p>Push all elements, then pop — instant reversal. Great for reversing words, sentences, linked lists.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📈</div>
+        <div class="when-text">
+          <h4>Next Greater / Smaller Element</h4>
+          <p>Monotonic stack pattern. Find next warmer day, next taller building — O(n) using stack instead of O(n²) brute force.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🌀</div>
+        <div class="when-text">
+          <h4>Converting recursion to iteration</h4>
+          <p>DFS, tree traversal, pathfinding — replace the call stack with an explicit stack to avoid stack overflow.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🧮</div>
+        <div class="when-text">
+          <h4>Expression evaluation</h4>
+          <p>Parsing math expressions, postfix/prefix notation, spreadsheet formulas — all use stacks.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="when-card avoid">
+      <div class="when-title" style="color:var(--primary-red)">❌ Avoid Stack When...</div>
+
+      <div class="when-item">
+        <div class="when-icon">🔍</div>
+        <div class="when-text">
+          <h4>You need to search for an element</h4>
+          <p>Use a HashMap or Set instead. Searching a stack is O(n) and destroys the stack in the process.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🎲</div>
+        <div class="when-text">
+          <h4>You need random access</h4>
+          <p>Use an Array or ArrayList. If you need the 3rd or 10th element, a stack forces you to pop everything above it.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🚶</div>
+        <div class="when-text">
+          <h4>You need FIFO order</h4>
+          <p>Use a Queue. If the first thing added should be the first thing removed (like a task queue or BFS), stack is the wrong tool.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">📊</div>
+        <div class="when-text">
+          <h4>You need to sort data</h4>
+          <p>Use Arrays with built-in sort. Sorting a stack requires O(n²) operations — completely inefficient.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">🔗</div>
+        <div class="when-text">
+          <h4>You need bidirectional traversal</h4>
+          <p>Use a Deque (double-ended queue). If you need to access both ends efficiently, stack only gives you one end.</p>
+        </div>
+      </div>
+      <div class="when-item">
+        <div class="when-icon">♾️</div>
+        <div class="when-text">
+          <h4>Deep recursion without limit checks</h4>
+          <p>Add iterative alternative or increase stack size. Unlimited recursion = stack overflow. Always add a depth limit.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!--                       ═
+     CTA: PRACTICE
+                      ═ -->
+<div class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-label">🚀 Ready to Apply Your Knowledge?</div>
+    <div class="cta-title">
+      Challenge yourself with<br><span class="glow">real Stack problems</span>
+    </div>
+    <p class="cta-sub">
+      You've seen how stacks power browsers, editors, compilers, and runtimes.<br>
+      Now it's time to solve the actual interview questions using these exact patterns.
+    </p>
+
+    <div class="cta-visual">
+      <div class="stack-tower">
+        <div class="tower-block" style="background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3);color:var(--primary-cyan);">RPN Eval</div>
+        <div class="tower-block" style="background:rgba(139,92,246,.12);border-color:rgba(139,92,246,.3);color:var(--primary-purple);">Next Greater</div>
+        <div class="tower-block" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:var(--primary-orange);">Daily Temps</div>
+        <div class="tower-block" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3);color:var(--primary-green);">Min Stack</div>
+        <div class="tower-block" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:var(--primary-red);">Valid Parens</div>
+      </div>
+      <div class="tower-label">↑ and more are waiting</div>
+    </div>
+
+    <a href="practice.html?topic=stack" class="cta-btn">
+      <span>⚡ Crack the Stack Problems</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <!-- <div class="cta-stats">
+      <div class="cta-stat">
+        <div class="cta-stat-val">5</div>
+        <div class="cta-stat-lbl">Problems</div>
+      </div>
+      <div class="cta-stat">
+        <div class="cta-stat-val">4</div>
+        <div class="cta-stat-lbl">Languages</div>
+      </div>
+      <div class="cta-stat">
+        <div class="cta-stat-lbl" style="font-size:.9rem;color:var(--primary-green);font-weight:700;margin-top:.5rem">C++ · Python · Java · JS</div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+    <script src="js/stack_L3.js"></script>
+<link rel="stylesheet" href="css/navbar.css">
+<script src="js/navbar.js"></script>
+</body>
+</html>

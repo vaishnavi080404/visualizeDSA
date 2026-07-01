@@ -1,0 +1,1459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Graphs - Level 2 | CODEANIME</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material-ocean.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/eclipse.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/graphs_L2.css" />
+  </head>
+  <body data-theme="dark">
+    
+<nav>
+  <div class="nav-container">
+    <div class="logo">
+      <img src="dsa.gif" alt="Logo" class="logo-icon" />
+      <span>CODEANIME</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="topics.html">Topics</a></li>
+      <li><a href="prerequisite.html">Prerequisites</a></li>
+      <li><a href="codeeditor.html">Code Editor</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+        <svg viewBox="0 0 24 24" id="themeIcon">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+        </svg>
+      </button>
+      <button class="nav-hamburger" id="menuToggle">
+        <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <div id="nav-user-slot"></div>
+    </div>
+  </div>
+</nav>
+
+    <div class="wrap">
+      <div class="breadcrumb">
+        <a href="topics.html">Topics</a> <span>›</span>
+        <a href="graphs_L1.html">Graph</a> <span>›</span>
+        <span>Level 2 — Interactive</span>
+      </div>
+      <div class="page-title">Graph — Interactive Visualizer</div>
+      <div class="page-sub">
+        Select a graph type, then run BFS / DFS / Shortest Path and watch it
+        animate step-by-step.
+      </div>
+      <div class="level-pills">
+        <div class="pill">Level 1 of 3 | Basics</div>
+        <div class="pill active">Level 2 of 3 | Interactive</div>
+      </div>
+
+      <!--      GRAPH TYPE TABS      -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon">🗂️</div>
+          <h2 class="card-title">Graph Types — Interactive Explorer</h2>
+        </div>
+
+        <div class="gtype-tabs" id="gtypeTabs">
+          <button
+            class="gt-tab active"
+            data-type="undirected"
+            onclick="switchType('undirected')"
+          >
+            <span class="gt-dot" style="background: var(--cyan)"></span
+            >Undirected
+          </button>
+          <button
+            class="gt-tab"
+            data-type="directed"
+            onclick="switchType('directed')"
+          >
+            <span class="gt-dot" style="background: var(--orange)"></span
+            >Directed
+          </button>
+          <button
+            class="gt-tab"
+            data-type="weighted"
+            onclick="switchType('weighted')"
+          >
+            <span class="gt-dot" style="background: var(--green)"></span
+            >Weighted
+          </button>
+          <button
+            class="gt-tab"
+            data-type="connected"
+            onclick="switchType('connected')"
+          >
+            <span class="gt-dot" style="background: var(--purple)"></span
+            >Connected
+          </button>
+          <button
+            class="gt-tab"
+            data-type="cyclic"
+            onclick="switchType('cyclic')"
+          >
+            <span class="gt-dot" style="background: var(--red)"></span>Cyclic
+          </button>
+          <button class="gt-tab" data-type="dag" onclick="switchType('dag')">
+            <span class="gt-dot" style="background: var(--yellow)"></span>DAG
+          </button>
+        </div>
+
+        <!-- UNDIRECTED -->
+        <div class="gtype-panel show" id="gp-undirected">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(6, 182, 212, 0.07);
+              border-color: rgba(6, 182, 212, 0.3);
+            "
+          >
+            <div class="type-banner-icon">↔️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--cyan)">
+                Undirected Graph
+              </div>
+              <div class="type-banner-desc">
+                Edges have <b>no direction</b>. An edge (u,v) allows travel both
+                u→v and v→u. Adjacency matrix is <b>symmetric</b>. Used in:
+                social networks, road maps, collaboration graphs.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-c">BFS works</span
+                ><span class="tag tag-c">DFS works</span
+                ><span class="tag tag-g">Symmetric adj matrix</span
+                ><span class="tag tag-o">No arrows on edges</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-undirected">BFS</div>
+              <div class="ps-lines" id="psLines-undirected"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(6, 182, 212, 0.18),
+                      rgba(139, 92, 246, 0.12)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-undirected"
+                    >Undirected — BFS</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-undirected">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(6, 182, 212, 0.2);
+                        border-color: var(--cyan);
+                        color: var(--cyan);
+                      "
+                      onclick="switchAlgo('undirected', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('undirected', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('undirected', 'components', this)"
+                    >
+                      🧩 Components
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-undirected">
+                    <canvas id="c-undirected"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-undirected">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-undirected">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-undirected">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-undirected"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-undirected"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-undirected">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (e.g. 0-1,1-2,2-3,3-0,0-2)</span
+                      ><input
+                        type="text"
+                        id="edges-undirected"
+                        value="0-1,1-2,2-3,3-0,0-2"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-undirected"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-c"
+                      id="btnStep-undirected"
+                      onclick="doStep('undirected')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-undirected"
+                      onclick="doAuto('undirected')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-g" onclick="doBuild('undirected')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('undirected')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIRECTED -->
+        <div class="gtype-panel" id="gp-directed">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(245, 158, 11, 0.07);
+              border-color: rgba(245, 158, 11, 0.3);
+            "
+          >
+            <div class="type-banner-icon">➡️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--orange)">
+                Directed Graph (Digraph)
+              </div>
+              <div class="type-banner-desc">
+                Edges have a <b>direction</b>. Edge u→v does NOT imply v→u.
+                Adjacency matrix is <b>asymmetric</b>. Used in: Twitter follows,
+                dependency resolution, web links.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-o">One-way arrows</span
+                ><span class="tag tag-o">Asymmetric matrix</span
+                ><span class="tag tag-c">BFS / DFS</span
+                ><span class="tag tag-p">Topological Sort (DAGs)</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-directed">BFS</div>
+              <div class="ps-lines" id="psLines-directed"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(245, 158, 11, 0.18),
+                      rgba(239, 68, 68, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-directed"
+                    >Directed — BFS</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-directed">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(245, 158, 11, 0.2);
+                        border-color: var(--orange);
+                        color: var(--orange);
+                      "
+                      onclick="switchAlgo('directed', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('directed', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('directed', 'cycle', this)"
+                    >
+                      🔄 Cycle Detect
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-directed">
+                    <canvas id="c-directed"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-directed">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-directed">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-directed">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-directed"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-directed"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-directed">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl">Directed edges (u→v as u-v)</span
+                      ><input
+                        type="text"
+                        id="edges-directed"
+                        value="0-1,1-2,2-3,3-1,0-3"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-directed"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-o"
+                      id="btnStep-directed"
+                      onclick="doStep('directed')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-directed"
+                      onclick="doAuto('directed')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-o" onclick="doBuild('directed')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('directed')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEIGHTED -->
+        <div class="gtype-panel" id="gp-weighted">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(16, 185, 129, 0.07);
+              border-color: rgba(16, 185, 129, 0.3);
+            "
+          >
+            <div class="type-banner-icon">⚖️</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--green)">
+                Weighted Graph
+              </div>
+              <div class="type-banner-desc">
+                Each edge carries a <b>numeric weight</b> (cost, distance,
+                time). BFS finds shortest <em>hops</em>, but for weighted
+                shortest path we need Dijkstra's algorithm.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-g">Edge weights</span
+                ><span class="tag tag-g">Dijkstra's Algorithm</span
+                ><span class="tag tag-c">BFS = unweighted</span
+                ><span class="tag tag-o">Bellman-Ford handles negatives</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-weighted">Dijkstra</div>
+              <div class="ps-lines" id="psLines-weighted"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(16, 185, 129, 0.18),
+                      rgba(6, 182, 212, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-weighted"
+                    >Weighted — Dijkstra</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-weighted">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(16, 185, 129, 0.2);
+                        border-color: var(--green);
+                        color: var(--green);
+                      "
+                      onclick="switchAlgo('weighted', 'dijkstra', this)"
+                    >
+                      🛣️ Dijkstra
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('weighted', 'bfs', this)"
+                    >
+                      🔍 BFS (hops)
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('weighted', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-weighted">
+                    <canvas id="c-weighted"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-weighted">
+                    <span class="s-label">Priority Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-weighted">
+                    <span class="s-label">Distances:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-weighted">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-weighted"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-weighted"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-weighted">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl">Weighted edges (u-v-w)</span
+                      ><input
+                        type="text"
+                        id="edges-weighted"
+                        value="0-1-4,0-2-1,2-1-2,1-3-5,2-3-8,2-4-3,4-3-2"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-weighted"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-g"
+                      id="btnStep-weighted"
+                      onclick="doStep('weighted')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-weighted"
+                      onclick="doAuto('weighted')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-g" onclick="doBuild('weighted')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('weighted')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONNECTED -->
+        <div class="gtype-panel" id="gp-connected">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(139, 92, 246, 0.07);
+              border-color: rgba(139, 92, 246, 0.3);
+            "
+          >
+            <div class="type-banner-icon">🔗</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--purple)">
+                Connected / Disconnected Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>connected graph</b> has a path between every pair of
+                vertices. A <b>disconnected</b> graph has isolated components.
+                BFS/DFS must restart for each unvisited vertex to find all
+                components.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-p">Find Components</span
+                ><span class="tag tag-c">BFS per component</span
+                ><span class="tag tag-g">O(V+E) total</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-connected">
+                Components
+              </div>
+              <div class="ps-lines" id="psLines-connected"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(139, 92, 246, 0.18),
+                      rgba(236, 72, 153, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-connected"
+                    >Connected — Components</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-connected">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(139, 92, 246, 0.2);
+                        border-color: var(--purple);
+                        color: var(--purple);
+                      "
+                      onclick="switchAlgo('connected', 'components', this)"
+                    >
+                      🧩 Components
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('connected', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('connected', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-connected">
+                    <canvas id="c-connected"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-connected">
+                    <span class="s-label">Queue:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-connected">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-connected">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-connected"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-connected"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-connected">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (gaps for disconnected: 0-1,1-2,3-4,6)</span
+                      ><input
+                        type="text"
+                        id="edges-connected"
+                        value="0-1,1-2,3-4,4-5,6"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-connected"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-p"
+                      id="btnStep-connected"
+                      onclick="doStep('connected')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-connected"
+                      onclick="doAuto('connected')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button class="btn btn-p" onclick="doBuild('connected')">
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('connected')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CYCLIC -->
+        <div class="gtype-panel" id="gp-cyclic">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(239, 68, 68, 0.07);
+              border-color: rgba(239, 68, 68, 0.3);
+            "
+          >
+            <div class="type-banner-icon">🔄</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--red)">
+                Cyclic / Acyclic Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>cyclic</b> graph has at least one cycle. An
+                <b>acyclic</b> graph has none — trees are acyclic. Detection
+                method differs: <strong>undirected</strong> uses parent check,
+                <strong>directed</strong> uses a recursion stack.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-r">Directed: rec-stack</span
+                ><span class="tag tag-g">Undirected: parent check</span
+                ><span class="tag tag-o">O(V+E) detection</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-cyclic">
+                Cycle Detection
+              </div>
+              <div class="ps-lines" id="psLines-cyclic"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(239, 68, 68, 0.18),
+                      rgba(245, 158, 11, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-cyclic"
+                    >Cyclic — Cycle Detection</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-cyclic">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(239, 68, 68, 0.2);
+                        border-color: var(--red);
+                        color: var(--red);
+                      "
+                      onclick="switchAlgo('cyclic', 'cycle', this)"
+                    >
+                      🔄 Detect Cycle
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('cyclic', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('cyclic', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-cyclic">
+                    <canvas id="c-cyclic"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-cyclic">
+                    <span class="s-label">Rec Stack:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-cyclic">
+                    <span class="s-label">Visited:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-cyclic">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-cyclic"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-cyclic"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-cyclic">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Edges (try 0-1,1-2,2-0 to create a cycle)</span
+                      ><input
+                        type="text"
+                        id="edges-cyclic"
+                        value="0-1,1-2,2-3,3-1"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">Start</span
+                      ><input
+                        type="number"
+                        id="start-cyclic"
+                        value="0"
+                        min="0"
+                        max="9"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn"
+                      style="background: var(--red); color: #fff"
+                      id="btnStep-cyclic"
+                      onclick="doStep('cyclic')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-cyclic"
+                      onclick="doAuto('cyclic')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button
+                      class="btn"
+                      style="background: var(--red); color: #fff"
+                      onclick="doBuild('cyclic')"
+                    >
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('cyclic')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DAG -->
+        <div class="gtype-panel" id="gp-dag">
+          <div
+            class="type-banner"
+            style="
+              background: rgba(234, 179, 8, 0.07);
+              border-color: rgba(234, 179, 8, 0.3);
+            "
+          >
+            <div class="type-banner-icon">📐</div>
+            <div>
+              <div class="type-banner-title" style="color: var(--yellow)">
+                DAG — Directed Acyclic Graph
+              </div>
+              <div class="type-banner-desc">
+                A <b>directed graph with no cycles</b>. Every DAG has at least
+                one <em>topological ordering</em>. Used in: build systems, task
+                scheduling, dependency resolution.
+              </div>
+              <div class="type-banner-tags">
+                <span class="tag tag-o">No cycles</span
+                ><span class="tag tag-o">Directed edges</span
+                ><span class="tag tag-g">Topological Sort</span>
+              </div>
+            </div>
+          </div>
+          <div class="vis-layout">
+            <div class="ps-card">
+              <div class="ps-card-title">📋 PSEUDO CODE</div>
+              <div class="ps-algo-name" id="psAlgoName-dag">Topo Sort</div>
+              <div class="ps-lines" id="psLines-dag"></div>
+            </div>
+            <div>
+              <div class="vis-card">
+                <div
+                  class="vis-head"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      rgba(234, 179, 8, 0.18),
+                      rgba(245, 158, 11, 0.1)
+                    );
+                  "
+                >
+                  <span class="vis-head-title" id="vTitle-dag"
+                    >DAG — Topological Sort</span
+                  >
+                  <div class="algo-tabs" id="algoTabs-dag">
+                    <button
+                      class="algo-tab on"
+                      style="
+                        background: rgba(234, 179, 8, 0.2);
+                        border-color: var(--yellow);
+                        color: var(--yellow);
+                      "
+                      onclick="switchAlgo('dag', 'topo', this)"
+                    >
+                      📐 Topo Sort
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('dag', 'dfs', this)"
+                    >
+                      📦 DFS
+                    </button>
+                    <button
+                      class="algo-tab"
+                      onclick="switchAlgo('dag', 'bfs', this)"
+                    >
+                      🔍 BFS
+                    </button>
+                  </div>
+                </div>
+                <div class="vis-body">
+                  <div class="canvas-box" id="cbox-dag">
+                    <canvas id="c-dag"></canvas>
+                  </div>
+                  <div class="status-row" id="qrow-dag">
+                    <span class="s-label">Stack:</span
+                    ><span class="s-empty">— hit Build —</span>
+                  </div>
+                  <div class="status-row" id="vrow-dag">
+                    <span class="s-label">Order:</span
+                    ><span class="s-empty">—</span>
+                  </div>
+                  <div class="caption" id="cap-dag">
+                    Select algorithm and click 🔨 Build.
+                  </div>
+                  <div class="result-wrap" id="res-dag"></div>
+                  <div class="prog-row">
+                    <span class="prog-lbl">Progress</span>
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill"
+                        id="prog-dag"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <span class="prog-lbl" id="progTxt-dag">0%</span>
+                  </div>
+                </div>
+                <div class="vis-foot">
+                  <div class="ctrl-grid3">
+                    <div>
+                      <span class="ctrl-lbl"
+                        >Directed acyclic edges (u→v as u-v)</span
+                      ><input
+                        type="text"
+                        id="edges-dag"
+                        value="5-2,5-0,4-0,4-1,2-3,3-1"
+                      />
+                    </div>
+                    <div>
+                      <span class="ctrl-lbl">V</span
+                      ><input
+                        type="number"
+                        id="start-dag"
+                        value="6"
+                        min="2"
+                        max="10"
+                        style="width: 64px"
+                      />
+                    </div>
+                    <button
+                      class="btn btn-o"
+                      style="background: var(--yellow); color: #000"
+                      id="btnStep-dag"
+                      onclick="doStep('dag')"
+                      disabled
+                    >
+                      ▶ Step
+                    </button>
+                    <button
+                      class="btn btn-o"
+                      id="btnAuto-dag"
+                      onclick="doAuto('dag')"
+                      disabled
+                    >
+                      ⚡ Auto
+                    </button>
+                  </div>
+                  <div class="ctrl-row">
+                    <button
+                      class="btn btn-o"
+                      style="background: var(--yellow); color: #000"
+                      onclick="doBuild('dag')"
+                    >
+                      🔨 Build
+                    </button>
+                    <button class="btn btn-gh" onclick="doReset('dag')">
+                      ↺ Reset
+                    </button>
+                    <div class="speed-row">
+                      <span class="sp-lbl">Speed</span
+                      ><input
+                        type="range"
+                        class="spRange"
+                        min="150"
+                        max="1400"
+                        value="750"
+                        step="50"
+                      /><span class="sp-lbl sp-val">Normal</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--     ═ SCENARIOS     ═
+       FIX 1: Scenario canvases now redraw with the correct
+       directed/undirected flag whenever you switch graph type.
+       Steps are regenerated fresh — not hardcoded undirected.
+                       -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon">🧪</div>
+          <h2 class="card-title">
+            Scenarios —
+            <span id="scTypeLabel" style="color: var(--cyan)"
+              >Undirected Graph</span
+            >
+          </h2>
+        </div>
+
+        <!-- Fix note shown to the user -->
+        <div class="fix-note">
+          <strong>✅ Fixed:</strong> These scenarios now draw the correct graph
+          for whatever tab you're on. Switch to "Directed" then open Best/Worst
+          case — you'll see arrows on the edges. Cycle detection also uses the
+          correct algorithm for each type.
+        </div>
+
+        <div class="sc-tabs">
+          <button class="sc-tab t-g" id="scTabBest" onclick="switchSc('best')">
+            ⚡ Best Case
+          </button>
+          <button class="sc-tab" id="scTabAvg" onclick="switchSc('avg')">
+            〜 Average Case
+          </button>
+          <button class="sc-tab" id="scTabWorst" onclick="switchSc('worst')">
+            ⚠ Worst Case
+          </button>
+        </div>
+
+        <div class="sc-panel show" id="sc-best">
+          <div class="sc-box">
+            <h4 id="sc-best-title">⚡ Best Case — O(1): Target = Source</h4>
+            <p id="sc-best-desc">
+              When the start node is already the target, BFS dequeues it
+              immediately and stops — 1 dequeue, 0 neighbour checks. Always O(1)
+              regardless of graph type.
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-best-c"></canvas></div>
+                <div class="sc-info" id="sc-best-info">Steps: 0</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-best-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-g"
+                    id="sc-best-stepBtn"
+                    onclick="scBestStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-best-autoBtn"
+                    onclick="scBestAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitBest()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-panel" id="sc-avg">
+          <div class="sc-box">
+            <h4>〜 Average Case — O(V+E): BFS Level-by-Level</h4>
+            <p>
+              BFS explores vertices
+              <strong style="color: var(--cyan)">level by level</strong>. On
+              average roughly V/2 nodes are visited before reaching a mid-graph
+              node. Total: O(V+E).
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-avg-c"></canvas></div>
+                <div class="sc-info" id="sc-avg-info">Step 0 | Queue: [0]</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-avg-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-c"
+                    id="sc-avg-stepBtn"
+                    onclick="scAvgStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-avg-autoBtn"
+                    onclick="scAvgAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitAvg()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-panel" id="sc-worst">
+          <div class="sc-box">
+            <h4 id="sc-worst-title">
+              ⚠ Worst Case — O(V+E): DFS on Linear Chain
+            </h4>
+            <p id="sc-worst-desc">
+              DFS on a
+              <strong style="color: var(--orange)">linear chain</strong> must
+              traverse all vertices with maximum recursion depth = N.
+              Demonstrates worst-case stack usage for DFS.
+            </p>
+            <hr class="sc-hr" />
+            <div class="sc-2col">
+              <div>
+                <div class="mini-box"><canvas id="sc-worst-c"></canvas></div>
+                <div class="sc-info" id="sc-worst-info">Stack depth: 0/6</div>
+              </div>
+              <div>
+                <div class="sc-log" id="sc-worst-log">
+                  <div class="sc-log-title">📋 Log</div>
+                </div>
+                <div class="sc-ctl">
+                  <button
+                    class="sc-btn sb-o"
+                    id="sc-worst-stepBtn"
+                    onclick="scWorstStep()"
+                  >
+                    ▶ Next
+                  </button>
+                  <button
+                    class="sc-btn sb-c"
+                    id="sc-worst-autoBtn"
+                    onclick="scWorstAuto()"
+                  >
+                    ⚡ Auto
+                  </button>
+                  <button class="sc-btn sb-h" onclick="scInitWorst()">
+                    ↺ Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--     ═ CODE EDITOR
+       FIX 2: Cycle detection shows DIFFERENT code for directed vs undirected.
+       The editor also reads the currently active graph type and picks the
+       right template variant when it matters.
+                       -->
+      <div class="card" id="editor">
+        <div class="card-head">
+          <div class="card-icon"><i class="fas fa-code"></i></div>
+          <h2 class="card-title">Code Editor — Graph Algorithms</h2>
+        </div>
+
+        <div class="fix-note">
+          <strong>✅ Fixed:</strong> The
+          <strong>Cycle Detection</strong> template now shows
+          <em>undirected graph</em> code (parent check) when you're on the
+          Undirected tab, and <em>directed graph</em> code (recursion stack)
+          when you're on the Directed/Cyclic tab. Switch the graph type tab
+          above, then come back here to see it change.
+        </div>
+
+        <div class="algo-picker" id="algoPicker">
+          <div class="ap on" data-a="bfs" onclick="setEditorAlgo('bfs')">
+            <div class="ap-icon">🔍</div>
+            <div class="ap-name">BFS</div>
+          </div>
+          <div class="ap" data-a="dfs" onclick="setEditorAlgo('dfs')">
+            <div class="ap-icon">📦</div>
+            <div class="ap-name">DFS</div>
+          </div>
+          <div class="ap" data-a="dijkstra" onclick="setEditorAlgo('dijkstra')">
+            <div class="ap-icon">🛣️</div>
+            <div class="ap-name">Dijkstra</div>
+          </div>
+          <div class="ap" data-a="cycle" onclick="setEditorAlgo('cycle')">
+            <div class="ap-icon">🔄</div>
+            <div class="ap-name">Cycle</div>
+          </div>
+          <div
+            class="ap"
+            data-a="components"
+            onclick="setEditorAlgo('components')"
+          >
+            <div class="ap-icon">🧩</div>
+            <div class="ap-name">Components</div>
+          </div>
+          <div class="ap" data-a="topo" onclick="setEditorAlgo('topo')">
+            <div class="ap-icon">📐</div>
+            <div class="ap-name">Topo Sort</div>
+          </div>
+        </div>
+
+        <div class="lang-tabs" id="langTabs">
+          <button class="lt on" data-l="cpp">C++</button>
+          <button class="lt" data-l="python">Python</button>
+          <button class="lt" data-l="java">Java</button>
+          <button class="lt" data-l="c">C</button>
+          <button class="lt" data-l="js">JS</button>
+        </div>
+
+        <div class="editor-box">
+          <div class="editor-hdr">
+            <div>
+              <span
+                id="edLabel"
+                style="
+                  font-weight: 600;
+                  color: var(--cyan);
+                  font-family: &quot;Space Grotesk&quot;, sans-serif;
+                "
+                >C++ — BFS</span
+              >
+              <!-- Shows which variant is loaded -->
+              <span
+                id="edVariantBadge"
+                style="
+                  margin-left: 8px;
+                  font-size: 0.72rem;
+                  padding: 2px 8px;
+                  border-radius: 10px;
+                  background: rgba(6, 182, 212, 0.12);
+                  border: 1px solid var(--cyan);
+                  color: var(--cyan);
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  display: none;
+                "
+              ></span>
+            </div>
+            <button class="copy-btn" onclick="copyEd()">Copy</button>
+          </div>
+          <textarea id="codeArea"></textarea>
+        </div>
+
+        <div class="in-box">
+          <div class="in-title">📥 INPUTS</div>
+          <div id="runInputs"></div>
+        </div>
+        <button class="run-btn" onclick="runCode()">
+          <i class="fas fa-play"></i> Run Code
+        </button>
+        <div class="out-box">
+          <h6>📤 Output:</h6>
+          <div id="codeOut">Fill inputs and click Run...</div>
+        </div>
+      </div>
+
+      <!-- LEVEL NAV -->
+      <h3
+        style="
+          text-align: center;
+          font-family: &quot;Space Grotesk&quot;, sans-serif;
+          margin-bottom: 1.6rem;
+          font-size: 1rem;
+        "
+      >
+        Ready to Test Your Knowledge? →
+      </h3>
+      <div class="lv-box">
+        <div class="lv-wrap">
+          <button id="l1">Level 1</button>
+          <div class="lv-line act" id="ll1"></div>
+          <button id="l2">Level 2</button>
+          <div class="lv-line" id="ll2"></div>
+          <button id="l3">Level 3</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="modal">
+      <div class="modal-box">
+        <div style="font-size: 3rem; margin-bottom: 0.8rem">🔒</div>
+        <h3
+          style="
+            color: var(--purple);
+            font-family: &quot;Space Grotesk&quot;, sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+          "
+        >
+          Level Locked
+        </h3>
+        <p style="color: var(--muted)">
+          Pass the Level 2 Quiz to unlock Level 3.
+        </p>
+        <div class="modal-btns">
+          <button id="mOk">Take Quiz</button
+          ><button id="mCancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <link rel="stylesheet" href="css/navbar.css" />
+    <script src="js/api.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="js/graphs_L2.js"></script>
+  </body>
+</html>
