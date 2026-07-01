@@ -8,10 +8,11 @@ A full-stack DSA learning platform built to fix the one thing every DSA course g
 ## 🌐 Live Demo
 
 **Frontend (Vercel):**
-https://visualize-dsa-codeanime.vercel.app
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=render)](https://visualize-dsacodeanime.vercel.app)
+
 
 **Backend API (Railway):**
-https://visualizedsa-production.up.railway.app
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=render)](https://visualizedsa-production.up.railway.app)
 
 ---
 ## ✨ What's inside
