@@ -5,7 +5,15 @@
 A full-stack DSA learning platform built to fix the one thing every DSA course gets wrong: explaining algorithms with static diagrams instead of letting you actually *watch* them run. visualizeDSA turns 20+ data structures and algorithms into step-by-step animated walkthroughs, gates each topic behind a quiz so you can't skip ahead, and tracks every bit of your progress in a real database — not your browser's local storage.
 
 ---
+## 🌐 Live Demo
 
+**Frontend (Vercel):**
+https://visualize-dsa-codeanime.vercel.app
+
+**Backend API (Railway):**
+https://visualizedsa-production.up.railway.app
+
+---
 ## ✨ What's inside
 
 - **Animated visualizers** for arrays, linked lists, stacks, queues, trees, heaps, hashing, graphs, recursion, and 6 sorting/searching algorithms — each with its own step-by-step playback
